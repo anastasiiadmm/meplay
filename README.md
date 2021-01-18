@@ -1,6 +1,6 @@
-# me_play
+# Me Play
 
-Megacom TV and radio translation app.
+TV and radio translation on the phone.
 
 ## Getting Started
 
