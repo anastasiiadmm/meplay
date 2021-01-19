@@ -11,10 +11,15 @@ void main() {
 class MePlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Me Play',
-      theme: ThemeData(fontFamily: 'SF Pro Text'),
-      home: HomeScreen(title: 'Me Play'),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      ),
+      child: MaterialApp(
+        title: 'Me Play',
+        theme: ThemeData(fontFamily: 'SF Pro Text'),
+        home: HomeScreen(title: 'Me Play'),
+      ),
     );
   }
 }
