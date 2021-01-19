@@ -43,8 +43,8 @@ class HexagonOffsetGrid extends StatelessWidget {
   final double hexagonWidth;
   final double hexagonHeight;
   final bool symmetrical;
-  final Widget Function(int col, int row) buildChild;
-  final HexagonWidget Function(int col, int row) buildHexagon;
+  final Widget Function(HexGridPoint point) buildChild;
+  final HexagonWidget Function(HexGridPoint point) buildHexagon;
 
   ///Grid of flat hexagons with odd columns starting with tile and even with a space.
   ///
@@ -58,9 +58,9 @@ class HexagonOffsetGrid extends StatelessWidget {
   ///
   /// [hexagonBorderRadius] - Sets border radius for hexagons. Does not depend on size of the hexagons.
   ///
-  /// [hexagonWidth] - Desired width of hexagon. Has precedence over size calculation based on rows/columns count.
+  /// [hexagonWidth] - Desired width of hexagon. Has precedence over size calculated from row/column count.
   ///
-  /// [hexagonHeight] - Desired height of hexagon. Has precedence over size calculation based on rows/columns count.
+  /// [hexagonHeight] - Desired height of hexagon. Has precedence over size calculated from row/column count.
   ///
   /// [symmetrical] - Whether or not this grid is symmetrical along the cross-axis. If true, last tile from each even column will be removed.
   ///
@@ -95,9 +95,9 @@ class HexagonOffsetGrid extends StatelessWidget {
   ///
   /// [hexagonBorderRadius] - Sets border radius for hexagons. Does not depend on size of the hexagons.
   ///
-  /// [hexagonWidth] - Desired width of hexagon. Has precedence over size calculation based on rows/columns count.
+  /// [hexagonWidth] - Desired width of hexagon. Has precedence over size calculated from row/column count.
   ///
-  /// [hexagonHeight] - Desired height of hexagon. Has precedence over size calculation based on rows/columns count.
+  /// [hexagonHeight] - Desired height of hexagon. Has precedence over size calculated from row/column count.
   ///
   /// [symmetrical] - Whether or not this grid is symmetrical along the cross-axis. If true, last tile from each odd column will be removed.
   ///
@@ -130,9 +130,9 @@ class HexagonOffsetGrid extends StatelessWidget {
   ///
   /// [hexagonBorderRadius] - Sets border radius for hexagons. Does not change with their size.
   ///
-  /// [hexagonWidth] - Desired width of hexagon. Has precedence over size calculation based on rows/columns count.
+  /// [hexagonWidth] - Desired width of hexagon. Has precedence over size calculated from row/column count.
   ///
-  /// [hexagonHeight] - Desired height of hexagon. Has precedence over size calculation based on rows/columns count.
+  /// [hexagonHeight] - Desired height of hexagon. Has precedence over size calculated from row/column count.
   ///
   /// [symmetrical] - Whether or not this grid is symmetrical along the cross-axis. If true, last tile from each even row will be removed.
   ///
@@ -165,9 +165,9 @@ class HexagonOffsetGrid extends StatelessWidget {
   ///
   /// [hexagonBorderRadius] - Sets border radius for hexagons. Does not depend on size of the hexagons.
   ///
-  /// [hexagonWidth] - Desired width of hexagon. Has precedence over size calculation based on rows/columns count.
+  /// [hexagonWidth] - Desired width of hexagon. Has precedence over size calculated from row/column count.
   ///
-  /// [hexagonHeight] - Desired height of hexagon. Has precedence over size calculation based on rows/columns count.
+  /// [hexagonHeight] - Desired height of hexagon. Has precedence over size calculated from row/column count.
   ///
   /// [symmetrical] - Whether or not this grid is symmetrical along the cross-axis. If true, last tile from each odd row will be removed.
   ///
@@ -225,8 +225,8 @@ class HexagonOffsetGrid extends StatelessWidget {
                       ? mainIndex
                       : (crossIndex -
                       (gridType.displaceFront(mainIndex) ? 1 : 0));
-
-                  var hexagonTemplate = buildHexagon?.call(col, row);
+                  final HexGridPoint point = HexGridPoint(row, col);
+                  var hexagonTemplate = buildHexagon?.call(point);
 
                   if (buildHexagon != null && hexagonTemplate == null) {
                     //create default template when no build function or nothing generated
@@ -245,7 +245,7 @@ class HexagonOffsetGrid extends StatelessWidget {
                     width: hexType.isPointy ? size.width : null,
                     height: hexType.isFlat ? size.height : null,
                     child: buildChild != null
-                        ? buildChild.call(col, row)
+                        ? buildChild.call(point)
                         : hexagonTemplate.child,
                   );
                 }),
@@ -314,4 +314,36 @@ class HexagonOffsetGrid extends StatelessWidget {
       throw Exception('Error: Infinite constraints in both dimensions!');
     }
   }
+}
+
+class HexGridSize {
+  const HexGridSize(this.rows, this.cols);
+
+  final int rows;
+  final int cols;
+
+  bool operator ==(Object other) {
+    return other is HexGridSize
+        && other.rows == this.rows
+        && other.cols == this.cols;
+  }
+
+  @override
+  int get hashCode => super.hashCode;
+}
+
+class HexGridPoint {
+  const HexGridPoint(this.row, this.col);
+
+  final int row;
+  final int col;
+
+  bool operator ==(Object other) {
+    return other is HexGridPoint
+        && other.row == this.row
+        && other.col == this.col;
+  }
+
+  @override
+  int get hashCode => super.hashCode;
 }

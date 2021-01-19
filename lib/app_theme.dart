@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
+
+import 'package:flutter_svg/flutter_svg.dart';
 
 
 class AppColors {
-  static const emptyTile = Colors.white;
-  static const minTileOpacity = 0.04;
-  static const maxTileOpacity = 0.37;
+  static get emptyTile {
+    return Color.fromRGBO(255, 255, 255, 0.04 + Random().nextDouble() * 0.36);
+  }
   static const megaViolet = Color.fromRGBO(88, 33, 122, 1);  // #58217A
   static const megaGreen = Color.fromRGBO(47, 140, 45, 1);  // #2F8C2D
   static const megaGray = Color.fromRGBO(198, 198, 198, 1);  // #C6C6C6
@@ -21,4 +24,17 @@ class AppColors {
   static const gray60 = Color.fromRGBO(83, 83, 78, 1); // #53534E
   static const gray70 = Color.fromRGBO(38, 38, 35, 1); // #262623
   static const gray80 = Color.fromRGBO(26, 25, 23, 1); // #1A1917
+}
+
+
+class AppFonts {
+  static const homeButtons = TextStyle(fontFamily: 'SF Pro Display',
+      fontWeight: FontWeight.bold, letterSpacing: -0.24,
+      fontSize: 15, height: 20/15);
+
+}
+
+
+class AppIcons {
+
 }
