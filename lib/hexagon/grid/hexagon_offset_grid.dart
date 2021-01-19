@@ -29,6 +29,11 @@ extension _GridTypeExtension on GridType {
           (this == GridType.EVEN && index.isOdd);
     }
   }
+
+  bool removeSym(int index) {
+    return this == GridType.EVEN && index.isOdd ||
+        this == GridType.ODD && index.isEven;
+  }
 }
 
 class HexagonOffsetGrid extends StatelessWidget {
@@ -265,22 +270,16 @@ class HexagonOffsetGrid extends StatelessWidget {
   }
 
   Widget _crossAxis(int mainIndex, List<Widget> Function(int count) children) {
-    Axis direction;
-    int count;
+    int removeSym = (symmetrical && gridType.removeSym(mainIndex)) ? 1 : 0;
     if (hexType.isPointy) {
-      count = columns + _displaceColumns;
-      direction = Axis.horizontal;
+      return Row(children: children.call(
+        columns + _displaceColumns - removeSym
+      ));
     } else {
-      count = rows + _displaceRows;
-      direction = Axis.vertical;
+      return Column(children: children.call(
+        rows + _displaceRows - removeSym
+      ));
     }
-    if (symmetrical) {
-      if(gridType == GridType.EVEN && mainIndex.isOdd ||
-          gridType == GridType.ODD && mainIndex.isEven) {
-        count -= 1;
-      }
-    }
-    return Wrap(direction: direction, children: children.call(count));
   }
 
   int get _displaceColumns => hexType.isPointy ? 1 : 0;
