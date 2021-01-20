@@ -30,7 +30,7 @@ extension _GridTypeExtension on GridType {
     }
   }
 
-  bool removeSym(int index) {
+  bool symCol(int index) {
     return this == GridType.EVEN && index.isOdd ||
         this == GridType.ODD && index.isEven;
   }
@@ -270,14 +270,14 @@ class HexagonOffsetGrid extends StatelessWidget {
   }
 
   Widget _crossAxis(int mainIndex, List<Widget> Function(int count) children) {
-    int removeSym = (symmetrical && gridType.removeSym(mainIndex)) ? 1 : 0;
+    int intSym = (symmetrical && gridType.symCol(mainIndex)) ? 1 : 0;
     if (hexType.isPointy) {
       return Row(children: children.call(
-        columns + _displaceColumns - removeSym
+        columns + _displaceColumns - intSym
       ));
     } else {
       return Column(children: children.call(
-        rows + _displaceRows - removeSym
+        rows + _displaceRows - intSym
       ));
     }
   }

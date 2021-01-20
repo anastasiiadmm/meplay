@@ -38,7 +38,7 @@ class HexagonUtils {
     return corners;
   }
 
-  static Point pointAtDistance(Point start, Point end,
+  static Point pointBetween(Point start, Point end,
       {double distance, double fraction}) {
     double xLength = end.x - start.x;
     double yLength = end.y - start.y;
@@ -57,7 +57,7 @@ class HexagonUtils {
     Point prevCorner = index > 0
         ? cornerList[index - 1]
         : cornerList[cornerList.length - 1];
-    return pointAtDistance(corner, prevCorner, distance: radius);
+    return pointBetween(corner, prevCorner, distance: radius);
   }
 
   static Point radiusEnd(Point corner, int index,
@@ -65,7 +65,7 @@ class HexagonUtils {
     Point nextCorner = index < cornerList.length - 1
         ? cornerList[index + 1]
         : cornerList[0];
-    return pointAtDistance(corner, nextCorner, distance: radius);
+    return pointBetween(corner, nextCorner, distance: radius);
   }
 
   /// Returns path in shape of hexagon.
@@ -96,8 +96,8 @@ class HexagonUtils {
           path.lineTo(rStart.x, rStart.y);
         }
         // rough approximation of an circular arc for an 120 deg angle.
-        Point control1 = pointAtDistance(rStart, point, fraction: 0.7698);
-        Point control2 = pointAtDistance(rEnd, point, fraction: 0.7698);
+        Point control1 = pointBetween(rStart, point, fraction: 0.7698);
+        Point control2 = pointBetween(rEnd, point, fraction: 0.7698);
         path.cubicTo(
           control1.x, control1.y,
           control2.x, control2.y,
