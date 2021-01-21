@@ -110,7 +110,7 @@ class HomeScreen extends StatelessWidget {
                 symmetrical: true,
                 color: Colors.transparent,
                 hexagonPadding: 8,
-                hexagonBorderRadius: 10,
+                hexagonBorderRadius: 15,
                 hexagonWidth: 174,
                 buildHexagon: tileBuilder,
               ),

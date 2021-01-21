@@ -57,7 +57,8 @@ class HexagonUtils {
     Point prevCorner = index > 0
         ? cornerList[index - 1]
         : cornerList[cornerList.length - 1];
-    return pointBetween(corner, prevCorner, distance: radius);
+    double distance = radius * tan(pi / 6);
+    return pointBetween(corner, prevCorner, distance: distance);
   }
 
   static Point radiusEnd(Point corner, int index,
@@ -65,7 +66,8 @@ class HexagonUtils {
     Point nextCorner = index < cornerList.length - 1
         ? cornerList[index + 1]
         : cornerList[0];
-    return pointBetween(corner, nextCorner, distance: radius);
+    double distance = radius * tan(pi / 6);
+    return pointBetween(corner, nextCorner, distance: distance);
   }
 
   /// Returns path in shape of hexagon.
