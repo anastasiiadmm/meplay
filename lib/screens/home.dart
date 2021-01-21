@@ -97,7 +97,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.megaViolet,
+      backgroundColor: AppColors.megaPurple,
+      extendBody: true,
       body: Container(
         child: ClipRect(
           child: OverflowBox(
@@ -118,9 +119,11 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(items: [
-      //   BottomNavigationBarItem(icon: null)
-      // ]),
+      bottomNavigationBar: BottomNavigationBar(items: [
+        BottomNavigationBarItem(icon: AppIcons.home, activeIcon: AppIcons.homeActive, label: '',),
+        BottomNavigationBarItem(icon: AppIcons.star, activeIcon: AppIcons.starActive, label: ''),
+        BottomNavigationBarItem(icon: AppIcons.user, activeIcon: AppIcons.userActive, label: ''),
+      ], backgroundColor: AppColors.bottomBar),
     );
   }
 }
