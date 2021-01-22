@@ -24,24 +24,35 @@ class _BaseScreenState extends State<BaseScreen> {
   int _currentIndex = 0;
   NavItem _currentItem = NavItem.home;
 
-  static const indexItems = <NavItem>[NavItem.home, NavItem.favorites, NavItem.profile];
+  static const navItems = <NavItem>[
+    NavItem.home,
+    NavItem.favorites,
+    NavItem.profile
+  ];
 
   Widget get _body {
     switch(_currentItem) {
-      case NavItem.home: return HomeScreen();
+      case NavItem.home: return HomeScreen(onMenuTap: _onHomeTap);
       case NavItem.favorites: return null;
       case NavItem.profile: return null;
       case NavItem.tv: return null;
       case NavItem.radio: return null;
       case NavItem.cinema: return null;
-      default: return HomeScreen();
+      default: return HomeScreen(onMenuTap: _onHomeTap);
     }
   }
 
-  void _onScreenSwitch(int index) {
+  void _onNavTap(int index) {
     setState(() {
       _currentIndex = index;
-      _currentItem = indexItems[index];
+      _currentItem = navItems[index];
+    });
+  }
+
+  void _onHomeTap(NavItem item) {
+    setState(() {
+      _currentIndex = null;
+      _currentItem = item;
     });
   }
 
@@ -55,12 +66,26 @@ class _BaseScreenState extends State<BaseScreen> {
         backgroundColor: AppColors.bottomBar,
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        onTap: _onScreenSwitch,
-        currentIndex: _currentIndex,
+        onTap: _onNavTap,
+        currentIndex: _currentIndex ?? 0,
         items: [
-          BottomNavigationBarItem(icon: AppIcons.home, activeIcon: AppIcons.homeActive, label: 'Главная'),
-          BottomNavigationBarItem(icon: AppIcons.star, activeIcon: AppIcons.starActive, label: 'Избранное'),
-          BottomNavigationBarItem(icon: AppIcons.user, activeIcon: AppIcons.userActive, label: 'Профиль'),
+          BottomNavigationBarItem(
+            icon: AppIcons.home,
+            activeIcon: _currentIndex != null
+                ? AppIcons.homeActive
+                : AppIcons.home,
+            label: 'Главная',
+          ),
+          BottomNavigationBarItem(
+            icon: AppIcons.star,
+            activeIcon: AppIcons.starActive,
+            label: 'Избранное',
+          ),
+          BottomNavigationBarItem(
+            icon: AppIcons.user,
+            activeIcon: AppIcons.userActive,
+            label: 'Профиль',
+          ),
         ],
       ),
     );

@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'base.dart';
 import '../app_theme.dart';
 import '../hexagon/hexagon_widget.dart';
 import '../hexagon/grid/hexagon_offset_grid.dart';
 
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  final Function(NavItem item) onMenuTap;
+
+  @override
+  HomeScreen({Key key, this.onMenuTap}): super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final gridSize = HexGridSize(7, 5);
   final logoTile = HexGridPoint(2, 2);
   final tvButton = HexGridPoint(3, 1);
@@ -13,15 +24,28 @@ class HomeScreen extends StatelessWidget {
   final cinemaButton = HexGridPoint(4, 2);
 
   void _watchTV() {
-
+    widget.onMenuTap(NavItem.tv);
   }
 
-  void _listenToRadio() {
-
+  void _listenRadio() {
+    widget.onMenuTap(NavItem.radio);
   }
 
   void _watchCinema() {
-
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text('Онлайн-кинотеатр'),
+        content: Text('Находится в разработке.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('Закрыть')
+          )
+        ],
+      ),
+    );
   }
 
   HexagonWidget tileBuilder(HexGridPoint point) {
@@ -52,7 +76,7 @@ class HomeScreen extends StatelessWidget {
     } else if (point == radioButton) {
       color = AppColors.gray10;
       content = GestureDetector(
-        onTap: _listenToRadio,
+        onTap: _listenRadio,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
