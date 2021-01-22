@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'base.dart';
 import '../theme.dart';
 import '../hexagon/hexagon_widget.dart';
@@ -15,6 +14,7 @@ class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
+
 
 class _HomeScreenState extends State<HomeScreen> {
   final gridSize = HexGridSize(7, 5);
@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
       color = AppColors.gray5;
       content = Padding(
         padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
-        child: SvgPicture.asset('assets/icons/logo.svg'),
+        child: AppIcons.logo,
       );
     } else if (point == tvButton) {
       color = AppColors.gray10;
@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              child: SvgPicture.asset('assets/icons/tv.svg'),
+              child: AppIcons.tv,
               padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             ),
             Text('ТВ КАНАЛЫ', style: AppFonts.homeButtons,),
@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              child: SvgPicture.asset('assets/icons/radio.svg'),
+              child: AppIcons.radio,
               padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             ),
             Text('РАДИО', style: AppFonts.homeButtons,),
@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
-                child: SvgPicture.asset('assets/icons/cinema.svg'),
+                child: AppIcons.cinema,
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
               ),
               Text('КИНОТЕАТР', style: AppFonts.homeButtons,),
