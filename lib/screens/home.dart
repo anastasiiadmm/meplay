@@ -96,16 +96,19 @@ class HomeScreen extends StatelessWidget {
       child: OverflowBox(
         maxWidth: double.infinity,
         maxHeight: double.infinity,
-        child: Center(
-          child: HexagonOffsetGrid.oddPointy(
-            columns: gridSize.cols,
-            rows: gridSize.rows,
-            symmetrical: true,
-            color: Colors.transparent,
-            hexagonPadding: 8,
-            hexagonBorderRadius: 15,
-            hexagonWidth: 174,
-            buildHexagon: tileBuilder,
+        child: Container(
+          margin: EdgeInsets.only(bottom: 20),
+          child: Center(
+            child: HexagonOffsetGrid.oddPointy(
+              columns: gridSize.cols,
+              rows: gridSize.rows,
+              symmetrical: true,
+              color: Colors.transparent,
+              hexagonPadding: 8,
+              hexagonBorderRadius: 15,
+              hexagonWidth: 174,
+              buildHexagon: tileBuilder,
+            ),
           ),
         ),
       ),
