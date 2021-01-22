@@ -6,10 +6,6 @@ import '../hexagon/grid/hexagon_offset_grid.dart';
 
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   final gridSize = HexGridSize(7, 5);
   final logoTile = HexGridPoint(2, 2);
   final tvButton = HexGridPoint(3, 1);
@@ -96,34 +92,23 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.megaPurple,
-      extendBody: true,
-      body: Container(
-        child: ClipRect(
-          child: OverflowBox(
-            maxWidth: double.infinity,
-            maxHeight: double.infinity,
-            child: Center(
-              child: HexagonOffsetGrid.oddPointy(
-                columns: gridSize.cols,
-                rows: gridSize.rows,
-                symmetrical: true,
-                color: Colors.transparent,
-                hexagonPadding: 8,
-                hexagonBorderRadius: 15,
-                hexagonWidth: 174,
-                buildHexagon: tileBuilder,
-              ),
-            ),
+    return ClipRect(
+      child: OverflowBox(
+        maxWidth: double.infinity,
+        maxHeight: double.infinity,
+        child: Center(
+          child: HexagonOffsetGrid.oddPointy(
+            columns: gridSize.cols,
+            rows: gridSize.rows,
+            symmetrical: true,
+            color: Colors.transparent,
+            hexagonPadding: 8,
+            hexagonBorderRadius: 15,
+            hexagonWidth: 174,
+            buildHexagon: tileBuilder,
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(items: [
-        BottomNavigationBarItem(icon: AppIcons.home, activeIcon: AppIcons.homeActive, label: '',),
-        BottomNavigationBarItem(icon: AppIcons.star, activeIcon: AppIcons.starActive, label: ''),
-        BottomNavigationBarItem(icon: AppIcons.user, activeIcon: AppIcons.userActive, label: ''),
-      ], backgroundColor: AppColors.bottomBar),
     );
   }
 }
