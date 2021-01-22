@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 
@@ -35,6 +35,7 @@ class AppFonts {
       fontSize: 15, height: 20/15);
   // TODO: add more fonts
 }
+
 
 class AppIcons {
   static final logo = SvgPicture.asset('assets/icons/logo.svg',width: 63, height: 72,);
