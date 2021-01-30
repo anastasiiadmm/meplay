@@ -30,10 +30,12 @@ class AppColors {
 
 
 class AppFonts {
-  static const homeButtons = TextStyle(fontFamily: 'SF Pro Display',
+  static const homeBtns = TextStyle(fontFamily: 'SF Pro Display',
       fontWeight: FontWeight.bold, letterSpacing: -0.24,
       fontSize: 15, height: 20/15);
-  // TODO: add more fonts
+  static const logoTitle = TextStyle(fontFamily: 'SF Pro Display',
+      fontWeight: FontWeight.w600, fontSize: 22, height: 28/22,
+      letterSpacing: 0.35, color: AppColors.megaPurple);
 }
 
 
@@ -42,6 +44,7 @@ class AppIcons {
   static final tv = SvgPicture.asset('assets/icons/tv.svg', width: 64, height: 64,);
   static final radio = SvgPicture.asset('assets/icons/radio.svg', width: 64, height: 64,);
   static final cinema = SvgPicture.asset('assets/icons/cinema.svg', width: 64, height: 64,);
+  static final lock = SvgPicture.asset('assets/icons/lock.svg', width: 64, height: 64,);
   static final home = SvgPicture.asset('assets/icons/home.svg', width: 28, height: 28,);
   static final homeActive = SvgPicture.asset('assets/icons/home_active.svg', width: 28, height: 28,);
   static final star = SvgPicture.asset('assets/icons/star.svg', width: 28, height: 28,);

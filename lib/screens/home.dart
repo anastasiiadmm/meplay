@@ -53,9 +53,16 @@ class _HomeScreenState extends State<HomeScreen> {
     Widget content;
     if (point == logoTile) {
       color = AppColors.gray5;
-      content = Padding(
-        padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
-        child: AppIcons.logo,
+      content = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+            child: AppIcons.logo,
+          ),
+          Text('MePlay', style: AppFonts.logoTitle,),
+        ],
       );
     } else if (point == tvButton) {
       color = AppColors.gray10;
@@ -69,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: AppIcons.tv,
               padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             ),
-            Text('ТВ КАНАЛЫ', style: AppFonts.homeButtons,),
+            Text('ТВ КАНАЛЫ', style: AppFonts.homeBtns,),
           ],
         ),
       );
@@ -85,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: AppIcons.radio,
               padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             ),
-            Text('РАДИО', style: AppFonts.homeButtons,),
+            Text('РАДИО', style: AppFonts.homeBtns,),
           ],
         ),
       );
@@ -103,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: AppIcons.cinema,
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
               ),
-              Text('КИНОТЕАТР', style: AppFonts.homeButtons,),
+              Text('КИНОТЕАТР', style: AppFonts.homeBtns,),
             ],
           ),
         ),
