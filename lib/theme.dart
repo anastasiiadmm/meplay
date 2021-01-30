@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 
+final rnd = Random();
+
 class AppColors {
   static get emptyTile {
-    return Color.fromRGBO(255, 255, 255, 0.04 + Random().nextDouble() * 0.36);
+    return Color.fromRGBO(255, 255, 255, 0.04 + rnd.nextDouble() * 0.36);
   }
   static const megaPurple = Color.fromRGBO(88, 33, 122, 1);  // #58217A
   static const megaGreen = Color.fromRGBO(47, 140, 45, 1);  // #2F8C2D
