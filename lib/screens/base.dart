@@ -81,15 +81,12 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<bool> _onWillPop() async {
-    if(_currentItem == NavItem.home) {
-      return true;
-    } else {
-      setState(() {
-        _currentItem = NavItem.home;
-        _currentIndex = 0;
-      });
-      return false;
-    }
+    if(_currentItem == NavItem.home) return true;
+    setState(() {
+      _currentItem = NavItem.home;
+      _currentIndex = 0;
+    });
+    return false;
   }
 
   @override

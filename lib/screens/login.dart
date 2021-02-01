@@ -167,7 +167,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _changePhone() {
-    _code = null;
     _inputController.value = TextEditingValue(text: _phone);
     setState(() {
       _waitingForSms = false;
@@ -331,6 +330,14 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future<bool> _willPop() async {
+    if(_waitingForSms) {
+      _changePhone();
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> stackItems = [
@@ -359,14 +366,17 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ));
     }
-    return Scaffold(
-      backgroundColor: AppColors.megaPurple,
-      resizeToAvoidBottomInset: false,
-      appBar: _appBar,
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        children: stackItems,
+    return WillPopScope(
+      child: Scaffold(
+        backgroundColor: AppColors.megaPurple,
+        resizeToAvoidBottomInset: false,
+        appBar: _appBar,
+        extendBodyBehindAppBar: true,
+        body: Stack(
+          children: stackItems,
+        ),
       ),
+      onWillPop: _willPop
     );
   }
 }
