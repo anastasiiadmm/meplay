@@ -12,6 +12,49 @@ import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../models.dart';
 
 
+class LoginHexBackground extends StatelessWidget {
+  final gridSize = HexGridSize(7, 5);
+  final lockTile = HexGridPoint(2, 2);
+
+  HexagonWidget _tileBuilder(HexGridPoint point) {
+    Color color;
+    Widget content;
+    if (point == lockTile) {
+      color = AppColors.gray5;
+      content = AppIcons.lock;
+    } else {
+      color = AppColors.emptyTile;
+    }
+    return HexagonWidget.template(color: color, child: content);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRect(
+      child: OverflowBox(
+        maxWidth: double.infinity,
+        maxHeight: double.infinity,
+        child: Container(
+          margin: EdgeInsets.only(bottom: 60),
+          child: Center(
+            child: HexagonOffsetGrid.oddPointy(
+              columns: gridSize.cols,
+              rows: gridSize.rows,
+              symmetrical: true,
+              color: Colors.transparent,
+              hexagonPadding: 8,
+              hexagonBorderRadius: 15,
+              hexagonWidth: 174,
+              buildHexagon: _tileBuilder,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
 class LoginScreen extends StatefulWidget {
   final void Function(User user) afterLogin;
 
@@ -23,8 +66,6 @@ class LoginScreen extends StatefulWidget {
 
 
 class _LoginScreenState extends State<LoginScreen> {
-  final gridSize = HexGridSize(7, 5);
-  final lockTile = HexGridPoint(2, 2);
   final _phoneMask = MaskTextInputFormatter(
     mask: '+996 ### ######',
     filter: { "#": RegExp(r'[0-9]') },
@@ -37,6 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _userAgreementLinkTapDetector = TapGestureRecognizer();
   final _sendSmsLinkTapDetector = TapGestureRecognizer();
   final _inputController = TextEditingController();
+  final _hexBackground = LoginHexBackground();
   int _keyboardVisibilityListenerId;
   bool _waitingForCode = false;
   String _phone;
@@ -142,18 +184,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  HexagonWidget tileBuilder(HexGridPoint point) {
-    Color color;
-    Widget content;
-    if (point == lockTile) {
-      color = AppColors.gray5;
-      content = AppIcons.lock;
-    } else {
-      color = AppColors.emptyTile;
-    }
-    return HexagonWidget.template(color: color, child: content);
-  }
-
   void _fieldSubmit(String value) {
     _continue();
   }
@@ -251,30 +281,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget get _hexBackground {
-    return ClipRect(
-      child: OverflowBox(
-        maxWidth: double.infinity,
-        maxHeight: double.infinity,
-        child: Container(
-          margin: EdgeInsets.only(bottom: 60),
-          child: Center(
-            child: HexagonOffsetGrid.oddPointy(
-              columns: gridSize.cols,
-              rows: gridSize.rows,
-              symmetrical: true,
-              color: Colors.transparent,
-              hexagonPadding: 8,
-              hexagonBorderRadius: 15,
-              hexagonWidth: 174,
-              buildHexagon: tileBuilder,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget get _userAgreement {
     return RichText(
         textAlign: TextAlign.center,
@@ -337,10 +343,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-
-// TODO: on tap outside hide kb
-// semi-transparent bg behind form
-// auto detect sms
-// phone and code validation
-// on input submit - continue
