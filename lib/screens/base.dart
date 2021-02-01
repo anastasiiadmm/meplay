@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:me_play/screens/login.dart';
 import 'home.dart';
+import 'login.dart';
+import 'splash.dart';
 import '../theme.dart';
 import '../models.dart';
 
@@ -23,14 +25,20 @@ enum NavItem {
 
 class _BaseScreenState extends State<BaseScreen> {
   // used by bottom navbar
-  int _currentIndex = 0;
+  int _currentIndex;
   NavItem _currentItem = NavItem.home;
   User user;
+  bool _loading = true;
+
+  void initState() {
+    super.initState();
+    _loadChannels();
+  }
 
   static const navItems = <NavItem>[
     NavItem.home,
     NavItem.favorites,
-    NavItem.profile
+    NavItem.profile,
   ];
 
   Widget get _body {
@@ -89,9 +97,20 @@ class _BaseScreenState extends State<BaseScreen> {
     return false;
   }
 
+  Future<void> _loadChannels() async {
+    // TODO: load channels
+
+    // imitate loading
+    Timer(Duration(seconds: 5), () {
+      setState(() {
+        _loading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return _loading ? SplashScreen() : WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         backgroundColor: AppColors.megaPurple,
@@ -127,3 +146,9 @@ class _BaseScreenState extends State<BaseScreen> {
     );
   }
 }
+
+// purple screen
+// slow splash fade in
+// loading data
+// showing base behind splash
+// slow splash fade out

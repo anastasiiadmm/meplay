@@ -49,6 +49,9 @@ class AppFonts {
   static const logoTitle = TextStyle(fontFamily: 'SF Pro Display',
       fontWeight: FontWeight.w600, fontSize: 22, height: 28/22,
       letterSpacing: 0.35, color: AppColors.megaPurple);
+  static const splashTitle = TextStyle(fontFamily: 'SF Pro Display',
+      fontWeight: FontWeight.w600, fontSize: 34, height: 41/34,
+      letterSpacing: 0.4, color: AppColors.megaPurple);
   static const backBtn = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.gray0);
@@ -86,6 +89,7 @@ class AppFonts {
 
 class AppIcons {
   static final logo = SvgPicture.asset('assets/icons/logo.svg',width: 63, height: 72,);
+  static final splash = SvgPicture.asset('assets/icons/logo.svg',width: 81, height: 93,);
   static final tv = SvgPicture.asset('assets/icons/tv.svg', width: 64, height: 64,);
   static final radio = SvgPicture.asset('assets/icons/radio.svg', width: 64, height: 64,);
   static final cinema = SvgPicture.asset('assets/icons/cinema.svg', width: 64, height: 64,);
