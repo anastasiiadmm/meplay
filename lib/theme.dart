@@ -67,6 +67,10 @@ class AppFonts {
   static const smsTimer = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
       letterSpacing: -0.08, color: AppColors.gray10);
+  static const smsTimerLink = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
+      letterSpacing: -0.08, color: AppColors.gray10,
+      decoration: TextDecoration.underline);
   static const inputHint = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.gray30);

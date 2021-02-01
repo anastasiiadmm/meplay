@@ -33,33 +33,39 @@ class _LoginScreenState extends State<LoginScreen> {
     mask: '# # # # # #',
     filter: { '#': RegExp(r'[0-9]') },
   );
-  KeyboardVisibilityNotification _keyboardVisibility;
-  TapGestureRecognizer _userAgreementTapRecognizer;
+  final _keyboardVisibility = KeyboardVisibilityNotification();
+  final _userAgreementLinkTapDetector = TapGestureRecognizer();
+  final _sendSmsLinkTapDetector = TapGestureRecognizer();
+  final _inputController = TextEditingController();
   int _keyboardVisibilityListenerId;
+  bool _waitingForCode = false;
   String _phone;
   String _code;
-
+  Timer _codeTimer;
+  int _time = -1;
 
   @override
   void initState() {
     super.initState();
-    _keyboardVisibility = KeyboardVisibilityNotification();
     _keyboardVisibilityListenerId = _keyboardVisibility.addNewListener(
       onShow: _restoreSystemOverlays,
     );
-    _userAgreementTapRecognizer = TapGestureRecognizer();
-    _userAgreementTapRecognizer.onTap = _onUserAgreementLinkTap;
+    _userAgreementLinkTapDetector.onTap = _viewUserAgreement;
+    _sendSmsLinkTapDetector.onTap = _sendSms;
   }
 
   @override
   void dispose() {
     _keyboardVisibility.removeListener(_keyboardVisibilityListenerId);
     _keyboardVisibility.dispose();
-    _userAgreementTapRecognizer.dispose();
+    _userAgreementLinkTapDetector.dispose();
+    _sendSmsLinkTapDetector.dispose();
+    _inputController.dispose();
+    _stopCodeTimer();
     super.dispose();
   }
 
-  void _onUserAgreementLinkTap () {
+  void _viewUserAgreement() {
     launch('https://megacom.kg');
   }
 
@@ -67,21 +73,72 @@ class _LoginScreenState extends State<LoginScreen> {
     Timer(Duration(milliseconds: 1001), SystemChrome.restoreSystemUIOverlays);
   }
 
-  void _onContinue() {
-    String phone = '';
-    // do some request here
-    // then
-    setState(() {
-      _phone = phone;
-    });
+  void _continue() {
+    if (_waitingForCode) {
+      _code = _inputController.text;
+      // TODO: make request here
 
+      Navigator.of(context).pop();
+    } else {
+      _phone = _inputController.text;
+      if (_time < 0) {
+        _sendSms();
+      }
+      _inputController.clear();
+      FocusScope.of(context).unfocus();
+      setState(() {
+        _waitingForCode = true;
+      });
+    }
   }
 
-  void _onBack() {
+  void _sendSms() {
+    // TODO: make request here
+
+    setState(() {
+      _time = 180;
+    });
+    _startCodeTimer();
+  }
+
+  String get _timeDisplay {
+    int minutes = _time ~/ 60;
+    int seconds = _time % 60;
+    return '$minutes:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  void _startCodeTimer() {
+    _codeTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      if (_time < 1) {
+        timer.cancel();
+      }
+      setState(() {
+        _time -= 1;
+      });
+    });
+  }
+
+  void _stopCodeTimer() {
+    _codeTimer?.cancel();
+  }
+
+  void _changePhone() {
+    _code = null;
+    _inputController.value = TextEditingValue(text: _phone);
+    setState(() {
+      _waitingForCode = false;
+    });
+  }
+
+  void _back() {
     if (_keyboardVisibility.isKeyboardVisible) {
       FocusScope.of(context).unfocus();
     } else {
-      Navigator.of(context).pop();
+      if (_waitingForCode) {
+        _changePhone();
+      } else {
+        Navigator.of(context).pop();
+      }
     }
   }
 
@@ -97,26 +154,31 @@ class _LoginScreenState extends State<LoginScreen> {
     return HexagonWidget.template(color: color, child: content);
   }
 
+  void _fieldSubmit(String value) {
+    _continue();
+  }
+
   Widget get _form {
     List<Widget> formElements = [
       Text(
-        _phone == null
-            ? 'Введите номер телефона'
-            : 'Вам было отправлено смс сообщение с персональным кодом.',
+        _waitingForCode
+          ? 'Вам было отправлено смс сообщение с персональным кодом.'
+          : 'Введите номер телефона',
         style: AppFonts.screenTitle,
         textAlign: TextAlign.center,
       ),
       Padding(
         child: TextFormField(
-          inputFormatters: [_phone == null ? _phoneMask : _codeMask],
+          inputFormatters: [_waitingForCode ? _codeMask : _phoneMask],
           keyboardType: TextInputType.phone,
           style: AppFonts.inputText,
           textAlign: TextAlign.center,
+          controller: _inputController,
+          onFieldSubmitted: _fieldSubmit,
+          autocorrect: false,
           decoration: InputDecoration(
               contentPadding: EdgeInsets.all(13),
-              hintText: _phone == null
-                  ? '+996 --- ------'
-                  : 'Введите код подтверждения',
+              hintText: _waitingForCode ? '_ _ _ _ _ _' : '+996 --- ------',
               hintStyle: AppFonts.inputHint,
               fillColor: Colors.white,
               filled: true,
@@ -133,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
       SizedBox(
         width: double.infinity,
         child: FlatButton(
-          onPressed: _onContinue,
+          onPressed: _continue,
           color: AppColors.megaPurple,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide.none),
           padding: EdgeInsets.fromLTRB(0, 14, 0, 14),
@@ -141,20 +203,31 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     ];
-    if (_phone != null) {
-      formElements.add(Padding(
-        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-        child: Text (
-          'Повторная отправка сообщения через 2:59',
-          style: AppFonts.smsTimer,
-          textAlign: TextAlign.center,
-        ),
-      ));
+    if (_waitingForCode) {
+      formElements.add(_timerString);
     }
     return Form(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: formElements,
+      ),
+    );
+  }
+
+  Widget get _timerString {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+      child: (_time < 0) ? RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          text: 'Повторно отправить сообщение',
+          recognizer: _sendSmsLinkTapDetector,
+          style: AppFonts.smsTimerLink,
+        )
+      ) : Text (
+        'Повторная отправка сообщения через $_timeDisplay',
+        style: AppFonts.smsTimer,
+        textAlign: TextAlign.center,
       ),
     );
   }
@@ -166,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
       automaticallyImplyLeading: false,
       leadingWidth: 100,
       leading: FlatButton(
-        onPressed: _onBack,
+        onPressed: _back,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -214,7 +287,7 @@ class _LoginScreenState extends State<LoginScreen> {
             TextSpan(
               text: "Пользовательского соглашения",
               style: AppFonts.userAgreementLink,
-              recognizer: _userAgreementTapRecognizer,
+              recognizer: _userAgreementLinkTapDetector,
             ),
             TextSpan(
               text: ".",
@@ -232,7 +305,8 @@ class _LoginScreenState extends State<LoginScreen> {
       Align(
         alignment: Alignment.center,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(15, 30, 15, 0),
+          // 46 is a magic
+          padding: EdgeInsets.fromLTRB(15, _waitingForCode ? 46 : 30, 15, 0),
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 375),
             child: _form,
@@ -240,7 +314,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     ];
-    if (_phone == null) {
+    if (!_waitingForCode) {
       stackItems.add(Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
@@ -263,3 +337,10 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+
+// TODO: on tap outside hide kb
+// semi-transparent bg behind form
+// auto detect sms
+// phone and code validation
+// on input submit - continue
