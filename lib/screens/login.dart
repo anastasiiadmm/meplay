@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
   KeyboardVisibilityNotification _keyboardVisibility;
   TapGestureRecognizer _userAgreementTapRecognizer;
   int _keyboardVisibilityListenerId;
-  String _phone = '123';
+  String _phone;
   String _code;
 
 
@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _keyboardVisibility = KeyboardVisibilityNotification();
     _keyboardVisibilityListenerId = _keyboardVisibility.addNewListener(
-      onShow: _restoreSystemOverlays
+      onShow: _restoreSystemOverlays,
     );
     _userAgreementTapRecognizer = TapGestureRecognizer();
     _userAgreementTapRecognizer.onTap = _onUserAgreementLinkTap;
@@ -75,6 +75,14 @@ class _LoginScreenState extends State<LoginScreen> {
       _phone = phone;
     });
 
+  }
+
+  void _onBack() {
+    if (_keyboardVisibility.isKeyboardVisible) {
+      FocusScope.of(context).unfocus();
+    } else {
+      Navigator.of(context).pop();
+    }
   }
 
   HexagonWidget tileBuilder(HexGridPoint point) {
@@ -158,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
       automaticallyImplyLeading: false,
       leadingWidth: 100,
       leading: FlatButton(
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: _onBack,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
