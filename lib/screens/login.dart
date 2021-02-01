@@ -27,15 +27,18 @@ class _LoginScreenState extends State<LoginScreen> {
   final lockTile = HexGridPoint(2, 2);
   final _phoneMask = MaskTextInputFormatter(
     mask: '+996 ### ######',
-    filter: { "#": RegExp(r'[0-9]') }
+    filter: { "#": RegExp(r'[0-9]') },
+  );
+  final _codeMask = MaskTextInputFormatter(
+    mask: '# # # # # #',
+    filter: { '#': RegExp(r'[0-9]') },
   );
   KeyboardVisibilityNotification _keyboardVisibility;
   TapGestureRecognizer _userAgreementTapRecognizer;
   int _keyboardVisibilityListenerId;
-  String _phone;
+  String _phone = '123';
   String _code;
 
-  final String _codeHint = 'Введите код подтверждения';
 
   @override
   void initState() {
@@ -64,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Timer(Duration(milliseconds: 1001), SystemChrome.restoreSystemUIOverlays);
   }
 
-  void _phoneSubmit() {
+  void _onContinue() {
     String phone = '';
     // do some request here
     // then
@@ -87,47 +90,63 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget get _form {
+    List<Widget> formElements = [
+      Text(
+        _phone == null
+            ? 'Введите номер телефона'
+            : 'Вам было отправлено смс сообщение с персональным кодом.',
+        style: AppFonts.screenTitle,
+        textAlign: TextAlign.center,
+      ),
+      Padding(
+        child: TextFormField(
+          inputFormatters: [_phone == null ? _phoneMask : _codeMask],
+          keyboardType: TextInputType.phone,
+          style: AppFonts.inputText,
+          textAlign: TextAlign.center,
+          decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(13),
+              hintText: _phone == null
+                  ? '+996 --- ------'
+                  : 'Введите код подтверждения',
+              hintStyle: AppFonts.inputHint,
+              fillColor: Colors.white,
+              filled: true,
+              border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(6)
+              ),
+              errorMaxLines: 1
+          ),
+          validator: (value) {print(value); return value;},
+        ),
+        padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
+      ),
+      SizedBox(
+        width: double.infinity,
+        child: FlatButton(
+          onPressed: _onContinue,
+          color: AppColors.megaPurple,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide.none),
+          padding: EdgeInsets.fromLTRB(0, 14, 0, 14),
+          child: Text('Продолжить', style: AppFonts.formBtn,),
+        ),
+      ),
+    ];
+    if (_phone != null) {
+      formElements.add(Padding(
+        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+        child: Text (
+          'Повторная отправка сообщения через 2:59',
+          style: AppFonts.smsTimer,
+          textAlign: TextAlign.center,
+        ),
+      ));
+    }
     return Form(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Введите номер телефона',
-            style: AppFonts.screenTitle,
-          ),
-          Padding(
-            child: TextFormField(
-              inputFormatters: [_phoneMask],
-              keyboardType: TextInputType.phone,
-              style: AppFonts.inputText,
-              textAlign: TextAlign.center,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(13),
-                hintText: '+996 --- ------',
-                hintStyle: AppFonts.inputHint,
-                fillColor: Colors.white,
-                filled: true,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(6)
-                ),
-                errorMaxLines: 1
-              ),
-              validator: (value) {print(value); return value;},
-            ),
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: FlatButton(
-              onPressed: _phoneSubmit,
-              color: AppColors.megaPurple,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide.none),
-              padding: EdgeInsets.fromLTRB(0, 14, 0, 14),
-              child: Text('Продолжить', style: AppFonts.formBtn,),
-            ),
-          ),
-        ],
+        children: formElements,
       ),
     );
   }
@@ -182,16 +201,16 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             TextSpan(
               text: "Нажимая на кнопку, Вы принимаете условия ",
-              style: AppFonts.loginAgreement,
+              style: AppFonts.userAgreement,
             ),
             TextSpan(
               text: "Пользовательского соглашения",
-              style: AppFonts.loginAgreementLink,
+              style: AppFonts.userAgreementLink,
               recognizer: _userAgreementTapRecognizer,
             ),
             TextSpan(
               text: ".",
-              style: AppFonts.loginAgreement,
+              style: AppFonts.userAgreement,
             ),
           ],
         )
@@ -200,35 +219,38 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> stackItems = [
+      _hexBackground,
+      Align(
+        alignment: Alignment.center,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(15, 30, 15, 0),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 375),
+            child: _form,
+          ),
+        ),
+      ),
+    ];
+    if (_phone == null) {
+      stackItems.add(Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(15, 0, 15, 20),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 375),
+            child: _userAgreement,
+          ),
+        ),
+      ));
+    }
     return Scaffold(
       backgroundColor: AppColors.megaPurple,
       resizeToAvoidBottomInset: false,
       appBar: _appBar,
       extendBodyBehindAppBar: true,
       body: Stack(
-        children: [
-          _hexBackground,
-          Align(
-            alignment: Alignment.center,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(15, 20, 15, 0),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 375),
-                child: _form,
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(15, 0, 15, 20),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 375),
-                child: _userAgreement,
-              ),
-            ),
-          )
-        ],
+        children: stackItems,
       ),
     );
   }

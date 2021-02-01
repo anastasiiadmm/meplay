@@ -57,14 +57,14 @@ class AppFonts {
   static const formBtn = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.w600, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.white);
-  static const loginAgreement = TextStyle(fontFamily: 'SF Pro Text',
+  static const userAgreement = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
       letterSpacing: -0.24, color: AppColors.gray0);
-  static const loginAgreementLink = TextStyle(fontFamily: 'SF Pro Text',
+  static const userAgreementLink = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
       letterSpacing: -0.24, color: AppColors.gray0,
       decoration: TextDecoration.underline);
-  static const smsInfo = TextStyle(fontFamily: 'SF Pro Text',
+  static const smsTimer = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
       letterSpacing: -0.08, color: AppColors.gray10);
   static const inputHint = TextStyle(fontFamily: 'SF Pro Text',
