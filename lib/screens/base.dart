@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:me_play/screens/login.dart';
 import 'home.dart';
 import '../theme.dart';
+import '../models.dart';
 
 
 class BaseScreen extends StatefulWidget {
@@ -23,6 +25,7 @@ class _BaseScreenState extends State<BaseScreen> {
   // used by bottom navbar
   int _currentIndex = 0;
   NavItem _currentItem = NavItem.home;
+  User user;
 
   static const navItems = <NavItem>[
     NavItem.home,
@@ -42,11 +45,32 @@ class _BaseScreenState extends State<BaseScreen> {
     }
   }
 
+  void _login(int index, NavItem item) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => LoginScreen(
+          afterLogin: (User user) {
+            this.user = user;
+            setState(() {
+              _currentIndex = index;
+              _currentItem = item;
+            });
+          },
+        ),
+      ),
+    );
+  }
+
   void _onNavTap(int index) {
-    setState(() {
-      _currentIndex = index;
-      _currentItem = navItems[index];
-    });
+    var item = navItems[index];
+    if(user == null && (item == NavItem.profile || item == NavItem.favorites)) {
+      _login(index, item);
+    } else {
+      setState(() {
+        _currentIndex = index;
+        _currentItem = item;
+      });
+    }
   }
 
   void _onHomeTap(NavItem item) {
