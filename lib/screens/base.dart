@@ -63,7 +63,7 @@ class _BaseScreenState extends State<BaseScreen> {
 
   void _onNavTap(int index) {
     var item = navItems[index];
-    if(user == null && (item == NavItem.profile || item == NavItem.favorites)) {
+    if(user == null && item != NavItem.home) {
       _login(index, item);
     } else {
       setState(() {
@@ -80,37 +80,52 @@ class _BaseScreenState extends State<BaseScreen> {
     });
   }
 
+  Future<bool> _onWillPop() async {
+    if(_currentItem == NavItem.home) {
+      return true;
+    } else {
+      setState(() {
+        _currentItem = NavItem.home;
+        _currentIndex = 0;
+      });
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.megaPurple,
-      extendBody: true,
-      body: _body,
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: AppColors.bottomBar,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        onTap: _onNavTap,
-        currentIndex: _currentIndex ?? 0,
-        items: [
-          BottomNavigationBarItem(
-            icon: AppIcons.home,
-            activeIcon: _currentIndex != null
-                ? AppIcons.homeActive
-                : AppIcons.home,
-            label: 'Главная',
-          ),
-          BottomNavigationBarItem(
-            icon: AppIcons.star,
-            activeIcon: AppIcons.starActive,
-            label: 'Избранное',
-          ),
-          BottomNavigationBarItem(
-            icon: AppIcons.user,
-            activeIcon: AppIcons.userActive,
-            label: 'Профиль',
-          ),
-        ],
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: AppColors.megaPurple,
+        extendBody: true,
+        body: _body,
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: AppColors.bottomBar,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          onTap: _onNavTap,
+          currentIndex: _currentIndex ?? 0,
+          items: [
+            BottomNavigationBarItem(
+              icon: AppIcons.home,
+              activeIcon: _currentIndex != null
+                  ? AppIcons.homeActive
+                  : AppIcons.home,
+              label: 'Главная',
+            ),
+            BottomNavigationBarItem(
+              icon: AppIcons.star,
+              activeIcon: AppIcons.starActive,
+              label: 'Избранное',
+            ),
+            BottomNavigationBarItem(
+              icon: AppIcons.user,
+              activeIcon: AppIcons.userActive,
+              label: 'Профиль',
+            ),
+          ],
+        ),
       ),
     );
   }
