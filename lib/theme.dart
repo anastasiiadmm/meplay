@@ -8,7 +8,17 @@ final rnd = Random();
 
 class AppColors {
   static get emptyTile {
-    return Color.fromRGBO(255, 255, 255, 0.04 + rnd.nextDouble() * 0.36);
+    double rand = rnd.nextDouble();
+    double opacity;
+    if (rand <= 0.1)
+      opacity = 0.04 + rnd.nextDouble() * 0.06;
+    else if (rand <= 0.7)
+      opacity = 0.07 + rnd.nextDouble() * 0.23;
+    else if (rand <= 0.9)
+      opacity = 0.17 + rnd.nextDouble() * 0.23;
+    else
+      opacity = 0.27 + rnd.nextDouble() * 0.13;
+    return Color.fromRGBO(255, 255, 255, opacity);
   }
   static const megaPurple = Color.fromRGBO(88, 33, 122, 1);  // #58217A
   static const megaGreen = Color.fromRGBO(47, 140, 45, 1);  // #2F8C2D
@@ -34,10 +44,35 @@ class AppColors {
 class AppFonts {
   static const homeBtns = TextStyle(fontFamily: 'SF Pro Display',
       fontWeight: FontWeight.bold, letterSpacing: -0.24,
-      fontSize: 15, height: 20/15);
+      fontSize: 15, height: 20/15, color: AppColors.gray70);
   static const logoTitle = TextStyle(fontFamily: 'SF Pro Display',
       fontWeight: FontWeight.w600, fontSize: 22, height: 28/22,
       letterSpacing: 0.35, color: AppColors.megaPurple);
+  static const backBtn = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 17, height: 22/17,
+      letterSpacing: -0.41, color: AppColors.gray0);
+  static const screenTitle = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.w600, fontSize: 17, height: 22/17,
+      letterSpacing: -0.41, color: AppColors.gray0);
+  static const formBtn = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.w600, fontSize: 17, height: 22/17,
+      letterSpacing: -0.41, color: AppColors.white);
+  static const loginAgreement = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
+      letterSpacing: -0.24, color: AppColors.gray0);
+  static const loginAgreementLink = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
+      letterSpacing: -0.24, color: AppColors.gray0,
+      decoration: TextDecoration.underline);
+  static const smsInfo = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
+      letterSpacing: -0.08, color: AppColors.gray10);
+  static const inputHint = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 17, height: 22/17,
+      letterSpacing: -0.41, color: AppColors.gray30);
+  static const inputText = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 17, height: 22/17,
+      letterSpacing: -0.41, color: AppColors.gray70);
 }
 
 
@@ -54,4 +89,5 @@ class AppIcons {
   static final user = SvgPicture.asset('assets/icons/user.svg', width: 28, height: 28,);
   static final userActive = SvgPicture.asset('assets/icons/user_active.svg', width: 28, height: 28,);
   static final profile = SvgPicture.asset('assets/icons/profile.svg', width: 50, height: 50,);
+  static final back = SvgPicture.asset('assets/icons/back.svg', width: 12, height: 21,);
 }
