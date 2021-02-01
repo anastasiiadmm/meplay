@@ -75,16 +75,17 @@ class _LoginScreenState extends State<LoginScreen> {
     filter: { '#': RegExp(r'[0-9]') },
   );
   final _keyboardVisibility = KeyboardVisibilityNotification();
-  final _userAgreementLinkTapDetector = TapGestureRecognizer();
-  final _sendSmsLinkTapDetector = TapGestureRecognizer();
+  final _userAgreementTapDetector = TapGestureRecognizer();
+  final _sendSmsTapDetector = TapGestureRecognizer();
   final _inputController = TextEditingController();
   final _hexBackground = LoginHexBackground();
   int _keyboardVisibilityListenerId;
-  bool _waitingForCode = false;
+  bool _waitingForSms = false;
   String _phone;
   String _code;
-  Timer _codeTimer;
+  Timer _smsTimer;
   int _time = -1;
+  bool _allowContinue = false;
 
   @override
   void initState() {
@@ -92,16 +93,16 @@ class _LoginScreenState extends State<LoginScreen> {
     _keyboardVisibilityListenerId = _keyboardVisibility.addNewListener(
       onShow: _restoreSystemOverlays,
     );
-    _userAgreementLinkTapDetector.onTap = _viewUserAgreement;
-    _sendSmsLinkTapDetector.onTap = _sendSms;
+    _userAgreementTapDetector.onTap = _viewUserAgreement;
+    _sendSmsTapDetector.onTap = _sendSms;
   }
 
   @override
   void dispose() {
     _keyboardVisibility.removeListener(_keyboardVisibilityListenerId);
     _keyboardVisibility.dispose();
-    _userAgreementLinkTapDetector.dispose();
-    _sendSmsLinkTapDetector.dispose();
+    _userAgreementTapDetector.dispose();
+    _sendSmsTapDetector.dispose();
     _inputController.dispose();
     _stopCodeTimer();
     super.dispose();
@@ -116,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _continue() {
-    if (_waitingForCode) {
+    if (_waitingForSms) {
       _code = _inputController.text;
       // TODO: make request here
 
@@ -127,9 +128,10 @@ class _LoginScreenState extends State<LoginScreen> {
         _sendSms();
       }
       _inputController.clear();
+      _inputChanged(_inputController.text);
       FocusScope.of(context).unfocus();
       setState(() {
-        _waitingForCode = true;
+        _waitingForSms = true;
       });
     }
   }
@@ -150,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _startCodeTimer() {
-    _codeTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+    _smsTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
       if (_time < 1) {
         timer.cancel();
       }
@@ -161,22 +163,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _stopCodeTimer() {
-    _codeTimer?.cancel();
+    _smsTimer?.cancel();
   }
 
   void _changePhone() {
     _code = null;
     _inputController.value = TextEditingValue(text: _phone);
     setState(() {
-      _waitingForCode = false;
+      _waitingForSms = false;
     });
+    _inputChanged(_inputController.text);
   }
 
   void _back() {
     if (_keyboardVisibility.isKeyboardVisible) {
       FocusScope.of(context).unfocus();
     } else {
-      if (_waitingForCode) {
+      if (_waitingForSms) {
         _changePhone();
       } else {
         Navigator.of(context).pop();
@@ -185,13 +188,30 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _fieldSubmit(String value) {
-    _continue();
+    if (_allowContinue) {
+      _continue();
+    }
+  }
+
+  bool _inputIsCorrect(String value) {
+    value = value.replaceAll(' ', '');
+    if(_waitingForSms) {
+      return value.length == 6;
+    } else {
+      return value.length == 13;
+    }
+  }
+
+  void _inputChanged(String value) {
+    setState(() {
+      _allowContinue = _inputIsCorrect(value);
+    });
   }
 
   Widget get _form {
     List<Widget> formElements = [
       Text(
-        _waitingForCode
+        _waitingForSms
           ? 'Вам было отправлено смс сообщение с персональным кодом.'
           : 'Введите номер телефона',
         style: AppFonts.screenTitle,
@@ -199,16 +219,17 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       Padding(
         child: TextFormField(
-          inputFormatters: [_waitingForCode ? _codeMask : _phoneMask],
+          inputFormatters: [_waitingForSms ? _codeMask : _phoneMask],
           keyboardType: TextInputType.phone,
           style: AppFonts.inputText,
           textAlign: TextAlign.center,
           controller: _inputController,
           onFieldSubmitted: _fieldSubmit,
+          onChanged: _inputChanged,
           autocorrect: false,
           decoration: InputDecoration(
               contentPadding: EdgeInsets.all(13),
-              hintText: _waitingForCode ? '_ _ _ _ _ _' : '+996 --- ------',
+              hintText: _waitingForSms ? '_ _ _ _ _ _' : '+996 --- ------',
               hintStyle: AppFonts.inputHint,
               fillColor: Colors.white,
               filled: true,
@@ -218,22 +239,28 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               errorMaxLines: 1
           ),
-          validator: (value) {print(value); return value;},
         ),
         padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
       ),
       SizedBox(
         width: double.infinity,
         child: FlatButton(
-          onPressed: _continue,
+          onPressed: _allowContinue ? _continue : null,
           color: AppColors.megaPurple,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide.none),
+          disabledColor: AppColors.disabledPurple,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide.none,
+          ),
           padding: EdgeInsets.fromLTRB(0, 14, 0, 14),
-          child: Text('Продолжить', style: AppFonts.formBtn,),
+          child: Text(
+            'Продолжить',
+            style: _allowContinue ? AppFonts.formBtn : AppFonts.formBtnDisabled,
+          ),
         ),
       ),
     ];
-    if (_waitingForCode) {
+    if (_waitingForSms) {
       formElements.add(_timerString);
     }
     return Form(
@@ -251,7 +278,7 @@ class _LoginScreenState extends State<LoginScreen> {
         textAlign: TextAlign.center,
         text: TextSpan(
           text: 'Повторно отправить сообщение',
-          recognizer: _sendSmsLinkTapDetector,
+          recognizer: _sendSmsTapDetector,
           style: AppFonts.smsTimerLink,
         )
       ) : Text (
@@ -293,7 +320,7 @@ class _LoginScreenState extends State<LoginScreen> {
             TextSpan(
               text: "Пользовательского соглашения",
               style: AppFonts.userAgreementLink,
-              recognizer: _userAgreementLinkTapDetector,
+              recognizer: _userAgreementTapDetector,
             ),
             TextSpan(
               text: ".",
@@ -312,7 +339,7 @@ class _LoginScreenState extends State<LoginScreen> {
         alignment: Alignment.center,
         child: Padding(
           // 46 is a magic
-          padding: EdgeInsets.fromLTRB(15, _waitingForCode ? 46 : 30, 15, 0),
+          padding: EdgeInsets.fromLTRB(15, _waitingForSms ? 46 : 30, 15, 0),
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 375),
             child: _form,
@@ -320,7 +347,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     ];
-    if (!_waitingForCode) {
+    if (!_waitingForSms) {
       stackItems.add(Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
@@ -343,3 +370,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+
+// TODO: on tap outside hide kb
+// semi-transparent bg behind form
+// auto detect sms

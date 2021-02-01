@@ -21,6 +21,7 @@ class AppColors {
     return Color.fromRGBO(255, 255, 255, opacity);
   }
   static const megaPurple = Color.fromRGBO(88, 33, 122, 1);  // #58217A
+  static const disabledPurple = Color.fromRGBO(114, 73, 137, 1);  // #724989
   static const megaGreen = Color.fromRGBO(47, 140, 45, 1);  // #2F8C2D
   static const megaGray = Color.fromRGBO(198, 198, 198, 1);  // #C6C6C6
   static const white = Color.fromRGBO(255, 255, 255, 1);  // #FFFFFF
@@ -31,7 +32,7 @@ class AppColors {
   static const gray0 = Color.fromRGBO(250, 250, 247, 1);  // #FAFAF7
   static const gray5 = Color.fromRGBO(243, 243, 240, 1);  // #F3F3F0
   static const gray10 = Color.fromRGBO(234, 234, 228, 1);  // #EAEAE4
-  static const gray20 = Color.fromRGBO(215, 215, 207, 1);  // #D7D7CF
+    static const gray20 = Color.fromRGBO(215, 215, 207, 1);  // #D7D7CF
   static const gray30 = Color.fromRGBO(191, 191, 182, 1);  // #BFBFB6
   static const gray40 = Color.fromRGBO(162, 162, 153, 1); // #A2A299
   static const gray50 = Color.fromRGBO(126, 126, 118, 1); // #7E7E76
@@ -57,6 +58,9 @@ class AppFonts {
   static const formBtn = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.w600, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.white);
+  static const formBtnDisabled = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.w600, fontSize: 17, height: 22/17,
+      letterSpacing: -0.41, color: AppColors.gray10);
   static const userAgreement = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
       letterSpacing: -0.24, color: AppColors.gray0);
