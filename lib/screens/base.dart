@@ -5,6 +5,7 @@ import 'login.dart';
 import 'splash.dart';
 import '../theme.dart';
 import '../models.dart';
+import '../api_client.dart';
 
 
 class BaseScreen extends StatefulWidget {
@@ -100,12 +101,8 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _loadChannels() async {
-    Timer(Duration(seconds: 5), () {
-      setState(() {
-        _channels = [];
-        _doneLoading();
-      });
-    });
+    _channels = await ApiClient.getChannels();
+    _doneLoading();
   }
 
   void _doneLoading() {
