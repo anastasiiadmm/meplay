@@ -27,8 +27,10 @@ class _BaseScreenState extends State<BaseScreen> {
   // used by bottom navbar
   int _currentIndex;
   NavItem _currentItem = NavItem.home;
-  User user;
   bool _loading = true;
+  User _user;
+  void Function() _splashHide;
+  List<Channel> _channels;
 
   void initState() {
     super.initState();
@@ -58,7 +60,7 @@ class _BaseScreenState extends State<BaseScreen> {
       MaterialPageRoute(
         builder: (BuildContext context) => LoginScreen(
           afterLogin: (User user) {
-            this.user = user;
+            this._user = user;
             setState(() {
               _currentIndex = index;
               _currentItem = item;
@@ -71,7 +73,7 @@ class _BaseScreenState extends State<BaseScreen> {
 
   void _onNavTap(int index) {
     var item = navItems[index];
-    if(user == null && item != NavItem.home) {
+    if(_user == null && item != NavItem.home) {
       _login(index, item);
     } else {
       setState(() {
@@ -98,19 +100,37 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _loadChannels() async {
-    // TODO: load channels
-
-    // imitate loading
     Timer(Duration(seconds: 5), () {
       setState(() {
-        _loading = false;
+        _channels = [];
+        _doneLoading();
       });
+    });
+  }
+
+  void _doneLoading() {
+    if(_channels != null && _splashHide != null) {
+      _splashHide();
+    }
+  }
+
+  void _afterSplashShow(void Function() splashHide) {
+    _splashHide = splashHide;
+    _doneLoading();
+  }
+
+  void _afterSplashHide() {
+    setState(() {
+      _loading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return _loading ? SplashScreen() : WillPopScope(
+    return _loading ? SplashScreen(
+      afterShow: _afterSplashShow,
+      afterHide: _afterSplashHide,
+    ) : WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         backgroundColor: AppColors.megaPurple,
@@ -146,9 +166,3 @@ class _BaseScreenState extends State<BaseScreen> {
     );
   }
 }
-
-// purple screen
-// slow splash fade in
-// loading data
-// showing base behind splash
-// slow splash fade out

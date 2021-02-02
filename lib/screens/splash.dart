@@ -47,57 +47,76 @@ class SplashHexBackground extends StatelessWidget {
 
 
 class SplashScreen extends StatefulWidget {
+  final void Function(void Function() hideCallback) afterShow;
+  final void Function() afterHide;
+
+  SplashScreen({Key key, @required this.afterShow, @required this.afterHide})
+      : super(key: key);
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool _visible = false;
+  double _mainOpacity;
+  double _partsOpacity;
+  Duration _animationDuration = Duration(seconds: 2);
+  final _hexBackground = SplashHexBackground();
+
+  void initState() {
+    super.initState();
+    _mainOpacity = 0;
+    _partsOpacity = 1;
+    Timer.run(show);
+  }
 
   void show() {
     setState(() {
-      _visible = true;
+      _mainOpacity = 1;
     });
+    Timer(_animationDuration, () {widget.afterShow(hide);});
   }
 
-  double get _opacity {
-    if (_visible) {
-      return 1.0;
-    } else {
-      Timer.run(show);
-      return 0.0;
-    }
+  void hide() {
+    setState(() {
+      _partsOpacity = 0;
+    });
+    Timer(_animationDuration, widget.afterHide);
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedOpacity(
-      opacity: _opacity,
-      duration: Duration(seconds: 1),
+      opacity: _mainOpacity,
+      duration: _animationDuration,
       child: Material (
         color: AppColors.megaPurple,
-        child: Stack(
-          children: [
-            SplashHexBackground(),
-            Center(
-              child: HexagonWidget(
-                type: HexagonType.POINTY,
-                width: 242,
-                color: AppColors.gray5,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 8),
-                      child: AppIcons.splash,
-                    ),
-                    Text('MePlay', style: AppFonts.splashTitle,),
-                  ],
+        child: AnimatedOpacity(
+          opacity: _partsOpacity,
+          duration: _animationDuration,
+          child: Stack(
+            children: [
+              _hexBackground,
+              Center(
+                child: HexagonWidget(
+                  type: HexagonType.POINTY,
+                  width: 242,
+                  color: AppColors.gray5,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 0, 0, 8),
+                        child: AppIcons.splash,
+                      ),
+                      Text('MePlay', style: AppFonts.splashTitle,),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
