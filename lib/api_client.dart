@@ -19,9 +19,7 @@ abstract class ApiClient {
     final response = await http.get(url);
     if(response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body)['data'];
-      print(data);
-      // return data.map((e) => Channel.fromJson(e));
-      return <Channel>[];
+      return data.map((item) => Channel.fromJson(item)).toList();
     } else {
       return <Channel>[];
     }

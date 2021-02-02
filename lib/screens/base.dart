@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'home.dart';
 import 'login.dart';
 import 'splash.dart';
+import 'channelList.dart';
 import '../theme.dart';
 import '../models.dart';
 import '../api_client.dart';
@@ -18,9 +19,6 @@ enum NavItem {
   home,
   favorites,
   profile,
-  tv,
-  radio,
-  cinema,
 }
 
 
@@ -46,13 +44,10 @@ class _BaseScreenState extends State<BaseScreen> {
 
   Widget get _body {
     switch(_currentItem) {
-      case NavItem.home: return HomeScreen(onMenuTap: _onHomeTap);
+      case NavItem.home: return HomeScreen();
       case NavItem.favorites: return null;
       case NavItem.profile: return null;
-      case NavItem.tv: return null;
-      case NavItem.radio: return null;
-      case NavItem.cinema: return null;
-      default: return HomeScreen(onMenuTap: _onHomeTap);
+      default: return HomeScreen();
     }
   }
 
@@ -84,13 +79,6 @@ class _BaseScreenState extends State<BaseScreen> {
     }
   }
 
-  void _onHomeTap(NavItem item) {
-    setState(() {
-      _currentIndex = null;
-      _currentItem = item;
-    });
-  }
-
   Future<bool> _onWillPop() async {
     if(_currentItem == NavItem.home) return true;
     setState(() {
@@ -117,9 +105,22 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   void _afterSplashHide() {
-    setState(() {
-      _loading = false;
+    _watchTV();
+    Timer(Duration(milliseconds: 500), (){
+      setState(() {
+        _loading = false;
+      });
     });
+  }
+
+  void _watchTV() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => ChannelListScreen(
+            channels: _channels,
+        ),
+      ),
+    );
   }
 
   @override
@@ -142,9 +143,7 @@ class _BaseScreenState extends State<BaseScreen> {
           items: [
             BottomNavigationBarItem(
               icon: AppIcons.home,
-              activeIcon: _currentIndex != null
-                  ? AppIcons.homeActive
-                  : AppIcons.home,
+              activeIcon: AppIcons.homeActive,
               label: 'Главная',
             ),
             BottomNavigationBarItem(
