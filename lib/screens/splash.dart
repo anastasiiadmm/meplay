@@ -89,11 +89,13 @@ class _SplashScreenState extends State<SplashScreen> {
     return AnimatedOpacity(
       opacity: _mainOpacity,
       duration: _animationDuration,
+      curve: Curves.easeOut,
       child: Material (
         color: AppColors.megaPurple,
         child: AnimatedOpacity(
           opacity: _partsOpacity,
           duration: _animationDuration,
+          curve: Curves.easeIn,
           child: Stack(
             children: [
               _hexBackground,
