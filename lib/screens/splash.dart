@@ -46,6 +46,9 @@ class SplashHexBackground extends StatelessWidget {
 }
 
 
+final _hexBackground = SplashHexBackground();
+
+
 class SplashScreen extends StatefulWidget {
   final void Function(void Function() hideCallback) afterShow;
   final void Function() afterHide;
@@ -57,29 +60,33 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
+
 class _SplashScreenState extends State<SplashScreen> {
-  double _mainOpacity;
-  double _partsOpacity;
-  Duration _animationDuration = Duration(seconds: 2);
-  final _hexBackground = SplashHexBackground();
+  double _opacity;
+  Curve _curve;
+  Duration _animationDuration = Duration(milliseconds: 1500);
+  Duration _waitDuration = Duration(milliseconds: 2000);
 
   void initState() {
     super.initState();
-    _mainOpacity = 0;
-    _partsOpacity = 1;
+    _opacity = 0;
+    _curve = Curves.easeOut;
     Timer.run(show);
   }
 
   void show() {
     setState(() {
-      _mainOpacity = 1;
+      _opacity = 1;
     });
-    Timer(_animationDuration, () {widget.afterShow(hide);});
+    Timer(_animationDuration + _waitDuration, () {
+      widget.afterShow(hide);
+    });
   }
 
   void hide() {
     setState(() {
-      _partsOpacity = 0;
+      _curve = Curves.easeIn;
+      _opacity = 0;
     });
     Timer(_animationDuration, widget.afterHide);
   }
@@ -87,38 +94,33 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return AnimatedOpacity(
-      opacity: _mainOpacity,
+      opacity: _opacity,
       duration: _animationDuration,
-      curve: Curves.easeOut,
-      child: Material (
+      curve: _curve,
+        child: Material (
         color: AppColors.megaPurple,
-        child: AnimatedOpacity(
-          opacity: _partsOpacity,
-          duration: _animationDuration,
-          curve: Curves.easeIn,
-          child: Stack(
-            children: [
-              _hexBackground,
-              Center(
-                child: HexagonWidget(
-                  type: HexagonType.POINTY,
-                  width: 242,
-                  color: AppColors.gray5,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 0, 0, 8),
-                        child: AppIcons.splash,
-                      ),
-                      Text('MePlay', style: AppFonts.splashTitle,),
-                    ],
-                  ),
+        child: Stack(
+          children: [
+            _hexBackground,
+            Center(
+              child: HexagonWidget(
+                type: HexagonType.POINTY,
+                width: 242,
+                color: AppColors.gray5,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 8),
+                      child: AppIcons.splash,
+                    ),
+                    Text('MePlay', style: AppFonts.splashTitle,),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
