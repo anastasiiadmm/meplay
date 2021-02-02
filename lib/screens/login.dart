@@ -21,7 +21,7 @@ class LoginHexBackground extends StatelessWidget {
     Widget content;
     if (point == lockTile) {
       color = AppColors.gray5;
-      content = AppIcons.lock;
+      content = AppIcons.lockBig;
     } else {
       color = AppColors.emptyTile;
     }
