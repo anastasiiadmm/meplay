@@ -7,10 +7,13 @@ import 'channelList.dart';
 
 
 class HomeScreen extends StatefulWidget {
-  final List<Channel> tvChannels;
+  final void Function() watchTv;
+  final void Function() listenToRadio;
+  final void Function() watchCinema;
 
   @override
-  HomeScreen({Key key, this.tvChannels}): super(key: key);
+  HomeScreen({Key key, this.watchTv, this.listenToRadio, this.watchCinema})
+      : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -25,47 +28,21 @@ class _HomeScreenState extends State<HomeScreen> {
   final cinemaButton = HexGridPoint(4, 2);
 
   void _watchTV() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => ChannelListScreen(
-          channels: widget.tvChannels,
-        ),
-      ),
-    );
+    if (widget.watchTv != null) {
+      widget.watchTv();
+    }
   }
 
   void _listenRadio() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text('Радио'),
-        content: Text('Находится в разработке.'),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Закрыть')
-          )
-        ],
-      ),
-    );
+    if (widget.listenToRadio != null) {
+      widget.listenToRadio();
+    }
   }
 
   void _watchCinema() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text('Онлайн-кинотеатр'),
-        content: Text('Находится в разработке.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('Закрыть')
-          )
-        ],
-      ),
-    );
+    if (widget.watchCinema != null) {
+      widget.watchCinema();
+    }
   }
 
   HexagonWidget tileBuilder(HexGridPoint point) {

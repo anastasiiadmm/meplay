@@ -56,10 +56,6 @@ class LoginHexBackground extends StatelessWidget {
 
 
 class LoginScreen extends StatefulWidget {
-  final void Function(User user) afterLogin;
-
-  LoginScreen({Key key, @required this.afterLogin}): super(key: key);
-
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }

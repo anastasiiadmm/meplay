@@ -15,17 +15,14 @@ class BaseScreen extends StatefulWidget {
 }
 
 
-enum NavItem {
-  home,
-  favorites,
-  profile,
-}
+const int _homeIndex = 0;
+const int _favoritesIndex = 1;
+const int _profileIndex = 2;
 
 
 class _BaseScreenState extends State<BaseScreen> {
   // used by bottom navbar
   int _currentIndex;
-  NavItem _currentItem = NavItem.home;
   bool _loading = true;
   User _user;
   void Function() _splashHide;
@@ -36,53 +33,54 @@ class _BaseScreenState extends State<BaseScreen> {
     _loadChannels();
   }
 
-  static const navItems = <NavItem>[
-    NavItem.home,
-    NavItem.favorites,
-    NavItem.profile,
-  ];
-
   Widget get _body {
-    switch(_currentItem) {
-      case NavItem.home: return HomeScreen();
-      case NavItem.favorites: return null;
-      case NavItem.profile: return null;
-      default: return HomeScreen();
+    switch(_currentIndex) {
+      case _homeIndex:
+      default: return HomeScreen(
+        watchTv: _watchTV,
+        listenToRadio: () {_inDevelopment('Радио');},
+        watchCinema: () {_inDevelopment('Кинотеатр');},
+      );
     }
   }
 
-  void _login(int index, NavItem item) {
-    Navigator.of(context).push(
+  Future<void> _login(int index) async {
+    User user = await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (BuildContext context) => LoginScreen(
-          afterLogin: (User user) {
-            this._user = user;
-            setState(() {
-              _currentIndex = index;
-              _currentItem = item;
-            });
-          },
-        ),
+        builder: (BuildContext context) => LoginScreen(),
       ),
     );
+    if (user != null) {
+      setState(() {
+        _user = user;
+      });
+      _onNavTap(index);
+    }
   }
 
   void _onNavTap(int index) {
-    var item = navItems[index];
-    if(_user == null && item != NavItem.home) {
-      _login(index, item);
-    } else {
+    if (index == _homeIndex) {
       setState(() {
         _currentIndex = index;
-        _currentItem = item;
       });
+    } else {
+      if (_user == null) {
+        _login(index);
+      } else {
+        if (index == _favoritesIndex) {
+          _inDevelopment('Избранное');
+        } else if (index == _profileIndex) {
+          _inDevelopment('Профиль');
+        } else {
+          _inDevelopment('Эта страница');
+        }
+      }
     }
   }
 
   Future<bool> _onWillPop() async {
-    if(_currentItem == NavItem.home) return true;
+    if(_currentIndex == _homeIndex) return true;
     setState(() {
-      _currentItem = NavItem.home;
       _currentIndex = 0;
     });
     return false;
@@ -113,14 +111,34 @@ class _BaseScreenState extends State<BaseScreen> {
     });
   }
 
-  void _watchTV() {
-    Navigator.of(context).push(
+  void _inDevelopment(String title) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(title),
+        content: Text('Находится в разработке.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Закрыть')
+          )
+        ],
+      ),
+    );
+  }
+
+  Future<void> _watchTV() async {
+    int index = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => ChannelListScreen(
-            channels: _channels,
+          channels: _channels,
         ),
       ),
     );
+    if (index != null) {
+      _onNavTap(index);
+    }
   }
 
   @override
