@@ -26,6 +26,7 @@ class AppColors {
   static const megaGray = Color.fromRGBO(198, 198, 198, 1);  // #C6C6C6
   static const white = Color.fromRGBO(255, 255, 255, 1);  // #FFFFFF
   static const black = Color.fromRGBO(0, 0, 0, 1);  // #000000
+  static const transparent = Color.fromRGBO(0, 0, 0, 0);  // #000000
   static const bottomBar = Color.fromRGBO(247, 247, 247, 0.72);  // #F7F7F7 72%
   static const yellow = Color.fromRGBO(255, 204, 0, 1);  // #FFCC00
   static const accentPink = Color.fromRGBO(255, 45, 85, 1);  // #FF2D55
@@ -74,6 +75,12 @@ class AppFonts {
   static const smsTimer = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
       letterSpacing: -0.08, color: AppColors.gray10);
+  static const channelName = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
+      letterSpacing: -0.08, color: AppColors.black);
+  static const programName = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 11, height: 13/11,
+      letterSpacing: 0.07, color: AppColors.gray60);
   static const smsTimerLink = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
       letterSpacing: -0.08, color: AppColors.gray10,
@@ -89,6 +96,7 @@ class AppFonts {
 
 class AppIcons {
   static final logo = SvgPicture.asset('assets/icons/logo.svg',width: 63, height: 72,);
+  static final channelPlaceholder = SvgPicture.asset('assets/icons/logo.svg', width: 61.25, height: 70,);
   static final splash = SvgPicture.asset('assets/icons/logo.svg',width: 81, height: 93,);
   static final tv = SvgPicture.asset('assets/icons/tv.svg', width: 64, height: 64,);
   static final radio = SvgPicture.asset('assets/icons/radio.svg', width: 64, height: 64,);

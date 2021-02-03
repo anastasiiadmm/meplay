@@ -21,6 +21,8 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   HexGridSize _gridSize;
   List<Channel> _channels;
   Iterator _iterator;
+  final int _borderRows = 2;
+  final int _borderCols = 1;
 
   @override
   void initState() {
@@ -33,7 +35,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   void _calcGridSize() {
     int rows = max(sqrt(_channels.length).floor(), 5);
     int cols = max((_channels.length / rows).ceil(), 4);
-    _gridSize = HexGridSize(rows + 2, cols + 1);
+    _gridSize = HexGridSize(rows + _borderRows * 2, cols + _borderCols * 2 + 1);
   }
 
   void _onNavTap(int index) {
@@ -67,30 +69,55 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   HexagonWidget tileBuilder(HexGridPoint point) {
     Color color;
     Widget content;
-    if(point.row == 0
-        || point.row == _gridSize.rows - 1
-        || point.row % 2 == 0 && point.col == 0
-        || point.row % 2 != 0 && point.col == _gridSize.cols - 1
-        || !_iterator.moveNext()){
+    if(point.row < _borderRows
+        || point.row > _gridSize.rows - 1 - _borderRows
+        || point.row % 2 == 0 && (
+            point.col < _borderCols + 1
+            || point.col > _gridSize.cols - 1 - _borderCols
+        )
+        || point.row % 2 != 0 && (
+            point.col < _borderCols
+            || point.col > _gridSize.cols - 2 - _borderCols
+        )
+        || !_iterator.moveNext()) {
       color = AppColors.emptyTile;
     } else {
-      color = AppColors.white;
+      color = AppColors.gray5;
       Channel channel = _iterator.current;
+      List<Widget> children = [
+        Container(
+          height: 71,
+          alignment: Alignment.topCenter,
+          child: channel.logo == null || channel.logo.isEmpty
+              ? Padding(padding: EdgeInsets.fromLTRB(12.5, 0, 0, 0), child: AppIcons.channelPlaceholder)
+              : Image.network(channel.logo),
+        ),
+        Padding (
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          child: Text(
+            '${channel.number}. ${channel.name}',
+            style: AppFonts.channelName,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Padding (
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          child: Text(
+            '', // TODO: add program display
+            style: AppFonts.programName,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ];
+      if (channel.locked) {
+        children.add(AppIcons.lockSmall);
+      }
       content = GestureDetector(
         onTap: () {print(channel.number);},
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              '${channel.number}',
-              style: AppFonts.inputHint,
-            ),
-            Text(
-              channel.name,
-              textAlign: TextAlign.center,
-            ),
-          ],
+          children: children,
         ),
       );
     }
@@ -103,13 +130,11 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
 
     return ClipRect(
       child: OverflowBox (
-        maxWidth: MediaQuery.of(context).size.width + 160,
-        maxHeight: MediaQuery.of(context).size.height + 130,
+        maxWidth: MediaQuery.of(context).size.width + 508,
+        maxHeight: MediaQuery.of(context).size.height + 455,
         child: InteractiveViewer(
-          minScale: 1,
-          maxScale: 1,
-          scaleEnabled: false,
           constrained: false,
+          minScale: 1,
           child: HexagonOffsetGrid.oddPointy(
             columns: _gridSize.cols,
             rows: _gridSize.rows,
