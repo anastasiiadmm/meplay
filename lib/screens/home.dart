@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import '../models.dart';
-import '../theme.dart';
 import '../hexagon/hexagon_widget.dart';
 import '../hexagon/grid/hexagon_offset_grid.dart';
-import 'channelList.dart';
+import '../theme.dart';
 
 
 class HomeScreen extends StatefulWidget {
