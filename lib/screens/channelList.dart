@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../hexagon/hexagon_widget.dart';
+import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../models.dart';
 import '../theme.dart';
 
@@ -42,8 +44,34 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     );
   }
 
-  Widget get _body {
+  HexagonWidget tileBuilder(HexGridPoint point) {
+    Color color;
+    Widget content;
+    color = AppColors.emptyTile;
+    return HexagonWidget.template(color: color, child: content);
+  }
 
+  Widget get _body {
+    HexGridSize gridSize = HexGridSize(7, 6);
+
+    return ClipRect(
+      child: InteractiveViewer(
+        minScale: 1,
+        maxScale: 1,
+        scaleEnabled: false,
+        constrained: false,
+        child: HexagonOffsetGrid.oddPointy(
+          columns: gridSize.cols,
+          rows: gridSize.rows,
+          symmetrical: true,
+          color: Colors.transparent,
+          hexagonPadding: 8,
+          hexagonBorderRadius: 15,
+          hexagonWidth: 174,
+          buildHexagon: tileBuilder,
+        ),
+      ),
+    );
   }
 
   Widget get _appBar {
