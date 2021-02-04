@@ -1,7 +1,8 @@
 import 'dart:math';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 import '../hexagon/hexagon_widget.dart';
 import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../models.dart';
@@ -26,6 +27,9 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   final int _borderRows = 2;
   final int _borderCols = 1;
   bool _search = false;
+  final _keyboardVisibility = KeyboardVisibilityNotification();
+  int _keyboardVisibilityListenerId;
+  final _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -33,6 +37,21 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     _channels = widget.channels..sort(
       (ch1, ch2) => ch1.number.compareTo(ch2.number)
     );
+    _keyboardVisibilityListenerId = _keyboardVisibility.addNewListener(
+      onShow: _restoreSystemOverlays,
+    );
+  }
+
+  @override
+  void dispose() {
+    _keyboardVisibility.removeListener(_keyboardVisibilityListenerId);
+    _keyboardVisibility.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _restoreSystemOverlays() {
+    Timer(Duration(milliseconds: 1001), SystemChrome.restoreSystemUIOverlays);
   }
 
   void _calcGridSize() {
@@ -141,7 +160,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     return ClipRect(
       child: OverflowBox (
         maxWidth: MediaQuery.of(context).size.width + 508,
-        maxHeight: MediaQuery.of(context).size.height + 455,
+        maxHeight: MediaQuery.of(context).size.height + (_search ? 416 : 508),
         child: InteractiveViewer(
           constrained: false,
           minScale: 1,
@@ -176,6 +195,25 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     else _openSearch();
   }
 
+  void _filterChannels(String value) {
+    List<Channel> filteredChannels;
+    if (value.isEmpty) {
+      filteredChannels = widget.channels;
+    } else {
+      filteredChannels = widget.channels.where(
+        (channel) => channel.name.toLowerCase().contains(value.toLowerCase())
+      ).toList();
+    }
+    setState(() {
+      _channels = filteredChannels;
+    });
+  }
+
+  void _searchSubmit() {
+    FocusScope.of(context).unfocus();
+    _filterChannels(_searchController.text);
+  }
+
   Widget get _appBar {
     return AppBar(
       backgroundColor: AppColors.megaPurple,
@@ -193,33 +231,47 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
           icon: AppIcons.search,
         ),
       ],
-      bottom: PreferredSize(
+      bottom: _search ? PreferredSize(
         preferredSize: Size(double.infinity, 46),
         child: Container(
           padding: EdgeInsets.fromLTRB(15, 0, 15, 10),
           height: 46,
           child:Form(
-            child: TextFormField(
-              keyboardType: TextInputType.text,
-              style: AppFonts.searchInputText,
-              textAlign: TextAlign.center,
-              textAlignVertical: TextAlignVertical.center,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 32),
-                hintText: 'Введите название канала',
-                hintStyle: AppFonts.searchInputHint,
-                fillColor: AppColors.searchInputBg,
-                filled: true,
-                border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(10)
+            child: Stack(
+              children: [
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  style: AppFonts.searchInputText,
+                  textAlign: TextAlign.center,
+                  textAlignVertical: TextAlignVertical.center,
+                  controller: _searchController,
+                  onFieldSubmitted: _filterChannels,
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 32),
+                    hintText: 'Введите название канала',
+                    hintStyle: AppFonts.searchInputHint,
+                    fillColor: AppColors.searchInputBg,
+                    filled: true,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(10)
+                    ),
+                    errorMaxLines: 1
+                  ),
                 ),
-                errorMaxLines: 1
-              ),
+                IconButton(
+                  icon: AppIcons.searchInput,
+                  onPressed: _searchSubmit,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                  constraints: BoxConstraints(),
+                ),
+                // TODO: add clear icon
+              ]
             ),
           ),
         ),
-      ) ,
+      ) : null,
     );
   }
 
@@ -246,6 +298,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       child: Scaffold(
         backgroundColor: AppColors.megaPurple,
         extendBody: true,
+        extendBodyBehindAppBar: true,
         appBar: _appBar,
         body: _body,
         bottomNavigationBar: _bottomBar,
@@ -253,3 +306,5 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     );
   }
 }
+
+// TODO: анимировать открытие и закрытие поиска (изменение высоты).

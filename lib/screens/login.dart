@@ -6,9 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../theme.dart';
 import '../hexagon/hexagon_widget.dart';
 import '../hexagon/grid/hexagon_offset_grid.dart';
+import '../theme.dart';
 import '../models.dart';
 
 
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
     filter: { "#": RegExp(r'[0-9]') },
   );
   final _codeMask = MaskTextInputFormatter(
-    mask: '# # # # # #',
+    mask: '# # # #',
     filter: { '#': RegExp(r'[0-9]') },
   );
   final _keyboardVisibility = KeyboardVisibilityNotification();
@@ -125,7 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       _inputController.clear();
       _inputChanged(_inputController.text);
-      FocusScope.of(context).unfocus();
       setState(() {
         _waitingForSms = true;
       });
@@ -171,14 +170,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _back() {
-    if (_keyboardVisibility.isKeyboardVisible) {
-      FocusScope.of(context).unfocus();
+    if (_waitingForSms) {
+      _changePhone();
     } else {
-      if (_waitingForSms) {
-        _changePhone();
-      } else {
-        Navigator.of(context).pop();
-      }
+      Navigator.of(context).pop();
     }
   }
 
@@ -191,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _inputIsCorrect(String value) {
     value = value.replaceAll(' ', '');
     if(_waitingForSms) {
-      return value.length == 6;
+      return value.length == 4;
     } else {
       return value.length == 13;
     }
@@ -222,9 +217,10 @@ class _LoginScreenState extends State<LoginScreen> {
           onFieldSubmitted: _fieldSubmit,
           onChanged: _inputChanged,
           autocorrect: false,
+          textInputAction: TextInputAction.send,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(13),
-            hintText: _waitingForSms ? '_ _ _ _ _ _' : '+996 --- ------',
+            hintText: _waitingForSms ? '_ _ _ _' : '+996 --- ------',
             hintStyle: AppFonts.loginInputHint,
             fillColor: AppColors.white,
             filled: true,
