@@ -107,7 +107,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       elevation = 0;
     } else {
       color = AppColors.gray5;
-      elevation = 3.0;
+      elevation = 2.0;
       Channel channel = _iterator.current;
       List<Widget> children = [
         Container(

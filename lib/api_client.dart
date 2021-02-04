@@ -27,8 +27,11 @@ class ApiException implements Exception {
 
 
 class ApiClient {
-  static Future<List<Channel>> getChannels() async {
-    final url = '$BASE_API_URL/stalker_portal/meplay/tv-channels';
+  static Future<List<Channel>> getChannels([User user]) async {
+    String url = '$BASE_API_URL/stalker_portal/meplay/tv-channels';
+    if(user != null) {
+      url += '?msisdn=${user.phone}';
+    }
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -70,7 +73,7 @@ class ApiClient {
       if (response.statusCode == 200) {
         Map<String, dynamic> responseBody = jsonDecode(response.body);
         if (responseBody['id'] != null) {
-          return User(id: responseBody['id']);
+          return User(id: responseBody['id'], phone: phone, password: password);
         } else if (responseBody['error'] == 'Incorrect password') {
           throw ApiException('Неверный пароль');
         } else if (responseBody['error'] == 'User not found') {

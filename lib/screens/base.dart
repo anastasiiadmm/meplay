@@ -30,7 +30,7 @@ class _BaseScreenState extends State<BaseScreen> {
 
   void initState() {
     super.initState();
-    _loadChannels();
+    _initData();
   }
 
   Widget get _body {
@@ -51,9 +51,8 @@ class _BaseScreenState extends State<BaseScreen> {
       ),
     );
     if (user != null) {
-      setState(() {
-        _user = user;
-      });
+      _user = user;
+      await _reloadChannels();
       _onNavTap(index);
     }
   }
@@ -86,8 +85,21 @@ class _BaseScreenState extends State<BaseScreen> {
     return false;
   }
 
-  Future<void> _loadChannels() async {
-    _channels = await ApiClient.getChannels();
+  Future<void> _reloadChannels() async {
+    try {
+      _channels = await ApiClient.getChannels(_user);
+    } on ApiException {
+      _channels = <Channel>[];
+    }
+  }
+
+  Future<void> _restoreUser() async {
+    // TODO: try to restore users phone and password from persistence, then authenticate him
+  }
+
+  Future<void> _initData() async {
+    await _restoreUser();
+    await _reloadChannels();
     _doneLoading();
   }
 

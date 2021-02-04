@@ -137,8 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     try {
       User user = await ApiClient.auth(_phone, _code);
-      user.phone = _phone;
-      user.password = _code;
+      await _storeUser();
       Navigator.of(context).pop<User>(user);
     } on ApiException catch(e) {
       setState(() {
@@ -146,6 +145,11 @@ class _LoginScreenState extends State<LoginScreen> {
         _loading = false;
       });
     }
+  }
+
+  Future<void> _storeUser() async {
+    // TODO: persist user's phone and password here for future use
+    // https://flutter.dev/docs/cookbook/persistence/key-value
   }
 
   Future<void> _sendSms() async {
@@ -438,4 +442,5 @@ class _LoginScreenState extends State<LoginScreen> {
 // TODO: on tap outside hide kb
 // semi-transparent bg behind form
 // auto detect sms
-// persist user and load on base.
+// display loading circle,
+// persist user in base.
