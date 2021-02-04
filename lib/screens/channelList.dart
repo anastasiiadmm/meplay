@@ -9,8 +9,9 @@ import '../theme.dart';
 
 class ChannelListScreen extends StatefulWidget {
   final List<Channel> channels;
+  final String title;
 
-  ChannelListScreen({Key key, this.channels}): super();
+  ChannelListScreen({Key key, this.channels, this.title}): super();
 
   @override
   _ChannelListScreenState createState() => _ChannelListScreenState();
@@ -23,6 +24,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   Iterator _iterator;
   final int _borderRows = 2;
   final int _borderCols = 1;
+  bool _search = false;
 
   @override
   void initState() {
@@ -69,6 +71,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   HexagonWidget tileBuilder(HexGridPoint point) {
     Color color;
     Widget content;
+    double elevation;
     if(point.row < _borderRows
         || point.row > _gridSize.rows - 1 - _borderRows
         || point.row % 2 == 0 && (
@@ -81,8 +84,10 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
         )
         || !_iterator.moveNext()) {
       color = AppColors.emptyTile;
+      elevation = 0;
     } else {
       color = AppColors.gray5;
+      elevation = 3.0;
       Channel channel = _iterator.current;
       List<Widget> children = [
         Container(
@@ -121,7 +126,11 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
         ),
       );
     }
-    return HexagonWidget.template(color: color, child: content,);
+    return HexagonWidget.template(
+      color: color,
+      child: content,
+      elevation: elevation,
+    );
   }
 
   Widget get _body {
@@ -138,7 +147,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
           child: HexagonOffsetGrid.oddPointy(
             columns: _gridSize.cols,
             rows: _gridSize.rows,
-            color: Colors.transparent,
+            color: AppColors.transparent,
             hexagonPadding: 8,
             hexagonBorderRadius: 15,
             hexagonWidth: 174,
@@ -149,18 +158,71 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     );
   }
 
-  Widget get _appBar {
+  void _openSearch() {
+    setState(() {
+      _search = true;
+    });
+  }
 
+  void _hideSearch() {
+    setState(() {
+      _search = false;
+    });
+  }
+
+  void _toggleSearch() {
+    if(_search) _hideSearch();
+    else _openSearch();
+  }
+
+  Widget get _appBar {
+    return AppBar(
+      backgroundColor: AppColors.megaPurple,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      leadingWidth: 100,
+      leading: IconButton(
+        onPressed: _back,
+        icon: AppIcons.back,
+      ),
+      title: Text(_search ? 'Поиск' : widget.title, style: AppFonts.screenTitle),
+      centerTitle: true,
+      actions: [
+        IconButton(
+          onPressed: _toggleSearch,
+          icon: AppIcons.search,
+        ),
+      ],
+    );
+  }
+
+  void _back() {
+    if (_search) {
+      _hideSearch();
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<bool> _willPop() async {
+    if (_search) {
+      _hideSearch();
+      return false;
+    }
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.megaPurple,
-      extendBody: true,
-      appBar: _appBar,
-      body: _body,
-      bottomNavigationBar: _bottomBar,
+    return WillPopScope(
+      onWillPop: _willPop,
+      child: Scaffold(
+        backgroundColor: AppColors.megaPurple,
+        extendBody: true,
+        appBar: _appBar,
+        body: _body,
+        bottomNavigationBar: _bottomBar,
+      ),
     );
   }
 }

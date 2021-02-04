@@ -33,7 +33,7 @@ class AppColors {
   static const gray0 = Color.fromRGBO(250, 250, 247, 1);  // #FAFAF7
   static const gray5 = Color.fromRGBO(243, 243, 240, 1);  // #F3F3F0
   static const gray10 = Color.fromRGBO(234, 234, 228, 1);  // #EAEAE4
-    static const gray20 = Color.fromRGBO(215, 215, 207, 1);  // #D7D7CF
+  static const gray20 = Color.fromRGBO(215, 215, 207, 1);  // #D7D7CF
   static const gray30 = Color.fromRGBO(191, 191, 182, 1);  // #BFBFB6
   static const gray40 = Color.fromRGBO(162, 162, 153, 1); // #A2A299
   static const gray50 = Color.fromRGBO(126, 126, 118, 1); // #7E7E76
@@ -111,4 +111,6 @@ class AppIcons {
   static final userActive = SvgPicture.asset('assets/icons/user_active.svg', width: 28, height: 28,);
   static final profile = SvgPicture.asset('assets/icons/profile.svg', width: 50, height: 50,);
   static final back = SvgPicture.asset('assets/icons/back.svg', width: 12, height: 21,);
+  static final search = SvgPicture.asset('assets/icons/search.svg', width: 28, height: 28,);
+  static final searchInput = SvgPicture.asset('assets/icons/search_input.svg', width: 16, height: 16,);
 }

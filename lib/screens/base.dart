@@ -133,6 +133,7 @@ class _BaseScreenState extends State<BaseScreen> {
       MaterialPageRoute(
         builder: (BuildContext context) => ChannelListScreen(
           channels: _channels,
+          title: 'ТВ Каналы',
         ),
       ),
     );
