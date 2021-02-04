@@ -40,6 +40,7 @@ class AppColors {
   static const gray60 = Color.fromRGBO(83, 83, 78, 1); // #53534E
   static const gray70 = Color.fromRGBO(38, 38, 35, 1); // #262623
   static const gray80 = Color.fromRGBO(26, 25, 23, 1); // #1A1917
+  static const searchInputBg = Color.fromRGBO(26, 25, 23, 0.48); // #1A1917 48%
 }
 
 
@@ -85,12 +86,18 @@ class AppFonts {
       fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
       letterSpacing: -0.08, color: AppColors.gray10,
       decoration: TextDecoration.underline);
-  static const inputHint = TextStyle(fontFamily: 'SF Pro Text',
+  static const loginInputHint = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.gray30);
-  static const inputText = TextStyle(fontFamily: 'SF Pro Text',
+  static const loginInputText = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.gray70);
+  static const searchInputHint = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
+      letterSpacing: -0.24, color: AppColors.gray50);
+  static const searchInputText = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
+      letterSpacing: -0.24, color: AppColors.gray10);
 }
 
 

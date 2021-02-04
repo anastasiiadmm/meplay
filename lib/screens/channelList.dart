@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../hexagon/hexagon_widget.dart';
 import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../models.dart';
@@ -192,6 +193,33 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
           icon: AppIcons.search,
         ),
       ],
+      bottom: PreferredSize(
+        preferredSize: Size(double.infinity, 46),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(15, 0, 15, 10),
+          height: 46,
+          child:Form(
+            child: TextFormField(
+              keyboardType: TextInputType.text,
+              style: AppFonts.searchInputText,
+              textAlign: TextAlign.center,
+              textAlignVertical: TextAlignVertical.center,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 32),
+                hintText: 'Введите название канала',
+                hintStyle: AppFonts.searchInputHint,
+                fillColor: AppColors.searchInputBg,
+                filled: true,
+                border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(10)
+                ),
+                errorMaxLines: 1
+              ),
+            ),
+          ),
+        ),
+      ) ,
     );
   }
 

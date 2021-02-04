@@ -216,23 +216,23 @@ class _LoginScreenState extends State<LoginScreen> {
         child: TextFormField(
           inputFormatters: [_waitingForSms ? _codeMask : _phoneMask],
           keyboardType: TextInputType.phone,
-          style: AppFonts.inputText,
+          style: AppFonts.loginInputText,
           textAlign: TextAlign.center,
           controller: _inputController,
           onFieldSubmitted: _fieldSubmit,
           onChanged: _inputChanged,
           autocorrect: false,
           decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(13),
-              hintText: _waitingForSms ? '_ _ _ _ _ _' : '+996 --- ------',
-              hintStyle: AppFonts.inputHint,
-              fillColor: Colors.white,
-              filled: true,
-              border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(6)
-              ),
-              errorMaxLines: 1
+            contentPadding: EdgeInsets.all(13),
+            hintText: _waitingForSms ? '_ _ _ _ _ _' : '+996 --- ------',
+            hintStyle: AppFonts.loginInputHint,
+            fillColor: AppColors.white,
+            filled: true,
+            border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(6)
+            ),
+            errorMaxLines: 1
           ),
         ),
         padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
