@@ -180,7 +180,6 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       backgroundColor: AppColors.megaPurple,
       elevation: 0,
       automaticallyImplyLeading: false,
-      leadingWidth: 100,
       leading: IconButton(
         onPressed: _back,
         icon: AppIcons.back,

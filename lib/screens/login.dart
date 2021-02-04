@@ -289,7 +289,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: AppColors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
-      leadingWidth: 100,
+      leadingWidth: double.infinity,
       leading: FlatButton(
         onPressed: _back,
         child: Row(
