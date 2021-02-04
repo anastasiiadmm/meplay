@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:device_info/device_info.dart';
 import 'package:flutter/services.dart';
@@ -13,23 +14,79 @@ const BASE_API_URL = '$BASE_URL:488';
 const BASE_VIDEO_URL = '$BASE_URL:6688';
 
 
-abstract class ApiClient {
+class ApiException implements Exception {
+  String message;
+
+  ApiException([this.message]): super();
+
+  @override
+  String toString() {
+    return message ?? 'API Error';
+  }
+}
+
+
+class ApiClient {
   static Future<List<Channel>> getChannels() async {
     final url = '$BASE_API_URL/stalker_portal/meplay/tv-channels';
-    final response = await http.get(url);
-    if(response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body)['data'];
-      return data.map((item) => Channel.fromJson(item)).toList();
-    } else {
-      return <Channel>[];
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body)['data'];
+        return data.map((item) => Channel.fromJson(item)).toList();
+      } else {
+        throw ApiException('Ошибка при выполнении запроса');
+      }
+    } on SocketException {
+      throw ApiException('Нет подключения к интернету');
     }
   }
 
-  static Future<void> requestPassword(String username) async {
-
+  static Future<void> requestPassword(String phone) async {
+    final url = '$BASE_API_URL/stalker_portal/meplay/pin?msisdn=$phone';
+    try {
+      final response = await http.get(url);
+      if(response.statusCode == 200) {
+        String status = jsonDecode(response.body)['status'];
+        if (status != 'ok') {
+          throw ApiException('Невозможно выслать код на указанный номер');
+        }
+      } else {
+        throw ApiException('Ошибка при выполнении запроса');
+      }
+    } on SocketException {
+      throw ApiException('Нет подключения к интернету');
+    }
   }
 
-  static Future<User> authenticate(String username, String password) async {
+  static Future<User> auth(String phone, String password) async {
+    final url = '$BASE_API_URL/stalker_portal/meplay/auth';
+    final body = {
+      'username': phone,
+      'password': password
+    };
+    try {
+      final response = await http.post(url, body: body);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseBody = jsonDecode(response.body);
+        if (responseBody['id'] != null) {
+          return User(id: responseBody['id']);
+        } else if (responseBody['error'] == 'Incorrect password') {
+          throw ApiException('Неверный пароль');
+        } else if (responseBody['error'] == 'User not found') {
+          throw ApiException('Пользователь не найден');
+        } else {
+          throw ApiException('Неизвестная ошибка');
+        }
+      } else {
+        throw ApiException('Ошибка при выполнении запроса');
+      }
+    } on SocketException {
+      throw ApiException('Нет подключения к интернету');
+    }
+  }
+
+  static Future<User> authOld(String username, String password) async {
     final url = '$BASE_API_URL/stalker_portal/auth/token';
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     var deviceData = await _getDeviceData();

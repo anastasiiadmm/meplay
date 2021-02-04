@@ -10,6 +10,7 @@ import '../hexagon/hexagon_widget.dart';
 import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../theme.dart';
 import '../models.dart';
+import '../api_client.dart';
 
 
 class LoginHexBackground extends StatelessWidget {
@@ -78,10 +79,13 @@ class _LoginScreenState extends State<LoginScreen> {
   int _keyboardVisibilityListenerId;
   bool _waitingForSms = false;
   String _phone;
+  TextEditingValue _phoneValue;
   String _code;
   Timer _smsTimer;
   int _time = -1;
   bool _allowContinue = false;
+  bool _loading = false;
+  String _error;
 
   @override
   void initState() {
@@ -114,30 +118,67 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _continue() {
     if (_waitingForSms) {
-      _code = _inputController.text;
-      // TODO: make request here
-
-      Navigator.of(context).pop();
+      _code = _inputController.text.replaceAll(' ', '');
+      _authenticate();
     } else {
-      _phone = _inputController.text;
       if (_time < 0) {
+        _phoneValue = _inputController.value;
+        _phone = _inputController.text.replaceAll(' ', '').replaceAll('+', '');
         _sendSms();
+      } else {
+        _enterCode();
       }
-      _inputController.clear();
-      _inputChanged(_inputController.text);
+    }
+  }
+
+  Future<void> _authenticate() async {
+    setState(() {
+      _loading = true;
+    });
+    try {
+      User user = await ApiClient.auth(_phone, _code);
+      user.phone = _phone;
+      user.password = _code;
+      Navigator.of(context).pop<User>(user);
+    } on ApiException catch(e) {
       setState(() {
-        _waitingForSms = true;
+        _error = e.message;
+        _loading = false;
       });
     }
   }
 
-  void _sendSms() {
-    // TODO: make request here
-
+  Future<void> _sendSms() async {
     setState(() {
-      _time = 180;
+      _loading = true;
     });
-    _startCodeTimer();
+    try {
+      await ApiClient.requestPassword(_phone);
+      setState(() {
+        _time = 180;
+        _error = null;
+        _loading = false;
+        _waitingForSms = true;
+        _allowContinue = false;
+      });
+      _startCodeTimer();
+      _inputController.clear();
+    } on ApiException catch(e) {
+      setState(() {
+        _error = e.message;
+        _loading = false;
+      });
+    }
+  }
+
+  void _enterCode() {
+    setState(() {
+      _error = null;
+      _loading = false;
+      _waitingForSms = true;
+      _allowContinue = false;
+    });
+    _inputController.clear();
   }
 
   String get _timeDisplay {
@@ -162,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _changePhone() {
-    _inputController.value = TextEditingValue(text: _phone);
+    _inputController.value = _phoneValue;
     setState(() {
       _waitingForSms = false;
     });
@@ -226,13 +267,33 @@ class _LoginScreenState extends State<LoginScreen> {
             filled: true,
             border: OutlineInputBorder(
                 borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(6)
+                borderRadius: BorderRadius.circular(6),
             ),
             errorMaxLines: 1
           ),
         ),
         padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
       ),
+    ];
+    if (_error != null) {
+      formElements.add(
+        Container(
+          margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            color: AppColors.transparentDark,
+          ),
+          child: Text(
+            _error,
+            style: AppFonts.loginError,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+          )
+        ),
+      );
+    }
+    formElements.add(
       SizedBox(
         width: double.infinity,
         child: FlatButton(
@@ -250,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-    ];
+    );
     if (_waitingForSms) {
       formElements.add(_timerString);
     }
@@ -377,3 +438,4 @@ class _LoginScreenState extends State<LoginScreen> {
 // TODO: on tap outside hide kb
 // semi-transparent bg behind form
 // auto detect sms
+// persist user and load on base.

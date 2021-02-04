@@ -26,7 +26,9 @@ class User {
   String refreshToken;
   int id;
 
-  User({this.token, this.refreshToken, this.id});
+  User({this.phone, this.password, this.token, this.refreshToken, this.id});
 
-  User.fromJson(Map<String, dynamic> data);
+  User.fromJson(Map<String, dynamic> data) {
+    this.id = data['id'];
+  }
 }

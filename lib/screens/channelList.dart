@@ -251,7 +251,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
                     contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 32),
                     hintText: 'Введите название канала',
                     hintStyle: AppFonts.searchInputHint,
-                    fillColor: AppColors.searchInputBg,
+                    fillColor: AppColors.transparentDark,
                     filled: true,
                     border: OutlineInputBorder(
                         borderSide: BorderSide.none,
