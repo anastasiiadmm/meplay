@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
               columns: gridSize.cols,
               rows: gridSize.rows,
               symmetrical: true,
-              color: Colors.transparent,
+              color: AppColors.transparent,
               hexagonPadding: 8,
               hexagonBorderRadius: 15,
               hexagonWidth: 174,

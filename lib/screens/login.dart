@@ -41,7 +41,7 @@ class LoginHexBackground extends StatelessWidget {
               columns: gridSize.cols,
               rows: gridSize.rows,
               symmetrical: true,
-              color: Colors.transparent,
+              color: AppColors.transparent,
               hexagonPadding: 8,
               hexagonBorderRadius: 15,
               hexagonWidth: 174,
@@ -286,7 +286,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget get _appBar {
     return AppBar(
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
       leadingWidth: 100,

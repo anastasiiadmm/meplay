@@ -18,7 +18,7 @@ class MePlay extends StatelessWidget {
     ]);
     // Should be:
     // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
-    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(statusBarColor: AppColors.transparent));
     // but due to https://github.com/flutter/flutter/issues/62412
     // and https://github.com/flutter/flutter/issues/40974
     // and https://github.com/flutter/flutter/issues/34678

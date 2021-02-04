@@ -15,7 +15,7 @@ class SplashHexBackground extends StatelessWidget {
     if (_visibleRows.contains(point.row)) {
       color = AppColors.emptyTile;
     } else {
-      color = Colors.transparent;
+      color = AppColors.transparent;
     }
     return HexagonWidget.template(color: color);
   }
@@ -32,7 +32,7 @@ class SplashHexBackground extends StatelessWidget {
               columns: _gridSize.cols,
               rows: _gridSize.rows,
               symmetrical: true,
-              color: Colors.transparent,
+              color: AppColors.transparent,
               hexagonPadding: 8,
               hexagonBorderRadius: 15,
               hexagonWidth: 174,
