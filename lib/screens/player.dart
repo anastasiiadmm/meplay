@@ -423,6 +423,26 @@ class _PlayerScreenState extends State<PlayerScreen> {
       : Column(
           children: [
             _player,
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          width: 1,
+                          color:AppColors.videoTitleBorder,
+                        )
+                      )
+                    ),
+                    child: Text(_titleText, style: AppFonts.videoTitle),
+                  )
+                ]
+              ),
+            )
           ],
         );
   }
@@ -445,6 +465,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
 
 // TODO: показать название канала под видео в обычном режиме
+// TODO: make orientation not lockable and change _fullscreen on orientation change.
 // показать замок и сделать редирект на вход, если юзера нет в sharedpreferences
 // после входа кинуть на список каналов (правильно - достать каналы и нужный канал и показать всё обратно в зависимости от канала и тарифов).
 // сделать переключение в фулскрин и обратно

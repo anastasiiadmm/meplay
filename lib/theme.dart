@@ -42,6 +42,7 @@ class AppColors {
   static const gray80 = Color.fromRGBO(26, 25, 23, 1); // #1A1917
   static const transparentDark = Color.fromRGBO(26, 25, 23, 0.48); // #1A1917 48%
   static const playBg = Color.fromRGBO(83, 83, 78, 0.4);
+  static const videoTitleBorder = Color.fromRGBO(0, 0, 0, 0.6);
 }
 
 
@@ -105,6 +106,9 @@ class AppFonts {
   static const searchInputText = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
       letterSpacing: -0.24, color: AppColors.gray10);
+  static const videoTitle = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.w600, fontSize: 24, height: 1,
+      letterSpacing: -0.24, color: AppColors.black,);
 }
 
 
