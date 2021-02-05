@@ -52,7 +52,7 @@ class ApiClient {
       if(response.statusCode == 200) {
         String status = jsonDecode(response.body)['status'];
         if (status != 'ok') {
-          throw ApiException('Невозможно выслать код на указанный номер');
+          throw ApiException('Пользователь не найден');
         }
       } else {
         throw ApiException('Ошибка при выполнении запроса');
