@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/rendering.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/hls_video_cache.dart';
 import '../video_player_fork/video_player.dart';
@@ -32,6 +34,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   Timer _controlsTimer;
   static const Duration _controlsTimeout = Duration(seconds: 3);
   bool _fullScreen = false;
+  User _user;
 
   String _timeDisplay = "00:00";
 
@@ -39,8 +42,17 @@ class _PlayerScreenState extends State<PlayerScreen> {
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    _restoreUser();
     if (!widget.channel.locked) {
       _loadVideo(widget.channel);
+    }
+  }
+
+  Future<void> _restoreUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('user')) {
+      String userInfo = prefs.getString('user');
+      _user =  User.fromJson(jsonDecode(userInfo));
     }
   }
 
@@ -417,34 +429,57 @@ class _PlayerScreenState extends State<PlayerScreen> {
     );
   }
 
+  void _login() {
+    Navigator.of(context).pop(-1);
+  }
+
   Widget get _body {
-    return _fullScreen
-      ? _player
-      : Column(
-          children: [
-            _player,
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 15),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          width: 1,
-                          color:AppColors.videoTitleBorder,
-                        )
-                      )
-                    ),
-                    child: Text(_titleText, style: AppFonts.videoTitle),
-                  )
-                ]
-              ),
+    List<Widget> children = [
+      Container(
+        padding: EdgeInsets.symmetric(vertical: 15),
+        decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(
+                  width: 1,
+                  color:AppColors.videoTitleBorder,
+                )
             )
-          ],
-        );
+        ),
+        child: Text(_titleText, style: AppFonts.videoTitle),
+      ),
+    ];
+    if(widget.channel.locked) {
+      children.add(
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.gray30,
+            borderRadius: BorderRadius.circular(13),
+          ),
+          margin: EdgeInsets.symmetric(vertical: 15, horizontal: 12),
+          padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(_user == null ? 'Войдите, чтобы получить доступ к данному каналу' : "Для разблокировки канала подключите один из пакетов", style: AppFonts.channelName),
+              TextButton(onPressed: _login, child: Text("Войти", style: AppFonts.channelLogin),)
+            ],
+          )
+        )
+      );
+    }
+    return _fullScreen ? _player : Column(
+      children: [
+        _player,
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: children,
+          ),
+        ),
+      ],
+    );
   }
 
   @override

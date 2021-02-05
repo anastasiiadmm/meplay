@@ -109,6 +109,10 @@ class AppFonts {
   static const videoTitle = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.w600, fontSize: 24, height: 1,
       letterSpacing: -0.24, color: AppColors.black,);
+
+  static const channelLogin = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
+      letterSpacing: -0.08, color: AppColors.megaPurple);
 }
 
 
