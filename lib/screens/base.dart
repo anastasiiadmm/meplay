@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 import 'login.dart';
 import 'splash.dart';
@@ -94,7 +96,11 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _restoreUser() async {
-    // TODO: try to restore users phone and password from persistence, then authenticate him
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('user')) {
+      String userInfo = prefs.getString('user');
+      _user =  User.fromJson(jsonDecode(userInfo));
+    }
   }
 
   Future<void> _initData() async {

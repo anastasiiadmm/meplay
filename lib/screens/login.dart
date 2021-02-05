@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -137,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     try {
       User user = await ApiClient.auth(_phone, _code);
-      await _storeUser();
+      await _storeUser(user);
       Navigator.of(context).pop<User>(user);
     } on ApiException catch(e) {
       setState(() {
@@ -147,9 +148,9 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _storeUser() async {
-    // TODO: persist user's phone and password here for future use
-    // https://flutter.dev/docs/cookbook/persistence/key-value
+  Future<void> _storeUser(User user) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('user', user.toJson());
   }
 
   Future<void> _sendSms() async {

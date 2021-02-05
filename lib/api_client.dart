@@ -30,7 +30,7 @@ class ApiClient {
   static Future<List<Channel>> getChannels([User user]) async {
     String url = '$BASE_API_URL/stalker_portal/meplay/tv-channels';
     if(user != null) {
-      url += '?msisdn=${user.phone}';
+      url += '?msisdn=${user.username}';
     }
     try {
       final response = await http.get(url);
@@ -73,7 +73,7 @@ class ApiClient {
       if (response.statusCode == 200) {
         Map<String, dynamic> responseBody = jsonDecode(response.body);
         if (responseBody['id'] != null) {
-          return User(id: responseBody['id'], phone: phone, password: password);
+          return User(id: responseBody['id'], username: phone, password: password);
         } else if (responseBody['error'] == 'Incorrect password') {
           throw ApiException('Неверный пароль');
         } else if (responseBody['error'] == 'User not found') {
