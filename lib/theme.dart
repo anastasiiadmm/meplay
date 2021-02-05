@@ -123,4 +123,14 @@ class AppIcons {
   static final back = SvgPicture.asset('assets/icons/back.svg', width: 12, height: 21,);
   static final search = SvgPicture.asset('assets/icons/search.svg', width: 28, height: 28,);
   static final searchInput = SvgPicture.asset('assets/icons/search_input.svg', width: 16, height: 16,);
+  static final play = SvgPicture.asset('assets/icons/play.svg', width: 56, height: 56,);
+  static final skipNext = SvgPicture.asset('assets/icons/skip_next.svg', width: 28, height: 28,);
+  static final skipNextDis = SvgPicture.asset('assets/icons/skip_next_dis.svg', width: 28, height: 28,);
+  static final skipBack = SvgPicture.asset('assets/icons/skip_back.svg', width: 28, height: 28,);
+  static final skipBackDis = SvgPicture.asset('assets/icons/skip_back_dis.svg', width: 28, height: 28,);
+  static final settings = SvgPicture.asset('assets/icons/settings.svg', width: 28, height: 28,);
+  static final chromecast = SvgPicture.asset('assets/icons/chromecast.svg', width: 28, height: 28,);
+  static final fullScreen = SvgPicture.asset('assets/icons/full_screen.svg', width: 28, height: 28,);
+  static final normalScreen = SvgPicture.asset('assets/icons/normal_screen.svg', width: 28, height: 28,);
+  static final favAdd = SvgPicture.asset('assets/icons/fav_add.svg', width: 28, height: 28,);
 }
