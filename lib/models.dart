@@ -18,6 +18,10 @@ class Channel {
     this.locked = data['locked'];
     this.logo = data['logo'];
   }
+
+  String get title {
+    return '$number. $name';
+  }
 }
 
 

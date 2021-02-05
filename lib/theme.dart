@@ -41,7 +41,7 @@ class AppColors {
   static const gray70 = Color.fromRGBO(38, 38, 35, 1); // #262623
   static const gray80 = Color.fromRGBO(26, 25, 23, 1); // #1A1917
   static const transparentDark = Color.fromRGBO(26, 25, 23, 0.48); // #1A1917 48%
-  static const playBg = Color.fromRGBO(83, 83, 78, 0.4);
+  static const transparentGray = Color.fromRGBO(83, 83, 78, 0.48);
   static const videoTitleBorder = Color.fromRGBO(0, 0, 0, 0.6);
 }
 
@@ -143,6 +143,6 @@ class AppIcons {
   static final settings = SvgPicture.asset('assets/icons/settings.svg', width: 28, height: 28,);
   static final chromecast = SvgPicture.asset('assets/icons/chromecast.svg', width: 28, height: 28,);
   static final fullScreen = SvgPicture.asset('assets/icons/full_screen.svg', width: 28, height: 28,);
-  static final normalScreen = SvgPicture.asset('assets/icons/normal_screen.svg', width: 28, height: 28,);
+  static final smallScreen = SvgPicture.asset('assets/icons/small_screen.svg', width: 28, height: 28,);
   static final favAdd = SvgPicture.asset('assets/icons/fav_add.svg', width: 28, height: 28,);
 }

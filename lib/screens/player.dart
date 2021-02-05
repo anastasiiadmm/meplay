@@ -26,26 +26,24 @@ class PlayerScreen extends StatefulWidget {
 }
 
 
-class _PlayerScreenState extends State<PlayerScreen> {
+class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver {
   VideoPlayerController _controller;
   double _aspectRatio = aspectRatio43;
   bool _controlsVisible = false;
   HLSVideoCache _cache;
   Timer _controlsTimer;
   static const Duration _controlsTimeout = Duration(seconds: 3);
-  bool _fullScreen = false;
   User _user;
-
-  String _timeDisplay = "00:00";
 
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    _enableAllOrientations();
     _restoreUser();
     if (!widget.channel.locked) {
       _loadVideo(widget.channel);
     }
+    WidgetsBinding.instance.addObserver(this);
   }
 
   Future<void> _restoreUser() async {
@@ -60,11 +58,32 @@ class _PlayerScreenState extends State<PlayerScreen> {
   void dispose() {
     _disposeController();
     _clearCache();
+    WidgetsBinding.instance.removeObserver(this);
+    _enablePortraitOnly();
+    super.dispose();
+  }
+
+  void _enableAllOrientations() {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
     ]);
-    super.dispose();
+  }
+
+  void _enablePortraitOnly() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
+  void _enableLandscapeOnly() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
   }
 
   void _disposeController() {
@@ -75,48 +94,31 @@ class _PlayerScreenState extends State<PlayerScreen> {
     _cache?.clear();
   }
 
-  void _reset() {
-    _disposeController();
-    _clearCache();
-
-    setState(() {
-      _controller = null;
-    });
-  }
-
   Future<void> _loadVideo(Channel channel) async {
-    _reset();
     _cache = HLSVideoCache(channel.url);
     await _cache.load();
     VideoPlayerController controller = VideoPlayerController.cache(_cache);
     await controller.initialize();
     setState(() {
       _controller = controller;
-      _aspectRatio ??= controller.value.aspectRatio;
+      _aspectRatio = controller.value.aspectRatio ?? _aspectRatio;
     });
     controller.play();
   }
 
-  void _changeAspectRatio(double ratio) {
-    setState(() {
-      _aspectRatio = ratio > 0 ? ratio : _controller.value.aspectRatio;
-    });
+  void _changeAspectRatio() {
+    // TODO: show dialog to change ratio then
+    // setState(() {
+    //   _aspectRatio = ratio > 0 ? ratio : _controller.value.aspectRatio;
+    // });
   }
 
-  void _openProgram() {
-
+  void _toPrev() {
+    // TODO: skip to prev channel
   }
 
-  void _skipBack() {
-    // skip to video start then prev
-  }
-
-  void _skipNext() {
-    // skip to video end then next
-  }
-
-  void _openSettings() {
-
+  void _toNext() {
+    // TODO: skip to next channel
   }
 
   void _togglePlay() {
@@ -160,13 +162,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
     }
   }
 
-  void _selectAspectRatio() {
-
-  }
-
-  void _chromecast() {
-
-  }
+  // chromecast be here
+  // void _chromecast() {
+  //
+  // }
 
   Widget get _scrollBar {
     return Container(
@@ -175,7 +174,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
         _controller,
         allowScrubbing: true,
         colors: VideoProgressColors(
-          backgroundColor: AppColors.playBg,
+          backgroundColor: AppColors.transparentGray,
           playedColor: AppColors.gray5,
           bufferedColor: AppColors.gray40,
         ),
@@ -183,8 +182,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
     );
   }
 
+  bool get _fullscreen {
+    return MediaQuery.of(context).orientation == Orientation.landscape;
+  }
+  
   Widget get _player {
-    if (_fullScreen) {
+    if (_fullscreen) {
       return  GestureDetector(
         onTap: _toggleControls,
         child: Material(
@@ -233,39 +236,18 @@ class _PlayerScreenState extends State<PlayerScreen> {
     }
   }
 
-  void _scrollToLive() {
+  void _goLive() {
 
   }
 
   Widget get _controls {
-    List<Widget> playControls = [
-      IconButton(
-        icon: AppIcons.skipPrev, // TODO: if first, skip to last, other - prev
-        onPressed: _skipBack,
-        padding: EdgeInsets.all(0.0),
-      ),
-      _controller == null ? Container(
-        width: 56,
-      ) : IconButton(
-        icon: _controller != null && _controller.value.isPlaying
-          ? Icon(Icons.pause, color: AppColors.white, size: 56,)
-          : AppIcons.play,
-        onPressed: _togglePlay,
-        padding: EdgeInsets.all(0.0),
-      ),
-      IconButton(
-        icon: AppIcons.skipNext, // TODO: if last, skip to first, other - next
-        onPressed: _skipNext,
-        padding: EdgeInsets.all(0.0),
-      ),
-    ];
     return AnimatedOpacity(
       opacity: _controlsVisible ? 1.0 : 0,
       duration: Duration(milliseconds: 200),
       child: Column(
         children: <Widget>[
           Padding (
-            padding: _fullScreen
+            padding: _fullscreen
               ? EdgeInsets.fromLTRB(20, 15, 20, 0)
               : EdgeInsets.fromLTRB(15, 10, 15, 0),
             child: Row(
@@ -273,20 +255,21 @@ class _PlayerScreenState extends State<PlayerScreen> {
               children: <Widget>[
                 Expanded(
                   child: Container(
-                    child: _fullScreen ? Text(
-                      _titleText,
+                    child: _fullscreen ? Text(
+                      widget.channel.title,
                       style: AppFonts.screenTitle,
                     ) : null,
                   ),
                 ),
-                // TODO: chromecast
+                // chromecast be here
                 // IconButton(
                 //   icon: AppIcons.chromecast,
                 //   onPressed: _chromecast,
                 // ),
                 IconButton(
                   icon: AppIcons.settings,
-                  onPressed: _selectAspectRatio,
+                  onPressed: _changeAspectRatio,
+                  padding: EdgeInsets.zero,
                 ),
               ],
             ),
@@ -295,11 +278,33 @@ class _PlayerScreenState extends State<PlayerScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: playControls,
+              children: [
+                IconButton(
+                  icon: AppIcons.skipPrev,
+                  onPressed: _toPrev,
+                  padding: EdgeInsets.zero,
+                ),
+                Container(
+                  width: 56,
+                  margin: EdgeInsets.all(30),
+                  child: _controller == null ? null : IconButton(
+                    icon: _controller != null && _controller.value.isPlaying
+                        ? Icon(Icons.pause, color: AppColors.white, size: 56,)
+                        : AppIcons.play,
+                    onPressed: _togglePlay,
+                    padding: EdgeInsets.zero,
+                  ),
+                ),
+                IconButton(
+                  icon: AppIcons.skipNext,
+                  onPressed: _toNext,
+                  padding: EdgeInsets.zero,
+                ),
+              ],
             ),
           ),
           Padding (
-            padding: _fullScreen
+            padding: _fullscreen
               ? EdgeInsets.fromLTRB(20, 0, 20, 15)
               : EdgeInsets.fromLTRB(15, 0, 15, 10),
             child: Row(
@@ -307,18 +312,16 @@ class _PlayerScreenState extends State<PlayerScreen> {
               children: <Widget>[
                 // Text(_timeDisplay, style: AppFonts.videoTimer,),
                 TextButton(
-                  onPressed: _scrollToLive,
+                  onPressed: _goLive,
                   child: Text('LIVE', style: AppFonts.screenTitle),
                 ),
                 Expanded(
                   child: _scrollBar,
                 ),
-                _fullScreen ? IconButton(
-                  icon: AppIcons.normalScreen,
-                  onPressed: _exitFullScreen,
-                ) : IconButton(
-                  icon: AppIcons.fullScreen,
-                  onPressed: _enterFullScreen,
+                IconButton(
+                  icon: _fullscreen ? AppIcons.smallScreen : AppIcons.fullScreen,
+                  onPressed: _toggleFullScreen,
+                  padding: EdgeInsets.zero,
                 ),
               ],
             ),
@@ -328,36 +331,30 @@ class _PlayerScreenState extends State<PlayerScreen> {
     );
   }
 
+  void _toggleFullScreen() {
+    if (_fullscreen) {
+      _exitFullScreen();
+    } else {
+      _enterFullScreen();
+    }
+  }
+
   void _enterFullScreen() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
-    setState(() {
-      _fullScreen = true;
-    });
+    _enableLandscapeOnly();
+    Timer(Duration(seconds: 3), _enableAllOrientations);
   }
 
   void _exitFullScreen() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown
-    ]);
-    setState(() {
-      _fullScreen = false;
-    });
+    _enablePortraitOnly();
+    Timer(Duration(seconds: 3), _enableAllOrientations);
   }
 
   Future<bool> _willPop() async {
-    if(_fullScreen) {
+    if(_fullscreen) {
       _exitFullScreen();
       return false;
     }
     return true;
-  }
-
-  String get _titleText {
-    return '${widget.channel.number}. ${widget.channel.name}';
   }
 
   Widget get _appBar {
@@ -369,7 +366,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
         onPressed: _back,
         icon: AppIcons.back,
       ),
-      title: Text(_titleText, style: AppFonts.screenTitle),
+      title: Text(widget.channel.title, style: AppFonts.screenTitle),
       centerTitle: true,
       actions: [
         IconButton(
@@ -438,21 +435,22 @@ class _PlayerScreenState extends State<PlayerScreen> {
       Container(
         padding: EdgeInsets.symmetric(vertical: 15),
         decoration: BoxDecoration(
-            border: Border(
-                bottom: BorderSide(
-                  width: 1,
-                  color:AppColors.videoTitleBorder,
-                )
+          border: Border(
+            bottom: BorderSide(
+              width: 1,
+              color: AppColors.videoTitleBorder,
             )
+          )
         ),
-        child: Text(_titleText, style: AppFonts.videoTitle),
+        child: Text(widget.channel.title, style: AppFonts.videoTitle),
       ),
     ];
     if(widget.channel.locked) {
+      // TODO: finish this
       children.add(
         Container(
           decoration: BoxDecoration(
-            color: AppColors.gray30,
+            color: AppColors.transparentGray,
             borderRadius: BorderRadius.circular(13),
           ),
           margin: EdgeInsets.symmetric(vertical: 15, horizontal: 12),
@@ -461,14 +459,21 @@ class _PlayerScreenState extends State<PlayerScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(_user == null ? 'Войдите, чтобы получить доступ к данному каналу' : "Для разблокировки канала подключите один из пакетов", style: AppFonts.channelName),
-              TextButton(onPressed: _login, child: Text("Войти", style: AppFonts.channelLogin),)
+              Text(
+                _user == null
+                  ? 'Войдите, чтобы получить доступ к данному каналу'
+                  : "Для разблокировки канала подключите один из пакетов",
+              ),
+              TextButton(
+                onPressed: _login,
+                child: Text("Войти", style: AppFonts.channelLogin),
+              )
             ],
           )
         )
       );
     }
-    return _fullScreen ? _player : Column(
+    return _fullscreen ? _player : Column(
       children: [
         _player,
         Container(
@@ -490,21 +495,15 @@ class _PlayerScreenState extends State<PlayerScreen> {
         backgroundColor: AppColors.white,
         extendBody: true,
         extendBodyBehindAppBar: false,
-        appBar: _fullScreen ? null : _appBar,
+        appBar: _fullscreen ? null : _appBar,
         body: _body,
-        bottomNavigationBar: _fullScreen ? null : _bottomBar,
+        bottomNavigationBar: _fullscreen ? null : _bottomBar,
       ),
     );
   }
 }
 
 
-// TODO: показать название канала под видео в обычном режиме
-// TODO: make orientation not lockable and change _fullscreen on orientation change.
-// показать замок и сделать редирект на вход, если юзера нет в sharedpreferences
-// после входа кинуть на список каналов (правильно - достать каналы и нужный канал и показать всё обратно в зависимости от канала и тарифов).
-// сделать переключение в фулскрин и обратно
-// enable screen rotation and prev - next on swipe left - right.
+// TODO: enable prev - next on swipe left - right.
 // вернуть градиенты или тени под контролы.
-// пофиксить ошибку aspect ration is not null и ошибку пустого контроллера при загрузке.
 // сделать кнопку live.
