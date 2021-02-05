@@ -115,8 +115,15 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
           height: 71,
           alignment: Alignment.topCenter,
           child: channel.logo == null || channel.logo.isEmpty
-              ? Padding(padding: EdgeInsets.fromLTRB(12.5, 0, 0, 0), child: AppIcons.channelPlaceholder)
-              : Image.network(channel.logo),
+              ? Padding(
+                  padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                  child: AppIcons.channelPlaceholder,
+                )
+              : Container(
+                  constraints: BoxConstraints(maxWidth: 93, maxHeight: 71),
+                  alignment: Alignment.center,
+                  child: Image.network(channel.logo),
+                ) ,
         ),
         Padding (
           padding: EdgeInsets.symmetric(horizontal: 15),
