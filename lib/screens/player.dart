@@ -170,20 +170,23 @@ class _PlayerScreenState extends State<PlayerScreen> {
   Widget get _player {
     return AspectRatio(
       aspectRatio: _aspectRatio,
-      child: Material(
-        color: AppColors.black,
-        child: Stack(
-          children: <Widget>[
-            _controller == null ? Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray5),
-                strokeWidth: 10,
+      child:GestureDetector(
+        onTap: _toggleControls,
+        child: Material(
+          color: AppColors.black,
+          child: Stack(
+            children: <Widget>[
+              _controller == null ? Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray5),
+                  strokeWidth: 10,
+                ),
+              ) : VideoPlayer(
+                _controller,
               ),
-            ) : VideoPlayer(
-              _controller,
-            ),
-          _controls,
-          ],
+              _controls,
+            ],
+          ),
         ),
       ),
     );
@@ -214,61 +217,55 @@ class _PlayerScreenState extends State<PlayerScreen> {
     return AnimatedOpacity(
       opacity: _controlsVisible ? 1.0 : 0,
       duration: Duration(milliseconds: 200),
-      child:GestureDetector(
-        onTap: _toggleControls,
-        child: Material(
-          color: AppColors.transparent,
-          child: Column(
+      child: Column(
+        children: <Widget>[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: _fullScreen ? Text(
-                      widget.channel.name,
-                      style: AppFonts.screenTitle,
-                    ) : Container(),
-                  ),
-                  // TODO: chromecast
-                  // IconButton(
-                  //   icon: AppIcons.chromecast,
-                  //   onPressed: _chromecast,
-                  // ),
-                  IconButton(
-                    icon: AppIcons.settings,
-                    onPressed: _selectAspectRatio,
-                  ),
-                ],
-              ),
               Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: playControls,
-                ),
+                child: _fullScreen ? Text(
+                  widget.channel.name,
+                  style: AppFonts.screenTitle,
+                ) : Container(),
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    child: Text(_timeDisplay, style: AppFonts.videoTimer,),
-                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                  ),
-                  Expanded(
-                    child: _scrollBar,
-                  ),
-                  _fullScreen ? IconButton(
-                    icon: AppIcons.normalScreen,
-                    onPressed: _exitFullScreen,
-                  ) : IconButton(
-                    icon: AppIcons.fullScreen,
-                    onPressed: _enterFullScreen,
-                  ),
-                ],
+              // TODO: chromecast
+              // IconButton(
+              //   icon: AppIcons.chromecast,
+              //   onPressed: _chromecast,
+              // ),
+              IconButton(
+                icon: AppIcons.settings,
+                onPressed: _selectAspectRatio,
               ),
             ],
           ),
-        ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: playControls,
+            ),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                child: Text(_timeDisplay, style: AppFonts.videoTimer,),
+                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+              ),
+              Expanded(
+                child: _scrollBar,
+              ),
+              _fullScreen ? IconButton(
+                icon: AppIcons.normalScreen,
+                onPressed: _exitFullScreen,
+              ) : IconButton(
+                icon: AppIcons.fullScreen,
+                onPressed: _enterFullScreen,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
