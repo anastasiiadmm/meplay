@@ -48,6 +48,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
   void dispose() {
     _disposeController();
     _clearCache();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]);
     super.dispose();
   }
 
@@ -313,12 +317,20 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   void _enterFullScreen() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
     setState(() {
       _fullScreen = true;
     });
   }
 
   void _exitFullScreen() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]);
     setState(() {
       _fullScreen = false;
     });
