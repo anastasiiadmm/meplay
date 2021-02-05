@@ -154,7 +154,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   Widget get _scrollBar {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 5),
+      padding: EdgeInsets.symmetric(horizontal: 10),
       child: _controller == null ? null : VideoProgressIndicator(
         _controller,
         allowScrubbing: true,
@@ -168,28 +168,53 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   Widget get _player {
-    return AspectRatio(
-      aspectRatio: _aspectRatio,
-      child:GestureDetector(
+    if (_fullScreen) {
+      return  GestureDetector(
         onTap: _toggleControls,
         child: Material(
           color: AppColors.black,
           child: Stack(
-            children: <Widget>[
-              _controller == null ? Center(
-                child: CircularProgressIndicator(
+            children: [
+              Center (
+                child: _controller == null ? CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray5),
                   strokeWidth: 10,
+                ) : AspectRatio(
+                  aspectRatio: _aspectRatio,
+                  child: VideoPlayer(
+                    _controller,
+                  ),
                 ),
-              ) : VideoPlayer(
-                _controller,
               ),
               _controls,
             ],
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return GestureDetector(
+        onTap: _toggleControls,
+        child: AspectRatio(
+          aspectRatio: _aspectRatio,
+          child: Material(
+            color: AppColors.black,
+            child: Stack(
+              children: <Widget>[
+                _controller == null ? Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray5),
+                    strokeWidth: 10,
+                  ),
+                ) : VideoPlayer(
+                  _controller,
+                ),
+                _controls,
+              ],
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   Widget get _controls {
@@ -219,25 +244,32 @@ class _PlayerScreenState extends State<PlayerScreen> {
       duration: Duration(milliseconds: 200),
       child: Column(
         children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: _fullScreen ? Text(
-                  widget.channel.name,
-                  style: AppFonts.screenTitle,
-                ) : Container(),
-              ),
-              // TODO: chromecast
-              // IconButton(
-              //   icon: AppIcons.chromecast,
-              //   onPressed: _chromecast,
-              // ),
-              IconButton(
-                icon: AppIcons.settings,
-                onPressed: _selectAspectRatio,
-              ),
-            ],
+          Padding (
+            padding: _fullScreen
+              ? EdgeInsets.fromLTRB(20, 15, 20, 0)
+              : EdgeInsets.fromLTRB(15, 10, 15, 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    child: _fullScreen ? Text(
+                      '${widget.channel.number}. ${widget.channel.name}',
+                      style: AppFonts.screenTitle,
+                    ) : null,
+                  ),
+                ),
+                // TODO: chromecast
+                // IconButton(
+                //   icon: AppIcons.chromecast,
+                //   onPressed: _chromecast,
+                // ),
+                IconButton(
+                  icon: AppIcons.settings,
+                  onPressed: _selectAspectRatio,
+                ),
+              ],
+            ),
           ),
           Expanded(
             child: Row(
@@ -246,24 +278,26 @@ class _PlayerScreenState extends State<PlayerScreen> {
               children: playControls,
             ),
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                child: Text(_timeDisplay, style: AppFonts.videoTimer,),
-                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-              ),
-              Expanded(
-                child: _scrollBar,
-              ),
-              _fullScreen ? IconButton(
-                icon: AppIcons.normalScreen,
-                onPressed: _exitFullScreen,
-              ) : IconButton(
-                icon: AppIcons.fullScreen,
-                onPressed: _enterFullScreen,
-              ),
-            ],
+          Padding (
+            padding: _fullScreen
+              ? EdgeInsets.fromLTRB(20, 0, 20, 15)
+              : EdgeInsets.fromLTRB(15, 0, 15, 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(_timeDisplay, style: AppFonts.videoTimer,),
+                Expanded(
+                  child: _scrollBar,
+                ),
+                _fullScreen ? IconButton(
+                  icon: AppIcons.normalScreen,
+                  onPressed: _exitFullScreen,
+                ) : IconButton(
+                  icon: AppIcons.fullScreen,
+                  onPressed: _enterFullScreen,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -360,11 +394,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   Widget get _body {
-    return Column(
-      children: [
-        _player,
-      ],
-    );
+    return _fullScreen
+      ? _player
+      : Column(
+          children: [
+            _player,
+          ],
+        );
   }
 
   @override
