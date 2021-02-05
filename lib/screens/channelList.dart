@@ -7,6 +7,7 @@ import '../hexagon/hexagon_widget.dart';
 import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../models.dart';
 import '../theme.dart';
+import 'player.dart';
 
 
 class ChannelListScreen extends StatefulWidget {
@@ -138,7 +139,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
         children.add(AppIcons.lockSmall);
       }
       content = GestureDetector(
-        onTap: () {print(channel.number);},
+        onTap: () {_openChannel(channel);},
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -151,6 +152,17 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       child: content,
       elevation: elevation,
     );
+  }
+
+  Future<void> _openChannel(Channel channel) async {
+    int index = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => PlayerScreen(channel: channel,),
+      ),
+    );
+    if (index != null) {
+      _onNavTap(index);
+    }
   }
 
   Widget get _body {

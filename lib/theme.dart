@@ -41,6 +41,7 @@ class AppColors {
   static const gray70 = Color.fromRGBO(38, 38, 35, 1); // #262623
   static const gray80 = Color.fromRGBO(26, 25, 23, 1); // #1A1917
   static const transparentDark = Color.fromRGBO(26, 25, 23, 0.48); // #1A1917 48%
+  static const playBg = Color.fromRGBO(83, 83, 78, 0.4);
 }
 
 
@@ -86,6 +87,9 @@ class AppFonts {
       fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
       letterSpacing: -0.08, color: AppColors.gray10,
       decoration: TextDecoration.underline);
+  static const videoTimer = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
+      letterSpacing: -0.08, color: AppColors.gray5);
   static const loginInputHint = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.gray30);
@@ -126,8 +130,8 @@ class AppIcons {
   static final play = SvgPicture.asset('assets/icons/play.svg', width: 56, height: 56,);
   static final skipNext = SvgPicture.asset('assets/icons/skip_next.svg', width: 28, height: 28,);
   static final skipNextDis = SvgPicture.asset('assets/icons/skip_next_dis.svg', width: 28, height: 28,);
-  static final skipBack = SvgPicture.asset('assets/icons/skip_back.svg', width: 28, height: 28,);
-  static final skipBackDis = SvgPicture.asset('assets/icons/skip_back_dis.svg', width: 28, height: 28,);
+  static final skipPrev = SvgPicture.asset('assets/icons/skip_prev.svg', width: 28, height: 28,);
+  static final skipPrevDis = SvgPicture.asset('assets/icons/skip_prev_dis.svg', width: 28, height: 28,);
   static final settings = SvgPicture.asset('assets/icons/settings.svg', width: 28, height: 28,);
   static final chromecast = SvgPicture.asset('assets/icons/chromecast.svg', width: 28, height: 28,);
   static final fullScreen = SvgPicture.asset('assets/icons/full_screen.svg', width: 28, height: 28,);
