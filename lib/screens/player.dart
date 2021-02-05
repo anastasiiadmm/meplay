@@ -26,7 +26,7 @@ class PlayerScreen extends StatefulWidget {
 
 class _PlayerScreenState extends State<PlayerScreen> {
   VideoPlayerController _controller;
-  double _aspectRatio;
+  double _aspectRatio = aspectRatio43;
   bool _controlsVisible = false;
   HLSVideoCache _cache;
   Timer _controlsTimer;
@@ -39,7 +39,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-    _loadVideo(widget.channel);
+    if (!widget.channel.locked) {
+      _loadVideo(widget.channel);
+    }
   }
 
   @override
@@ -150,32 +152,65 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   }
 
-  Widget _buildScrollBar(BuildContext context) {
-    return VideoProgressIndicator(
-      _controller,
-      allowScrubbing: true,
-      colors: VideoProgressColors(
-        backgroundColor: AppColors.playBg,
-        playedColor: AppColors.gray5,
-        bufferedColor: AppColors.gray40,
+  Widget get _scrollBar {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 5),
+      child: _controller == null ? null : VideoProgressIndicator(
+        _controller,
+        allowScrubbing: true,
+        colors: VideoProgressColors(
+          backgroundColor: AppColors.playBg,
+          playedColor: AppColors.gray5,
+          bufferedColor: AppColors.gray40,
+        ),
       ),
     );
   }
 
   Widget get _player {
-    Widget video;
-    if (_controller == null) {
-      return Center(
-        child: CircularProgressIndicator()
-      );
-    } else {
-      return VideoPlayer(
-        _controller,
-      );
-    }
+    return AspectRatio(
+      aspectRatio: _aspectRatio,
+      child: Material(
+        color: AppColors.black,
+        child: Stack(
+          children: <Widget>[
+            _controller == null ? Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray5),
+                strokeWidth: 10,
+              ),
+            ) : VideoPlayer(
+              _controller,
+            ),
+          _controls,
+          ],
+        ),
+      ),
+    );
   }
 
   Widget get _controls {
+    List<Widget> playControls = [
+      IconButton(
+        icon: AppIcons.skipPrev, // TODO: if first, skip to last, other - prev
+        onPressed: _skipBack,
+        padding: EdgeInsets.all(0.0),
+      ),
+      _controller == null ? Container(
+        width: 56,
+      ) : IconButton(
+        icon: _controller != null && _controller.value.isPlaying
+          ? Icon(Icons.pause, color: AppColors.white, size: 56,)
+          : AppIcons.play,
+        onPressed: _togglePlay,
+        padding: EdgeInsets.all(0.0),
+      ),
+      IconButton(
+        icon: AppIcons.skipNext, // TODO: if last, skip to first, other - next
+        onPressed: _skipNext,
+        padding: EdgeInsets.all(0.0),
+      ),
+    ];
     return AnimatedOpacity(
       opacity: _controlsVisible ? 1.0 : 0,
       duration: Duration(milliseconds: 200),
@@ -209,25 +244,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    IconButton(
-                      icon: AppIcons.skipPrev, // TODO: if first, skip to last, other - prev
-                      onPressed: _skipBack,
-                      padding: EdgeInsets.all(0.0),
-                    ),
-                    IconButton(
-                      icon: _controller != null && _controller.value.isPlaying
-                        ? Icon(Icons.pause, color: AppColors.white, size: 40,)
-                        : AppIcons.play,
-                      onPressed: _togglePlay,
-                      padding: EdgeInsets.all(0.0),
-                    ),
-                    IconButton(
-                      icon: AppIcons.skipNext, // TODO: if last, skip to first, other - next
-                      onPressed: _skipNext,
-                      padding: EdgeInsets.all(0.0),
-                    ),
-                  ],
+                  children: playControls,
                 ),
               ),
               Row(
@@ -238,7 +255,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     padding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
                   ),
                   Expanded(
-                    child: _buildScrollBar(context),
+                    child: _scrollBar,
                   ),
                   _fullScreen ? IconButton(
                     icon: AppIcons.normalScreen,
@@ -346,14 +363,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   Widget get _body {
-    return AspectRatio(
-      aspectRatio: _aspectRatio,
-      child: Stack(
-        children: <Widget>[
-          _player,
-          _controls,
-        ],
-      ),
+    return Column(
+      children: [
+        _player,
+      ],
     );
   }
 
@@ -362,7 +375,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
     return WillPopScope(
       onWillPop: _willPop,
       child: Scaffold(
-        backgroundColor: AppColors.black,
+        backgroundColor: AppColors.white,
         extendBody: true,
         extendBodyBehindAppBar: false,
         appBar: _fullScreen ? null : _appBar,
@@ -374,7 +387,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
 }
 
 
-// TODO: показат название канала под видео в обычном режиме
+// TODO: показать название канала под видео в обычном режиме
 // показать замок и сделать редирект на вход, если юзера нет в sharedpreferences
 // после входа кинуть на список каналов (правильно - достать каналы и нужный канал и показать всё обратно в зависимости от канала и тарифов).
 // сделать переключение в фулскрин и обратно
