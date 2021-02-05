@@ -217,6 +217,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
     }
   }
 
+  void _scrollToLive() {
+
+  }
+
   Widget get _controls {
     List<Widget> playControls = [
       IconButton(
@@ -254,7 +258,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 Expanded(
                   child: Container(
                     child: _fullScreen ? Text(
-                      '${widget.channel.number}. ${widget.channel.name}',
+                      _titleText,
                       style: AppFonts.screenTitle,
                     ) : null,
                   ),
@@ -285,7 +289,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text(_timeDisplay, style: AppFonts.videoTimer,),
+                // Text(_timeDisplay, style: AppFonts.videoTimer,),
+                TextButton(
+                  onPressed: _scrollToLive,
+                  child: Text('LIVE', style: AppFonts.screenTitle),
+                ),
                 Expanded(
                   child: _scrollBar,
                 ),
@@ -324,6 +332,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
     return true;
   }
 
+  String get _titleText {
+    return '${widget.channel.number}. ${widget.channel.name}';
+  }
+
   Widget get _appBar {
     return AppBar(
       backgroundColor: AppColors.megaPurple,
@@ -333,7 +345,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
         onPressed: _back,
         icon: AppIcons.back,
       ),
-      title: Text(widget.channel.name, style: AppFonts.screenTitle),
+      title: Text(_titleText, style: AppFonts.screenTitle),
       centerTitle: true,
       actions: [
         IconButton(
@@ -427,3 +439,4 @@ class _PlayerScreenState extends State<PlayerScreen> {
 // enable screen rotation and prev - next on swipe left - right.
 // вернуть градиенты или тени под контролы.
 // пофиксить ошибку aspect ration is not null и ошибку пустого контроллера при загрузке.
+// сделать кнопку live.
