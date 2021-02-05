@@ -158,8 +158,9 @@ class _BaseScreenState extends State<BaseScreen> {
     if (index != null) {
       if (index == -1) {
         _login(0);
+      } else {
+        _onNavTap(index);
       }
-      _onNavTap(index);
     }
   }
 
