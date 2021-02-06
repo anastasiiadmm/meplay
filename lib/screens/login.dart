@@ -164,8 +164,8 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
       _loading = true;
     });
     try {
-      await ApiClient.requestPassword(_phone);
       listenForCode();
+      await ApiClient.requestPassword(_phone);
       setState(() {
         _time = 180;
         _error = null;
