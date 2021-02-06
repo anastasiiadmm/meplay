@@ -163,6 +163,7 @@ class AppIcons {
   static final search = SvgPicture.asset('assets/icons/search.svg', width: 28, height: 28,);
   static final searchInput = SvgPicture.asset('assets/icons/search_input.svg', width: 16, height: 16,);
   static final play = SvgPicture.asset('assets/icons/play.svg', width: 56, height: 56,);
+  static final pause = SvgPicture.asset('assets/icons/pause.svg', width: 56, height: 56,);
   static final skipNext = SvgPicture.asset('assets/icons/skip_next.svg', width: 28, height: 28,);
   static final skipNextDis = SvgPicture.asset('assets/icons/skip_next_dis.svg', width: 28, height: 28,);
   static final skipPrev = SvgPicture.asset('assets/icons/skip_prev.svg', width: 28, height: 28,);
@@ -172,4 +173,6 @@ class AppIcons {
   static final fullScreen = SvgPicture.asset('assets/icons/full_screen.svg', width: 28, height: 28,);
   static final smallScreen = SvgPicture.asset('assets/icons/small_screen.svg', width: 28, height: 28,);
   static final favAdd = SvgPicture.asset('assets/icons/fav_add.svg', width: 28, height: 28,);
+  static final showProgram = SvgPicture.asset('assets/icons/program_open.svg', width: 44, height: 44,);
+  static final hideProgram = SvgPicture.asset('assets/icons/program_close.svg', width: 44, height: 44,);
 }

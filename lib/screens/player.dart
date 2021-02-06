@@ -470,7 +470,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
                       margin: EdgeInsets.all(30),
                       child: _controller == null ? null : IconButton(
                         icon: _controller != null && _controller.value.isPlaying
-                            ? Icon(Icons.pause, color: AppColors.white, size: 56,)
+                            ? AppIcons.pause
                             : AppIcons.play,
                         onPressed: _togglePlay,
                         padding: EdgeInsets.zero,
