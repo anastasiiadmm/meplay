@@ -162,13 +162,39 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   }
 
   Future<void> _openChannel(Channel channel) async {
+    Channel next = _nextChannel(channel);
+    Channel prev = _prevChannel(channel);
     int index = await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (BuildContext context) => PlayerScreen(channel: channel,),
+        builder: (BuildContext context) => PlayerScreen(
+          channel: channel,
+          toNext: () {_openChannel(next);},
+          toPrev: () {_openChannel(prev);},
+        ),
       ),
     );
     if (index != null) {
       Navigator.of(context).pop(index);
+    }
+  }
+
+  Channel _nextChannel(Channel channel) {
+    if(channel == widget.channels.last) {
+      return widget.channels.first;
+    } else {
+      return widget.channels.firstWhere(
+        (element) => element.number > channel.number
+      );
+    }
+  }
+
+  Channel _prevChannel(Channel channel) {
+    if(channel == widget.channels.first) {
+      return widget.channels.last;
+    } else {
+      return widget.channels.lastWhere(
+        (element) => element.number < channel.number
+      );
     }
   }
 

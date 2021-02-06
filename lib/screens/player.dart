@@ -19,8 +19,15 @@ const double aspectRatio169 = 16/9;
 
 class PlayerScreen extends StatefulWidget {
   final Channel channel;
+  final void Function() toNext;
+  final void Function() toPrev;
 
-  PlayerScreen({Key key, @required this.channel}) : super(key: key);
+  PlayerScreen({
+    Key key,
+    @required this.channel,
+    this.toNext,
+    this.toPrev,
+  }) : super(key: key);
 
   @override
   _PlayerScreenState createState() => _PlayerScreenState();
@@ -115,11 +122,17 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void _toPrev() {
-    // TODO: skip to prev channel
+    if(widget.toPrev != null) {
+      Navigator.of(context).pop();
+      widget.toPrev();
+    }
   }
 
   void _toNext() {
-    // TODO: skip to next channel
+    if(widget.toNext != null) {
+      Navigator.of(context).pop();
+      widget.toNext();
+    }
   }
 
   void _togglePlay() {
@@ -155,7 +168,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void _toggleControls() {
-    print('toggling controls');
     if (_controlsVisible) {
       _hideControls();
     } else {
@@ -186,11 +198,20 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   bool get _fullscreen {
     return MediaQuery.of(context).orientation == Orientation.landscape;
   }
-  
+
+  void _swipeChannel(DragEndDetails details) {
+    if(details.primaryVelocity > 0) {
+      _toPrev();
+    } else {
+      _toNext();
+    }
+  }
+
   Widget get _player {
     if (_fullscreen) {
       return  GestureDetector(
         onTap: _toggleControls,
+        onHorizontalDragEnd: _swipeChannel,
         child: Material(
           color: AppColors.black,
           child: Stack(
@@ -214,6 +235,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     } else {
       return GestureDetector(
         onTap: _toggleControls,
+        onHorizontalDragEnd: _swipeChannel,
         child: AspectRatio(
           aspectRatio: _aspectRatio,
           child: Material(
@@ -494,5 +516,4 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 }
 
 
-// TODO: enable prev - next on swipe left - right.
-// сделать кнопку live.
+// TODO: сделать кнопку live.
