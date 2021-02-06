@@ -164,7 +164,7 @@ List<Map<String, String>> getProgram(Channel channel) {
     int firstSpace = e.indexOf(' ');
     return {
       'time': e.substring(0, firstSpace).trim(),
-      'program': e.substring(firstSpace + 1).trim(),
+      'title': e.substring(firstSpace + 1).trim(),
     };
   }).toList();
 }
@@ -596,9 +596,53 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     Navigator.of(context).pop(NavItems.login);
   }
 
-  Widget get _body {
-    List<Widget> children = [
-      Container(
+  Widget get _program {
+    List<Map> program = getProgram(widget.channel);
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 22, horizontal: 0),
+      child: program == null ? Text(
+        'Программа для этого канала недоступна',
+        style: AppFonts.currentProgramTitle,
+        textAlign: TextAlign.center,
+      ) : Stack(
+        children: [
+          ListView.builder(
+            shrinkWrap: false,
+            itemCount: program.length,
+            itemExtent: 50,
+            itemBuilder: (BuildContext context, int index) {
+              return ListTile(
+                contentPadding: EdgeInsets.fromLTRB(15, 0, 15, 5),
+                title: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 50,
+                      child: Text(
+                        program[index]['time'],
+                        style: index == 0 ? AppFonts.currentProgramTime : AppFonts.programTime,
+                      )
+                    ),
+                    Expanded(
+                      child: Text(
+                        program[index]['title'],
+                        style: index == 0 ? AppFonts.currentProgramTitle : AppFonts.programTitle,
+                      )
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget get _title {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: Container(
         padding: EdgeInsets.symmetric(vertical: 15),
         decoration: BoxDecoration(
           border: Border(
@@ -610,46 +654,50 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         ),
         child: Text(widget.channel.title, style: AppFonts.videoTitle),
       ),
+    );
+  }
+
+  Widget get _lockInfo {
+    // TODO: finish this
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.transparentGray,
+        borderRadius: BorderRadius.circular(13),
+      ),
+      margin: EdgeInsets.symmetric(vertical: 15, horizontal: 27),
+      padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            _user == null
+              ? 'Войдите, чтобы получить доступ к данному каналу'
+              : "Для разблокировки канала подключите один из пакетов",
+          ),
+          TextButton(
+            onPressed: _login,
+            child: Text("Войти", style: AppFonts.channelLogin),
+          )
+        ],
+      )
+    );
+  }
+
+  Widget get _body {
+    if(_fullscreen) return _player;
+    List<Widget> children = [
+      _player,
+      _title,
+      Expanded(child: _program),
     ];
     if(widget.channel.locked) {
-      // TODO: finish this
-      children.add(
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.transparentGray,
-            borderRadius: BorderRadius.circular(13),
-          ),
-          margin: EdgeInsets.symmetric(vertical: 15, horizontal: 12),
-          padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                _user == null
-                  ? 'Войдите, чтобы получить доступ к данному каналу'
-                  : "Для разблокировки канала подключите один из пакетов",
-              ),
-              TextButton(
-                onPressed: _login,
-                child: Text("Войти", style: AppFonts.channelLogin),
-              )
-            ],
-          )
-        )
-      );
+      children.add(_lockInfo);
     }
-    return _fullscreen ? _player : Column(
-      children: [
-        _player,
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: children,
-          ),
-        ),
-      ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: children,
     );
   }
 
@@ -659,7 +707,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       onWillPop: _willPop,
       child: Scaffold(
         backgroundColor: AppColors.white,
-        extendBody: true,
+        extendBody: false,
         extendBodyBehindAppBar: false,
         appBar: _fullscreen ? null : _appBar,
         body: _body,
