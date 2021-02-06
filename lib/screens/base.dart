@@ -17,9 +17,32 @@ class BaseScreen extends StatefulWidget {
 }
 
 
-const int _homeIndex = 0;
-const int _favoritesIndex = 1;
-const int _profileIndex = 2;
+class NavItems {
+  static const int home = 0;
+  static const int fav = 1;
+  static const int profile = 2;
+  static const int login = 3;
+  static const int tv = 4;
+  static const int radio = 5;
+  static const int cinema = 6;
+
+  static void inDevelopment(BuildContext context, {String title: 'Эта страница'}) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(title),
+        content: Text('Находится в разработке.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Закрыть')
+          )
+        ],
+      ),
+    );
+  }
+}
 
 
 class _BaseScreenState extends State<BaseScreen> {
@@ -32,21 +55,21 @@ class _BaseScreenState extends State<BaseScreen> {
 
   void initState() {
     super.initState();
-    _initData();
+    _init();
   }
 
   Widget get _body {
     switch(_currentIndex) {
-      case _homeIndex:
+      case NavItems.home:
       default: return HomeScreen(
         watchTv: _watchTV,
-        listenToRadio: () {_inDevelopment('Радио');},
-        watchCinema: () {_inDevelopment('Кинотеатр');},
+        listenToRadio: () {NavItems.inDevelopment(context, title: 'Радио');},
+        watchCinema: () {NavItems.inDevelopment(context, title: 'Кинотеатр');},
       );
     }
   }
 
-  Future<void> _login(int index) async {
+  Future<void> _login(int next) async {
     User user = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => LoginScreen(),
@@ -54,13 +77,23 @@ class _BaseScreenState extends State<BaseScreen> {
     );
     if (user != null) {
       _user = user;
-      await _reloadChannels();
+      await _loadChannels();
+      _openPage(next);
+    }
+  }
+  
+  void _openPage(int index, {int next: NavItems.home}) {
+    if (index == NavItems.login) {
+      _login(next);
+    } else if (index == NavItems.tv) {
+      _watchTV();
+    } else {
       _onNavTap(index);
     }
   }
 
   void _onNavTap(int index) {
-    if (index == _homeIndex) {
+    if (index == NavItems.home) {
       setState(() {
         _currentIndex = index;
       });
@@ -68,26 +101,26 @@ class _BaseScreenState extends State<BaseScreen> {
       if (_user == null) {
         _login(index);
       } else {
-        if (index == _favoritesIndex) {
-          _inDevelopment('Избранное');
-        } else if (index == _profileIndex) {
-          _inDevelopment('Профиль');
+        if (index == NavItems.fav) {
+          NavItems.inDevelopment(context, title: 'Избранное');
+        } else if (index == NavItems.profile) {
+          NavItems.inDevelopment(context, title: 'Профиль');
         } else {
-          _inDevelopment('Эта страница');
+          NavItems.inDevelopment(context);
         }
       }
     }
   }
 
   Future<bool> _onWillPop() async {
-    if(_currentIndex == _homeIndex) return true;
+    if(_currentIndex == NavItems.home) return true;
     setState(() {
       _currentIndex = 0;
     });
     return false;
   }
 
-  Future<void> _reloadChannels() async {
+  Future<void> _loadChannels() async {
     try {
       _channels = await ApiClient.getChannels(_user);
     } on ApiException {
@@ -95,7 +128,7 @@ class _BaseScreenState extends State<BaseScreen> {
     }
   }
 
-  Future<void> _restoreUser() async {
+  Future<void> _loadUser() async {
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('user')) {
       String userInfo = prefs.getString('user');
@@ -103,9 +136,9 @@ class _BaseScreenState extends State<BaseScreen> {
     }
   }
 
-  Future<void> _initData() async {
-    await _restoreUser();
-    await _reloadChannels();
+  Future<void> _init() async {
+    await _loadUser();
+    await _loadChannels();
     _doneLoading();
   }
 
@@ -129,23 +162,6 @@ class _BaseScreenState extends State<BaseScreen> {
     });
   }
 
-  void _inDevelopment(String title) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text(title),
-        content: Text('Находится в разработке.'),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Закрыть')
-          )
-        ],
-      ),
-    );
-  }
-
   Future<void> _watchTV() async {
     int index = await Navigator.of(context).push(
       MaterialPageRoute(
@@ -156,11 +172,7 @@ class _BaseScreenState extends State<BaseScreen> {
       ),
     );
     if (index != null) {
-      if (index == -1) {
-        _login(0);
-      } else {
-        _onNavTap(index);
-      }
+      _openPage(index, next: NavItems.tv);
     }
   }
 

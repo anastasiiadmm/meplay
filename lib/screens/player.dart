@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/hls_video_cache.dart';
 import '../video_player_fork/video_player.dart';
+import 'base.dart';
 import '../models.dart';
 import '../theme.dart';
 
@@ -377,26 +378,9 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       actions: [
         IconButton(
           icon: AppIcons.favAdd,
-          onPressed: () {_inDevelopment('Избранное');},
+          onPressed: () {NavItems.inDevelopment(context, title: 'Избранное');},
         ),
       ],
-    );
-  }
-
-  void _inDevelopment(String title) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text(title),
-        content: Text('Находится в разработке.'),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Закрыть')
-          )
-        ],
-      ),
     );
   }
 
@@ -433,7 +417,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void _login() {
-    Navigator.of(context).pop(-1);
+    Navigator.of(context).pop(NavItems.login);
   }
 
   Widget get _body {
@@ -511,5 +495,4 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
 
 // TODO: enable prev - next on swipe left - right.
-// вернуть градиенты или тени под контролы.
 // сделать кнопку live.

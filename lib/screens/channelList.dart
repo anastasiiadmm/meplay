@@ -168,7 +168,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       ),
     );
     if (index != null) {
-      _onNavTap(index);
+      Navigator.of(context).pop(index);
     }
   }
 

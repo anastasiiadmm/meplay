@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     try {
       User user = await ApiClient.auth(_phone, _code);
-      await _storeUser(user);
+      await _saveUser(user);
       Navigator.of(context).pop<User>(user);
     } on ApiException catch(e) {
       setState(() {
@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _storeUser(User user) async {
+  Future<void> _saveUser(User user) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('user', user.toJson());
   }
