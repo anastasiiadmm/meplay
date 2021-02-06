@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
     filter: { "#": RegExp(r'[0-9]') },
   );
   final _codeMask = MaskTextInputFormatter(
-    mask: '# # # #',
+    mask: '# # # # # #',
     filter: { '#': RegExp(r'[0-9]') },
   );
   final _keyboardVisibility = KeyboardVisibilityNotification();
@@ -232,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _inputIsCorrect(String value) {
     value = value.replaceAll(' ', '');
     if(_waitingForSms) {
-      return value.length == 4;
+      return value.length >= 4;
     } else {
       return value.length == 13;
     }
@@ -266,7 +266,7 @@ class _LoginScreenState extends State<LoginScreen> {
           textInputAction: TextInputAction.send,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(13),
-            hintText: _waitingForSms ? '_ _ _ _' : '+996 --- ------',
+            hintText: _waitingForSms ? 'Введите код подтверждения' : '+996 --- ------',
             hintStyle: AppFonts.loginInputHint,
             fillColor: AppColors.white,
             filled: true,
