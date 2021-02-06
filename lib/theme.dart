@@ -42,7 +42,17 @@ class AppColors {
   static const gray80 = Color.fromRGBO(26, 25, 23, 1); // #1A1917
   static const transparentDark = Color.fromRGBO(26, 25, 23, 0.48); // #1A1917 48%
   static const transparentGray = Color.fromRGBO(83, 83, 78, 0.48);
-  static const videoTitleBorder = Color.fromRGBO(0, 0, 0, 0.6);
+  static const transparentBlack = Color.fromRGBO(0, 0, 0, 0.6);
+  static const gradientTop = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [transparentBlack, AppColors.transparent],
+  );
+  static const gradientBottom = LinearGradient(
+    begin: Alignment.bottomCenter,
+    end: Alignment.topCenter,
+    colors: [transparentBlack, AppColors.transparent],
+  );
 }
 
 

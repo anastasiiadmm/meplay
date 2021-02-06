@@ -244,89 +244,95 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     return AnimatedOpacity(
       opacity: _controlsVisible ? 1.0 : 0,
       duration: Duration(milliseconds: 200),
-      child: Column(
-        children: <Widget>[
-          Padding (
-            padding: _fullscreen
-              ? EdgeInsets.fromLTRB(20, 15, 20, 0)
-              : EdgeInsets.fromLTRB(15, 10, 15, 0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    child: _fullscreen ? Text(
-                      widget.channel.title,
-                      style: AppFonts.screenTitle,
-                    ) : null,
-                  ),
+      child: Container(
+        decoration: BoxDecoration(gradient: AppColors.gradientTop),
+        child: Container(
+          decoration: BoxDecoration(gradient: AppColors.gradientBottom),
+          child: Column(
+            children: <Widget>[
+              Padding (
+                padding: _fullscreen
+                  ? EdgeInsets.fromLTRB(20, 15, 20, 0)
+                  : EdgeInsets.fromLTRB(15, 10, 15, 0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        child: _fullscreen ? Text(
+                          widget.channel.title,
+                          style: AppFonts.screenTitle,
+                        ) : null,
+                      ),
+                    ),
+                    // chromecast be here
+                    // IconButton(
+                    //   icon: AppIcons.chromecast,
+                    //   onPressed: _chromecast,
+                    // ),
+                    IconButton(
+                      icon: AppIcons.settings,
+                      onPressed: _changeAspectRatio,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ],
                 ),
-                // chromecast be here
-                // IconButton(
-                //   icon: AppIcons.chromecast,
-                //   onPressed: _chromecast,
-                // ),
-                IconButton(
-                  icon: AppIcons.settings,
-                  onPressed: _changeAspectRatio,
-                  padding: EdgeInsets.zero,
+              ),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: AppIcons.skipPrev,
+                      onPressed: _toPrev,
+                      padding: EdgeInsets.zero,
+                    ),
+                    Container(
+                      width: 56,
+                      margin: EdgeInsets.all(30),
+                      child: _controller == null ? null : IconButton(
+                        icon: _controller != null && _controller.value.isPlaying
+                            ? Icon(Icons.pause, color: AppColors.white, size: 56,)
+                            : AppIcons.play,
+                        onPressed: _togglePlay,
+                        padding: EdgeInsets.zero,
+                      ),
+                    ),
+                    IconButton(
+                      icon: AppIcons.skipNext,
+                      onPressed: _toNext,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Padding (
+                padding: _fullscreen
+                  ? EdgeInsets.fromLTRB(20, 0, 20, 15)
+                  : EdgeInsets.fromLTRB(15, 0, 15, 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    // Text(_timeDisplay, style: AppFonts.videoTimer,),
+                    TextButton(
+                      onPressed: _goLive,
+                      child: Text('LIVE', style: AppFonts.screenTitle),
+                    ),
+                    Expanded(
+                      child: _scrollBar,
+                    ),
+                    IconButton(
+                      icon: _fullscreen ? AppIcons.smallScreen : AppIcons.fullScreen,
+                      onPressed: _toggleFullScreen,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: AppIcons.skipPrev,
-                  onPressed: _toPrev,
-                  padding: EdgeInsets.zero,
-                ),
-                Container(
-                  width: 56,
-                  margin: EdgeInsets.all(30),
-                  child: _controller == null ? null : IconButton(
-                    icon: _controller != null && _controller.value.isPlaying
-                        ? Icon(Icons.pause, color: AppColors.white, size: 56,)
-                        : AppIcons.play,
-                    onPressed: _togglePlay,
-                    padding: EdgeInsets.zero,
-                  ),
-                ),
-                IconButton(
-                  icon: AppIcons.skipNext,
-                  onPressed: _toNext,
-                  padding: EdgeInsets.zero,
-                ),
-              ],
-            ),
-          ),
-          Padding (
-            padding: _fullscreen
-              ? EdgeInsets.fromLTRB(20, 0, 20, 15)
-              : EdgeInsets.fromLTRB(15, 0, 15, 10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                // Text(_timeDisplay, style: AppFonts.videoTimer,),
-                TextButton(
-                  onPressed: _goLive,
-                  child: Text('LIVE', style: AppFonts.screenTitle),
-                ),
-                Expanded(
-                  child: _scrollBar,
-                ),
-                IconButton(
-                  icon: _fullscreen ? AppIcons.smallScreen : AppIcons.fullScreen,
-                  onPressed: _toggleFullScreen,
-                  padding: EdgeInsets.zero,
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -438,7 +444,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
           border: Border(
             bottom: BorderSide(
               width: 1,
-              color: AppColors.videoTitleBorder,
+              color: AppColors.transparentBlack,
             )
           )
         ),
