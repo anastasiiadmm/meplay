@@ -7,11 +7,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 import '../hexagon/hexagon_widget.dart';
 import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../theme.dart';
 import '../models.dart';
 import '../api_client.dart';
+
+
+const String appHash = 'g8xZvf1R7yJ';
 
 
 class LoginHexBackground extends StatelessWidget {
@@ -63,7 +67,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
   final _phoneMask = MaskTextInputFormatter(
     mask: '+996 ### ######',
     filter: { "#": RegExp(r'[0-9]') },
@@ -80,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
   int _keyboardVisibilityListenerId;
   bool _waitingForSms = false;
   String _phone;
-  TextEditingValue _phoneValue;
+  String  _phoneText;
   String _code;
   Timer _smsTimer;
   int _time = -1;
@@ -100,6 +104,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
+    cancel();
+    unregisterListener();
     _keyboardVisibility.removeListener(_keyboardVisibilityListenerId);
     _keyboardVisibility.dispose();
     _userAgreementTapDetector.dispose();
@@ -123,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _authenticate();
     } else {
       if (_time < 0) {
-        _phoneValue = _inputController.value;
+        _phoneText = _inputController.text;
         _phone = _inputController.text.replaceAll(' ', '').replaceAll('+', '');
         _sendSms();
       } else {
@@ -159,6 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     try {
       await ApiClient.requestPassword(_phone);
+      listenForCode();
       setState(() {
         _time = 180;
         _error = null;
@@ -208,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _changePhone() {
-    _inputController.value = _phoneValue;
+    _inputController.text = _phoneText;
     setState(() {
       _waitingForSms = false;
     });
@@ -244,6 +251,15 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  @override
+  void codeUpdated() {
+    _inputController.text = code.split('').join(" ");
+    setState(() {
+      _allowContinue = true;
+    });
+    _continue();
+  }
+
   Widget get _form {
     List<Widget> formElements = [
       Text(
@@ -263,7 +279,9 @@ class _LoginScreenState extends State<LoginScreen> {
           onFieldSubmitted: _fieldSubmit,
           onChanged: _inputChanged,
           autocorrect: false,
+          autofocus: true,
           textInputAction: TextInputAction.send,
+          autofillHints: [ _waitingForSms ? AutofillHints.oneTimeCode : AutofillHints.telephoneNumber ],
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(13),
             hintText: _waitingForSms ? 'Введите код подтверждения' : '+996 --- ------',
@@ -271,8 +289,8 @@ class _LoginScreenState extends State<LoginScreen> {
             fillColor: AppColors.white,
             filled: true,
             border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(6),
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(6),
             ),
             errorMaxLines: 1
           ),
