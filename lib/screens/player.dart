@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../utils/hls_video_cache.dart';
 import '../video_player_fork/video_player.dart';
@@ -206,7 +207,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       _loadVideo(widget.channel);
     }
     WidgetsBinding.instance.addObserver(this);
-    print(getProgram(widget.channel));
+    Wakelock.enable();
   }
 
   Future<void> _restoreUser() async {
@@ -221,6 +222,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   void dispose() {
     _disposeController();
     _clearCache();
+    Wakelock.disable();
     WidgetsBinding.instance.removeObserver(this);
     _enablePortraitOnly();
     super.dispose();
