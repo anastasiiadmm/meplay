@@ -195,6 +195,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   Timer _controlsTimer;
   static const Duration _controlsTimeout = Duration(seconds: 3);
   User _user;
+  bool _forceFullscreen = false;
 
   @override
   void initState() {
@@ -350,7 +351,8 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   bool get _fullscreen {
-    return MediaQuery.of(context).orientation == Orientation.landscape;
+    return _forceFullscreen ||
+      MediaQuery.of(context).orientation == Orientation.landscape;
   }
 
   void _swipeChannel(DragEndDetails details) {
@@ -515,7 +517,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void _toggleFullScreen() {
-    if (_fullscreen) {
+    if (_forceFullscreen) {
       _exitFullScreen();
     } else {
       _enterFullScreen();
@@ -524,12 +526,16 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   void _enterFullScreen() {
     _enableLandscapeOnly();
-    Timer(Duration(seconds: 3), _enableAllOrientations);
+    setState(() {
+      _forceFullscreen = true;
+    });
   }
 
   void _exitFullScreen() {
-    _enablePortraitOnly();
-    Timer(Duration(seconds: 3), _enableAllOrientations);
+    _enableAllOrientations();
+    setState(() {
+      _forceFullscreen = false;
+    });
   }
 
   Future<bool> _willPop() async {
