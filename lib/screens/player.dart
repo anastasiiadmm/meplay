@@ -54,7 +54,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       _loadVideo(widget.channel);
     }
     WidgetsBinding.instance.addObserver(this);
-    Wakelock.enable();
   }
 
   Future<void> _restoreUser() async {
@@ -73,6 +72,10 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     WidgetsBinding.instance.removeObserver(this);
     _enablePortraitOnly();
     super.dispose();
+  }
+
+  @override void didChangeMetrics() {
+    Wakelock.enable();
   }
 
   void _enableAllOrientations() {
