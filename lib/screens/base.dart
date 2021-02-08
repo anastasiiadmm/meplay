@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:me_play/screens/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 import 'login.dart';
@@ -60,6 +61,8 @@ class _BaseScreenState extends State<BaseScreen> {
 
   Widget get _body {
     switch(_currentIndex) {
+      case NavItems.profile:
+        return ProfileScreen(user: _user,);
       case NavItems.home:
       default: return HomeScreen(
         watchTv: _watchTV,
@@ -104,7 +107,9 @@ class _BaseScreenState extends State<BaseScreen> {
         if (index == NavItems.fav) {
           NavItems.inDevelopment(context, title: 'Избранное');
         } else if (index == NavItems.profile) {
-          NavItems.inDevelopment(context, title: 'Профиль');
+          setState(() {
+            _currentIndex = index;
+          });
         } else {
           NavItems.inDevelopment(context);
         }
@@ -176,6 +181,70 @@ class _BaseScreenState extends State<BaseScreen> {
     }
   }
 
+  void _back() {
+    if (_currentIndex == NavItems.home) {
+      Navigator.of(context).pop();
+    } else {
+      setState(() {
+        _currentIndex = NavItems.home;
+      });
+    }
+  }
+
+  Widget get _appBarTitle {
+    String text;
+    if (_currentIndex == NavItems.profile) {
+      text = 'Личный кабинет';
+    } else if (_currentIndex == NavItems.fav) {
+      text = 'Избранное';
+    }
+    if (text != null) {
+      return Text(text, style: AppFonts.screenTitle);
+    }
+    return null;
+  }
+
+  Widget get _appBar {
+    return _currentIndex == NavItems.home ? null : AppBar(
+      backgroundColor: AppColors.megaPurple,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      leading: IconButton(
+        onPressed: _back,
+        icon: AppIcons.back,
+      ),
+      title: _appBarTitle,
+      centerTitle: true,
+    );
+  }
+
+  Widget get _bottomNavBar {
+    return BottomNavigationBar(
+      backgroundColor: AppColors.bottomBar,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+      onTap: _onNavTap,
+      currentIndex: _currentIndex ?? 0,
+      items: [
+        BottomNavigationBarItem(
+          icon: AppIcons.home,
+          activeIcon: AppIcons.homeActive,
+          label: 'Главная',
+        ),
+        BottomNavigationBarItem(
+          icon: AppIcons.star,
+          activeIcon: AppIcons.starActive,
+          label: 'Избранное',
+        ),
+        BottomNavigationBarItem(
+          icon: AppIcons.user,
+          activeIcon: AppIcons.userActive,
+          label: 'Профиль',
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return _loading ? SplashScreen(
@@ -185,33 +254,13 @@ class _BaseScreenState extends State<BaseScreen> {
       onWillPop: _onWillPop,
       child: Scaffold(
         backgroundColor: AppColors.megaPurple,
+        appBar: _appBar,
         extendBody: true,
         body: _body,
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: AppColors.bottomBar,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          onTap: _onNavTap,
-          currentIndex: _currentIndex ?? 0,
-          items: [
-            BottomNavigationBarItem(
-              icon: AppIcons.home,
-              activeIcon: AppIcons.homeActive,
-              label: 'Главная',
-            ),
-            BottomNavigationBarItem(
-              icon: AppIcons.star,
-              activeIcon: AppIcons.starActive,
-              label: 'Избранное',
-            ),
-            BottomNavigationBarItem(
-              icon: AppIcons.user,
-              activeIcon: AppIcons.userActive,
-              label: 'Профиль',
-            ),
-          ],
-        ),
+        bottomNavigationBar: _bottomNavBar,
       ),
     );
   }
 }
+
+// TODO: выход в аппбаре справа на главной. По выходу тупо удалять username и пароль и очищать юзера в base.dart.

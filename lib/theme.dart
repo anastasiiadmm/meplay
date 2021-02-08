@@ -127,7 +127,7 @@ class AppFonts {
   static const lockLogin = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 12, height: 22/12,
       letterSpacing: -0.41, color: AppColors.megaPurple);
-  static const changePassword = TextStyle(fontFamily: 'SF Pro Text',
+  static const profileAction = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
       letterSpacing: -0.08, color: AppColors.megaPurple);
   static const programTitle = TextStyle(fontFamily: 'SF Pro Text',
@@ -145,22 +145,22 @@ class AppFonts {
   static const nowOnAir = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
       letterSpacing: -0.08, color: AppColors.accentPink);
-  static const profilePhone = TextStyle(fontFamily: 'SF Pro Text',
+  static const profileName = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.w600, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.gray80);
-  static const connectedPackets = TextStyle(fontFamily: 'SF Pro Text',
+  static const activePacketsTitle = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
       letterSpacing: -0.24, color: AppColors.gray60);
-  static const packetList = TextStyle(fontFamily: 'SF Pro Text',
+  static const activePacketList = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.w600, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.gray80);
-  static const packetsTitle = TextStyle(fontFamily: 'SF Pro Text',
+  static const packetListTitle = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.w600, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.white);
   static const packetName = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.bold, fontSize: 15, height: 20/15,
       letterSpacing: -0.24, color: AppColors.gray80);
-  static const packetChannelCount = TextStyle(fontFamily: 'SF Pro Text',
+  static const channelCount = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
       letterSpacing: -0.24, color: AppColors.gray60);
   static const packetPrice = TextStyle(fontFamily: 'SF Pro Text',
