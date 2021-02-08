@@ -268,6 +268,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
         onPressed: _back,
         icon: AppIcons.back,
       ),
+      // TODO: place search here instead of text "Поиск".
       title: Text(_search ? 'Поиск' : widget.title, style: AppFonts.screenTitle),
       centerTitle: true,
       actions: [
