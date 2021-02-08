@@ -42,7 +42,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   bool _controlsVisible = false;
   HLSVideoCache _cache;
   Timer _controlsTimer;
-  static const Duration _controlsTimeout = Duration(seconds: 3);
+  static const Duration _controlsTimeout = Duration(seconds: 5);
   User _user;
   bool _forceFullscreen = false;
   bool _expandProgram = false;
@@ -129,6 +129,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void _showSettings() {
+    NavItems.inDevelopment(context, title: 'Настройки');
     // TODO: show items: change aspect ratio and favorites
     // setState(() {
     //   _aspectRatio = ratio > 0 ? ratio : _controller.value.aspectRatio;
@@ -227,23 +228,26 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       return  GestureDetector(
         onTap: _toggleControls,
         onHorizontalDragEnd: _swipeChannel,
-        child: Material(
-          color: AppColors.black,
-          child: Stack(
-            children: [
-              Center (
-                child: _controller == null ? CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray5),
-                  strokeWidth: 10,
-                ) : AspectRatio(
-                  aspectRatio: _aspectRatio,
-                  child: VideoPlayer(
-                    _controller,
+        child: AbsorbPointer(
+          absorbing: !_controlsVisible,
+          child: Material(
+            color: AppColors.black,
+            child: Stack(
+              children: [
+                Center (
+                  child: _controller == null ? CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray5),
+                    strokeWidth: 10,
+                  ) : AspectRatio(
+                    aspectRatio: _aspectRatio,
+                    child: VideoPlayer(
+                      _controller,
+                    ),
                   ),
                 ),
-              ),
-              _controls,
-            ],
+                _controls,
+              ],
+            ),
           ),
         ),
       );
@@ -251,22 +255,25 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       return GestureDetector(
         onTap: _toggleControls,
         onHorizontalDragEnd: _swipeChannel,
-        child: AspectRatio(
-          aspectRatio: _aspectRatio,
-          child: Material(
-            color: AppColors.black,
-            child: Stack(
-              children: <Widget>[
-                _controller == null ? Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray5),
-                    strokeWidth: 10,
+        child: AbsorbPointer(
+          absorbing: !_controlsVisible,
+          child: AspectRatio(
+            aspectRatio: _aspectRatio,
+            child: Material(
+              color: AppColors.black,
+              child: Stack(
+                children: <Widget>[
+                  _controller == null ? Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray5),
+                      strokeWidth: 10,
+                    ),
+                  ) : VideoPlayer(
+                    _controller,
                   ),
-                ) : VideoPlayer(
-                  _controller,
-                ),
-                _controls,
-              ],
+                  _controls,
+                ],
+              ),
             ),
           ),
         ),
@@ -275,7 +282,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void _goLive() {
-
+    NavItems.inDevelopment(context, title: 'Эта функция');
   }
 
   Widget get _controls {
