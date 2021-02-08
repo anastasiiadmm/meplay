@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:device_info/device_info.dart';
 import 'package:flutter/services.dart';
@@ -81,6 +80,21 @@ class ApiClient {
         } else {
           throw ApiException('Неизвестная ошибка');
         }
+      } else {
+        throw ApiException('Ошибка при выполнении запроса');
+      }
+    } on SocketException {
+      throw ApiException('Нет подключения к интернету');
+    }
+  }
+
+  static Future<List<Program>> getProgram(int channelId) async {
+    final url = '$BASE_API_URL/stalker_portal/meplay/epg?channel_id=$channelId';
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        List<Map<String, dynamic>> data = jsonDecode(response.body);
+        return data.map((item) => Program.fromJson(item)).toList();
       } else {
         throw ApiException('Ошибка при выполнении запроса');
       }
