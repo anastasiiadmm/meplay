@@ -110,6 +110,7 @@ class User {
   String token;
   String refreshToken;
   int id;
+  List<Packet> _packets;
 
   User({this.username, this.password, this.token, this.refreshToken, this.id});
 
@@ -130,6 +131,33 @@ class User {
       'refreshToken': refreshToken,
     };
     return jsonEncode(data);
+  }
+
+  Future<List<Packet>> getPackets() async {
+    // TODO: add persistence.
+    if(_noPackets) await _getPackets();
+    return _packets;
+  }
+
+  bool get _noPackets {
+    return _packets == null;
+  }
+
+  Future<void> _getPackets() async {
+    try {
+      _packets = await ApiClient.getPackets(this);
+    } on ApiException {
+      _packets = null;
+    }
+  }
+
+  Future<List<Packet>> addPacket(Packet packet) async {
+    try {
+      _packets = await ApiClient.addPacket(this, packet);
+      return _packets;
+    } on ApiException {
+      return null;
+    }
   }
 }
 
