@@ -538,7 +538,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       );
     }
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, first ? 0 : 5, 44, 0),
+      padding: EdgeInsets.fromLTRB(0, first ? 0 : 5, 50, 0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -650,3 +650,4 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
 
 // TODO: сделать кнопку live.
+// TODO: вывести инфо о днях в программе.
