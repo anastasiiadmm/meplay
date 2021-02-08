@@ -103,6 +103,24 @@ class ApiClient {
     }
   }
 
+  static Future<List<Packet>> getPackets([User user]) async {
+    String url = '$BASE_API_URL/stalker_portal/meplay/get_packets';
+    if(user != null) {
+      url += '?username=${user.username}';
+    }
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+        return data.map((item) => Packet.fromJson(item)).toList();
+      } else {
+        throw ApiException('Ошибка при выполнении запроса');
+      }
+    } on SocketException {
+      throw ApiException('Нет подключения к интернету');
+    }
+  }
+
   static Future<User> authOld(String username, String password) async {
     final url = '$BASE_API_URL/stalker_portal/auth/token';
     final timestamp = DateTime.now().millisecondsSinceEpoch;
