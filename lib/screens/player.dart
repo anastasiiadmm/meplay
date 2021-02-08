@@ -608,10 +608,11 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
             _user == null
               ? 'Войдите, чтобы получить доступ к данному каналу'
               : "Для разблокировки канала подключите один из пакетов",
+            style: AppFonts.lockText,
           ),
           TextButton(
             onPressed: _login,
-            child: Text("Войти", style: AppFonts.channelLogin),
+            child: Text("Войти", style: AppFonts.lockLogin),
           )
         ],
       )

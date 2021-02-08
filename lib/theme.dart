@@ -120,10 +120,12 @@ class AppFonts {
       fontWeight: FontWeight.w600, fontSize: 24, height: 1,
       letterSpacing: -0.24, color: AppColors.black,);
 
-  // TODO: change
-  static const channelLogin = TextStyle(fontFamily: 'SF Pro Text',
-      fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
-      letterSpacing: -0.08, color: AppColors.megaPurple);
+  static const lockText = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 12, height: 22/12,
+      letterSpacing: -0.41, color: AppColors.gray80);
+  static const lockLogin = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 12, height: 22/12,
+      letterSpacing: -0.41, color: AppColors.megaPurple);
 
   static const programTitle = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
