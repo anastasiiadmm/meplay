@@ -41,8 +41,10 @@ class AppColors {
   static const gray70 = Color.fromRGBO(38, 38, 35, 1); // #262623
   static const gray80 = Color.fromRGBO(26, 25, 23, 1); // #1A1917
   static const transparentDark = Color.fromRGBO(26, 25, 23, 0.48); // #1A1917 48%
-  static const transparentGray = Color.fromRGBO(83, 83, 78, 0.48);
-  static const transparentBlack = Color.fromRGBO(0, 0, 0, 0.6);
+  static const transparentGray = Color.fromRGBO(83, 83, 78, 0.48); // #53534E 48%
+  static const transparentBlack = Color.fromRGBO(0, 0, 0, 0.6); // #000000 60%
+  static const transparentLight = Color.fromRGBO(250, 250, 247, 0.85); // #FAFAF7 85%
+
   static const gradientTop = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
@@ -119,14 +121,15 @@ class AppFonts {
   static const videoTitle = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.w600, fontSize: 24, height: 1,
       letterSpacing: -0.24, color: AppColors.black,);
-
   static const lockText = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 12, height: 22/12,
       letterSpacing: -0.41, color: AppColors.gray80);
   static const lockLogin = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 12, height: 22/12,
       letterSpacing: -0.41, color: AppColors.megaPurple);
-
+  static const changePassword = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
+      letterSpacing: -0.08, color: AppColors.megaPurple);
   static const programTitle = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
       letterSpacing: -0.24, color: AppColors.gray80);
@@ -142,6 +145,17 @@ class AppFonts {
   static const nowOnAir = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
       letterSpacing: -0.08, color: AppColors.accentPink);
+  static const profilePhone = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.w600, fontSize: 17, height: 22/17,
+      letterSpacing: -0.41, color: AppColors.gray80);
+  static const profileName = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
+      letterSpacing: -0.24, color: AppColors.gray60);
+  static const profileChannelList = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.w600, fontSize: 17, height: 22/17,
+      letterSpacing: -0.41, color: AppColors.gray80);
+
+  // TODO add profile channels style
 }
 
 
@@ -178,4 +192,6 @@ class AppIcons {
   static final showProgram = SvgPicture.asset('assets/icons/program_open.svg', width: 44, height: 44,);
   static final hideProgram = SvgPicture.asset('assets/icons/program_close.svg', width: 44, height: 44,);
   static final pinkDot = Image.asset('assets/icons/pink_dot.png', width: 8, height: 8,);
+  static final plus = Image.asset('assets/icons/plus.svg', width: 36, height: 36,);
+  static final check = Image.asset('assets/icons/checkmark.svg', width: 31, height: 36,);
 }

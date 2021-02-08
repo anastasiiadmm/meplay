@@ -3,6 +3,17 @@ import 'dart:convert';
 import 'api_client.dart';
 
 
+String rPlural(int count, List<String> forms) {
+  int lastTwo = count % 100;
+  int second = lastTwo ~/ 10;
+  if (second == 1) return forms[2]; // 10, 11 - 19 каналов
+  int last = lastTwo  % 10;
+  if (last == 1) return forms[0]; // 1, 21, 31, ... канал
+  if ([2, 3, 4].contains(last)) return forms[1]; // 2 - 4, 22 - 24, ... канала
+  return forms[2]; // 5 - 9, 25 - 29, ... каналов
+}
+
+
 class Channel {
   int id;
   String name;
@@ -119,5 +130,20 @@ class User {
       'refreshToken': refreshToken,
     };
     return jsonEncode(data);
+  }
+}
+
+
+class Package {
+  String name;
+  int channels;
+  String price;
+  bool isActive;
+  int id;
+
+  Package({this.id, this.name, this.channels, this.price, this.isActive,});
+
+  String get channelDisplay {
+    return rPlural(channels, ['КАНАЛ', 'КАНАЛА', 'КАНАЛОВ']);
   }
 }
