@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:expandable/expandable.dart';
 
 import '../utils/hls_video_cache.dart';
 import '../video_player_fork/video_player.dart';
@@ -460,47 +461,97 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       padding: EdgeInsets.symmetric(vertical: 22, horizontal: 0),
       child: program == null ? Text(
         snapshot.connectionState == ConnectionState.waiting
-            ? 'Программа загружается ...'
+            ? 'Загружаю программу ...'
             : 'Программа для этого канала недоступна',
         style: AppFonts.currentProgramTitle,
         textAlign: TextAlign.center,
-      ) : Stack(
-        children: [
-          ListView.builder(
-            shrinkWrap: false,
-            itemCount: program.length,
-            itemExtent: 50,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                contentPadding: EdgeInsets.fromLTRB(15, 0, 15, 5),
-                title: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 50,
-                      padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-                      child: Text(
-                        program[index].startTime,
-                        style: index == 0 ? AppFonts.currentProgramTime : AppFonts.programTime,
-                        textAlign: TextAlign.right,
-                      )
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                        child: Text(
-                          program[index].title,
-                          style: index == 0 ? AppFonts.currentProgramTitle : AppFonts.programTitle,
-                        )
-                      )
-                    )
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
+      ) : ExpandableNotifier(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Expandable(
+                collapsed: Stack(children: [
+                  _programTile(program[0], first: true,),
+                  ExpandableButton(child: Text('Click'),),
+                ]),
+                expanded: Stack(children: [
+                  Column(
+                    children: program.map(
+                      (item) => _programTile(item, first: item == program.first)
+                    ).toList(),
+                  ),
+                  ExpandableButton(child: Text('Clack'),),
+                ]),
+              )
+            ),
+          ],
+        ),
       ),
+    );
+      
+    //   Stack(
+    //     children: [
+    //       ListView.builder(
+    //         shrinkWrap: false,
+    //         itemCount: program.length,
+    //         itemExtent: 50,
+    //         itemBuilder: (BuildContext context, int index) {
+    //           return ListTile(
+    //             contentPadding: EdgeInsets.fromLTRB(15, 0, 15, 5),
+    //             title: Row(
+    //               crossAxisAlignment: CrossAxisAlignment.center,
+    //               children: [
+    //                 Container(
+    //                   width: 50,
+    //                   padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+    //                   child: Text(
+    //                     program[index].startTime,
+    //                     style: index == 0 ? AppFonts.currentProgramTime : AppFonts.programTime,
+    //                     textAlign: TextAlign.right,
+    //                   )
+    //                 ),
+    //                 Expanded(
+    //                   child: Padding(
+    //                     padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+    //                     child: Text(
+    //                       program[index].title,
+    //                       style: index == 0 ? AppFonts.currentProgramTitle : AppFonts.programTitle,
+    //                     )
+    //                   )
+    //                 )
+    //               ],
+    //             ),
+    //           );
+    //         },
+    //       ),
+    //     ],
+    //   ),
+    // );
+  }
+
+  Widget _programTile(Program program, {first: false}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: 50,
+          padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+          child: Text(
+            program.startTime,
+            style: first ? AppFonts.currentProgramTime : AppFonts.programTime,
+            textAlign: TextAlign.right,
+          )
+        ),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+            child: Text(
+              program.title,
+              style: first ? AppFonts.currentProgramTitle : AppFonts.programTitle,
+            )
+          )
+        )
+      ],
     );
   }
 
