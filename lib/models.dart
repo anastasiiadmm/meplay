@@ -65,9 +65,20 @@ class Program {
     this.id = data['id'];
     this.duration = data['duration'];
     this.title = data['title'];
-    this.start = DateTime.tryParse(data['start']);
-    this.end = DateTime.tryParse(data['end']);
+    this.start = DateTime.parse(data['start']);
+    this.end = DateTime.parse(data['end']);
     this.channelId = data['channel_id'];
+  }
+
+  String toJson() {
+    return jsonEncode({
+      'id': id,
+      'duration': duration,
+      'title': title,
+      'start': start?.toIso8601String(),
+      'end': end?.toIso8601String(),
+      'channelId': channelId,
+    });
   }
 }
 
