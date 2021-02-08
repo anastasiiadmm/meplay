@@ -45,6 +45,8 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   static const Duration _controlsTimeout = Duration(seconds: 3);
   User _user;
   bool _forceFullscreen = false;
+  bool _expandProgram = false;
+  ExpandableController _expandableController;
 
   @override
   void initState() {
@@ -54,6 +56,8 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     if (!widget.channel.locked) {
       _loadVideo(widget.channel);
     }
+    _expandableController = ExpandableController(initialExpanded: _expandProgram);
+    _expandableController.addListener(_toggleProgram);
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -72,6 +76,8 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     Wakelock.disable();
     WidgetsBinding.instance.removeObserver(this);
     _enablePortraitOnly();
+    _expandableController.removeListener(_toggleProgram);
+    _expandableController.dispose();
     super.dispose();
   }
 
@@ -455,10 +461,30 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     Navigator.of(context).pop(NavItems.login);
   }
 
+  void _toggleProgram() {
+    setState(() {
+      _expandProgram = !_expandProgram;
+    });
+  }
+
+  Widget get _expandBtn {
+    return AnimatedAlign(
+      child: ExpandableButton (
+        child: _expandProgram
+            ? AppIcons.hideProgram
+            : AppIcons.showProgram,
+      ),
+      alignment: _expandProgram
+          ? Alignment.bottomRight
+          : Alignment.topRight,
+      duration: Duration(milliseconds: 100),
+    );
+  }
+
   Widget _program(BuildContext context, AsyncSnapshot<List<Program>> snapshot) {
     final program = snapshot.data;
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 22, horizontal: 0),
+      padding: EdgeInsets.symmetric(vertical: 22, horizontal: 15),
       child: program == null ? Text(
         snapshot.connectionState == ConnectionState.waiting
             ? 'Загружаю программу ...'
@@ -466,92 +492,76 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         style: AppFonts.currentProgramTitle,
         textAlign: TextAlign.center,
       ) : ExpandableNotifier(
+        controller: _expandableController,
         child: Stack(
           children: [
-            SingleChildScrollView(
-              child: Expandable(
-                collapsed: Stack(children: [
-                  _programTile(program[0], first: true,),
-                  ExpandableButton(child: Text('Click'),),
-                ]),
-                expanded: Stack(children: [
-                  Column(
-                    children: program.map(
-                      (item) => _programTile(item, first: item == program.first)
-                    ).toList(),
-                  ),
-                  ExpandableButton(child: Text('Clack'),),
-                ]),
-              )
+            Expandable(
+              collapsed: _programTile(program.first, first: true),
+              expanded: SingleChildScrollView(
+                child: Column(
+                  children: program.map((item) => _programTile(
+                    item,
+                    first: item == program.first,
+                  )).toList(),
+                ),
+              ),
             ),
+            _expandBtn,
           ],
         ),
       ),
     );
-      
-    //   Stack(
-    //     children: [
-    //       ListView.builder(
-    //         shrinkWrap: false,
-    //         itemCount: program.length,
-    //         itemExtent: 50,
-    //         itemBuilder: (BuildContext context, int index) {
-    //           return ListTile(
-    //             contentPadding: EdgeInsets.fromLTRB(15, 0, 15, 5),
-    //             title: Row(
-    //               crossAxisAlignment: CrossAxisAlignment.center,
-    //               children: [
-    //                 Container(
-    //                   width: 50,
-    //                   padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-    //                   child: Text(
-    //                     program[index].startTime,
-    //                     style: index == 0 ? AppFonts.currentProgramTime : AppFonts.programTime,
-    //                     textAlign: TextAlign.right,
-    //                   )
-    //                 ),
-    //                 Expanded(
-    //                   child: Padding(
-    //                     padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-    //                     child: Text(
-    //                       program[index].title,
-    //                       style: index == 0 ? AppFonts.currentProgramTitle : AppFonts.programTitle,
-    //                     )
-    //                   )
-    //                 )
-    //               ],
-    //             ),
-    //           );
-    //         },
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
-  Widget _programTile(Program program, {first: false}) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: 50,
-          padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-          child: Text(
-            program.startTime,
-            style: first ? AppFonts.currentProgramTime : AppFonts.programTime,
-            textAlign: TextAlign.right,
-          )
+  Widget _programTile(Program program, {bool first: false}) {
+    List<Widget> programText = [
+      Text(
+        program.title,
+        style: first ? AppFonts.currentProgramTitle : AppFonts.programTitle,
+      ),
+    ];
+    if(first) {
+      programText.add(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 2, 5, 0),
+              child: AppIcons.pinkDot,
+            ),
+            Text(
+              'Сейчас в эфире',
+              style: AppFonts.nowOnAir,
+            ),
+          ],
         ),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+      );
+    }
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, first ? 0 : 5, 44, 0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 50,
+            padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
             child: Text(
-              program.title,
-              style: first ? AppFonts.currentProgramTitle : AppFonts.programTitle,
-            )
-          )
-        )
-      ],
+              program.startTime,
+              style: first ? AppFonts.currentProgramTime : AppFonts.programTime,
+              textAlign: TextAlign.right,
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: programText,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
