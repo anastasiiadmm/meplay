@@ -27,20 +27,20 @@ class Channel {
     return '$number. $name';
   }
 
-  Future<List<Program>> get program async {
+  Future<List<Program>> getProgram() async {
     // TODO: add persistent store.
-    if(_programEnded) await _loadProgram();
+    if(_noProgram) await _getProgram();
     if (_program == null) return _program;
     DateTime now = DateTime.now();
     return _program.where((p) => p.end.isAfter(now)).toList();
   }
 
-  bool get _programEnded {
+  bool get _noProgram {
     return _program == null || _program.isEmpty
         || _program.last.end.isBefore(DateTime.now());
   }
 
-  Future<void> _loadProgram() async {
+  Future<void> _getProgram() async {
     try {
       _program = await ApiClient.getProgram(id);
     } on ApiException {
@@ -79,6 +79,16 @@ class Program {
       'end': end?.toIso8601String(),
       'channelId': channelId,
     });
+  }
+
+  String get startTime {
+    return start == null ? '' 
+        : '${start.hour}:${start.minute.toString().padLeft(2, '0')}';
+  }
+
+  String get endTime {
+    return end == null ? ''
+        : '${end.hour}:${end.minute.toString().padLeft(2, '0')}';
   }
 }
 

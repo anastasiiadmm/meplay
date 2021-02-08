@@ -93,7 +93,7 @@ class ApiClient {
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        List<Map<String, dynamic>> data = jsonDecode(response.body);
+        List<dynamic> data = jsonDecode(response.body);
         return data.map((item) => Program.fromJson(item)).toList();
       } else {
         throw ApiException('Ошибка при выполнении запроса');
