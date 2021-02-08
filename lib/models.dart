@@ -159,6 +159,15 @@ class User {
       return null;
     }
   }
+
+  Future<List<Packet>> removePacket(Packet packet) async {
+    try {
+      _packets = await ApiClient.removePacket(this, packet);
+      return _packets;
+    } on ApiException {
+      return null;
+    }
+  }
 }
 
 

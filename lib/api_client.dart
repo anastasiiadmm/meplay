@@ -152,6 +152,37 @@ class ApiClient {
     }
   }
 
+  static Future<List<Packet>> removePacket(User user, Packet packet) async {
+    final url = '$BASE_API_URL/stalker_portal/meplay/deactivate_packet';
+    final body = {
+      'username': user.username,
+      'password': user.password,
+      'packet_id': packet.id,
+    };
+    try {
+      final response = await http.post(url, body: body);
+      if (response.statusCode == 200) {
+        dynamic responseBody = jsonDecode(response.body);
+        if(responseBody is List) {
+          List<dynamic> data = responseBody;
+          return data.map((item) => Packet.fromJson(item)).toList();
+        } else {
+          if (responseBody['error'] == 'Incorrect password') {
+            throw ApiException('Неверный пароль');
+          } else if (responseBody['error'] == 'User not found') {
+            throw ApiException('Пользователь не найден');
+          } else {
+            throw ApiException('Неизвестная ошибка');
+          }
+        }
+      } else {
+        throw ApiException('Ошибка при выполнении запроса');
+      }
+    } on SocketException {
+      throw ApiException('Нет подключения к интернету');
+    }
+  }
+
   static Future<User> authOld(String username, String password) async {
     final url = '$BASE_API_URL/stalker_portal/auth/token';
     final timestamp = DateTime.now().millisecondsSinceEpoch;
