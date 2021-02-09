@@ -376,7 +376,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(child: AppIcons.back, padding: EdgeInsets.fromLTRB(0, 0, 5, 0),),
-            Text('Назад', style: AppFonts.backBtn,),
+            Text('Назад', style: AppFonts.appBarAction,),
           ],
         ),
       ),

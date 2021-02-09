@@ -62,7 +62,7 @@ class _BaseScreenState extends State<BaseScreen> {
   Widget get _body {
     switch(_currentIndex) {
       case NavItems.profile:
-        return ProfileScreen(user: _user,);
+        return ProfileScreen(user: _user, logout: _logout);
       case NavItems.home:
       default: return HomeScreen(
         watchTv: _watchTV,
@@ -203,16 +203,36 @@ class _BaseScreenState extends State<BaseScreen> {
     }
     return null;
   }
+  
+  void _logout() {
+    setState(() {
+      _user = null;
+      _currentIndex = NavItems.home;
+    });
+    _loadChannels();
+  }
+
+  bool get _isHome {
+    return (_currentIndex ?? 0) == NavItems.home;
+  }
 
   Widget get _appBar {
-    return _currentIndex == NavItems.home ? null : AppBar(
-      backgroundColor: AppColors.megaPurple,
+    return AppBar(
+      backgroundColor: _isHome
+        ? AppColors.transparent 
+        : AppColors.megaPurple,
       elevation: 0,
       automaticallyImplyLeading: false,
-      leading: IconButton(
+      leading: _isHome ? null : IconButton(
         onPressed: _back,
         icon: AppIcons.back,
       ),
+      actions: _isHome ? [
+        TextButton(
+          onPressed: _logout,
+          child: Text('Выйти', style: AppFonts.appBarAction,)
+        ),
+      ] : [],
       title: _appBarTitle,
       centerTitle: true,
     );
@@ -255,7 +275,8 @@ class _BaseScreenState extends State<BaseScreen> {
       child: Scaffold(
         backgroundColor: AppColors.megaPurple,
         appBar: _appBar,
-        extendBody: true,
+        extendBody: _isHome,
+        extendBodyBehindAppBar: _isHome,
         body: _body,
         bottomNavigationBar: _bottomNavBar,
       ),

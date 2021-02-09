@@ -6,8 +6,9 @@ import '../theme.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
+  final void Function() logout;
 
-  ProfileScreen({Key key, this.user}): super(key: key);
+  ProfileScreen({Key key, this.user, this.logout}): super(key: key);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -15,9 +16,25 @@ class ProfileScreen extends StatefulWidget {
 
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  List<Packet> _packets;
+  String _dialogError;
+  bool _loading = false;
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadPackets();
+  }
+
   String get _activePacketNames {
-    // TODO
-    return 'Пакет, Пакет';
+    if (_packets == null) {
+      return 'Информация о пакетах недоступна';
+    }
+    final activePackets = _packets.where((packet) => packet.isActive);
+    if (activePackets.length == 0) {
+      return "Нет активных пакетов";
+    }
+    return activePackets.map((packet) => packet.name).join(', ');
   }
 
   void _changePassword() {
@@ -25,57 +42,214 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _logout() {
-    // TODO: выход из base.
+    widget.logout();
   }
 
-  void _addPacket(Packet packet) {
-    // TODO
+  Future<void> _addPacket(Packet packet) async {
+    setState(() {
+      _loading = true;
+    });
+    List<Packet> packets = await widget.user.addPacket(packet);
+    if (_packets == null) {
+      setState(() {
+        _dialogError = 'Не удалось подключить пакет. Проверьте подключение к интернету и баланс, и попробуйте ещё раз.';
+        _loading = false;
+      });
+    } else {
+      setState(() {
+        _packets = packets;
+        _loading = false;
+      });
+    }
   }
 
-  void _removePacket(Packet packet) {
-    // TODO
+  Future<void> _removePacket(Packet packet) async {
+    setState(() {
+      _loading = true;
+    });
+    List<Packet> packets = await widget.user.removePacket(packet);
+    if (_packets == null) {
+      setState(() {
+        _dialogError = 'Не удалось отключить пакет. Проверьте подключение к интернету, и попробуйте ещё раз.';
+        _loading = false;
+      });
+    } else {
+      setState(() {
+        _packets = packets;
+        _loading = false;
+      });
+    }
+  }
+  
+  void _addPacketDialog(Packet packet) {
+    final title = Text('Подключить пакет', textAlign: TextAlign.center,);
+    final text = RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        style: AppFonts.packetPrice,
+        children: [
+          TextSpan(text: 'Вы уверены, что хотите подключить пакет ',),
+          TextSpan(text: packet.name.toUpperCase(), style: AppFonts.packetName),
+          TextSpan(text: ' за\n',),
+          TextSpan(text: packet.priceLabel, style: AppFonts.packetName,),
+          TextSpan(text: '?',),
+        ],
+      ),
+    );
+    _showPacketDialog(title, text, () async { await _addPacket(packet); });
+  }
+  
+  void _removePacketDialog(Packet packet) {
+    final title = Text('Отключить пакет', textAlign: TextAlign.center,);
+    final text = RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        style: AppFonts.packetPrice,
+        children: [
+          TextSpan(text: 'Вы уверены, что хотите отключить пакет ',),
+          TextSpan(text: packet.name.toUpperCase(), style: AppFonts.packetName),
+          TextSpan(text: ' за\n',),
+          TextSpan(text: packet.priceLabel, style: AppFonts.packetName),
+          TextSpan(text: '?',),
+        ],
+      ),
+    );
+    _showPacketDialog(title, text, () async { await _removePacket(packet); });
+  }
+
+  void _exitDialogError() {
+    setState(() {
+      _dialogError = null;
+    });
+  }
+
+  Future<void> _showPacketDialog(Widget title, Widget text,
+      Future<void> Function() action) async {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) => AlertDialog(
+        title: title,
+        content: _loading
+          ? Container(child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray40),
+              strokeWidth: 7,
+            ), alignment: Alignment.center, height: 40, margin: EdgeInsets.only(top: 20,),)
+          : _dialogError == null
+            ? text
+            : Text(_dialogError, textAlign: TextAlign.center,),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: _dialogError == null ? [
+              TextButton(
+                onPressed: () async {
+                  await action();
+                  Navigator.of(context).pop();
+                }, //_loading ? null : action,
+                child: Text('Да'),
+              ),
+              TextButton(
+                onPressed: _loading ? null : () => Navigator.of(context).pop(),
+                child: Text('Нет'),
+              )
+            ] : [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _exitDialogError();
+                },
+                child: Text('Закрыть'),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildPacketTile(Packet packet) {
+    return GestureDetector (
+      onTap: packet.isActive
+          ? () { NavItems.inDevelopment(context, title: 'Отключение пакетов'); }
+          : () { _addPacketDialog(packet); },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: packet.isActive
+              ? AppColors.gray0
+              : AppColors.transparentLight,
+        ),
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15,),
+        margin: EdgeInsets.only(bottom: 10),
+        child: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(right: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(text: TextSpan(children: [
+                      TextSpan(
+                          text: packet.name.toUpperCase(),
+                          style: AppFonts.packetName
+                      ),
+                      TextSpan(
+                          text: " (${packet.channelDisplay})",
+                          style: AppFonts.channelCount
+                      ),
+                    ])),
+                    Text(
+                      packet.priceLabel,
+                      style: AppFonts.packetPrice,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            packet.isActive ? AppIcons.check : AppIcons.plus,
+          ],
+        ),
+      ),
+    );
   }
 
   List<Widget> get _packetTiles {
-    // TODO
-    return [
-      GestureDetector(
-        onTap: () { _addPacket(null); },
-        child: Container(
+    if (_packets == null) {
+      return [
+        Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
             color: AppColors.gray0,
           ),
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15,),
-          child: Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(right: 5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RichText(text: TextSpan(children: [
-                        TextSpan(text: 'ЛАЙТ', style: AppFonts.packetName),
-                        TextSpan(text: ' (50 КАНАЛОВ)', style: AppFonts.channelCount),
-                      ])),
-                      Text('0 сом / сутки', style: AppFonts.packetPrice,),
-                    ],
-                  )
-                )
-              ),
-              AppIcons.plus,
-            ],
+          padding: EdgeInsets.symmetric(vertical: 15),
+          child: Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray40),
+              strokeWidth: 7,
+            ),
           ),
         ),
-      ),
-    ];
+      ];
+    }
+    return _packets.map((item) {
+      final Packet packet = item;
+      return _buildPacketTile(packet);
+    }).toList();
+  }
+  
+  Future<void> _loadPackets() async {
+    List<Packet> packets = await widget.user.getPackets();
+    setState(() {
+      _packets = packets;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -92,7 +266,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text('+' + widget.user.username, style: AppFonts.profileName,),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
-                  child: Text('ПОДКЛЮЧЕННЫЕ\nПАКЕТЫ', style: AppFonts.activePacketsTitle,),
+                  child: Text('ПОДКЛЮЧЕННЫЕ\nПАКЕТЫ', style: AppFonts.activePacketsTitle, textAlign: TextAlign.center,),
                 ),
                 Text(_activePacketNames, style: AppFonts.activePacketList),
                 Padding(

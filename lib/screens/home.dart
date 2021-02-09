@@ -126,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
         maxWidth: double.infinity,
         maxHeight: double.infinity,
         child: Container(
-          margin: EdgeInsets.only(bottom: 60),
+          margin: EdgeInsets.only(bottom: 40),
           child: Center(
             child: HexagonOffsetGrid.oddPointy(
               columns: gridSize.cols,

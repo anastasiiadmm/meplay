@@ -208,6 +208,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
         maxHeight: MediaQuery.of(context).size.height + (_search ? 416 : 508),
         child: InteractiveViewer(
           constrained: false,
+          // TODO add scaling up to 0.5 and resize paddings on scale.
           minScale: 1,
           child: HexagonOffsetGrid.oddPointy(
             columns: _gridSize.cols,

@@ -68,7 +68,7 @@ class AppFonts {
   static const splashTitle = TextStyle(fontFamily: 'SF Pro Display',
       fontWeight: FontWeight.w600, fontSize: 34, height: 41/34,
       letterSpacing: 0.4, color: AppColors.megaPurple);
-  static const backBtn = TextStyle(fontFamily: 'SF Pro Text',
+  static const appBarAction = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.gray0);
   static const screenTitle = TextStyle(fontFamily: 'SF Pro Text',
@@ -202,6 +202,6 @@ class AppIcons {
   static final showProgram = SvgPicture.asset('assets/icons/program_open.svg', width: 44, height: 44,);
   static final hideProgram = SvgPicture.asset('assets/icons/program_close.svg', width: 44, height: 44,);
   static final pinkDot = Image.asset('assets/icons/pink_dot.png', width: 8, height: 8,);
-  static final plus = Image.asset('assets/icons/plus.svg', width: 36, height: 36,);
-  static final check = Image.asset('assets/icons/checkmark.svg', width: 31, height: 36,);
+  static final plus = SvgPicture.asset('assets/icons/plus.svg', width: 36, height: 36,);
+  static final check = SvgPicture.asset('assets/icons/check_hex.svg', width: 31, height: 36,);
 }

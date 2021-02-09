@@ -646,8 +646,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       onWillPop: _willPop,
       child: Scaffold(
         backgroundColor: AppColors.white,
-        extendBody: false,
-        extendBodyBehindAppBar: false,
         appBar: _fullscreen ? null : _appBar,
         body: _body,
         bottomNavigationBar: _fullscreen ? null : _bottomBar,

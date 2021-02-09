@@ -126,7 +126,7 @@ class ApiClient {
     final body = {
       'username': user.username,
       'password': user.password,
-      'packet_id': packet.id,
+      'packet_id': packet.id.toString(),
     };
     try {
       final response = await http.post(url, body: body);
@@ -157,7 +157,7 @@ class ApiClient {
     final body = {
       'username': user.username,
       'password': user.password,
-      'packet_id': packet.id,
+      'packet_id': packet.id.toString(),
     };
     try {
       final response = await http.post(url, body: body);

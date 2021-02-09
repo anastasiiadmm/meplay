@@ -174,39 +174,25 @@ class User {
 class Packet {
   String name;
   int channelCount;
-  String _priceLabel;
-  int price;
+  String priceLabel;
   bool isActive;
   int id;
 
   Packet({this.id, this.name, this.channelCount,
-    String priceLabel, this.isActive, this.price,})
-      : _priceLabel = priceLabel;
+    this.priceLabel, this.isActive});
 
-  String get channelLabel {
+  String get channelDisplay {
     return '$channelCount ' + rPlural(
       channelCount,
       ['КАНАЛ', 'КАНАЛА', 'КАНАЛОВ'],
     );
   }
 
-  String get priceLabel {
-    return _priceLabel ?? '$price ' + rPlural(
-      price,
-      ['сом / сутки', 'сома / сутки', 'сомов / сутки'],
-    );
-  }
-
-  set priceLabel(label) {
-    _priceLabel = label;
-  }
-
   Packet.fromJson(Map<String, dynamic> data) {
-    this.id = data.containsKey(['packet_id']) ? data['packet_id'] : data['id'];
+    this.id = data.containsKey('packet_id') ? data['packet_id'] : data['id'];
     this.channelCount = data.containsKey('num_channels') ? data['num_channels'] : data['channelCount'];
     this.name = data['name'];
-    this.price = data.containsKey('price') ? data['price'] : null;
-    priceLabel = data.containsKey('amount') ? data['amount'] : data['priceLabel'];
+    this.priceLabel = data.containsKey('amount') ? data['amount'] : data['priceLabel'];
     this.isActive = data.containsKey('connected') ? data['connected'] : data['isActive'];
   }
 }
