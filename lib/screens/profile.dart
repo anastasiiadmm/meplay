@@ -17,8 +17,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   List<Packet> _packets;
-  String _dialogError;
-  bool _loading = false;
   
   @override
   void initState() {
@@ -45,40 +43,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
     widget.logout();
   }
 
-  Future<void> _addPacket(Packet packet) async {
-    setState(() {
-      _loading = true;
-    });
+  Future<bool> _addPacket(Packet packet) async {
     List<Packet> packets = await widget.user.addPacket(packet);
-    if (_packets == null) {
-      setState(() {
-        _dialogError = 'Не удалось подключить пакет. Проверьте подключение к интернету и баланс, и попробуйте ещё раз.';
-        _loading = false;
-      });
-    } else {
-      setState(() {
-        _packets = packets;
-        _loading = false;
-      });
-    }
+    if (_packets == null) return false;
+    setState(() {
+      _packets = packets;
+    });
+    return true;
   }
 
-  Future<void> _removePacket(Packet packet) async {
-    setState(() {
-      _loading = true;
-    });
+  Future<bool> _removePacket(Packet packet) async {
     List<Packet> packets = await widget.user.removePacket(packet);
-    if (_packets == null) {
-      setState(() {
-        _dialogError = 'Не удалось отключить пакет. Проверьте подключение к интернету, и попробуйте ещё раз.';
-        _loading = false;
-      });
-    } else {
-      setState(() {
-        _packets = packets;
-        _loading = false;
-      });
-    }
+    if (_packets == null) return false;
+    setState(() {
+      _packets = packets;
+    });
+    return true;
   }
   
   void _addPacketDialog(Packet packet) {
@@ -96,7 +76,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
-    _showPacketDialog(title, text, () async { await _addPacket(packet); });
+    final error = Text(
+      'Не удалось подключить пакет. Проверьте подключение к интернету и баланс, и попробуйте ещё раз.',
+       textAlign: TextAlign.center
+    );
+    _showPacketDialog(title, text, error, () => _addPacket(packet));
   }
   
   void _removePacketDialog(Packet packet) {
@@ -114,57 +98,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
-    _showPacketDialog(title, text, () async { await _removePacket(packet); });
+    final error = Text(
+      'Не удалось отключить пакет. Проверьте подключение к интернету, и попробуйте ещё раз.',
+      textAlign: TextAlign.center,
+    );
+    _showPacketDialog(title, text, error, () => _removePacket(packet));
   }
 
-  void _exitDialogError() {
-    setState(() {
-      _dialogError = null;
-    });
-  }
-
-  Future<void> _showPacketDialog(Widget title, Widget text,
-      Future<void> Function() action) async {
+  Future<void> _showPacketDialog(
+    Widget title,
+    Widget text,
+    Widget error,
+    Future<bool> Function() action,
+  ) async {
     showDialog(
       context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) => AlertDialog(
-        title: title,
-        content: _loading
-          ? Container(child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray40),
-              strokeWidth: 7,
-            ), alignment: Alignment.center, height: 40, margin: EdgeInsets.only(top: 20,),)
-          : _dialogError == null
-            ? text
-            : Text(_dialogError, textAlign: TextAlign.center,),
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: _dialogError == null ? [
-              TextButton(
-                onPressed: () async {
-                  await action();
-                  Navigator.of(context).pop();
-                }, //_loading ? null : action,
-                child: Text('Да'),
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        bool _loading = false;
+        bool _failed = false;
+        return StatefulBuilder(
+          builder: (BuildContext context, setState) => AlertDialog(
+            title: title,
+            content: _loading ? Container(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray40),
+                strokeWidth: 7,
               ),
-              TextButton(
-                onPressed: _loading ? null : () => Navigator.of(context).pop(),
-                child: Text('Нет'),
-              )
-            ] : [
+              alignment: Alignment.center,
+              height: 40,
+              margin: EdgeInsets.only(top: 20,),
+            ) : (_failed ? error : text),
+            actions: _failed ? [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  _exitDialogError();
                 },
                 child: Text('Закрыть'),
               ),
+            ] : [
+              TextButton(
+                onPressed: _loading ? null : () async {
+                  setState(() {
+                    _loading = true;
+                  });
+                  bool success = await action();
+                  if (success) Navigator.of(context).pop();
+                  setState(() {
+                    _loading = false;
+                    _failed = true;
+                  });
+                },
+                child: Text('Да'),
+              ),
+              TextButton(
+                onPressed: _loading ? null : () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Нет'),
+              ),
             ],
-          )
-        ],
-      ),
+          ),
+        );
+      }
     );
   }
   
