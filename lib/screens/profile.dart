@@ -45,7 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<bool> _addPacket(Packet packet) async {
     List<Packet> packets = await widget.user.addPacket(packet);
-    if (_packets == null) return false;
+    if (packets == null) return false;
     setState(() {
       _packets = packets;
     });
@@ -54,7 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<bool> _removePacket(Packet packet) async {
     List<Packet> packets = await widget.user.removePacket(packet);
-    if (_packets == null) return false;
+    if (packets == null) return false;
     setState(() {
       _packets = packets;
     });
@@ -167,7 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildPacketTile(Packet packet) {
     return GestureDetector (
       onTap: packet.isActive
-          ? () { NavItems.inDevelopment(context, title: 'Отключение пакетов'); }
+          ? () { _removePacketDialog(packet); }
           : () { _addPacketDialog(packet); },
       child: Container(
         decoration: BoxDecoration(

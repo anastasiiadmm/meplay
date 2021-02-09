@@ -159,8 +159,11 @@ class ApiClient {
       'password': user.password,
       'packet_id': packet.id.toString(),
     };
+    print(body);
     try {
       final response = await http.post(url, body: body);
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 200) {
         dynamic responseBody = jsonDecode(response.body);
         if(responseBody is List) {
