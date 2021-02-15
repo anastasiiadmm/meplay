@@ -205,7 +205,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     return ClipRect(
       child: OverflowBox (
         maxWidth: MediaQuery.of(context).size.width + 508,
-        maxHeight: MediaQuery.of(context).size.height + (_search ? 416 : 508),
+        maxHeight: MediaQuery.of(context).size.height + 508,
         child: InteractiveViewer(
           constrained: false,
           // TODO add scaling up to 0.5 and resize paddings on scale.
@@ -233,6 +233,14 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   void _hideSearch() {
     setState(() {
       _search = false;
+    });
+  }
+
+  void _clearSearch() {
+    _searchController.value = TextEditingValue.empty;
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _channels = widget.channels;
     });
   }
 
@@ -269,8 +277,9 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
         onPressed: _back,
         icon: AppIcons.back,
       ),
-      // TODO: place search here instead of text "Поиск".
-      title: Text(_search ? 'Поиск' : widget.title, style: AppFonts.screenTitle),
+      title: _search
+          ? _searchInput()
+          : Text(widget.title, style: AppFonts.screenTitle),
       centerTitle: true,
       actions: [
         IconButton(
@@ -278,53 +287,66 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
           icon: AppIcons.search,
         ),
       ],
-      bottom: _search ? PreferredSize(
-        preferredSize: Size(double.infinity, 46),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(15, 0, 15, 10),
-          height: 46,
-          child:Form(
-            child: Stack(
-              children: [
-                TextFormField(
-                  keyboardType: TextInputType.text,
-                  style: AppFonts.searchInputText,
-                  textAlign: TextAlign.center,
-                  textAlignVertical: TextAlignVertical.center,
-                  controller: _searchController,
-                  onFieldSubmitted: _filterChannels,
-                  textInputAction: TextInputAction.search,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 32),
-                    hintText: 'Введите название канала',
-                    hintStyle: AppFonts.searchInputHint,
-                    fillColor: AppColors.transparentDark,
-                    filled: true,
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(10)
-                    ),
-                    errorMaxLines: 1
-                  ),
-                ),
-                IconButton(
-                  icon: AppIcons.searchInput,
-                  onPressed: _searchSubmit,
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-                  constraints: BoxConstraints(),
-                ),
-                // TODO: add clear icon
-              ]
+    );
+  }
+
+  Widget _searchInput() {
+    return Container(
+      height: 36,
+      child: Stack(
+        children: [
+          TextFormField(
+            keyboardType: TextInputType.text,
+            style: AppFonts.searchInputText,
+            textAlign: TextAlign.center,
+            textAlignVertical: TextAlignVertical.center,
+            controller: _searchController,
+            onFieldSubmitted: _filterChannels,
+            textInputAction: TextInputAction.search,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 32),
+              hintText: 'Введите название канала',
+              hintStyle: AppFonts.searchInputHint,
+              fillColor: AppColors.transparentDark,
+              filled: true,
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(10)
+              ),
+              errorMaxLines: 1
             ),
           ),
-        ),
-      ) : null,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: IconButton(
+              icon: AppIcons.searchInput,
+              onPressed: _searchSubmit,
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+              constraints: BoxConstraints(),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: Icon(
+                Icons.cancel,
+                color: AppColors.white,
+                size: 16,
+              ),
+              onPressed: _clearSearch,
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   void _back() {
     if (_search) {
       _hideSearch();
+    } else if (_channels.length != widget.channels.length) {
+      _clearSearch();
     } else {
       Navigator.of(context).pop();
     }
@@ -333,6 +355,9 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   Future<bool> _willPop() async {
     if (_search) {
       _hideSearch();
+      return false;
+    } else if (_channels.length != widget.channels.length) {
+      _clearSearch();
       return false;
     }
     return true;
@@ -353,5 +378,3 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     );
   }
 }
-
-// TODO: анимировать открытие и закрытие поиска (изменение высоты).
