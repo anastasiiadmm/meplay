@@ -38,20 +38,20 @@ class Channel {
     return '$number. $name';
   }
 
-  Future<List<Program>> getProgram() async {
+  Future<List<Program>> get program async {
     // TODO: add persistent store.
-    if(_noProgram) await _getProgram();
-    if (_program == null) return _program;
     DateTime now = DateTime.now();
+    if(_noProgram(now)) await _loadProgram();
+    if(_noProgram(now)) return null;
     return _program.where((p) => p.end.isAfter(now)).toList();
   }
 
-  bool get _noProgram {
+  bool _noProgram(DateTime byTime) {
     return _program == null || _program.isEmpty
-        || _program.last.end.isBefore(DateTime.now());
+        || _program.last.end.isBefore(byTime);
   }
 
-  Future<void> _getProgram() async {
+  Future<void> _loadProgram() async {
     try {
       _program = await ApiClient.getProgram(id);
     } on ApiException {

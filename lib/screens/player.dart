@@ -626,7 +626,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       _title,
       Expanded(
         child: FutureBuilder(
-          future: widget.channel.getProgram(),
+          future: widget.channel.program,
           builder: _program,
         )
       ),
