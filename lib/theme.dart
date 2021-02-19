@@ -205,3 +205,15 @@ class AppIcons {
   static final plus = SvgPicture.asset('assets/icons/plus.svg', width: 36, height: 36,);
   static final check = SvgPicture.asset('assets/icons/check_hex.svg', width: 31, height: 36,);
 }
+
+
+class Animations {
+  static final progressIndicator = CircularProgressIndicator(
+    valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray5),
+    strokeWidth: 10,
+  );
+  static final modalProgressIndicator = CircularProgressIndicator(
+    valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray40),
+    strokeWidth: 7,
+  );
+}

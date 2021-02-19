@@ -237,10 +237,9 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
             child: Stack(
               children: [
                 Center (
-                  child: _controller == null ? CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray5),
-                    strokeWidth: 10,
-                  ) : AspectRatio(
+                  child: _controller == null
+                      ? Animations.progressIndicator
+                      : AspectRatio(
                     aspectRatio: _aspectRatio,
                     child: VideoPlayer(
                       _controller,
@@ -266,10 +265,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
               child: Stack(
                 children: <Widget>[
                   _controller == null ? Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray5),
-                      strokeWidth: 10,
-                    ),
+                    child: Animations.progressIndicator,
                   ) : VideoPlayer(
                     _controller,
                   ),

@@ -121,10 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           builder: (BuildContext context, setState) => AlertDialog(
             title: title,
             content: _loading ? Container(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray40),
-                strokeWidth: 7,
-              ),
+              child: Animations.modalProgressIndicator,
               alignment: Alignment.center,
               height: 40,
               margin: EdgeInsets.only(top: 20,),
@@ -221,10 +218,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           padding: EdgeInsets.symmetric(vertical: 15),
           child: Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.gray40),
-              strokeWidth: 7,
-            ),
+            child: Animations.modalProgressIndicator,
           ),
         ),
       ];
