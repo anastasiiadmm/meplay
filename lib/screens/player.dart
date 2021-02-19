@@ -489,7 +489,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   Widget _program(BuildContext context, AsyncSnapshot<List<Program>> snapshot) {
     final program = snapshot.data;
     return Container(
-      padding: EdgeInsets.fromLTRB(15, 20, 15, 0),
+      padding: EdgeInsets.only(top: 20),
       child: program == null ? Text(
         snapshot.connectionState == ConnectionState.waiting
             ? 'Загружаю программу ...'
@@ -596,7 +596,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         color: AppColors.lockBg,
         borderRadius: BorderRadius.circular(13),
       ),
-      margin: EdgeInsets.fromLTRB(27, 15, 27, 0),
+      margin: EdgeInsets.fromLTRB(12, 15, 12, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -625,7 +625,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   Widget get _body {
     if(_fullscreen) return _player;
     List<Widget> children = [
-      _title,
       FutureBuilder(
         future: widget.channel.program,
         builder: _program,
@@ -635,12 +634,14 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       children.add(_lockInfo);
     }
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _player,
+        _title,
         Expanded (
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.only(bottom: 15),
+              padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: children,

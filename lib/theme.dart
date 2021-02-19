@@ -127,7 +127,7 @@ class AppFonts {
       fontWeight: FontWeight.normal, fontSize: 12, height: 22/12,
       letterSpacing: -0.41, color: AppColors.black);
   static const lockLogin = TextStyle(fontFamily: 'SF Pro Text',
-      fontWeight: FontWeight.normal, fontSize: 12, height: 22/12,
+      fontWeight: FontWeight.normal, fontSize: 12, height: 12/12,
       letterSpacing: -0.41, color: AppColors.lightPurple);
   static const profileAction = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
