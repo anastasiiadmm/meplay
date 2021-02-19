@@ -194,7 +194,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   // TODO: chromecast
   // void _chromecast() {
-  //
+  //   https://pub.dev/packages/flutter_video_cast/
   // }
 
   Widget get _scrollBar {
