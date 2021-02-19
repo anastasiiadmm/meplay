@@ -146,6 +146,11 @@ class _BaseScreenState extends State<BaseScreen> {
     }
   }
 
+  Future<void> _clearUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('user');
+  }
+
   Future<void> _init() async {
     await _loadUser();
     await _loadChannels();
@@ -223,6 +228,7 @@ class _BaseScreenState extends State<BaseScreen> {
                   _user = null;
                   _currentIndex = NavItems.home;
                 });
+                await _clearUser();
                 await _loadChannels();
                 Navigator.of(context).pop();
               },
