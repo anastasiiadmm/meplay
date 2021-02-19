@@ -15,8 +15,11 @@ import '../models.dart';
 import '../theme.dart';
 
 
-const double aspectRatio43 = 4/3;
-const double aspectRatio169 = 16/9;
+class VideoSettings {
+  static const double aspectRatio43 = 4/3;
+  static const double aspectRatio169 = 16/9;
+  static const double aspectRatio1610 = 16/10;
+}
 
 
 class PlayerScreen extends StatefulWidget {
@@ -38,7 +41,7 @@ class PlayerScreen extends StatefulWidget {
 
 class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver {
   VideoPlayerController _controller;
-  double _aspectRatio = aspectRatio43;
+  double _aspectRatio = VideoSettings.aspectRatio43;
   bool _controlsVisible = false;
   HLSVideoCache _cache;
   Timer _controlsTimer;
@@ -123,7 +126,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     await controller.initialize();
     setState(() {
       _controller = controller;
-      _aspectRatio = controller.value.aspectRatio ?? _aspectRatio;
     });
     controller.play();
   }
