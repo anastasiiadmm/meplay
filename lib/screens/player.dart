@@ -192,7 +192,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     }
   }
 
-  // chromecast be here
+  // TODO: chromecast
   // void _chromecast() {
   //
   // }
@@ -308,7 +308,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
                         ) : null,
                       ),
                     ),
-                    // chromecast be here
+                    // TODO: chromecast
                     // IconButton(
                     //   icon: AppIcons.chromecast,
                     //   onPressed: _chromecast,
