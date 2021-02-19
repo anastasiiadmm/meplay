@@ -588,6 +588,10 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     );
   }
 
+  void _profile() {
+    Navigator.of(context).pop(NavItems.profile);
+  }
+
   Widget get _lockInfo {
     // TODO: finish this
     return Container(
@@ -605,13 +609,13 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
           AppIcons.lockChannelLarge,
           Text(
             _user == null
-              ? 'Войдите, чтобы получить доступ к данному каналу'
-              : "Для разблокировки канала подключите один из пакетов",
+              ? 'Канал недоступен.\nДля разблокировки канала\nНеобходимо войти.'
+              : "Канал недоступен.\nДля разблокировки канала\nПодключите один из пакетов.",
             style: AppFonts.lockText,
           ),
           TextButton(
-            onPressed: _login,
-            child: Text("Войти", style: AppFonts.lockLogin),
+            onPressed: _user == null ? _login : _profile,
+            child: Text(_user == null ? "ВОЙТИ" : "НАСТРОЙКИ", style: AppFonts.lockLogin),
           )
         ],
       )
