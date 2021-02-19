@@ -593,32 +593,46 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   Widget get _lockInfo {
-    // TODO: finish this
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.transparentGray,
+        color: AppColors.lockBg,
         borderRadius: BorderRadius.circular(13),
       ),
       margin: EdgeInsets.symmetric(vertical: 15, horizontal: 27),
-      padding: EdgeInsets.fromLTRB(5, 20, 5, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+      child: Stack(
         children: [
-          AppIcons.lockChannelLarge,
-          Text(
-            _user == null
-              ? 'Канал недоступен.\nДля разблокировки канала\nНеобходимо войти.'
-              : "Канал недоступен.\nДля разблокировки канала\nПодключите один из пакетов.",
-            style: AppFonts.lockText,
+          Positioned.fill(
+            child: AppIcons.lockChannelLarge,
           ),
-          TextButton(
-            onPressed: _user == null ? _login : _profile,
-            child: Text(_user == null ? "ВОЙТИ" : "НАСТРОЙКИ", style: AppFonts.lockLogin),
-          )
+          Align(
+            alignment: Alignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Text(
+                    _user == null
+                        ? 'Канал недоступен.\nДля разблокировки канала\nНеобходимо войти.'
+                        : "Канал недоступен.\nДля разблокировки канала\nПодключите один из пакетов.",
+                    style: AppFonts.lockText,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                TextButton(
+                  onPressed: _user == null ? _login : _profile,
+                  child: Text(
+                    _user == null ? "ВОЙТИ" : "НАСТРОЙКИ",
+                    style: AppFonts.lockLogin,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
-      )
+      ),
     );
   }
 

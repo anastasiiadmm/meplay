@@ -35,15 +35,16 @@ class AppColors {
   static const gray10 = Color.fromRGBO(234, 234, 228, 1);  // #EAEAE4
   static const gray20 = Color.fromRGBO(215, 215, 207, 1);  // #D7D7CF
   static const gray30 = Color.fromRGBO(191, 191, 182, 1);  // #BFBFB6
-  static const gray40 = Color.fromRGBO(162, 162, 153, 1); // #A2A299
-  static const gray50 = Color.fromRGBO(126, 126, 118, 1); // #7E7E76
-  static const gray60 = Color.fromRGBO(83, 83, 78, 1); // #53534E
-  static const gray70 = Color.fromRGBO(38, 38, 35, 1); // #262623
-  static const gray80 = Color.fromRGBO(26, 25, 23, 1); // #1A1917
-  static const transparentDark = Color.fromRGBO(26, 25, 23, 0.48); // #1A1917 48%
-  static const transparentGray = Color.fromRGBO(83, 83, 78, 0.48); // #53534E 48%
-  static const transparentBlack = Color.fromRGBO(0, 0, 0, 0.6); // #000000 60%
-  static const transparentLight = Color.fromRGBO(250, 250, 247, 0.85); // #FAFAF7 85%
+  static const gray40 = Color.fromRGBO(162, 162, 153, 1);  // #A2A299
+  static const gray50 = Color.fromRGBO(126, 126, 118, 1);  // #7E7E76
+  static const gray60 = Color.fromRGBO(83, 83, 78, 1);  // #53534E
+  static const gray70 = Color.fromRGBO(38, 38, 35, 1);  // #262623
+  static const gray80 = Color.fromRGBO(26, 25, 23, 1);  // #1A1917
+  static const transparentDark = Color.fromRGBO(26, 25, 23, 0.48);  // #1A1917 48%
+  static const transparentGray = Color.fromRGBO(83, 83, 78, 0.48);  // #53534E 48%
+  static const lockBg = Color.fromRGBO(191, 191, 182, 0.48);  // #BFBFB6 48%
+  static const transparentBlack = Color.fromRGBO(0, 0, 0, 0.6);  // #000000 60%
+  static const transparentLight = Color.fromRGBO(250, 250, 247, 0.85);  // #FAFAF7 85%
 
   static const gradientTop = LinearGradient(
     begin: Alignment.topCenter,
