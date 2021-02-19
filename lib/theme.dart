@@ -22,6 +22,7 @@ class AppColors {
   }
   static const megaPurple = Color.fromRGBO(88, 33, 122, 1);  // #58217A
   static const disabledPurple = Color.fromRGBO(114, 73, 137, 1);  // #724989
+  static const lightPurple = Color.fromRGBO(88, 86, 214, 1);  // #5856D6
   static const megaGreen = Color.fromRGBO(47, 140, 45, 1);  // #2F8C2D
   static const megaGray = Color.fromRGBO(198, 198, 198, 1);  // #C6C6C6
   static const white = Color.fromRGBO(255, 255, 255, 1);  // #FFFFFF
@@ -124,10 +125,10 @@ class AppFonts {
       letterSpacing: -0.24, color: AppColors.black,);
   static const lockText = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 12, height: 22/12,
-      letterSpacing: -0.41, color: AppColors.gray80);
+      letterSpacing: -0.41, color: AppColors.black);
   static const lockLogin = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 12, height: 22/12,
-      letterSpacing: -0.41, color: AppColors.megaPurple);
+      letterSpacing: -0.41, color: AppColors.lightPurple);
   static const profileAction = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
       letterSpacing: -0.08, color: AppColors.megaPurple);

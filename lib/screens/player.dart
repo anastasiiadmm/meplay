@@ -489,7 +489,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   Widget _program(BuildContext context, AsyncSnapshot<List<Program>> snapshot) {
     final program = snapshot.data;
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 22, horizontal: 15),
+      padding: EdgeInsets.fromLTRB(15, 20, 15, 0),
       child: program == null ? Text(
         snapshot.connectionState == ConnectionState.waiting
             ? 'Загружаю программу ...'
@@ -502,13 +502,11 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
           children: [
             Expandable(
               collapsed: _programTile(program.first, first: true),
-              expanded: SingleChildScrollView(
-                child: Column(
-                  children: program.map((item) => _programTile(
-                    item,
-                    first: item == program.first,
-                  )).toList(),
-                ),
+              expanded: Column(
+                children: program.map((item) => _programTile(
+                  item,
+                  first: item == program.first,
+                )).toList(),
               ),
             ),
             _expandBtn,
@@ -598,37 +596,25 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         color: AppColors.lockBg,
         borderRadius: BorderRadius.circular(13),
       ),
-      margin: EdgeInsets.symmetric(vertical: 15, horizontal: 27),
-      child: Stack(
+      margin: EdgeInsets.fromLTRB(27, 15, 27, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Positioned.fill(
-            child: AppIcons.lockChannelLarge,
+          AppIcons.lockChannelLarge,
+          Text(
+            _user == null
+                ? 'Канал недоступен.\nДля разблокировки канала\nНеобходимо войти.'
+                : "Канал недоступен.\nДля разблокировки канала\nПодключите один из пакетов.",
+            style: AppFonts.lockText,
+            textAlign: TextAlign.center,
           ),
-          Align(
-            alignment: Alignment.center,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Text(
-                    _user == null
-                        ? 'Канал недоступен.\nДля разблокировки канала\nНеобходимо войти.'
-                        : "Канал недоступен.\nДля разблокировки канала\nПодключите один из пакетов.",
-                    style: AppFonts.lockText,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                TextButton(
-                  onPressed: _user == null ? _login : _profile,
-                  child: Text(
-                    _user == null ? "ВОЙТИ" : "НАСТРОЙКИ",
-                    style: AppFonts.lockLogin,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
+          TextButton(
+            onPressed: _user == null ? _login : _profile,
+            child: Text(
+              _user == null ? "ВОЙТИ" : "НАСТРОЙКИ",
+              style: AppFonts.lockLogin,
+              textAlign: TextAlign.center,
             ),
           ),
         ],
@@ -639,21 +625,30 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   Widget get _body {
     if(_fullscreen) return _player;
     List<Widget> children = [
-      _player,
       _title,
-      Expanded(
-        child: FutureBuilder(
-          future: widget.channel.program,
-          builder: _program,
-        )
+      FutureBuilder(
+        future: widget.channel.program,
+        builder: _program,
       ),
     ];
     if(widget.channel.locked) {
       children.add(_lockInfo);
     }
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: children,
+      children: [
+        _player,
+        Expanded (
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: children,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
