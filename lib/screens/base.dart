@@ -79,7 +79,9 @@ class _BaseScreenState extends State<BaseScreen> {
       ),
     );
     if (user != null) {
-      _user = user;
+      setState(() {
+        _user = user;
+      });
       await _loadChannels();
       _openPage(next);
     }
@@ -128,7 +130,8 @@ class _BaseScreenState extends State<BaseScreen> {
   Future<void> _loadChannels() async {
     try {
       _channels = await ApiClient.getChannels(_user);
-    } on ApiException {
+    } on ApiException catch (e) {
+      print(e.message);
       _channels = <Channel>[];
     }
   }
@@ -137,7 +140,9 @@ class _BaseScreenState extends State<BaseScreen> {
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('user')) {
       String userInfo = prefs.getString('user');
-      _user =  User.fromJson(jsonDecode(userInfo));
+      setState(() {
+        _user =  User.fromJson(jsonDecode(userInfo));
+      });
     }
   }
 
@@ -205,11 +210,31 @@ class _BaseScreenState extends State<BaseScreen> {
   }
   
   void _logout() {
-    setState(() {
-      _user = null;
-      _currentIndex = NavItems.home;
-    });
-    _loadChannels();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text('Выход'),
+        content: Text('Вы уверены, что хотите выйти?'),
+        actions: [
+          TextButton(
+              onPressed: () async {
+                _channels = <Channel>[];
+                setState(() {
+                  _user = null;
+                  _currentIndex = NavItems.home;
+                });
+                await _loadChannels();
+                Navigator.of(context).pop();
+              },
+              child: Text('Да')
+          ),
+          TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Нет')
+          ),
+        ],
+      ),
+    );
   }
 
   bool get _isHome {
@@ -228,9 +253,12 @@ class _BaseScreenState extends State<BaseScreen> {
         icon: AppIcons.back,
       ),
       actions: _isHome ? [
-        TextButton(
+        (_user == null) ? TextButton(
+            onPressed: () { _login(NavItems.tv); },
+            child: Text('Вход', style: AppFonts.appBarAction,)
+        ) : TextButton(
           onPressed: _logout,
-          child: Text('Выйти', style: AppFonts.appBarAction,)
+          child: Text('Выход', style: AppFonts.appBarAction,)
         ),
       ] : [],
       title: _appBarTitle,
@@ -283,5 +311,3 @@ class _BaseScreenState extends State<BaseScreen> {
     );
   }
 }
-
-// TODO: выход в аппбаре справа на главной. По выходу тупо удалять username и пароль и очищать юзера в base.dart.

@@ -104,8 +104,8 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
 
   @override
   void dispose() {
-    cancel();
-    unregisterListener();
+    cancel();              // CodeAutoFill methods
+    unregisterListener();  // CodeAutoFill methods
     _keyboardVisibility.removeListener(_keyboardVisibilityListenerId);
     _keyboardVisibility.dispose();
     _userAgreementTapDetector.dispose();
