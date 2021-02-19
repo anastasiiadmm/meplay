@@ -176,8 +176,9 @@ class AppIcons {
   static final tv = SvgPicture.asset('assets/icons/tv.svg', width: 64, height: 64,);
   static final radio = SvgPicture.asset('assets/icons/radio.svg', width: 64, height: 64,);
   static final cinema = SvgPicture.asset('assets/icons/cinema.svg', width: 64, height: 64,);
-  static final lockSmall = SvgPicture.asset('assets/icons/lock_small.svg', width: 24, height: 24,);
-  static final lockBig = SvgPicture.asset('assets/icons/lock_big.svg', width: 64, height: 64,);
+  static final lockChannel = SvgPicture.asset('assets/icons/lock_gray.svg', width: 24, height: 24,);
+  static final lockChannelLarge = SvgPicture.asset('assets/icons/lock_gray.svg', width: 101, height: 101,);
+  static final lockAuth = SvgPicture.asset('assets/icons/lock_color.svg', width: 64, height: 64,);
   static final home = SvgPicture.asset('assets/icons/home.svg', width: 28, height: 28,);
   static final homeActive = SvgPicture.asset('assets/icons/home_active.svg', width: 28, height: 28,);
   static final star = SvgPicture.asset('assets/icons/star.svg', width: 28, height: 28,);

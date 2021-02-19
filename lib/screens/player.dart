@@ -602,6 +602,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
+          AppIcons.lockChannelLarge,
           Text(
             _user == null
               ? 'Войдите, чтобы получить доступ к данному каналу'

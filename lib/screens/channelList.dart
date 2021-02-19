@@ -143,7 +143,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
         ),
       ];
       if (channel.locked) {
-        children.add(AppIcons.lockSmall);
+        children.add(AppIcons.lockChannel);
       }
       content = GestureDetector(
         onTap: () {_openChannel(channel);},
