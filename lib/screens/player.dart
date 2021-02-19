@@ -568,24 +568,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     );
   }
 
-  Widget get _title {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 15),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              width: 1,
-              color: AppColors.transparentBlack,
-            )
-          )
-        ),
-        child: Text(widget.channel.title, style: AppFonts.videoTitle),
-      ),
-    );
-  }
-
   void _profile() {
     Navigator.of(context).pop(NavItems.profile);
   }
@@ -637,7 +619,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _player,
-        _title,
         Expanded (
           child: SingleChildScrollView(
             child: Padding(
