@@ -3,35 +3,27 @@ import 'dart:convert';
 import 'package:flutter/rendering.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:expandable/expandable.dart';
 
-import '../utils/hls_video_cache.dart';
-import '../video_player_fork/video_player.dart';
 import 'base.dart';
 import '../models.dart';
 import '../theme.dart';
-
-
-class VideoSettings {
-  static const double aspectRatio43 = 4/3;
-  static const double aspectRatio169 = 16/9;
-  static const double aspectRatio1610 = 16/10;
-}
+import '../utils/orientation_helper.dart';
+import '../widgets/player.dart';
 
 
 class PlayerScreen extends StatefulWidget {
   final Channel channel;
-  final void Function() toNext;
-  final void Function() toPrev;
+  final Channel Function(Channel) getNextChannel;
+  final Channel Function(Channel) getPrevChannel;
 
   PlayerScreen({
     Key key,
     @required this.channel,
-    this.toNext,
-    this.toPrev,
+    this.getNextChannel,
+    this.getPrevChannel,
   }) : super(key: key);
 
   @override
@@ -40,25 +32,17 @@ class PlayerScreen extends StatefulWidget {
 
 
 class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver {
-  VideoPlayerController _controller;
-  double _aspectRatio = VideoSettings.aspectRatio43;
-  bool _controlsVisible = false;
-  HLSVideoCache _cache;
-  Timer _controlsTimer;
-  static const Duration _controlsTimeout = Duration(seconds: 5);
   User _user;
-  bool _forceFullscreen = false;
   bool _expandProgram = false;
+  Channel _channel;
   ExpandableController _expandableController;
 
   @override
   void initState() {
     super.initState();
-    _enableAllOrientations();
+    _channel = widget.channel;
+    OrientationHelper.allowAll();
     _restoreUser();
-    if (!widget.channel.locked) {
-      _loadVideo(widget.channel);
-    }
     _expandableController = ExpandableController(initialExpanded: _expandProgram);
     _expandableController.addListener(_toggleProgram);
     WidgetsBinding.instance.addObserver(this);
@@ -74,11 +58,9 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   @override
   void dispose() {
-    _disposeController();
-    _clearCache();
     Wakelock.disable();
     WidgetsBinding.instance.removeObserver(this);
-    _enablePortraitOnly();
+    OrientationHelper.forcePortrait();
     _expandableController.removeListener(_toggleProgram);
     _expandableController.dispose();
     super.dispose();
@@ -88,326 +70,45 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     Wakelock.enable();
   }
 
-  void _enableAllOrientations() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-  }
-
-  void _enablePortraitOnly() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-  }
-
-  void _enableLandscapeOnly() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-  }
-
-  void _disposeController() {
-    _controller?.dispose();
-  }
-
-  void _clearCache() {
-    _cache?.clear();
-  }
-
-  Future<void> _loadVideo(Channel channel) async {
-    _cache = HLSVideoCache(channel.url);
-    await _cache.load();
-    VideoPlayerController controller = VideoPlayerController.cache(_cache);
-    await controller.initialize();
-    setState(() {
-      _controller = controller;
-    });
-    controller.play();
-  }
-
-  void _showSettings() {
-    NavItems.inDevelopment(context, title: 'Настройки');
-    // TODO: show items: change aspect ratio and favorites
-    // setState(() {
-    //   _aspectRatio = ratio > 0 ? ratio : _controller.value.aspectRatio;
-    // });
-  }
-
-  void _toPrev() {
-    if(widget.toPrev != null) {
-      Navigator.of(context).pop();
-      widget.toPrev();
-    }
-  }
-
-  void _toNext() {
-    if(widget.toNext != null) {
-      Navigator.of(context).pop();
-      widget.toNext();
-    }
-  }
-
-  void _togglePlay() {
-    if (!_controlsVisible) {
-      _toggleControls();
-    }
-    if (_controller != null) {
-      if (_controller.value.isPlaying) {
-        setState(() {
-          _controller.pause();
-        });
-      } else {
-        setState(() {
-          _controller.play();
-        });
-      }
-    }
-  }
-
-  void _showControls() {
-    _controlsTimer?.cancel();
-    _controlsTimer = Timer(_controlsTimeout, _hideControls);
-    setState(() {
-      _controlsVisible = true;
-    });
-  }
-
-  void _hideControls() {
-    _controlsTimer?.cancel();
-    setState(() {
-      _controlsVisible = false;
-    });
-  }
-
-  void _toggleControls() {
-    if (_controlsVisible) {
-      _hideControls();
-    } else {
-      _showControls();
-    }
-  }
-
-  // TODO: chromecast
-  // void _chromecast() {
-  //   https://pub.dev/packages/flutter_video_cast/
-  // }
-
-  Widget get _scrollBar {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: _controller == null ? null : VideoProgressIndicator(
-        _controller,
-        allowScrubbing: true,
-        colors: VideoProgressColors(
-          backgroundColor: AppColors.transparentGray,
-          playedColor: AppColors.gray5,
-          bufferedColor: AppColors.gray40,
-        ),
-      ),
-    );
-  }
-
   bool get _fullscreen {
-    return _forceFullscreen ||
-      MediaQuery.of(context).orientation == Orientation.landscape;
-  }
-
-  void _swipeChannel(DragEndDetails details) {
-    if(details.primaryVelocity > 0) {
-      _toPrev();
-    } else {
-      _toNext();
-    }
+    return OrientationHelper.isFullscreen(context);
   }
 
   Widget get _player {
-    if (_fullscreen) {
-      return  GestureDetector(
-        onTap: _toggleControls,
-        onHorizontalDragEnd: _swipeChannel,
-        child: AbsorbPointer(
-          absorbing: !_controlsVisible,
-          child: Material(
-            color: AppColors.black,
-            child: Stack(
-              children: [
-                Center (
-                  child: _controller == null
-                      ? Animations.progressIndicator
-                      : AspectRatio(
-                    aspectRatio: _aspectRatio,
-                    child: VideoPlayer(
-                      _controller,
-                    ),
-                  ),
-                ),
-                _controls,
-              ],
-            ),
-          ),
-        ),
-      );
-    } else {
-      return GestureDetector(
-        onTap: _toggleControls,
-        onHorizontalDragEnd: _swipeChannel,
-        child: AbsorbPointer(
-          absorbing: !_controlsVisible,
-          child: AspectRatio(
-            aspectRatio: _aspectRatio,
-            child: Material(
-              color: AppColors.black,
-              child: Stack(
-                children: <Widget>[
-                  _controller == null ? Center(
-                    child: Animations.progressIndicator,
-                  ) : VideoPlayer(
-                    _controller,
-                  ),
-                  _controls,
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-  }
-
-  void _goLive() {
-    NavItems.inDevelopment(context, title: 'Эта функция');
-  }
-
-  Widget get _controls {
-    return AnimatedOpacity(
-      opacity: _controlsVisible ? 1.0 : 0,
-      duration: Duration(milliseconds: 200),
-      child: Container(
-        decoration: BoxDecoration(gradient: AppColors.gradientTop),
-        child: Container(
-          decoration: BoxDecoration(gradient: AppColors.gradientBottom),
-          child: Column(
-            children: <Widget>[
-              Padding (
-                padding: _fullscreen
-                  ? EdgeInsets.fromLTRB(20, 15, 20, 0)
-                  : EdgeInsets.fromLTRB(15, 10, 15, 0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        child: _fullscreen ? Text(
-                          widget.channel.title,
-                          style: AppFonts.screenTitle,
-                        ) : null,
-                      ),
-                    ),
-                    // TODO: chromecast
-                    // IconButton(
-                    //   icon: AppIcons.chromecast,
-                    //   onPressed: _chromecast,
-                    // ),
-                    IconButton(
-                      icon: AppIcons.settings,
-                      onPressed: _showSettings,
-                      padding: EdgeInsets.zero,
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: AppIcons.skipPrev,
-                      onPressed: _toPrev,
-                      padding: EdgeInsets.zero,
-                    ),
-                    Container(
-                      width: 56,
-                      margin: EdgeInsets.all(30),
-                      child: _controller == null ? null : IconButton(
-                        icon: _controller != null && _controller.value.isPlaying
-                            ? AppIcons.pause
-                            : AppIcons.play,
-                        onPressed: _togglePlay,
-                        padding: EdgeInsets.zero,
-                      ),
-                    ),
-                    IconButton(
-                      icon: AppIcons.skipNext,
-                      onPressed: _toNext,
-                      padding: EdgeInsets.zero,
-                    ),
-                  ],
-                ),
-              ),
-              Padding (
-                padding: _fullscreen
-                  ? EdgeInsets.fromLTRB(20, 0, 20, 15)
-                  : EdgeInsets.fromLTRB(15, 0, 15, 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    // Text(_timeDisplay, style: AppFonts.videoTimer,),
-                    TextButton(
-                      onPressed: _goLive,
-                      child: Text('LIVE', style: AppFonts.screenTitle),
-                    ),
-                    Expanded(
-                      child: _scrollBar,
-                    ),
-                    IconButton(
-                      icon: _fullscreen ? AppIcons.smallScreen : AppIcons.fullScreen,
-                      onPressed: _toggleFullScreen,
-                      padding: EdgeInsets.zero,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return HLSPlayer(
+      channel: widget.channel,
+      getPrevChannel: widget.getPrevChannel,
+      getNextChannel: widget.getNextChannel,
+      onChannelSwitch: (Channel channel) {
+        setState(() {
+          _channel = channel;
+        });
+      },
     );
-  }
-
-  void _toggleFullScreen() {
-    if (_forceFullscreen) {
-      _exitFullScreen();
-    } else {
-      _enterFullScreen();
-    }
-  }
-
-  void _enterFullScreen() {
-    _enableLandscapeOnly();
-    setState(() {
-      _forceFullscreen = true;
-    });
-  }
-
-  void _exitFullScreen() {
-    _enableAllOrientations();
-    setState(() {
-      _forceFullscreen = false;
-    });
   }
 
   Future<bool> _willPop() async {
     if(_fullscreen) {
-      _exitFullScreen();
+      OrientationHelper.allowAll();
       return false;
     }
     return true;
+  }
+
+  void _back() {
+    Navigator.of(context).pop();
+  }
+
+  void _onNavTap(int index) {
+    Navigator.of(context).pop(index);
+  }
+
+  void _login() {
+    Navigator.of(context).pop(NavItems.login);
+  }
+
+  void _profile() {
+    Navigator.of(context).pop(NavItems.profile);
   }
 
   Widget get _appBar {
@@ -428,14 +129,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         ),
       ],
     );
-  }
-
-  void _back() {
-    Navigator.of(context).pop();
-  }
-
-  void _onNavTap(int index) {
-    Navigator.of(context).pop(index);
   }
 
   Widget get _bottomBar {
@@ -460,10 +153,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         ),
       ],
     );
-  }
-
-  void _login() {
-    Navigator.of(context).pop(NavItems.login);
   }
 
   void _toggleProgram() {
@@ -568,10 +257,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     );
   }
 
-  void _profile() {
-    Navigator.of(context).pop(NavItems.profile);
-  }
-
   Widget get _lockInfo {
     return Container(
       decoration: BoxDecoration(
@@ -608,7 +293,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     if(_fullscreen) return _player;
     List<Widget> children = [
       FutureBuilder(
-        future: widget.channel.program,
+        future: _channel.program,
         builder: _program,
       ),
     ];
