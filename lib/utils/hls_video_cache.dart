@@ -267,8 +267,8 @@ class HLSVideoCache {
     await _playlist.loadChunks();
   }
 
-  void clear() {
+  Future<void> clear() async {
     _playlistCheckTimer?.cancel();
-    _playlist.clearCache();
+    await _playlist.clearCache();
   }
 }

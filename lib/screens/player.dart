@@ -36,6 +36,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   bool _expandProgram = false;
   Channel _channel;
   ExpandableController _expandableController;
+  final Key _playerKey = GlobalKey();
 
   @override
   void initState() {
@@ -76,6 +77,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   Widget get _player {
     return HLSPlayer(
+      key: _playerKey,
       channel: widget.channel,
       getPrevChannel: widget.getPrevChannel,
       getNextChannel: widget.getNextChannel,
