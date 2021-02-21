@@ -120,7 +120,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         onPressed: _back,
         icon: AppIcons.back,
       ),
-      title: Text(widget.channel.title, style: AppFonts.screenTitle),
+      title: Text(_channel.title, style: AppFonts.screenTitle),
       centerTitle: true,
       actions: [
         IconButton(

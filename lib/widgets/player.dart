@@ -231,7 +231,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
                     Expanded(
                       child: Container(
                         child: _fullscreen ? Text(
-                          widget.channel.title,
+                          _channel.title,
                           style: AppFonts.screenTitle,
                         ) : null,
                       ),
