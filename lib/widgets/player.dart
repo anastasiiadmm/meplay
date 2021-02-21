@@ -23,20 +23,18 @@ class VideoAR {
 
 class HLSPlayer extends StatefulWidget {
   final Channel channel;
-  final Channel Function(Channel) getNextChannel;
-  final Channel Function(Channel) getPrevChannel;
-  final void Function(Channel) onChannelSwitch;
-  final void Function() onToggleFullscreen;
+  final void Function() toPrevChannel;
+  final void Function() toNextChannel;
+  final void Function() toggleFullscreen;
   final Duration controlsTimeout;
 
   @override
   HLSPlayer({
     Key key,
     this.channel,
-    this.getNextChannel,
-    this.getPrevChannel,
-    this.onChannelSwitch,
-    this.onToggleFullscreen,
+    this.toPrevChannel,
+    this.toNextChannel,
+    this.toggleFullscreen,
     this.controlsTimeout: const Duration(seconds: 5),
   }): super(key: key);
 
@@ -51,54 +49,44 @@ class _HLSPlayerState extends State<HLSPlayer> {
   bool _controlsVisible = false;
   HLSVideoCache _cache;
   Timer _controlsTimer;
-  Channel _channel;
-  Channel _prevChannel;
-  Channel _nextChannel;
 
   @override
   void initState() {
     super.initState();
-    _channel = widget.channel;
-    _prevChannel = widget.getPrevChannel(_channel);
-    _nextChannel = widget.getNextChannel(_channel);
-    _start();
-  }
-
-  @override
-  void dispose() {
-    _stop();
-    _controlsTimer?.cancel();
-    super.dispose();
-  }
-
-  void _start() {
-    if (!_channel.locked) {
+    if (!widget.channel.locked) {
       _loadChannel();
     }
   }
 
-  Future<void> _stop() async {
+  @override
+  void dispose() {
+    _disposeVideo();
+    _controlsTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _disposeVideo() async {
     await _controller?.dispose();
     _cache?.clear();
   }
 
-  Future<void> _reset() async {
-    await _stop();
-    setState(() {
-      _controller = null;
-    });
-    _start();
-  }
-
   Future<void> _loadChannel() async {
-    _cache = HLSVideoCache(_channel.url);
+    _cache = HLSVideoCache(widget.channel.url);
     await _cache.load();
-    VideoPlayerController controller = VideoPlayerController.cache(_cache);
-    await controller.initialize();
-    setState(() {
-      _controller = controller;
-    });
-    controller.play();
+    if(!mounted) {
+      _disposeVideo();
+    } else {
+      VideoPlayerController controller = VideoPlayerController.cache(_cache);
+      await controller.initialize();
+      if(!mounted) {
+        _disposeVideo();
+      } else {
+        setState(() {
+          _controller = controller;
+        });
+        controller.play();
+      }
+    }
   }
 
   void _showSettings() {
@@ -107,22 +95,6 @@ class _HLSPlayerState extends State<HLSPlayer> {
     // setState(() {
     //   _aspectRatio = ratio > 0 ? ratio : _controller.value.aspectRatio;
     // });
-  }
-
-  void _switchPrev() async {
-    _nextChannel = _channel;
-    _channel = _prevChannel;
-    _prevChannel = widget.getPrevChannel(_channel);
-    _reset();
-    widget.onChannelSwitch(_channel);
-  }
-
-  void _switchNext() async {
-    _prevChannel = _channel;
-    _channel = _nextChannel;
-    _nextChannel = widget.getNextChannel(_channel);
-    _reset();
-    widget.onChannelSwitch(_channel);
   }
 
   void _togglePlay() {
@@ -197,9 +169,9 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   void _swipeChannel(DragEndDetails details) {
     if(details.primaryVelocity > 0) {
-      _switchPrev();
+      widget.toPrevChannel();
     } else {
-      _switchNext();
+      widget.toNextChannel();
     }
   }
 
@@ -231,7 +203,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
                     Expanded(
                       child: Container(
                         child: _fullscreen ? Text(
-                          _channel.title,
+                          widget.channel.title,
                           style: AppFonts.screenTitle,
                         ) : null,
                       ),
@@ -256,7 +228,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
                   children: [
                     IconButton(
                       icon: AppIcons.skipPrev,
-                      onPressed: _switchPrev,
+                      onPressed: widget.toPrevChannel,
                       padding: EdgeInsets.zero,
                     ),
                     Container(
@@ -272,7 +244,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
                     ),
                     IconButton(
                       icon: AppIcons.skipNext,
-                      onPressed: _switchNext,
+                      onPressed: widget.toNextChannel,
                       padding: EdgeInsets.zero,
                     ),
                   ],

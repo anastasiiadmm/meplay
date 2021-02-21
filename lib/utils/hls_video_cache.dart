@@ -95,7 +95,7 @@ class M3UPlaylist {
     final response = await http.get(url);
     if (response.statusCode == 200) {
       parse(response.body);
-      save();
+      await save();
     }
   }
 
@@ -112,15 +112,13 @@ class M3UPlaylist {
         await Future.forEach(
           chunksToLoad,
           (e) async => await e.load().then((d) => _bufferedDuration += d)
-        );
-        save();
+        ).then((_) => save());
         break;
       case awaitModeAll:
         var futures = chunksToLoad.map(
           (e) => e.load().then((d) => _bufferedDuration += d)
         );
-        await Future.wait(futures);
-        save();
+        await Future.wait(futures).then((_) => save());
         break;
       default:
         throw Exception('Unsupported mode');
@@ -199,9 +197,9 @@ class M3UPlaylist {
 
   String get cacheKey => '$url$mediaSequence';
 
-  Future<void> clearCache() async {
+  void clearCache() {
     chunks.forEach((e) => e.clearCache());
-    await DefaultCacheManager().removeFile(cacheKey);
+    DefaultCacheManager().removeFile(cacheKey);
   }
 }
 
@@ -226,8 +224,8 @@ class M3UChunk {
     return "#EXTINF:$duration,\n$path";
   }
 
-  Future<void> clearCache() async {
-    await DefaultCacheManager().removeFile(url);
+  void clearCache() {
+    DefaultCacheManager().removeFile(url);
   }
 }
 
@@ -237,6 +235,7 @@ class M3UChunk {
 class HLSVideoCache {
   final M3UPlaylist _playlist;
   Timer _playlistCheckTimer;
+  bool _disposed = false;
 
   static const Duration playlistCheckTimeout = Duration(seconds: 20);
 
@@ -267,8 +266,11 @@ class HLSVideoCache {
     await _playlist.loadChunks();
   }
 
-  Future<void> clear() async {
-    _playlistCheckTimer?.cancel();
-    await _playlist.clearCache();
+  void clear() {
+    if (!_disposed) {
+      _disposed = true;
+      _playlistCheckTimer?.cancel();
+      _playlist.clearCache();
+    }
   }
 }

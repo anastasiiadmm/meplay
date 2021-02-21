@@ -36,7 +36,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   bool _expandProgram = false;
   Channel _channel;
   ExpandableController _expandableController;
-  final Key _playerKey = GlobalKey();
+  Key _playerKey = GlobalKey();
 
   @override
   void initState() {
@@ -78,15 +78,24 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   Widget get _player {
     return HLSPlayer(
       key: _playerKey,
-      channel: widget.channel,
-      getPrevChannel: widget.getPrevChannel,
-      getNextChannel: widget.getNextChannel,
-      onChannelSwitch: (Channel channel) {
-        setState(() {
-          _channel = channel;
-        });
-      },
+      channel: _channel,
+      toPrevChannel: _toPrevChannel,
+      toNextChannel: _toNextChannel,
     );
+  }
+
+  void _toPrevChannel() {
+    setState(() {
+      _channel = widget.getPrevChannel(_channel);
+      _playerKey = GlobalKey();
+    });
+  }
+
+  void _toNextChannel() {
+    setState(() {
+      _channel = widget.getNextChannel(_channel);
+      _playerKey = GlobalKey();
+    });
   }
 
   Future<bool> _willPop() async {
@@ -299,7 +308,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         builder: _program,
       ),
     ];
-    if(widget.channel.locked) {
+    if(_channel.locked) {
       children.add(_lockInfo);
     }
     return Column(
