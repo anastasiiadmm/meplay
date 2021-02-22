@@ -167,6 +167,14 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   }
 
+  void _adjustSettings(DragEndDetails details) {
+    if (details.primaryVelocity > 0) {
+      _controller.setVolume(0);
+    } else {
+
+    }
+  }
+
   void _swipeChannel(DragEndDetails details) {
     if(details.primaryVelocity > 0) {
       widget.toPrevChannel();
@@ -282,56 +290,52 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    Widget content;
+    // Разное положение AspectRatio в иерархии элементов
     if (_fullscreen) {
-      return  GestureDetector(
-        onTap: _toggleControls,
-        onHorizontalDragEnd: _swipeChannel,
-        child: AbsorbPointer(
-          absorbing: !_controlsVisible,
-          child: Material(
-            color: AppColors.black,
-            child: Stack(
-              children: [
-                Center (
-                  child: _controller == null
-                      ? Animations.progressIndicator
-                      : AspectRatio(
-                    aspectRatio: _ratio.value,
-                    child: VideoPlayer(
-                      _controller,
-                    ),
-                  ),
+      content = Material(
+        color: AppColors.black,
+        child: Stack(
+          children: [
+            Center (
+              child: _controller == null
+                  ? Animations.progressIndicator
+                  : AspectRatio(
+                aspectRatio: _ratio.value,
+                child: VideoPlayer(
+                  _controller,
                 ),
-                _controls,
-              ],
+              ),
             ),
-          ),
+            _controls,
+          ],
         ),
       );
     } else {
-      return GestureDetector(
-        onTap: _toggleControls,
-        onHorizontalDragEnd: _swipeChannel,
-        child: AbsorbPointer(
-          absorbing: !_controlsVisible,
-          child: AspectRatio(
-            aspectRatio: _ratio.value,
-            child: Material(
-              color: AppColors.black,
-              child: Stack(
-                children: <Widget>[
-                  _controller == null ? Center(
-                    child: Animations.progressIndicator,
-                  ) : VideoPlayer(
-                    _controller,
-                  ),
-                  _controls,
-                ],
+      content = AspectRatio(
+        aspectRatio: _ratio.value,
+        child: Material(
+          color: AppColors.black,
+          child: Stack(
+            children: <Widget>[
+              _controller == null ? Center(
+                child: Animations.progressIndicator,
+              ) : VideoPlayer(
+                _controller,
               ),
-            ),
+              _controls,
+            ],
           ),
         ),
       );
     }
+    return  GestureDetector(
+      onTap: _toggleControls,
+      onHorizontalDragEnd: _swipeChannel,
+      child: AbsorbPointer(
+        absorbing: !_controlsVisible,
+        child: content,
+      ),
+    );
   }
 }
