@@ -168,6 +168,12 @@ class AppFonts {
   static const packetPrice = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
       letterSpacing: -0.24, color: AppColors.gray80);
+  static const videoSettingLabels = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.w400, fontSize: 13, height: 18/13,
+      letterSpacing: -0.24, color: AppColors.gray0);
+  static const videoSettingValues = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.w400, fontSize: 17, height: 22/17,
+      letterSpacing: -0.41, color: AppColors.gray0);
 }
 
 

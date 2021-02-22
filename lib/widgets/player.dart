@@ -49,10 +49,18 @@ class _HLSPlayerState extends State<HLSPlayer> {
   bool _controlsVisible = false;
   HLSVideoCache _cache;
   Timer _controlsTimer;
+  double _brightness;
+  double _volume;
+  bool _settingControlsVisible = false;
 
   @override
   void initState() {
     super.initState();
+    // TODO: take the real values
+    _brightness = 1.0;
+    _volume = 0.5;
+    _settingControlsVisible = true;
+
     if (!widget.channel.locked) {
       _loadChannel();
     }
@@ -159,20 +167,12 @@ class _HLSPlayerState extends State<HLSPlayer> {
     NavItems.inDevelopment(context, title: 'Эта функция');
   }
 
-  void _swipeBrightness() {
+  void _adjustBrightness(DragUpdateDetails details) {
 
   }
 
-  void _swipeVolume() {
+  void _adjustVolume(DragUpdateDetails details) {
 
-  }
-
-  void _adjustSettings(DragEndDetails details) {
-    if (details.primaryVelocity > 0) {
-      _controller.setVolume(0);
-    } else {
-
-    }
   }
 
   void _swipeChannel(DragEndDetails details) {
@@ -291,6 +291,60 @@ class _HLSPlayerState extends State<HLSPlayer> {
     );
   }
 
+  Widget get _playerSettingsControls {
+    return AnimatedOpacity(
+      opacity: _settingControlsVisible ? 1.0 : 0,
+      duration: Duration(milliseconds: 200),
+      child: Container(
+        decoration: BoxDecoration(gradient: AppColors.gradientTop),
+        child: Container(
+          decoration: BoxDecoration(gradient: AppColors.gradientBottom),
+          child: Row (
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Яркость",
+                        style: AppFonts.videoSettingLabels,
+                      ),
+                      Text(
+                        "${(_brightness * 100).round()}%",
+                        style: AppFonts.videoSettingValues,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                          "Громкость",
+                        style: AppFonts.videoSettingLabels,
+                      ),
+                      Text(
+                          "${(_volume * 100).round()}%",
+                        style: AppFonts.videoSettingValues,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget get _fullscreenPlayer {
     return GestureDetector(
       onTap: _toggleControls,
@@ -310,6 +364,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
               ),
             ),
             _controls,
+            _playerSettingsControls,
           ],
         ),
       ),
@@ -332,6 +387,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
                 _controller,
               ),
               _controls,
+              _playerSettingsControls,
             ],
           ),
         ),
