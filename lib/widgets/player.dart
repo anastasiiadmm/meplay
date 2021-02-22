@@ -21,6 +21,13 @@ class VideoAR {
 }
 
 
+enum SwipeAction {
+  channel,
+  brightness,
+  volume,
+}
+
+
 class HLSPlayer extends StatefulWidget {
   final Channel channel;
   final void Function() toPrevChannel;
@@ -52,6 +59,8 @@ class _HLSPlayerState extends State<HLSPlayer> {
   double _brightness;
   double _volume;
   bool _settingControlsVisible = false;
+  Offset _panStartPoint;
+  SwipeAction _panAction;
 
   @override
   void initState() {
@@ -167,20 +176,52 @@ class _HLSPlayerState extends State<HLSPlayer> {
     NavItems.inDevelopment(context, title: 'Эта функция');
   }
 
-  void _adjustBrightness(DragUpdateDetails details) {
-
-  }
-
-  void _adjustVolume(DragUpdateDetails details) {
-
-  }
-
-  void _swipeChannel(DragEndDetails details) {
-    if(details.primaryVelocity > 0) {
-      widget.toPrevChannel();
-    } else {
-      widget.toNextChannel();
+  void _detectAction(Offset delta) {
+    if(_panAction == null) {
+      if(delta.dx.abs() > delta.dy.abs()) {
+        _panAction = SwipeAction.channel;
+      } else {
+        if(_panStartPoint.dx > MediaQuery.of(context).size.width / 2) {
+          _panAction = SwipeAction.brightness;
+        } else {
+          _panAction = SwipeAction.volume;
+        }
+      }
     }
+  }
+
+  void _onPanStart(DragStartDetails details) {
+    _panStartPoint = details.localPosition;
+  }
+
+  void _onPanUpdate(DragUpdateDetails details) {
+    _detectAction(details.delta);
+    if (_panAction == SwipeAction.brightness) {
+      double brightness = _brightness - details.delta.dy / 200;
+      if (brightness > 1) brightness = 1;
+      else if (brightness < 0) brightness = 0;
+      setState(() {
+        _brightness = brightness;
+      });
+    } else if (_panAction == SwipeAction.volume) {
+      double volume = _volume - details.delta.dy / 200;
+      if (volume > 1) volume = 1;
+      else if (volume < 0) volume = 0;
+      setState(() {
+        _volume = volume;
+      });
+    }
+  }
+
+  void _onPanEnd(DragEndDetails details) {
+    if (_panAction == SwipeAction.channel) {
+      if(details.velocity.pixelsPerSecond.dx > 0) {
+        widget.toPrevChannel();
+      } else {
+        widget.toNextChannel();
+      }
+    }
+    _panAction = null;
   }
 
   bool get _fullscreen {
@@ -309,11 +350,11 @@ class _HLSPlayerState extends State<HLSPlayer> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Яркость",
+                          "Громкость",
                         style: AppFonts.videoSettingLabels,
                       ),
                       Text(
-                        "${(_brightness * 100).round()}%",
+                          "${(_volume * 100).round()}%",
                         style: AppFonts.videoSettingValues,
                       ),
                     ],
@@ -327,11 +368,11 @@ class _HLSPlayerState extends State<HLSPlayer> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                          "Громкость",
+                        "Яркость",
                         style: AppFonts.videoSettingLabels,
                       ),
                       Text(
-                          "${(_volume * 100).round()}%",
+                        "${(_brightness * 100).round()}%",
                         style: AppFonts.videoSettingValues,
                       ),
                     ],
@@ -348,7 +389,9 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Widget get _fullscreenPlayer {
     return GestureDetector(
       onTap: _toggleControls,
-      onHorizontalDragEnd: _swipeChannel,
+      onPanStart: _onPanStart,
+      onPanUpdate: _onPanUpdate,
+      onPanEnd: _onPanEnd,
       child: Material(
         color: AppColors.black,
         child: Stack(
@@ -374,7 +417,9 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Widget get _adaptivePlayer {
     return GestureDetector(
       onTap: _toggleControls,
-      onHorizontalDragEnd: _swipeChannel,
+      onPanStart: _onPanStart,
+      onPanUpdate: _onPanUpdate,
+      onPanEnd: _onPanEnd,
       child: AspectRatio(
         aspectRatio: _ratio.value,
         child: Material(
