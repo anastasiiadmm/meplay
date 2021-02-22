@@ -192,108 +192,110 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   Widget get _controls {
-    return AnimatedOpacity(
-      opacity: _controlsVisible ? 1.0 : 0,
-      duration: Duration(milliseconds: 200),
-      child: Container(
-        decoration: BoxDecoration(gradient: AppColors.gradientTop),
+    return AbsorbPointer(
+      absorbing: !_controlsVisible,
+      child: AnimatedOpacity(
+        opacity: _controlsVisible ? 1.0 : 0,
+        duration: Duration(milliseconds: 200),
         child: Container(
-          decoration: BoxDecoration(gradient: AppColors.gradientBottom),
-          child: Column(
-            children: <Widget>[
-              Padding (
-                padding: _fullscreen
-                    ? EdgeInsets.fromLTRB(20, 15, 20, 0)
-                    : EdgeInsets.fromLTRB(15, 10, 15, 0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        child: _fullscreen ? Text(
-                          widget.channel.title,
-                          style: AppFonts.screenTitle,
-                        ) : null,
+          decoration: BoxDecoration(gradient: AppColors.gradientTop),
+          child: Container(
+            decoration: BoxDecoration(gradient: AppColors.gradientBottom),
+            child: Column(
+              children: <Widget>[
+                Padding (
+                  padding: _fullscreen
+                      ? EdgeInsets.fromLTRB(20, 15, 20, 0)
+                      : EdgeInsets.fromLTRB(15, 10, 15, 0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          child: _fullscreen ? Text(
+                            widget.channel.title,
+                            style: AppFonts.screenTitle,
+                          ) : null,
+                        ),
                       ),
-                    ),
-                    // TODO: chromecast
-                    // IconButton(
-                    //   icon: AppIcons.chromecast,
-                    //   onPressed: _chromecast,
-                    // ),
-                    IconButton(
-                      icon: AppIcons.settings,
-                      onPressed: _showSettings,
-                      padding: EdgeInsets.zero,
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: AppIcons.skipPrev,
-                      onPressed: widget.toPrevChannel,
-                      padding: EdgeInsets.zero,
-                    ),
-                    Container(
-                      width: 56,
-                      margin: EdgeInsets.all(30),
-                      child: _controller == null ? null : IconButton(
-                        icon: _controller != null && _controller.value.isPlaying
-                            ? AppIcons.pause
-                            : AppIcons.play,
-                        onPressed: _togglePlay,
+                      // TODO: chromecast
+                      // IconButton(
+                      //   icon: AppIcons.chromecast,
+                      //   onPressed: _chromecast,
+                      // ),
+                      IconButton(
+                        icon: AppIcons.settings,
+                        onPressed: _showSettings,
                         padding: EdgeInsets.zero,
                       ),
-                    ),
-                    IconButton(
-                      icon: AppIcons.skipNext,
-                      onPressed: widget.toNextChannel,
-                      padding: EdgeInsets.zero,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Padding (
-                padding: _fullscreen
-                    ? EdgeInsets.fromLTRB(20, 0, 20, 15)
-                    : EdgeInsets.fromLTRB(15, 0, 15, 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    // Text(_timeDisplay, style: AppFonts.videoTimer,),
-                    TextButton(
-                      onPressed: _goLive,
-                      child: Text('LIVE', style: AppFonts.screenTitle),
-                    ),
-                    Expanded(
-                      child: _scrollBar,
-                    ),
-                    IconButton(
-                      icon: _fullscreen ? AppIcons.smallScreen : AppIcons.fullScreen,
-                      onPressed: _toggleFullScreen,
-                      padding: EdgeInsets.zero,
-                    ),
-                  ],
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: AppIcons.skipPrev,
+                        onPressed: widget.toPrevChannel,
+                        padding: EdgeInsets.zero,
+                      ),
+                      Container(
+                        width: 56,
+                        margin: EdgeInsets.all(30),
+                        child: _controller == null ? null : IconButton(
+                          icon: _controller != null && _controller.value.isPlaying
+                              ? AppIcons.pause
+                              : AppIcons.play,
+                          onPressed: _togglePlay,
+                          padding: EdgeInsets.zero,
+                        ),
+                      ),
+                      IconButton(
+                        icon: AppIcons.skipNext,
+                        onPressed: widget.toNextChannel,
+                        padding: EdgeInsets.zero,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                Padding (
+                  padding: _fullscreen
+                      ? EdgeInsets.fromLTRB(20, 0, 20, 15)
+                      : EdgeInsets.fromLTRB(15, 0, 15, 10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      // Text(_timeDisplay, style: AppFonts.videoTimer,),
+                      TextButton(
+                        onPressed: _goLive,
+                        child: Text('LIVE', style: AppFonts.screenTitle),
+                      ),
+                      Expanded(
+                        child: _scrollBar,
+                      ),
+                      IconButton(
+                        icon: _fullscreen ? AppIcons.smallScreen : AppIcons.fullScreen,
+                        onPressed: _toggleFullScreen,
+                        padding: EdgeInsets.zero,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Widget content;
-    // Разное положение AspectRatio в иерархии элементов
-    if (_fullscreen) {
-      content = Material(
+  Widget get _fullscreenPlayer {
+    return GestureDetector(
+      onTap: _toggleControls,
+      onHorizontalDragEnd: _swipeChannel,
+      child: Material(
         color: AppColors.black,
         child: Stack(
           children: [
@@ -310,9 +312,15 @@ class _HLSPlayerState extends State<HLSPlayer> {
             _controls,
           ],
         ),
-      );
-    } else {
-      content = AspectRatio(
+      ),
+    );
+  }
+
+  Widget get _adaptivePlayer {
+    return GestureDetector(
+      onTap: _toggleControls,
+      onHorizontalDragEnd: _swipeChannel,
+      child: AspectRatio(
         aspectRatio: _ratio.value,
         child: Material(
           color: AppColors.black,
@@ -327,15 +335,12 @@ class _HLSPlayerState extends State<HLSPlayer> {
             ],
           ),
         ),
-      );
-    }
-    return  GestureDetector(
-      onTap: _toggleControls,
-      onHorizontalDragEnd: _swipeChannel,
-      child: AbsorbPointer(
-        absorbing: !_controlsVisible,
-        child: content,
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _fullscreen ? _fullscreenPlayer : _adaptivePlayer;
   }
 }
