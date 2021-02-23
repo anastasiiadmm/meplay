@@ -30,7 +30,8 @@ enum SwipeAction {
 
 
 // Converts swipe pixels to settings values.
-// 200 means 200px long scale represents full diapason of setting values.
+// 200 means 200px long swipe needed to fully turn setting on or off.
+// Higher the value - longer the swipe.
 const int swipeFactor = 200;
 
 
@@ -96,7 +97,6 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   Future<void> _disposeVideo() async {
     await _controller?.dispose();
-    _volume = 0;
     _cache?.clear();
   }
 
@@ -226,6 +226,14 @@ class _HLSPlayerState extends State<HLSPlayer> {
     }
   }
 
+  void _swipeChannel(double move) {
+    if(move > 0) {
+      widget.toPrevChannel();
+    } else {
+      widget.toNextChannel();
+    }
+  }
+
   void _onPanStart(DragStartDetails details) {
     _panStartPoint = details.localPosition;
   }
@@ -241,13 +249,14 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   void _onPanEnd(DragEndDetails details) {
     if (_panAction == SwipeAction.channel) {
-      if(details.velocity.pixelsPerSecond.dx > 0) {
-        widget.toPrevChannel();
-      } else {
-        widget.toNextChannel();
-      }
+      _swipeChannel(details.velocity.pixelsPerSecond.dx);
     }
     _panAction = null;
+  }
+
+  String _getSettingDisplay(double value, {double scale: 1.0}) {
+    double percent = (value ?? 0) / scale * 100;
+    return "${percent.round()}%";
   }
 
   bool get _fullscreen {
@@ -376,11 +385,11 @@ class _HLSPlayerState extends State<HLSPlayer> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                          "Громкость",
+                        "Громкость",
                         style: AppFonts.videoSettingLabels,
                       ),
                       Text(
-                          "${((_volume ?? 0) * 100).round()}%",
+                        _getSettingDisplay(_volume),
                         style: AppFonts.videoSettingValues,
                       ),
                     ],
@@ -398,7 +407,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
                         style: AppFonts.videoSettingLabels,
                       ),
                       Text(
-                        "${((_brightness ?? 0) * 100).round()}%",
+                        _getSettingDisplay(_brightness),
                         style: AppFonts.videoSettingValues,
                       ),
                     ],

@@ -3,7 +3,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Screen plugin says that needs it but app does not use the feature from this plugin. -->
+    <!-- Required for screen plugin but never used in the app. -->
     <!-- <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
