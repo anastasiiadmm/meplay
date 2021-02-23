@@ -34,6 +34,9 @@ enum SwipeAction {
 // Higher the value - longer the swipe.
 const int swipeFactor = 200;
 
+// Time required to show or hide controls.
+const controlsAnimationDuration = Duration(milliseconds: 200);
+
 
 class HLSPlayer extends StatefulWidget {
   final Channel channel;
@@ -41,6 +44,7 @@ class HLSPlayer extends StatefulWidget {
   final void Function() toNextChannel;
   final void Function() toggleFullscreen;
   final Duration controlsTimeout;
+  final Duration settingsTimeout;
 
   @override
   HLSPlayer({
@@ -50,6 +54,7 @@ class HLSPlayer extends StatefulWidget {
     this.toNextChannel,
     this.toggleFullscreen,
     this.controlsTimeout: const Duration(seconds: 5),
+    this.settingsTimeout: const Duration(seconds: 3),
   }): super(key: key);
 
   @override
@@ -65,16 +70,16 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Timer _controlsTimer;
   double _brightness;
   double _volume;
-  bool _settingsVisible = false;
+  bool _brightnessVisible = false;
+  bool _volumeVisible = false;
   Offset _panStartPoint;
   SwipeAction _panAction;
+  Timer _brightnessTimer;
+  Timer _volumeTimer;
 
   @override
   void initState() {
     super.initState();
-    // TODO:
-    _settingsVisible = true;
-
     _initBrightness();
     if (!widget.channel.locked) {
       _loadChannel();
@@ -85,6 +90,8 @@ class _HLSPlayerState extends State<HLSPlayer> {
   void dispose() {
     _disposeVideo();
     _controlsTimer?.cancel();
+    _brightnessTimer?.cancel();
+    _volumeTimer?.cancel();
     super.dispose();
   }
 
@@ -144,10 +151,10 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   void _showControls() {
     _controlsTimer?.cancel();
-    _controlsTimer = Timer(widget.controlsTimeout, _hideControls);
     setState(() {
       _controlsVisible = true;
     });
+    _controlsTimer = Timer(widget.controlsTimeout, _hideControls);
   }
 
   void _hideControls() {
@@ -241,8 +248,10 @@ class _HLSPlayerState extends State<HLSPlayer> {
   void _onPanUpdate(DragUpdateDetails details) {
     _detectAction(details.delta);
     if (_panAction == SwipeAction.brightness) {
+      _showBrightness();
       _adjustBrightness(details.delta.dy);
     } else if (_panAction == SwipeAction.volume) {
+      _showVolume();
       _adjustVolume(details.delta.dy);
     }
   }
@@ -267,12 +276,46 @@ class _HLSPlayerState extends State<HLSPlayer> {
     OrientationHelper.toggleFullscreen();
   }
 
+  bool get _settingsVisible {
+    return _brightnessVisible || _volumeVisible;
+  }
+  
+  void _showBrightness() {
+    _brightnessTimer?.cancel();
+    _hideVolume();
+    setState(() {
+      _brightnessVisible = true;
+    });
+    _brightnessTimer = Timer(widget.settingsTimeout, _hideBrightness);
+  }
+
+  void _showVolume() {
+    _volumeTimer?.cancel();
+    _hideBrightness();
+    setState(() {
+      _volumeVisible = true;
+    });
+    _volumeTimer = Timer(widget.settingsTimeout, _hideVolume);
+  }
+
+  void _hideBrightness() {
+    setState(() {
+      _brightnessVisible = false;
+    });
+  }
+
+  void _hideVolume() {
+    setState(() {
+      _volumeVisible = false;
+    });
+  }
+  
   Widget get _controls {
     return AbsorbPointer(
       absorbing: !_controlsVisible,
       child: AnimatedOpacity(
         opacity: _controlsVisible ? 1.0 : 0,
-        duration: Duration(milliseconds: 200),
+        duration: controlsAnimationDuration,
         child: Container(
           decoration: BoxDecoration(gradient: AppColors.gradientTop),
           child: Container(
@@ -367,54 +410,51 @@ class _HLSPlayerState extends State<HLSPlayer> {
     );
   }
 
-  Widget get _playerSettingsControls {
+  Widget _settingControlBlock(String name, String valueDisplay) {
+    return Expanded(
+      child: GestureDetector(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              name,
+              style: AppFonts.videoSettingLabels,
+            ),
+            Text(
+              valueDisplay,
+              style: AppFonts.videoSettingValues,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget get _settingControls {
+    List<Widget> children = [];
+    if (_volumeVisible) {
+      children.add(_settingControlBlock(
+          'Громкость',
+          _getSettingDisplay(_volume),
+      ));
+    }
+    if (_brightnessVisible) {
+      children.add(_settingControlBlock(
+          'Яркость',
+          _getSettingDisplay(_brightness),
+      ));
+    }
     return AnimatedOpacity(
       opacity: _settingsVisible ? 1.0 : 0,
-      duration: Duration(milliseconds: 200),
+      duration: controlsAnimationDuration,
       child: Container(
         decoration: BoxDecoration(gradient: AppColors.gradientTop),
         child: Container(
           decoration: BoxDecoration(gradient: AppColors.gradientBottom),
           child: Row (
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Громкость",
-                        style: AppFonts.videoSettingLabels,
-                      ),
-                      Text(
-                        _getSettingDisplay(_volume),
-                        style: AppFonts.videoSettingValues,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Яркость",
-                        style: AppFonts.videoSettingLabels,
-                      ),
-                      Text(
-                        _getSettingDisplay(_brightness),
-                        style: AppFonts.videoSettingValues,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+            children: children,
           ),
         ),
       ),
@@ -442,7 +482,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
               ),
             ),
             _controls,
-            _playerSettingsControls,
+            _settingControls,
           ],
         ),
       ),
@@ -467,7 +507,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
                 _controller,
               ),
               _controls,
-              _playerSettingsControls,
+              _settingControls,
             ],
           ),
         ),
