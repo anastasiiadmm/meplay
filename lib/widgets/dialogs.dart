@@ -155,6 +155,7 @@ void choiceDialog<T>({
           shrinkWrap: choices.length < 7,
           itemBuilder: (BuildContext context, int index) => ListTile(
             title: Text(choices[index].toString()),
+            contentPadding: EdgeInsets.symmetric(horizontal: 10),
             onTap: () {
               onSelect(choices[index]);
               Navigator.of(context).pop();

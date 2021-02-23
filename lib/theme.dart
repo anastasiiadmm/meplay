@@ -34,7 +34,7 @@ class AppColors {
   static const gray0 = Color.fromRGBO(250, 250, 247, 1);  // #FAFAF7
   static const gray5 = Color.fromRGBO(243, 243, 240, 1);  // #F3F3F0
   static const gray10 = Color.fromRGBO(234, 234, 228, 1);  // #EAEAE4
-  static const gray15 = Color.fromRGBO(224, 224, 214, 1);
+  static const gray15 = Color.fromRGBO(225, 225, 214, 1);
   static const gray20 = Color.fromRGBO(215, 215, 207, 1);  // #D7D7CF
   static const gray30 = Color.fromRGBO(191, 191, 182, 1);  // #BFBFB6
   static const gray40 = Color.fromRGBO(162, 162, 153, 1);  // #A2A299
