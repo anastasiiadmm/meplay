@@ -282,7 +282,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   
   void _showBrightness() {
     _brightnessTimer?.cancel();
-    _hideVolume();
+    // _hideVolume();
     setState(() {
       _brightnessVisible = true;
     });
@@ -291,7 +291,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   void _showVolume() {
     _volumeTimer?.cancel();
-    _hideBrightness();
+    // _hideBrightness();
     setState(() {
       _volumeVisible = true;
     });
@@ -438,12 +438,16 @@ class _HLSPlayerState extends State<HLSPlayer> {
           'Громкость',
           _getSettingDisplay(_volume),
       ));
+    } else {
+      children.add(Expanded(child: Container()));
     }
     if (_brightnessVisible) {
       children.add(_settingControlBlock(
           'Яркость',
           _getSettingDisplay(_brightness),
       ));
+    } else {
+      children.add(Expanded(child: Container()));
     }
     return AnimatedOpacity(
       opacity: _settingsVisible ? 1.0 : 0,
