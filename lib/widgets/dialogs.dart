@@ -128,6 +128,45 @@ void asyncConfirmDialog({
 }
 
 
-void selectorDialog(BuildContext context) {
-
+// Dialog with a ListView in it to select from provided choices
+void choiceDialog<T>({
+  @required BuildContext context,
+  Widget title,
+  List<T> choices,
+  @required void Function(T) onSelect,
+}) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) => AlertDialog(
+      contentPadding: EdgeInsets.zero,
+      titlePadding: EdgeInsets.zero,
+      title: title == null ? null : Container(
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(
+            color: AppColors.gray15,
+          )),
+        ),
+        padding: EdgeInsets.all(16),
+        child: title,
+      ),
+      content: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: 400),
+        child: ListView.separated(
+          shrinkWrap: choices.length < 7,
+          itemBuilder: (BuildContext context, int index) => ListTile(
+            title: Text(choices[index].toString()),
+            onTap: () {
+              onSelect(choices[index]);
+              Navigator.of(context).pop();
+            },
+            dense: false,
+          ),
+          separatorBuilder: (BuildContext context, int index) => Divider(
+            height: 1,
+          ),
+          itemCount: choices.length,
+        ),
+      ),
+    ),
+  );
 }

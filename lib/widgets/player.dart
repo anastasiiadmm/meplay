@@ -6,6 +6,7 @@ import '../video_player_fork/video_player.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/orientation_helper.dart';
+import '../widgets/dialogs.dart';
 import '../screens/base.dart';
 
 
@@ -14,6 +15,10 @@ class VideoAR {
   final double value;
 
   const VideoAR(this.name, this.value);
+
+  String toString() {
+    return name;
+  }
 
   static const r43 = VideoAR('4:3', 4/3);
   static const r169 = VideoAR('16:9', 16/9);
@@ -128,11 +133,23 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   void _showSettings() {
-    NavItems.inDevelopment(context, title: 'Настройки');
-    // TODO: show items: change aspect ratio and favorites
-    // setState(() {
-    //   _aspectRatio = ratio > 0 ? ratio : _controller.value.aspectRatio;
+    // explore this
+    // showMenu({
+    //
     // });
+    choiceDialog<VideoAR>(
+      context: context,
+      title: Text(
+        'Стороны видео',
+        textAlign: TextAlign.center,
+      ),
+      choices: VideoAR.choices,
+      onSelect: (VideoAR value) {
+        setState(() {
+          _ratio = value;
+        });
+      },
+    );
   }
 
   void _togglePlay() {
@@ -165,7 +182,10 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   void _toggleControls() {
-    if (_controlsVisible) {
+    if (_settingsVisible) {
+      _hideVolume();
+      _hideBrightness();
+    } else if (_controlsVisible) {
       _hideControls();
     } else {
       _showControls();
@@ -299,15 +319,30 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   void _hideBrightness() {
+    _brightnessTimer?.cancel();
     setState(() {
       _brightnessVisible = false;
     });
   }
 
   void _hideVolume() {
+    _volumeTimer?.cancel();
     setState(() {
       _volumeVisible = false;
     });
+  }
+
+  Widget get _backdrop {
+    return AnimatedOpacity(
+      opacity: _controlsVisible ? 1.0 : 0,
+      duration: controlsAnimationDuration,
+      child: Container(
+        decoration: BoxDecoration(gradient: AppColors.gradientTop),
+        child: Container(
+          decoration: BoxDecoration(gradient: AppColors.gradientBottom),
+        ),
+      ),
+    );
   }
   
   Widget get _controls {
@@ -410,18 +445,22 @@ class _HLSPlayerState extends State<HLSPlayer> {
     );
   }
 
-  Widget _settingControlBlock(IconData icon, String value) {
-    return GestureDetector(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(bottom: 5),
-            child: Icon(icon, color: AppColors.gray0, size: 24,),
-          ),
-          Text(value, style: AppFonts.videoSettingValues,),
-        ],
+  Widget _settingControlBlock(IconData icon, String value, bool visible) {
+    return AnimatedOpacity(
+      opacity: _settingsVisible ? 1.0 : 0,
+      duration: controlsAnimationDuration,
+      child: GestureDetector(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: 5),
+              child: Icon(icon, color: AppColors.gray0, size: 24,),
+            ),
+            Text(value, style: AppFonts.videoSettingValues,),
+          ],
+        ),
       ),
     );
   }
@@ -458,16 +497,18 @@ class _HLSPlayerState extends State<HLSPlayer> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: _volumeVisible ? _settingControlBlock(
+                child: _settingControlBlock(
                   _volumeIcon,
                   _settingDisplay(_volume),
-                ) : Container()
+                  _volumeVisible,
+                ),
               ),
               Expanded(
-                child: _brightnessVisible ? _settingControlBlock(
+                child: _settingControlBlock(
                   _brightnessIcon,
                   _settingDisplay(_brightness),
-                ) : Container()
+                  _brightnessVisible,
+                ),
               )
             ],
           ),
@@ -522,7 +563,10 @@ class _HLSPlayerState extends State<HLSPlayer> {
                 _controller,
               ),
               _controls,
-              _settingControls,
+              IgnorePointer(
+                child: _settingControls,
+                ignoring: !_settingsVisible,
+              ),
             ],
           ),
         ),
