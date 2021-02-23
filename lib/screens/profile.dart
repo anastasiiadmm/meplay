@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'base.dart';
 import '../models.dart';
 import '../theme.dart';
+import '../widgets/dialogs.dart';
 
 
 class ProfileScreen extends StatefulWidget {
@@ -80,7 +81,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'Не удалось подключить пакет. Проверьте подключение к интернету и баланс, и попробуйте ещё раз.',
        textAlign: TextAlign.center
     );
-    _showPacketDialog(title, text, error, () => _addPacket(packet));
+    asyncConfirmDialog(
+      context: context,
+      title: title,
+      content: text,
+      error: error,
+      action: () => _addPacket(packet),
+    );
   }
   
   void _removePacketDialog(Packet packet) {
@@ -102,62 +109,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'Не удалось отключить пакет. Проверьте подключение к интернету, и попробуйте ещё раз.',
       textAlign: TextAlign.center,
     );
-    _showPacketDialog(title, text, error, () => _removePacket(packet));
-  }
-
-  Future<void> _showPacketDialog(
-    Widget title,
-    Widget text,
-    Widget error,
-    Future<bool> Function() action,
-  ) async {
-    showDialog(
+    asyncConfirmDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        bool _loading = false;
-        bool _failed = false;
-        return StatefulBuilder(
-          builder: (BuildContext context, setState) => AlertDialog(
-            title: title,
-            content: _loading ? Container(
-              child: Animations.modalProgressIndicator,
-              alignment: Alignment.center,
-              height: 40,
-              margin: EdgeInsets.only(top: 20,),
-            ) : (_failed ? error : text),
-            actions: _failed ? [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Закрыть'),
-              ),
-            ] : [
-              TextButton(
-                onPressed: _loading ? null : () async {
-                  setState(() {
-                    _loading = true;
-                  });
-                  bool success = await action();
-                  if (success) Navigator.of(context).pop();
-                  setState(() {
-                    _loading = false;
-                    _failed = true;
-                  });
-                },
-                child: Text('Да'),
-              ),
-              TextButton(
-                onPressed: _loading ? null : () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Нет'),
-              ),
-            ],
-          ),
-        );
-      }
+      title: title,
+      content: text,
+      error: error,
+      action: () => _removePacket(packet),
     );
   }
   

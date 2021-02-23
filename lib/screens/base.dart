@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:me_play/screens/profile.dart';
+import 'package:me_play/widgets/dialogs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 import 'login.dart';
@@ -27,20 +28,13 @@ class NavItems {
   static const int radio = 5;
   static const int cinema = 6;
 
-  static void inDevelopment(BuildContext context, {String title: 'Эта страница'}) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) => AlertDialog(
+  static void inDevelopment(BuildContext context, {
+    String title: 'Эта страница'
+  }) {
+    infoDialog(
+        context: context,
         title: Text(title),
-        content: Text('Находится в разработке.'),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Закрыть')
-          )
-        ],
-      ),
+        content: Text('Находится в разработке.')
     );
   }
 }
@@ -62,7 +56,7 @@ class _BaseScreenState extends State<BaseScreen> {
   Widget get _body {
     switch(_currentIndex) {
       case NavItems.profile:
-        return ProfileScreen(user: _user, logout: _logout);
+        return ProfileScreen(user: _user, logout: _logoutDialog);
       case NavItems.home:
       default: return HomeScreen(
         watchTv: _watchTV,
@@ -214,32 +208,23 @@ class _BaseScreenState extends State<BaseScreen> {
     return null;
   }
   
-  void _logout() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
+  Future<bool> _logout()  async {
+    _channels = <Channel>[];
+    setState(() {
+      _user = null;
+      _currentIndex = NavItems.home;
+    });
+    await _clearUser();
+    await _loadChannels();
+    return true;
+  }
+  
+  void _logoutDialog() {
+    asyncConfirmDialog(
+        context: context,
         title: Text('Выход'),
         content: Text('Вы уверены, что хотите выйти?'),
-        actions: [
-          TextButton(
-              onPressed: () async {
-                _channels = <Channel>[];
-                setState(() {
-                  _user = null;
-                  _currentIndex = NavItems.home;
-                });
-                await _clearUser();
-                await _loadChannels();
-                Navigator.of(context).pop();
-              },
-              child: Text('Да')
-          ),
-          TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Нет')
-          ),
-        ],
-      ),
+        action: _logout 
     );
   }
 
@@ -263,7 +248,7 @@ class _BaseScreenState extends State<BaseScreen> {
             onPressed: () { _login(NavItems.tv); },
             child: Text('Вход', style: AppFonts.appBarAction,)
         ) : TextButton(
-          onPressed: _logout,
+          onPressed: _logoutDialog,
           child: Text('Выход', style: AppFonts.appBarAction,)
         ),
       ] : [],
