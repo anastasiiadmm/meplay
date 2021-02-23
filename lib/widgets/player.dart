@@ -263,7 +263,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
     _panAction = null;
   }
 
-  String _getSettingDisplay(double value, {double scale: 1.0}) {
+  String _settingDisplay(double value, {double scale: 1.0}) {
     double percent = (value ?? 0) / scale * 100;
     return "${percent.round()}%";
   }
@@ -410,45 +410,43 @@ class _HLSPlayerState extends State<HLSPlayer> {
     );
   }
 
-  Widget _settingControlBlock(String name, String valueDisplay) {
-    return Expanded(
-      child: GestureDetector(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              name,
-              style: AppFonts.videoSettingLabels,
-            ),
-            Text(
-              valueDisplay,
-              style: AppFonts.videoSettingValues,
-            ),
-          ],
-        ),
+  Widget _settingControlBlock(IconData icon, String value) {
+    return GestureDetector(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: 5),
+            child: Icon(icon, color: AppColors.gray0, size: 24,),
+          ),
+          Text(value, style: AppFonts.videoSettingValues,),
+        ],
       ),
     );
   }
-  
+
+  IconData get _volumeIcon {
+    if(_volume == null || _volume == 0) {
+      return Icons.volume_mute;
+    }
+    if (_volume > 0.5) {
+      return Icons.volume_up;
+    }
+    return Icons.volume_down;
+  }
+
+  IconData get _brightnessIcon {
+    if(_brightness == null || _brightness == 0) {
+      return Icons.brightness_low;
+    }
+    if (_brightness > 0.5) {
+      return Icons.brightness_high;
+    }
+    return Icons.brightness_medium;
+  }
+
   Widget get _settingControls {
-    List<Widget> children = [];
-    if (_volumeVisible) {
-      children.add(_settingControlBlock(
-          'Громкость',
-          _getSettingDisplay(_volume),
-      ));
-    } else {
-      children.add(Expanded(child: Container()));
-    }
-    if (_brightnessVisible) {
-      children.add(_settingControlBlock(
-          'Яркость',
-          _getSettingDisplay(_brightness),
-      ));
-    } else {
-      children.add(Expanded(child: Container()));
-    }
     return AnimatedOpacity(
       opacity: _settingsVisible ? 1.0 : 0,
       duration: controlsAnimationDuration,
@@ -458,7 +456,20 @@ class _HLSPlayerState extends State<HLSPlayer> {
           decoration: BoxDecoration(gradient: AppColors.gradientBottom),
           child: Row (
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: children,
+            children: [
+              Expanded(
+                child: _volumeVisible ? _settingControlBlock(
+                  _volumeIcon,
+                  _settingDisplay(_volume),
+                ) : Container()
+              ),
+              Expanded(
+                child: _brightnessVisible ? _settingControlBlock(
+                  _brightnessIcon,
+                  _settingDisplay(_brightness),
+                ) : Container()
+              )
+            ],
           ),
         ),
       ),
