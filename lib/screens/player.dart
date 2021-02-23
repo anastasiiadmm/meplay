@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/rendering.dart';
 
 import 'package:flutter/material.dart';
+import 'package:screen/screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:expandable/expandable.dart';
@@ -37,6 +38,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   Channel _channel;
   ExpandableController _expandableController;
   Key _playerKey = GlobalKey();
+  double _initialBrightness;
 
   @override
   void initState() {
@@ -44,6 +46,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     _channel = widget.channel;
     OrientationHelper.allowAll();
     _restoreUser();
+    _initBrightness();
     _expandableController = ExpandableController(initialExpanded: _expandProgram);
     _expandableController.addListener(_toggleProgram);
     WidgetsBinding.instance.addObserver(this);
@@ -57,9 +60,20 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     }
   }
 
+  Future<void> _initBrightness() async {
+    _initialBrightness = await Screen.brightness;
+  }
+
+  void _restoreBrightness() {
+    if (_initialBrightness != null) {
+      Screen.setBrightness(_initialBrightness);
+    }
+  }
+
   @override
   void dispose() {
     Wakelock.disable();
+    _restoreBrightness();
     WidgetsBinding.instance.removeObserver(this);
     OrientationHelper.forcePortrait();
     _expandableController.removeListener(_toggleProgram);

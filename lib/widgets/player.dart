@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:screen/screen.dart';
 import '../utils/hls_video_cache.dart';
 import '../video_player_fork/video_player.dart';
 import '../models.dart';
@@ -26,6 +27,11 @@ enum SwipeAction {
   brightness,
   volume,
 }
+
+
+// Converts swipe pixels to settings values.
+// 200 means 200px long scale represents full diapason of setting values.
+const int swipeFactor = 200;
 
 
 class HLSPlayer extends StatefulWidget {
@@ -58,18 +64,17 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Timer _controlsTimer;
   double _brightness;
   double _volume;
-  bool _settingControlsVisible = false;
+  bool _settingsVisible = false;
   Offset _panStartPoint;
   SwipeAction _panAction;
 
   @override
   void initState() {
     super.initState();
-    // TODO: take the real values
-    _brightness = 1.0;
-    _volume = 0.5;
-    _settingControlsVisible = true;
+    // TODO:
+    _settingsVisible = true;
 
+    _initBrightness();
     if (!widget.channel.locked) {
       _loadChannel();
     }
@@ -82,8 +87,16 @@ class _HLSPlayerState extends State<HLSPlayer> {
     super.dispose();
   }
 
+  Future<void> _initBrightness() async {
+    double brightness = await Screen.brightness;
+    setState(() {
+      _brightness = brightness;
+    });
+  }
+
   Future<void> _disposeVideo() async {
     await _controller?.dispose();
+    _volume = 0;
     _cache?.clear();
   }
 
@@ -100,6 +113,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
       } else {
         setState(() {
           _controller = controller;
+          _volume = _controller.value.volume;
         });
         controller.play();
       }
@@ -190,6 +204,28 @@ class _HLSPlayerState extends State<HLSPlayer> {
     }
   }
 
+  void _adjustBrightness(double delta) {
+    if (_brightness != null) {
+      double brightness = _brightness - delta / swipeFactor;
+      brightness = brightness.clamp(0.0, 1.0);
+      Screen.setBrightness(brightness);
+      setState(() {
+        _brightness = brightness;
+      });
+    }
+  }
+
+  void _adjustVolume(double delta) {
+    if (_controller != null) {
+      double volume = _volume - delta / swipeFactor;
+      volume = volume.clamp(0.0, 1.0);
+      _controller.setVolume(volume);
+      setState(() {
+        _volume = volume;
+      });
+    }
+  }
+
   void _onPanStart(DragStartDetails details) {
     _panStartPoint = details.localPosition;
   }
@@ -197,19 +233,9 @@ class _HLSPlayerState extends State<HLSPlayer> {
   void _onPanUpdate(DragUpdateDetails details) {
     _detectAction(details.delta);
     if (_panAction == SwipeAction.brightness) {
-      double brightness = _brightness - details.delta.dy / 200;
-      if (brightness > 1) brightness = 1;
-      else if (brightness < 0) brightness = 0;
-      setState(() {
-        _brightness = brightness;
-      });
+      _adjustBrightness(details.delta.dy);
     } else if (_panAction == SwipeAction.volume) {
-      double volume = _volume - details.delta.dy / 200;
-      if (volume > 1) volume = 1;
-      else if (volume < 0) volume = 0;
-      setState(() {
-        _volume = volume;
-      });
+      _adjustVolume(details.delta.dy);
     }
   }
 
@@ -334,7 +360,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   Widget get _playerSettingsControls {
     return AnimatedOpacity(
-      opacity: _settingControlsVisible ? 1.0 : 0,
+      opacity: _settingsVisible ? 1.0 : 0,
       duration: Duration(milliseconds: 200),
       child: Container(
         decoration: BoxDecoration(gradient: AppColors.gradientTop),
@@ -354,7 +380,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
                         style: AppFonts.videoSettingLabels,
                       ),
                       Text(
-                          "${(_volume * 100).round()}%",
+                          "${((_volume ?? 0) * 100).round()}%",
                         style: AppFonts.videoSettingValues,
                       ),
                     ],
@@ -372,7 +398,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
                         style: AppFonts.videoSettingLabels,
                       ),
                       Text(
-                        "${(_brightness * 100).round()}%",
+                        "${((_brightness ?? 0) * 100).round()}%",
                         style: AppFonts.videoSettingValues,
                       ),
                     ],

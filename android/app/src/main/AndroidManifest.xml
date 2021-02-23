@@ -2,6 +2,10 @@
     package="com.tvclick.me_play">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Screen plugin says that needs it but app does not use the feature from this plugin. -->
+    <!-- <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
+
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
          In most cases you can leave this as-is, but you if you want to provide
