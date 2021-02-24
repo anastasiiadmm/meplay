@@ -145,10 +145,15 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
         ),
         Padding (
           padding: EdgeInsets.symmetric(horizontal: 15),
-          child: Text(
-            '', // TODO: add program display
-            style: AppFonts.programName,
-            textAlign: TextAlign.center,
+          child: FutureBuilder(
+            future: channel.currentProgram,
+            builder: (BuildContext context, AsyncSnapshot<Program> snapshot) {
+              return Text(
+                snapshot.data == null ? '' :  snapshot.data.title,
+                style: AppFonts.programName,
+                textAlign: TextAlign.center,
+              );
+            },
           ),
         ),
       ];
@@ -206,7 +211,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     }
   }
 
-  Widget get _body {
+  Widget get _hexChannelGrid {
     _iterator = _channels.iterator;
     _calcGridSize();
 
@@ -230,6 +235,26 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
         ),
       ),
     );
+  }
+
+  Widget get _channelList {
+    return ListView.separated(
+      itemBuilder: (BuildContext context, int id) {
+        return ListTile();
+      },
+      separatorBuilder: (BuildContext context, int id) {
+        return Divider();
+      },
+      itemCount: _channels.length,
+    );
+  }
+  
+  Widget get _channelBlockList {
+    return ListView.separated(itemBuilder: null, separatorBuilder: null, itemCount: null);
+  }
+  
+  Widget get _body {
+    return _hexChannelGrid;
   }
 
   void _openSearch() {

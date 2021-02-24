@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'dart:typed_data';
 import 'api_client.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -43,11 +44,25 @@ class Channel {
   }
 
   Future<List<Program>> get program async {
-    // TODO: add persistent store.
     DateTime now = DateTime.now();
-    if(_noProgram(now)) await _loadProgram();
-    if(_noProgram(now)) return null;
+    if(_noProgram(now)) {
+      await _loadProgram();
+      if(_noProgram(now)) {
+        await _requestProgram();
+        if(_noProgram(now)) {
+          return null;
+        }
+      }
+    }
     return _program.where((p) => p.end.isAfter(now)).toList();
+  }
+
+  Future<Program> get currentProgram async {
+    List<Program> prog = await program;
+    if (prog == null || prog.isEmpty) {
+      return null;
+    }
+    return prog.first;
   }
 
   Future<File> get logo async {
@@ -60,18 +75,47 @@ class Channel {
     return _logo;
   }
 
-  bool _noProgram(DateTime byTime) {
+  bool _noProgram(DateTime by) {
     return _program == null || _program.isEmpty
-        || _program.last.end.isBefore(byTime);
+        || _program.last.end.isBefore(by);
   }
 
   Future<void> _loadProgram() async {
+    FileInfo info = await DefaultCacheManager()
+        .getFileFromCache(_programCacheKey);
+    if (info != null) {
+      String json = info.file.readAsStringSync().trim();
+      if (json.isNotEmpty) {
+        List<dynamic> data = jsonDecode(json);
+        print(data[0]);
+        print(Program.fromJson(data[0]).title);
+        _program = data.map((item) => Program.fromJson(item)).toList();
+
+      }
+    }
+  }
+
+  Future<void> _requestProgram() async {
     try {
+      // TODO: add "no remote program" indicator,
+      //  so it won't request all the programs every time they needed.
       _program = await ApiClient.getProgram(id);
+      _saveProgram();
     } on ApiException {
       _program = null;
     }
   }
+
+  Future<void> _saveProgram() async {
+    File file = await DefaultCacheManager().putFile(
+        _programCacheKey,
+        Uint8List(0),
+        fileExtension: 'json'
+    );
+    file.writeAsStringSync(jsonEncode(_program));
+  }
+
+  String get _programCacheKey => 'program$id';
 }
 
 
@@ -90,8 +134,8 @@ class Program {
     this.id = data['id'];
     this.duration = data['duration'];
     this.title = data['title'];
-    this.start = DateTime.parse(data['start']);
-    this.end = DateTime.parse(data['end']);
+    this.start = DateTime.tryParse(data['start']);
+    this.end = DateTime.tryParse(data['end']);
     this.channelId = data['channel_id'];
   }
 
@@ -102,7 +146,7 @@ class Program {
       'title': title,
       'start': start?.toIso8601String(),
       'end': end?.toIso8601String(),
-      'channelId': channelId,
+      'channel_id': channelId,
     });
   }
 
