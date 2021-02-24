@@ -302,7 +302,6 @@ class _HLSPlayerState extends State<HLSPlayer> {
   
   void _showBrightness() {
     _brightnessTimer?.cancel();
-    _hideControls();
     setState(() {
       _brightnessVisible = true;
     });
@@ -311,7 +310,6 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   void _showVolume() {
     _volumeTimer?.cancel();
-    _hideControls();
     setState(() {
       _volumeVisible = true;
     });
