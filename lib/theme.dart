@@ -192,8 +192,8 @@ class AppIcons {
   static final homeActive = SvgPicture.asset('assets/icons/home_active.svg', width: 28, height: 28,);
   static final star = SvgPicture.asset('assets/icons/star.svg', width: 28, height: 28,);
   static final starActive = SvgPicture.asset('assets/icons/star_active.svg', width: 28, height: 28,);
-  static final user = SvgPicture.asset('assets/icons/user.svg', width: 28, height: 28,);
-  static final userActive = SvgPicture.asset('assets/icons/user_active.svg', width: 28, height: 28,);
+  static final user = SvgPicture.asset('assets/icons/bb_profile.svg', width: 28, height: 28,);
+  static final userActive = SvgPicture.asset('assets/icons/bb_profile_active.svg', width: 28, height: 28,);
   static final profile = SvgPicture.asset('assets/icons/profile.svg', width: 50, height: 50,);
   static final back = SvgPicture.asset('assets/icons/back.svg', width: 12, height: 21,);
   static final search = SvgPicture.asset('assets/icons/search.svg', width: 28, height: 28,);
