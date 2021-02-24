@@ -26,39 +26,48 @@ class ApiException implements Exception {
 
 
 class ApiClient {
+  static Future<T> _wrapRequest<T>(
+      Future<http.Response> Function() request,
+      T Function(http.Response) callback) async {
+    try {
+      final response = await request();
+      if (response.statusCode == 200) {
+        return callback(response);
+      } else {
+        throw ApiException('Ошибка при выполнении запроса');
+      }
+    } on SocketException {
+      throw ApiException('Нет подключения к интернету');
+    } on FormatException {
+      throw ApiException('Некорректный формат ответа');
+    }
+  }
+
   static Future<List<Channel>> getChannels([User user]) async {
     String url = '$BASE_API_URL/stalker_portal/meplay/tv-channels';
     if(user != null) {
       url += '?msisdn=${user.username}';
     }
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
+    return _wrapRequest<List<Channel>>(
+      () => http.get(url),
+      (response) {
         List<dynamic> data = jsonDecode(response.body)['data'];
         return data.map((item) => Channel.fromJson(item)).toList();
-      } else {
-        throw ApiException('Ошибка при выполнении запроса');
       }
-    } on SocketException {
-      throw ApiException('Нет подключения к интернету');
-    }
+    );
   }
 
   static Future<void> requestPassword(String phone) async {
     final url = '$BASE_API_URL/stalker_portal/meplay/pin?msisdn=$phone';
-    try {
-      final response = await http.get(url);
-      if(response.statusCode == 200) {
+    _wrapRequest<void>(
+      () => http.get(url),
+      (response) {
         String status = jsonDecode(response.body)['status'];
         if (status != 'ok') {
           throw ApiException('Пользователь не найден');
         }
-      } else {
-        throw ApiException('Ошибка при выполнении запроса');
       }
-    } on SocketException {
-      throw ApiException('Нет подключения к интернету');
-    }
+    );
   }
 
   static Future<User> auth(String phone, String password) async {
@@ -67,9 +76,9 @@ class ApiClient {
       'username': phone,
       'password': password
     };
-    try {
-      final response = await http.post(url, body: body);
-      if (response.statusCode == 200) {
+    return _wrapRequest<User>(
+      () => http.post(url, body: body),
+      (response) {
         Map<String, dynamic> responseBody = jsonDecode(response.body);
         if (responseBody['id'] != null) {
           return User(id: responseBody['id'], username: phone, password: password);
@@ -80,27 +89,19 @@ class ApiClient {
         } else {
           throw ApiException('Неизвестная ошибка');
         }
-      } else {
-        throw ApiException('Ошибка при выполнении запроса');
       }
-    } on SocketException {
-      throw ApiException('Нет подключения к интернету');
-    }
+    );
   }
 
   static Future<List<Program>> getProgram(int channelId) async {
     final url = '$BASE_API_URL/stalker_portal/meplay/epg?channel_id=$channelId';
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
+    return _wrapRequest<List<Program>>(
+      () => http.get(url),
+      (response) {
         List<dynamic> data = jsonDecode(response.body);
         return data.map((item) => Program.fromJson(item)).toList();
-      } else {
-        throw ApiException('Ошибка при выполнении запроса');
       }
-    } on SocketException {
-      throw ApiException('Нет подключения к интернету');
-    }
+    );
   }
 
   static Future<List<Packet>> getPackets([User user]) async {
@@ -108,17 +109,13 @@ class ApiClient {
     if(user != null) {
       url += '?username=${user.username}';
     }
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
+    return _wrapRequest<List<Packet>>(
+      () => http.get(url),
+      (response) {
         List<dynamic> data = jsonDecode(response.body);
         return data.map((item) => Packet.fromJson(item)).toList();
-      } else {
-        throw ApiException('Ошибка при выполнении запроса');
       }
-    } on SocketException {
-      throw ApiException('Нет подключения к интернету');
-    }
+    );
   }
 
   static Future<List<Packet>> addPacket(User user, Packet packet) async {
@@ -128,9 +125,9 @@ class ApiClient {
       'password': user.password,
       'packet_id': packet.id.toString(),
     };
-    try {
-      final response = await http.post(url, body: body);
-      if (response.statusCode == 200) {
+    return _wrapRequest<List<Packet>>(
+      () => http.post(url, body: body),
+      (response) {
         dynamic responseBody = jsonDecode(response.body);
         if(responseBody is List) {
           List<dynamic> data = responseBody;
@@ -144,12 +141,8 @@ class ApiClient {
             throw ApiException('Неизвестная ошибка');
           }
         }
-      } else {
-        throw ApiException('Ошибка при выполнении запроса');
       }
-    } on SocketException {
-      throw ApiException('Нет подключения к интернету');
-    }
+    );
   }
 
   static Future<List<Packet>> removePacket(User user, Packet packet) async {
@@ -160,11 +153,9 @@ class ApiClient {
       'packet_id': packet.id.toString(),
     };
     print(body);
-    try {
-      final response = await http.post(url, body: body);
-      print(response.statusCode);
-      print(response.body);
-      if (response.statusCode == 200) {
+    return _wrapRequest<List<Packet>>(
+      () =>  http.post(url, body: body),
+      (response) {
         dynamic responseBody = jsonDecode(response.body);
         if(responseBody is List) {
           List<dynamic> data = responseBody;
@@ -178,12 +169,8 @@ class ApiClient {
             throw ApiException('Неизвестная ошибка');
           }
         }
-      } else {
-        throw ApiException('Ошибка при выполнении запроса');
       }
-    } on SocketException {
-      throw ApiException('Нет подключения к интернету');
-    }
+    );
   }
 
   static Future<User> authOld(String username, String password) async {
@@ -201,14 +188,13 @@ class ApiClient {
       'signature': signature,
       'timestamp': (timestamp).toString(),
     };
-    print(body);
-    final response = await http.post(url, body: body);
-    if(response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      return User.fromJson(data);
-    } else {
-      return null;
-    }
+    return _wrapRequest<User>(
+      () => http.post(url, body: body),
+      (response) {
+        var data = jsonDecode(response.body);
+        return User.fromJson(data);
+      }
+    );
   }
 
   static String _getSignature(deviceId) {
