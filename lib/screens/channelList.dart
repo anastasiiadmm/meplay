@@ -149,7 +149,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
             future: channel.currentProgram,
             builder: (BuildContext context, AsyncSnapshot<Program> snapshot) {
               return Text(
-                snapshot.data == null ? '' :  snapshot.data.title,
+                snapshot.data == null ? '' :  snapshot.data.shortenTitle,
                 style: AppFonts.programName,
                 textAlign: TextAlign.center,
               );

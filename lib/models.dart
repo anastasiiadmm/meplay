@@ -48,21 +48,23 @@ class Channel {
     if(_noProgram(now)) {
       await _loadProgram();
       if(_noProgram(now)) {
+        await _clearProgram();
         await _requestProgram();
         if(_noProgram(now)) {
           return null;
         }
+        _saveProgram();
       }
     }
     return _program.where((p) => p.end.isAfter(now)).toList();
   }
 
   Future<Program> get currentProgram async {
-    List<Program> prog = await program;
-    if (prog == null || prog.isEmpty) {
+    List<Program> fullProgram = await program;
+    if (fullProgram == null) {
       return null;
     }
-    return prog.first;
+    return fullProgram.first;
   }
 
   Future<File> get logo async {
@@ -85,24 +87,24 @@ class Channel {
         .getFileFromCache(_programCacheKey);
     if (info != null) {
       String json = info.file.readAsStringSync().trim();
-      if (json.isNotEmpty) {
-        List<dynamic> data = jsonDecode(json);
-        print(data[0]);
-        print(Program.fromJson(data[0]).title);
-        _program = data.map((item) => Program.fromJson(item)).toList();
-
+      if (json.length > 0) {
+        try {
+          List<dynamic> data = jsonDecode(json);
+          _program = data.map((item) => Program.fromJson(item)).toList();
+        } on FormatException catch(e) {
+          print('Не удалось загрузить программу из кэша:');
+          print(e.message);
+        }
       }
     }
   }
 
   Future<void> _requestProgram() async {
     try {
-      // TODO: add "no remote program" indicator,
-      //  so it won't request all the programs every time they needed.
       _program = await ApiClient.getProgram(id);
-      _saveProgram();
-    } on ApiException {
-      _program = null;
+    } on ApiException catch (e) {
+      print("Не удалось загрузить программу:");
+      print(e.message);
     }
   }
 
@@ -113,6 +115,10 @@ class Channel {
         fileExtension: 'json'
     );
     file.writeAsStringSync(jsonEncode(_program));
+  }
+
+  Future<void> _clearProgram() async {
+    await DefaultCacheManager().removeFile(_programCacheKey);
   }
 
   String get _programCacheKey => 'program$id';
@@ -148,6 +154,13 @@ class Program {
       'end': end?.toIso8601String(),
       'channel_id': channelId,
     });
+  }
+
+  String get shortenTitle {
+    if (title.length > 15) {
+      return (title.substring(0, 15) + '\u2026');
+    }
+    return title;
   }
 
   String get startTime {
