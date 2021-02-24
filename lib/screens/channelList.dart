@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
@@ -8,6 +9,11 @@ import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../models.dart';
 import '../theme.dart';
 import 'player.dart';
+
+
+class ChannelListType {
+
+}
 
 
 class ChannelListScreen extends StatefulWidget {
@@ -114,16 +120,20 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
         Container(
           height: 71,
           alignment: Alignment.topCenter,
-          child: channel.logo == null || channel.logo.isEmpty
-            ? Padding(
-                padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
-                child: AppIcons.channelPlaceholder,
-              )
-            : Container(
-                constraints: BoxConstraints(maxWidth: 93, maxHeight: 71),
-                alignment: Alignment.center,
-                child: Image.network(channel.logo),
-              ) ,
+          child: FutureBuilder(
+            future: channel.logo,
+            builder: (
+              BuildContext context,
+              AsyncSnapshot<File> snapshot
+            ) => (snapshot.data == null) ? Padding(
+              padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+              child: AppIcons.channelPlaceholder,
+            ) : Container(
+              constraints: BoxConstraints(maxWidth: 93, maxHeight: 71),
+              alignment: Alignment.center,
+              child: Image.file(snapshot.data),
+            ),
+          ),
         ),
         Padding (
           padding: EdgeInsets.symmetric(horizontal: 15),

@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:convert';
 import 'api_client.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 
 String rPlural(int count, List<String> forms) {
@@ -20,10 +22,12 @@ class Channel {
   String url;
   int number;
   bool locked;
-  String logo;
+  String logoUrl;
   List<Program> _program;
+  File _logo;
 
-  Channel({this.id, this.name, this.url, this.number, this.locked, this.logo});
+  Channel({this.id, this.name, this.url, this.number, this.locked,
+    this.logoUrl});
   
   Channel.fromJson(Map<String, dynamic> data) {
     this.id = data['id'];
@@ -31,7 +35,7 @@ class Channel {
     this.url = data['url'];
     this.number = data['number'];
     this.locked = data['locked'];
-    this.logo = data['logo'];
+    this.logoUrl = data['logo'];
   }
 
   String get title {
@@ -44,6 +48,16 @@ class Channel {
     if(_noProgram(now)) await _loadProgram();
     if(_noProgram(now)) return null;
     return _program.where((p) => p.end.isAfter(now)).toList();
+  }
+
+  Future<File> get logo async {
+    if (logoUrl == null || logoUrl.isEmpty) {
+      return null;
+    }
+    if(_logo == null) {
+      _logo = await DefaultCacheManager().getSingleFile(logoUrl);
+    }
+    return _logo;
   }
 
   bool _noProgram(DateTime byTime) {
