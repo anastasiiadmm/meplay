@@ -96,7 +96,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     );
   }
 
-  HexagonWidget _tileBuilder(HexGridPoint point) {
+  HexagonWidget _hexTileBuilder(HexGridPoint point) {
     Color color;
     Widget content;
     double elevation;
@@ -162,7 +162,8 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
         children.add(AppIcons.lockChannel);
       }
       content = GestureDetector(
-        onTap: () {_openChannel(channel);},
+        onTap: () { _openChannel(channel); },
+        onLongPress: () { _addToFavorites(channel); },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -231,11 +232,15 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
             hexagonPadding: 8,
             hexagonBorderRadius: 15,
             hexagonWidth: 174,
-            buildHexagon: _tileBuilder,
+            buildHexagon: _hexTileBuilder,
           ),
         ),
       ),
     );
+  }
+
+  _addToFavorites(Channel channel) {
+    // TODO;
   }
 
   Widget get _channelList {
@@ -244,6 +249,8 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
         Channel channel = _channels[id];
         return ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+          onTap: () => _openChannel(channel),
+          onLongPress: () => _addToFavorites(channel),
           leading: FutureBuilder(
             future: channel.logo,
             builder: (
