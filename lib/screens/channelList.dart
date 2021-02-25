@@ -96,7 +96,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     );
   }
 
-  HexagonWidget tileBuilder(HexGridPoint point) {
+  HexagonWidget _tileBuilder(HexGridPoint point) {
     Color color;
     Widget content;
     double elevation;
@@ -231,7 +231,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
             hexagonPadding: 8,
             hexagonBorderRadius: 15,
             hexagonWidth: 174,
-            buildHexagon: tileBuilder,
+            buildHexagon: _tileBuilder,
           ),
         ),
       ),
@@ -241,10 +241,43 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   Widget get _channelList {
     return ListView.separated(
       itemBuilder: (BuildContext context, int id) {
-        return ListTile();
+        Channel channel = _channels[id];
+        return ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          leading: FutureBuilder(
+            future: channel.logo,
+            builder: (
+              BuildContext context,
+              AsyncSnapshot<File> snapshot
+            ) => Container(
+              constraints: BoxConstraints(maxWidth: 60, maxHeight: 40),
+              alignment: Alignment.center,
+              child: (snapshot.data == null)
+                  ? AppIcons.channelPlaceholder
+                  : Image.file(snapshot.data),
+            ),
+          ),
+          title: Text(
+            channel.title,
+            style: AppFonts.channelName,
+          ),
+          subtitle: FutureBuilder(
+            future: channel.currentProgram,
+            builder: (BuildContext context, AsyncSnapshot<Program> snapshot) {
+              return Text(
+                snapshot.data == null ? '' : snapshot.data.title,
+                style: AppFonts.programName,
+              );
+            },
+          ),
+          trailing: IconButton(
+            icon: AppIcons.list,
+            onPressed: () => null,
+          ),
+        );
       },
       separatorBuilder: (BuildContext context, int id) {
-        return Divider();
+        return Divider(height: 0,);
       },
       itemCount: _channels.length,
     );
@@ -255,7 +288,8 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   }
   
   Widget get _body {
-    return _hexChannelGrid;
+    // return _hexChannelGrid;
+    return _channelList;
   }
 
   void _openSearch() {
@@ -402,7 +436,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     return WillPopScope(
       onWillPop: _willPop,
       child: Scaffold(
-        backgroundColor: AppColors.megaPurple,
+        backgroundColor: AppColors.white, // megaPurple for hexGrid
         extendBody: true,
         extendBodyBehindAppBar: true,
         appBar: _appBar,
