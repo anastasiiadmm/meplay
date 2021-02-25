@@ -113,10 +113,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   Future<bool> _willPop() async {
-    if(_fullscreen) {
-      OrientationHelper.allowAll();
-      return false;
-    }
     return true;
   }
 
