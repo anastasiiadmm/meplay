@@ -145,15 +145,15 @@ class Program {
     this.channelId = data['channel_id'];
   }
 
-  String toJson() {
-    return jsonEncode({
+  Map<String, dynamic> toJson() {
+    return {
       'id': id,
       'duration': duration,
       'title': title,
       'start': start?.toIso8601String(),
       'end': end?.toIso8601String(),
       'channel_id': channelId,
-    });
+    };
   }
 
   String get shortenTitle {
