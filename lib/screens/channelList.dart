@@ -51,7 +51,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   final _keyboardVisibility = KeyboardVisibilityNotification();
   int _keyboardVisibilityListenerId;
   final _searchController = TextEditingController();
-  ListType _listType = ListType.blocks;
+  ListType _listType = ListType.hexal;
 
   @override
   void initState() {
