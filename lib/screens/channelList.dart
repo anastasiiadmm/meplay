@@ -243,7 +243,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       itemBuilder: (BuildContext context, int id) {
         Channel channel = _channels[id];
         return ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
           leading: FutureBuilder(
             future: channel.logo,
             builder: (
@@ -267,6 +267,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
               return Text(
                 snapshot.data == null ? '' : snapshot.data.title,
                 style: AppFonts.programName,
+                maxLines: 1,
               );
             },
           ),
