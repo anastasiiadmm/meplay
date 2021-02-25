@@ -313,16 +313,48 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     } else {
       margin = EdgeInsets.only(left: 2.5);
     }
-    return Container(
-      margin: margin,
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.darkPurple),
-      ),
-      child: Column(
-        children: [
-          Text(channel.title),
-        ],
+    return GestureDetector(
+      onTap: () { _openChannel(channel); },
+      onLongPress: () { _addToFavorites(channel); },
+      child: Container(
+        margin: margin,
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.darkPurple),
+        ),
+        child: Column(
+          children: [
+            FutureBuilder(
+              future: channel.logo,
+              builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+                return Container(
+                  height: 124,
+                  width: 180,
+                  alignment: Alignment.center,
+                  child: (snapshot.data == null)
+                      ? AppIcons.channelPlaceholder
+                      : Image.file(snapshot.data,),
+                );
+              },
+            ),
+            Text(
+              channel.title,
+              style: AppFonts.channelName,
+              textAlign: TextAlign.center,
+            ),
+            FutureBuilder(
+              future: channel.currentProgram,
+              builder: (BuildContext context, AsyncSnapshot<Program> snapshot) {
+                return Text(
+                  snapshot.data == null ? '' : snapshot.data.title,
+                  style: AppFonts.programName,
+                  textAlign: TextAlign.center,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -335,19 +367,22 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
           return Padding(
             padding: EdgeInsets.fromLTRB(5, 5, 5,
                 id > _channels.length - 3 ? 5 : 0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: _blockChannelTile(_channels[id], oddity)
-                ),
-                Expanded(
-                  child: id < _channels.length - 1
-                    ? _blockChannelTile(_channels[id + 1], oddity + 1)
-                    : Container(
-                      margin: EdgeInsets.only(left: 2.5),
-                    )
-                ),
-              ],
+            child: IntrinsicHeight (
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: _blockChannelTile(_channels[id], oddity)
+                  ),
+                  Expanded(
+                    child: id < _channels.length - 1
+                      ? _blockChannelTile(_channels[id + 1], oddity + 1)
+                      : Container(
+                        margin: EdgeInsets.only(left: 2.5),
+                      )
+                  ),
+                ],
+              ),
             ),
           );
         } else if (oddity > 1) {
