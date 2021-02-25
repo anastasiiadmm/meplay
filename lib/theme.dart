@@ -214,6 +214,8 @@ class AppIcons {
   static final pinkDot = Image.asset('assets/icons/pink_dot.png', width: 8, height: 8,);
   static final plus = SvgPicture.asset('assets/icons/plus.svg', width: 36, height: 36,);
   static final check = SvgPicture.asset('assets/icons/check_hex.svg', width: 31, height: 36,);
+  static final listDark = SvgPicture.asset('assets/icons/list_dark.svg', width: 28, height: 28,);
+  static final listLight = SvgPicture.asset('assets/icons/list_light.svg', width: 28, height: 28,);
 }
 
 
