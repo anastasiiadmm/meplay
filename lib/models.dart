@@ -48,11 +48,8 @@ class Channel {
     if(_noProgram(now)) {
       await _loadProgram();
       if(_noProgram(now)) {
-        await _clearProgram();
         await _requestProgram();
-        if(_noProgram(now)) {
-          return null;
-        }
+        if(_noProgram(now)) return null;
         _saveProgram();
       }
     }
@@ -61,9 +58,7 @@ class Channel {
 
   Future<Program> get currentProgram async {
     List<Program> fullProgram = await program;
-    if (fullProgram == null) {
-      return null;
-    }
+    if (fullProgram == null) return null;
     return fullProgram.first;
   }
 
@@ -86,15 +81,12 @@ class Channel {
     FileInfo info = await DefaultCacheManager()
         .getFileFromCache(_programCacheKey);
     if (info != null) {
-      String json = info.file.readAsStringSync().trim();
-      if (json.length > 0) {
-        try {
-          List<dynamic> data = jsonDecode(json);
-          _program = data.map((item) => Program.fromJson(item)).toList();
-        } on FormatException catch(e) {
-          print('Не удалось загрузить программу из кэша:');
-          print(e.message);
-        }
+      String json = info.file.readAsStringSync();
+      try {
+        List<dynamic> data = jsonDecode(json);
+        _program = data.map((item) => Program.fromJson(item)).toList();
+      } on FormatException {
+        _program = null;
       }
     }
   }
@@ -102,9 +94,8 @@ class Channel {
   Future<void> _requestProgram() async {
     try {
       _program = await ApiClient.getProgram(id);
-    } on ApiException catch (e) {
-      print("Не удалось загрузить программу:");
-      print(e.message);
+    } on ApiException {
+      _program = null;
     }
   }
 
@@ -112,13 +103,9 @@ class Channel {
     File file = await DefaultCacheManager().putFile(
         _programCacheKey,
         Uint8List(0),
-        fileExtension: 'json'
+        fileExtension: 'json',
     );
     file.writeAsStringSync(jsonEncode(_program));
-  }
-
-  Future<void> _clearProgram() async {
-    await DefaultCacheManager().removeFile(_programCacheKey);
   }
 
   String get _programCacheKey => 'program$id';
