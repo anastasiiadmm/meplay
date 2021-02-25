@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import '../hexagon/hexagon_widget.dart';
 import '../hexagon/grid/hexagon_offset_grid.dart';
+import '../widgets/modals.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/ellipsis.dart';
@@ -457,6 +458,18 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     _filterChannels(_searchController.text);
   }
 
+  void _selectListType() {
+    // TODO: persist
+    selectorModal(
+      title: Text('Вид списка каналов:', textAlign: TextAlign.center,),
+      context: context,
+      choices: ListType.choices,
+      onSelect: (ListType selected) => setState(() {
+        _listType = selected;
+      }),
+    );
+  }
+  
   Widget get _appBar {
     return AppBar(
       backgroundColor: AppColors.megaPurple,
@@ -469,11 +482,15 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       title: _search
           ? _searchInput()
           : Text(widget.title, style: AppFonts.screenTitle),
-      centerTitle: true,
+      centerTitle: !_search,
       actions: [
         IconButton(
           onPressed: _toggleSearch,
           icon: AppIcons.search,
+        ),
+        IconButton(
+          onPressed: _selectListType,
+          icon: AppIcons.listLight,
         ),
       ],
     );

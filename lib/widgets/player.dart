@@ -6,7 +6,7 @@ import '../video_player_fork/video_player.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/orientation_helper.dart';
-import '../widgets/dialogs.dart';
+import '../widgets/modals.dart';
 import '../screens/base.dart';
 
 
@@ -137,7 +137,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
     // showMenu({
     //
     // });
-    choiceDialog<VideoAR>(
+    selectorModal<VideoAR>(
       context: context,
       title: Text(
         'Стороны видео',

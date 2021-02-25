@@ -4,7 +4,7 @@ import '../theme.dart';
 
 // show confirm dialog with two buttons
 // for sync action.
-void confirmDialog({
+void confirmModal({
   @required BuildContext context,
   Widget title,
   Widget content,
@@ -38,7 +38,7 @@ void confirmDialog({
 
 
 // show dialog with info and single close button.
-void infoDialog({
+void infoModal({
   @required BuildContext context,
   Widget title,
   Widget content,
@@ -66,7 +66,7 @@ void infoDialog({
 // action should resolve to boolean value indicating success.
 // on error shows error and close button
 // on success just closes.
-void asyncConfirmDialog({
+void asyncConfirmModal({
   @required BuildContext context,
   Widget title,
   Widget content,
@@ -129,7 +129,7 @@ void asyncConfirmDialog({
 
 
 // Dialog with a ListView in it to select from provided choices
-void choiceDialog<T>({
+void selectorModal<T>({
   @required BuildContext context,
   Widget title,
   List<T> choices,

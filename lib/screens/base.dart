@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:me_play/screens/profile.dart';
-import 'package:me_play/widgets/dialogs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 import 'login.dart';
@@ -10,6 +9,7 @@ import 'splash.dart';
 import 'channelList.dart';
 import '../theme.dart';
 import '../models.dart';
+import '../widgets/modals.dart';
 import '../api_client.dart';
 
 
@@ -31,7 +31,7 @@ class NavItems {
   static void inDevelopment(BuildContext context, {
     String title: 'Эта страница'
   }) {
-    infoDialog(
+    infoModal(
         context: context,
         title: Text(title),
         content: Text('Находится в разработке.')
@@ -220,7 +220,7 @@ class _BaseScreenState extends State<BaseScreen> {
   }
   
   void _logoutDialog() {
-    asyncConfirmDialog(
+    asyncConfirmModal(
         context: context,
         title: Text('Выход'),
         content: Text('Вы уверены, что хотите выйти?'),

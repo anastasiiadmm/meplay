@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'base.dart';
 import '../models.dart';
 import '../theme.dart';
-import '../widgets/dialogs.dart';
+import '../widgets/modals.dart';
 
 
 class ProfileScreen extends StatefulWidget {
@@ -81,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'Не удалось подключить пакет. Проверьте подключение к интернету и баланс, и попробуйте ещё раз.',
        textAlign: TextAlign.center
     );
-    asyncConfirmDialog(
+    asyncConfirmModal(
       context: context,
       title: title,
       content: text,
@@ -109,7 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'Не удалось отключить пакет. Проверьте подключение к интернету, и попробуйте ещё раз.',
       textAlign: TextAlign.center,
     );
-    asyncConfirmDialog(
+    asyncConfirmModal(
       context: context,
       title: title,
       content: text,
