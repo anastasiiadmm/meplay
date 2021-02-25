@@ -322,7 +322,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
         child: FlatButton(
           onPressed: _allowContinue ? _continue : null,
           color: AppColors.megaPurple,
-          disabledColor: AppColors.disabledPurple,
+          disabledColor: AppColors.lightPurple,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
             side: BorderSide.none,

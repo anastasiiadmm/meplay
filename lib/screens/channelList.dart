@@ -12,8 +12,20 @@ import '../utils/ellipsis.dart';
 import 'player.dart';
 
 
-class ChannelListType {
+class ListType {
+  final String name;
+  final String value;
 
+  const ListType(this.name, this.value);
+
+  String toString() {
+    return name;
+  }
+
+  static const hexal = ListType('Шестиугольники', 'hexal');
+  static const list = ListType('Список', 'list');
+  static const blocks = ListType('Блоки', 'blocks');
+  static const choices = [hexal, list, blocks];
 }
 
 
@@ -38,6 +50,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   final _keyboardVisibility = KeyboardVisibilityNotification();
   int _keyboardVisibilityListenerId;
   final _searchController = TextEditingController();
+  ListType _listType = ListType.blocks;
 
   @override
   void initState() {
@@ -290,14 +303,79 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       itemCount: _channels.length,
     );
   }
-  
+
+  Widget _blockChannelTile(Channel channel, int oddity) {
+    EdgeInsetsGeometry margin;
+    if (oddity < 1) {
+      margin = EdgeInsets.only(right: 2.5);
+    } else if (oddity > 1) {
+      margin = null;
+    } else {
+      margin = EdgeInsets.only(left: 2.5);
+    }
+    return Container(
+      margin: margin,
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.darkPurple),
+      ),
+      child: Column(
+        children: [
+          Text(channel.title),
+        ],
+      ),
+    );
+  }
+
   Widget get _channelBlockList {
-    return ListView.separated(itemBuilder: null, separatorBuilder: null, itemCount: null);
+    return ListView.builder(
+      itemBuilder: (BuildContext context, int id) {
+        int oddity = id % 3;
+        if (oddity < 1) {
+          return Padding(
+            padding: EdgeInsets.fromLTRB(5, 5, 5,
+                id > _channels.length - 3 ? 5 : 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _blockChannelTile(_channels[id], oddity)
+                ),
+                Expanded(
+                  child: id < _channels.length - 1
+                    ? _blockChannelTile(_channels[id + 1], oddity + 1)
+                    : Container(
+                      margin: EdgeInsets.only(left: 2.5),
+                    )
+                ),
+              ],
+            ),
+          );
+        } else if (oddity > 1) {
+          return Padding(
+            padding: EdgeInsets.fromLTRB(5, 5, 5,
+                id == _channels.length - 1 ? 5 : 0),
+            child: _blockChannelTile(_channels[id], oddity),
+          );
+        } else {
+          // empty widget which takes no space and never displayed.
+          return const SizedBox();
+        }
+      },
+      itemCount: _channels.length,
+    );
   }
   
   Widget get _body {
-    // return _hexChannelGrid;
-    return _channelList;
+    switch (_listType) {
+      case ListType.hexal:
+        return _hexChannelGrid;
+      case ListType.list:
+        return _channelList;
+      case ListType.blocks:
+        return _channelBlockList;
+      default:
+        return _hexChannelGrid;
+    }
   }
 
   void _openSearch() {
@@ -444,7 +522,9 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     return WillPopScope(
       onWillPop: _willPop,
       child: Scaffold(
-        backgroundColor: AppColors.white, // megaPurple for hexGrid
+        backgroundColor: _listType == ListType.hexal
+            ? AppColors.megaPurple
+            : AppColors.white,
         extendBody: true,
         extendBodyBehindAppBar: true,
         appBar: _appBar,
