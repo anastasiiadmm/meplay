@@ -143,13 +143,6 @@ class Program {
     };
   }
 
-  String get shortenTitle {
-    if (title.length > 15) {
-      return (title.substring(0, 15) + '\u2026');
-    }
-    return title;
-  }
-
   String get startTime {
     return start == null ? '' 
         : '${start.hour}:${start.minute.toString().padLeft(2, '0')}';

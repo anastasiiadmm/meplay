@@ -8,6 +8,7 @@ import '../hexagon/hexagon_widget.dart';
 import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../models.dart';
 import '../theme.dart';
+import '../utils/ellipsis.dart';
 import 'player.dart';
 
 
@@ -149,7 +150,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
             future: channel.currentProgram,
             builder: (BuildContext context, AsyncSnapshot<Program> snapshot) {
               return Text(
-                snapshot.data == null ? '' :  snapshot.data.shortenTitle,
+                snapshot.data == null ? '' : shorten(snapshot.data.title, 15),
                 style: AppFonts.programName,
                 textAlign: TextAlign.center,
               );
