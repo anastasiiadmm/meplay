@@ -103,7 +103,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
+    if (state == AppLifecycleState.inactive) {
       _enterPipMode();
     }
     else if (state == AppLifecycleState.resumed) {
@@ -384,13 +384,14 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   @override
   Widget build(BuildContext context) {
+    if (_pipMode) return _player;
     return WillPopScope(
       onWillPop: _willPop,
       child: Scaffold(
         backgroundColor: AppColors.white,
-        appBar: (_fullscreen || _pipMode) ? null : _appBar,
+        appBar: _fullscreen ? null : _appBar,
         body: _body,
-        bottomNavigationBar: (_fullscreen || _pipMode) ? null : _bottomBar,
+        bottomNavigationBar: _fullscreen ? null : _bottomBar,
       ),
     );
   }
