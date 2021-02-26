@@ -41,6 +41,7 @@ android {
         applicationId "com.tvclick.me_play"
         minSdkVersion 18
         targetSdkVersion 29
+        multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -60,4 +61,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.google.android.gms:play-services-cast-framework:19.0.0'
+    implementation 'com.google.android.exoplayer:extension-cast:2.11.5'
+    implementation "androidx.multidex:multidex:2.0.1"
 }

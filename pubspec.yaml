@@ -48,6 +48,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   screen: ^0.0.5
   flutter_android_pip: ^0.0.2
+  flutter_video_cast: ^1.0.3
 
 dev_dependencies:
   flutter_test:
