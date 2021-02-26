@@ -257,46 +257,51 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     // TODO;
   }
 
+  Widget _listChannelTile(Channel channel, int id) {
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+      onTap: () => _openChannel(channel),
+      onLongPress: () => _addToFavorites(channel),
+      leading: FutureBuilder(
+        future: channel.logo,
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<File> snapshot
+        ) => Container(
+          constraints: BoxConstraints(maxWidth: 60, maxHeight: 40),
+          alignment: Alignment.center,
+          child: (snapshot.data == null)
+              ? AppIcons.channelPlaceholder
+              : Image.file(snapshot.data),
+        ),
+      ),
+      title: Text(
+        channel.title,
+        style: AppFonts.channelName,
+      ),
+      subtitle: FutureBuilder(
+        future: channel.currentProgram,
+        builder: (BuildContext context, AsyncSnapshot<Program> snapshot) {
+          return Text(
+            snapshot.data == null ? '' : snapshot.data.title,
+            style: AppFonts.programName,
+            maxLines: 1,
+          );
+        },
+      ),
+      // Hide right now
+      // trailing: IconButton(
+      //   icon: AppIcons.list,
+      //   onPressed: () => null,
+      // ),
+    );
+  }
+
   Widget get _channelList {
     return ListView.separated(
       itemBuilder: (BuildContext context, int id) {
         Channel channel = _channels[id];
-        return ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-          onTap: () => _openChannel(channel),
-          onLongPress: () => _addToFavorites(channel),
-          leading: FutureBuilder(
-            future: channel.logo,
-            builder: (
-              BuildContext context,
-              AsyncSnapshot<File> snapshot
-            ) => Container(
-              constraints: BoxConstraints(maxWidth: 60, maxHeight: 40),
-              alignment: Alignment.center,
-              child: (snapshot.data == null)
-                  ? AppIcons.channelPlaceholder
-                  : Image.file(snapshot.data),
-            ),
-          ),
-          title: Text(
-            channel.title,
-            style: AppFonts.channelName,
-          ),
-          subtitle: FutureBuilder(
-            future: channel.currentProgram,
-            builder: (BuildContext context, AsyncSnapshot<Program> snapshot) {
-              return Text(
-                snapshot.data == null ? '' : snapshot.data.title,
-                style: AppFonts.programName,
-                maxLines: 1,
-              );
-            },
-          ),
-          trailing: IconButton(
-            icon: AppIcons.list,
-            onPressed: () => null,
-          ),
-        );
+        return _listChannelTile(channel, id);
       },
       separatorBuilder: (BuildContext context, int id) {
         return Divider(height: 0,);
