@@ -50,6 +50,7 @@ class HLSPlayer extends StatefulWidget {
   final void Function() toggleFullscreen;
   final Duration controlsTimeout;
   final Duration settingsTimeout;
+  final bool pipMode;
 
   @override
   HLSPlayer({
@@ -60,6 +61,7 @@ class HLSPlayer extends StatefulWidget {
     this.toggleFullscreen,
     this.controlsTimeout: const Duration(seconds: 5),
     this.settingsTimeout: const Duration(seconds: 3),
+    this.pipMode: false,
   }): super(key: key);
 
   @override
@@ -572,8 +574,23 @@ class _HLSPlayerState extends State<HLSPlayer> {
     );
   }
 
+  Widget get _pipModePlayer {
+    return AspectRatio(
+      aspectRatio: _ratio.value,
+      child: Material(
+        color: AppColors.black,
+        child: _controller == null ? Center(
+          child: Animations.progressIndicator,
+        ) : VideoPlayer(
+          _controller,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return _fullscreen ? _fullscreenPlayer : _adaptivePlayer;
+    if (widget.pipMode) return _pipModePlayer;
+    return  _fullscreen ? _fullscreenPlayer : _adaptivePlayer;
   }
 }

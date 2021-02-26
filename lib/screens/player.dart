@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/rendering.dart';
-
+import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:screen/screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:expandable/expandable.dart';
-
+import 'package:flutter_android_pip/flutter_android_pip.dart';
+import 'package:device_info/device_info.dart';
 import 'base.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -39,6 +40,8 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   ExpandableController _expandableController;
   Key _playerKey = GlobalKey();
   double _initialBrightness;
+  int _androidSdkLevel = 0;
+  bool _pipMode = false;
 
   @override
   void initState() {
@@ -47,9 +50,23 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     OrientationHelper.allowAll();
     _restoreUser();
     _initBrightness();
+    _initPlatformState();
     _expandableController = ExpandableController(initialExpanded: _expandProgram);
     _expandableController.addListener(_toggleProgram);
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future<void> _initPlatformState() async {
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+    try {
+      if (Platform.isAndroid) {
+        final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        _androidSdkLevel = androidInfo.version.sdkInt;
+      }
+    } on PlatformException {
+      _androidSdkLevel = null;
+    }
   }
 
   Future<void> _restoreUser() async {
@@ -85,6 +102,15 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     Wakelock.enable();
   }
 
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _enterPipMode();
+    }
+    else if (state == AppLifecycleState.resumed) {
+      _exitPipMode();
+    }
+  }
+
   bool get _fullscreen {
     return OrientationHelper.isFullscreen(context);
   }
@@ -95,6 +121,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       channel: _channel,
       toPrevChannel: _toPrevChannel,
       toNextChannel: _toNextChannel,
+      pipMode: _pipMode,
     );
   }
 
@@ -109,6 +136,21 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     setState(() {
       _channel = widget.getNextChannel(_channel);
       _playerKey = GlobalKey();
+    });
+  }
+
+  void _enterPipMode() {
+    if(_androidSdkLevel != null && _androidSdkLevel > 25) {
+      FlutterAndroidPip.enterPictureInPictureMode;
+      setState(() {
+        _pipMode = true;
+      });
+    }
+  }
+
+  void _exitPipMode() {
+    setState(() {
+      _pipMode = false;
     });
   }
 
@@ -311,7 +353,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   Widget get _body {
-    if(_fullscreen) return _player;
+    if(_fullscreen || _pipMode) return _player;
     List<Widget> children = [
       FutureBuilder(
         future: _channel.program,
@@ -346,9 +388,9 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       onWillPop: _willPop,
       child: Scaffold(
         backgroundColor: AppColors.white,
-        appBar: _fullscreen ? null : _appBar,
+        appBar: (_fullscreen || _pipMode) ? null : _appBar,
         body: _body,
-        bottomNavigationBar: _fullscreen ? null : _bottomBar,
+        bottomNavigationBar: (_fullscreen || _pipMode) ? null : _bottomBar,
       ),
     );
   }
