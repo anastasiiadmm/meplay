@@ -8,6 +8,7 @@ import '../theme.dart';
 import '../utils/orientation_helper.dart';
 import '../widgets/modals.dart';
 import '../screens/base.dart';
+import 'package:flutter_video_cast/flutter_video_cast.dart';
 
 
 class VideoAR {
@@ -83,6 +84,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   SwipeAction _panAction;
   Timer _brightnessTimer;
   Timer _volumeTimer;
+  ChromeCastController _castController;
 
   @override
   void initState() {
@@ -96,6 +98,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   @override
   void dispose() {
     _disposeVideo();
+    _disposeCast();
     _controlsTimer?.cancel();
     _brightnessTimer?.cancel();
     _volumeTimer?.cancel();
@@ -112,6 +115,11 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Future<void> _disposeVideo() async {
     await _controller?.dispose();
     _cache?.clear();
+  }
+
+  Future<void> _disposeCast() async {
+    await _castController?.stop();
+    _castController?.removeSessionListener();
   }
 
   Future<void> _loadChannel() async {
@@ -377,6 +385,15 @@ class _HLSPlayerState extends State<HLSPlayer> {
                       //   icon: AppIcons.chromecast,
                       //   onPressed: _chromecast,
                       // ),
+                      ChromeCastButton(
+                        onButtonCreated: (controller) {
+                          setState(() => _castController = controller);
+                          _castController?.addSessionListener();
+                        },
+                        onSessionStarted: () {
+                          _castController?.loadMedia(widget.channel.url);
+                        },
+                      ),
                       IconButton(
                         icon: AppIcons.settings,
                         onPressed: _showSettings,
