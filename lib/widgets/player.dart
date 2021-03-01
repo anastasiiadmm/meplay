@@ -503,34 +503,37 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   Widget get _settingControls {
-    return AnimatedOpacity(
-      opacity: _settingsVisible ? 1.0 : 0,
-      duration: controlsAnimationDuration,
-      child: Container(
-        decoration: BoxDecoration(gradient: AppColors.gradientTop),
+    return IgnorePointer(
+      child: AnimatedOpacity(
+        opacity: _settingsVisible ? 1.0 : 0,
+        duration: controlsAnimationDuration,
         child: Container(
-          decoration: BoxDecoration(gradient: AppColors.gradientBottom),
-          child: Row (
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: _settingControlBlock(
-                  _volumeIcon,
-                  _settingDisplay(_volume),
-                  _volumeVisible,
+          decoration: BoxDecoration(gradient: AppColors.gradientTop),
+          child: Container(
+            decoration: BoxDecoration(gradient: AppColors.gradientBottom),
+            child: Row (
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: _settingControlBlock(
+                    _volumeIcon,
+                    _settingDisplay(_volume),
+                    _volumeVisible,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: _settingControlBlock(
-                  _brightnessIcon,
-                  _settingDisplay(_brightness),
-                  _brightnessVisible,
-                ),
-              )
-            ],
+                Expanded(
+                  child: _settingControlBlock(
+                    _brightnessIcon,
+                    _settingDisplay(_brightness),
+                    _brightnessVisible,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
+      ignoring: !_settingsVisible,
     );
   }
 
@@ -580,10 +583,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
                 _controller,
               ),
               _controls,
-              IgnorePointer(
-                child: _settingControls,
-                ignoring: !_settingsVisible,
-              ),
+              _settingControls,
             ],
           ),
         ),

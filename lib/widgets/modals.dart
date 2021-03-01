@@ -137,37 +137,37 @@ void selectorModal<T>({
 }) {
   showDialog(
     context: context,
-    builder: (BuildContext context) => AlertDialog(
-      contentPadding: EdgeInsets.zero,
+    builder: (BuildContext context) => SimpleDialog(
       titlePadding: EdgeInsets.zero,
+      contentPadding: EdgeInsets.zero,
       title: title == null ? null : Container(
         decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(
-            color: AppColors.gray15,
-          )),
+          border: Border(
+            bottom: BorderSide(color: AppColors.gray15,)
+          ),
         ),
         padding: EdgeInsets.all(16),
         child: title,
       ),
-      content: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: 400),
-        child: ListView.separated(
-          shrinkWrap: choices.length < 7,
-          itemBuilder: (BuildContext context, int index) => ListTile(
-            title: Text(choices[index].toString()),
-            contentPadding: EdgeInsets.symmetric(horizontal: 10),
-            onTap: () {
-              onSelect(choices[index]);
-              Navigator.of(context).pop();
-            },
-            dense: false,
+      children: choices.map<Widget>((choice) {
+        final Widget option = SimpleDialogOption(
+          onPressed: () {
+            onSelect(choice);
+            Navigator.of(context).pop();
+          },
+          child: Text(choice.toString()),
+          padding: EdgeInsets.all(16),
+        );
+        if (choice == choices.last) return option;
+        return DecoratedBox(
+          child: option,
+          decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(color: AppColors.gray15,)
+            ),
           ),
-          separatorBuilder: (BuildContext context, int index) => Divider(
-            height: 1,
-          ),
-          itemCount: choices.length,
-        ),
-      ),
+        );
+      }).toList(),
     ),
   );
 }
