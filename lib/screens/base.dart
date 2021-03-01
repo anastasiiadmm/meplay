@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:me_play/screens/profile.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 import 'login.dart';
 import 'splash.dart';
@@ -11,6 +9,7 @@ import '../theme.dart';
 import '../models.dart';
 import '../widgets/modals.dart';
 import '../api_client.dart';
+import '../utils/pref_helper.dart';
 
 
 class BaseScreen extends StatefulWidget {
@@ -131,18 +130,13 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _loadUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey('user')) {
-      String userInfo = prefs.getString('user');
-      setState(() {
-        _user =  User.fromJson(jsonDecode(userInfo));
-      });
-    }
+    User user = await PrefHelper.loadObject<User>('user');
+    if (user != null) setState(() { _user = user; });
   }
 
-  Future<void> _clearUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove('user');
+  void _clearUser() async {
+    PrefHelper.clear('user');
+    setState(() { _user = null; });
   }
 
   Future<void> _init() async {
@@ -209,13 +203,9 @@ class _BaseScreenState extends State<BaseScreen> {
   }
   
   Future<bool> _logout()  async {
-    _channels = <Channel>[];
-    setState(() {
-      _user = null;
-      _currentIndex = NavItems.home;
-    });
-    await _clearUser();
+    _clearUser();
     await _loadChannels();
+    setState(() { _currentIndex = NavItems.home; });
     return true;
   }
   

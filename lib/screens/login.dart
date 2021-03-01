@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,6 +12,7 @@ import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../theme.dart';
 import '../models.dart';
 import '../api_client.dart';
+import '../utils/pref_helper.dart';
 
 
 const String appHash = 'g8xZvf1R7yJ';
@@ -155,8 +155,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
   }
 
   Future<void> _saveUser(User user) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('user', user.toJson());
+    return PrefHelper.saveObject('user', user);
   }
 
   Future<void> _sendSms() async {
