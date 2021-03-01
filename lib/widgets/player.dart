@@ -24,7 +24,8 @@ class VideoAR {
   static const r43 = VideoAR('4:3', 4/3);
   static const r169 = VideoAR('16:9', 16/9);
   static const r1610 = VideoAR('16:10', 16/10);
-  static const choices = [r43, r169, r1610];
+  static const r6427 = VideoAR('21:9', 64/27);
+  static const choices = [r43, r169, r1610, r6427];
 }
 
 
