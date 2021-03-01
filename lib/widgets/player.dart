@@ -24,8 +24,18 @@ class VideoAR {
   static const r43 = VideoAR('4:3', 4/3);
   static const r169 = VideoAR('16:9', 16/9);
   static const r1610 = VideoAR('16:10', 16/10);
-  static const r6427 = VideoAR('21:9', 64/27);
-  static const choices = [r43, r169, r1610, r6427];
+  static const r219 = VideoAR('21:9', 64/27);
+  static const defaultRatio = r43;
+  static const choices = [r43, r169, r1610, r219];
+
+  static VideoAR findRatio(double value) {
+    for (VideoAR choice in choices) {
+      if((choice.value - value).abs() <= 0.05) {
+        return choice;
+      }
+    }
+    return defaultRatio;
+  }
 }
 
 
@@ -73,7 +83,7 @@ class HLSPlayer extends StatefulWidget {
 
 class _HLSPlayerState extends State<HLSPlayer> {
   VideoPlayerController _controller;
-  VideoAR _ratio = VideoAR.r43;
+  VideoAR _ratio;
   bool _controlsVisible = false;
   HLSVideoCache _cache;
   Timer _controlsTimer;
@@ -137,6 +147,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
         setState(() {
           _controller = controller;
           _volume = _controller.value.volume;
+          _ratio = VideoAR.findRatio(controller.value.aspectRatio);
         });
         controller.play();
       }
@@ -341,18 +352,19 @@ class _HLSPlayerState extends State<HLSPlayer> {
     });
   }
 
-  Widget get _backdrop {
-    return AnimatedOpacity(
-      opacity: _controlsVisible ? 1.0 : 0,
-      duration: controlsAnimationDuration,
-      child: Container(
-        decoration: BoxDecoration(gradient: AppColors.gradientTop),
-        child: Container(
-          decoration: BoxDecoration(gradient: AppColors.gradientBottom),
-        ),
-      ),
-    );
-  }
+  // TODO
+  // Widget get _backdrop {
+  //   return AnimatedOpacity(
+  //     opacity: _controlsVisible ? 1.0 : 0,
+  //     duration: controlsAnimationDuration,
+  //     child: Container(
+  //       decoration: BoxDecoration(gradient: AppColors.gradientTop),
+  //       child: Container(
+  //         decoration: BoxDecoration(gradient: AppColors.gradientBottom),
+  //       ),
+  //     ),
+  //   );
+  // }
   
   Widget get _controls {
     return AbsorbPointer(
@@ -552,7 +564,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
               child: _controller == null
                   ? Animations.progressIndicator
                   : AspectRatio(
-                aspectRatio: _ratio.value,
+                aspectRatio: (_ratio ?? VideoAR.defaultRatio).value,
                 child: VideoPlayer(
                   _controller,
                 ),
@@ -573,7 +585,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
       onPanUpdate: _onPanUpdate,
       onPanEnd: _onPanEnd,
       child: AspectRatio(
-        aspectRatio: _ratio.value,
+        aspectRatio: (_ratio ?? VideoAR.defaultRatio).value,
         child: Material(
           color: AppColors.black,
           child: Stack(
@@ -594,7 +606,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   Widget get _pipModePlayer {
     return AspectRatio(
-      aspectRatio: _ratio.value,
+      aspectRatio: (_ratio ?? VideoAR.defaultRatio).value,
       child: Material(
         color: AppColors.black,
         child: _controller == null ? Center(
