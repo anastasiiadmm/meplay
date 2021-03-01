@@ -32,11 +32,14 @@ abstract class PrefHelper {
     prefs.setString(key, jsonEncode(data));
   }
 
-  static Future<T> loadObject<T>(String key) async {
+  static Future<T> loadObject<T>(
+      String key,
+      T Function(Map<String, dynamic> data) restore,
+  ) async {
     SharedPreferences prefs = await(_prefs);
     if (!prefs.containsKey(key)) return null;
-    Map<String, dynamic> data = jsonDecode((await _prefs).getString(key));
-    return (T as dynamic).fromJson(data);
+    Map<String, dynamic> data = jsonDecode(prefs.getString(key));
+    return restore(data);
   }
 
   static Future<SharedPreferences> get _prefs async {

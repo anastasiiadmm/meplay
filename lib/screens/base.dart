@@ -130,7 +130,10 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _loadUser() async {
-    User user = await PrefHelper.loadObject<User>('user');
+    User user = await PrefHelper.loadObject<User>(
+        'user',
+        (data) => User.fromJson(data),
+    );
     if (user != null) setState(() { _user = user; });
   }
 
