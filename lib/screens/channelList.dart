@@ -28,13 +28,13 @@ class ListType {
   static const list = ListType('Список', 'list');
   static const blocks = ListType('Блоки', 'blocks');
   static const choices = [hexal, list, blocks];
-  static const defaultChoice = hexal;
+  static const defaultType = hexal;
 
   static ListType getByName(String name) {
     for (ListType choice in choices) {
       if(choice.name == name) return choice;
     }
-    return defaultChoice;
+    return defaultType;
   }
 }
 
@@ -60,18 +60,18 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   final _keyboardVisibility = KeyboardVisibilityNotification();
   int _keyboardVisibilityListenerId;
   final _searchController = TextEditingController();
-  ListType _listType = ListType.defaultChoice;
+  ListType _listType = ListType.defaultType;
 
   @override
   void initState() {
     super.initState();
+    _loadListType();
     _channels = widget.channels..sort(
       (ch1, ch2) => ch1.number.compareTo(ch2.number)
     );
     _keyboardVisibilityListenerId = _keyboardVisibility.addNewListener(
       onShow: _restoreSystemOverlays,
     );
-    _loadListType();
   }
 
   @override
@@ -87,8 +87,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       PrefKeys.channelListType,
       ListType.getByName,
     );
-    if (listType != null)
-      setState(() { _listType = listType; });
+    setState(() { _listType = listType; });
   }
 
   void _restoreSystemOverlays() {
