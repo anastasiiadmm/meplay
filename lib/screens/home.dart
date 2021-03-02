@@ -7,10 +7,9 @@ import '../theme.dart';
 class HomeScreen extends StatefulWidget {
   final void Function() watchTv;
   final void Function() listenToRadio;
-  final void Function() watchCinema;
 
   @override
-  HomeScreen({Key key, this.watchTv, this.listenToRadio, this.watchCinema})
+  HomeScreen({Key key, this.watchTv, this.listenToRadio})
       : super(key: key);
 
   @override
@@ -23,7 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final logoTile = HexGridPoint(2, 2);
   final tvButton = HexGridPoint(3, 1);
   final radioButton = HexGridPoint(3, 2);
-  final cinemaButton = HexGridPoint(4, 2);
 
   void _watchTV() {
     if (widget.watchTv != null) {
@@ -37,13 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _watchCinema() {
-    if (widget.watchCinema != null) {
-      widget.watchCinema();
-    }
-  }
-
-  HexagonWidget tileBuilder(HexGridPoint point) {
+  HexagonWidget _tileBuilder(HexGridPoint point) {
     Color color;
     Widget content;
     if (point == logoTile) {
@@ -94,25 +86,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       );
-    } else if (point == cinemaButton) {
-      color = AppColors.gray10;
-      content = content = GestureDetector(
-        onTap: _watchCinema,
-        child: Opacity(
-          opacity: 0.5,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                child: AppIcons.cinema,
-                padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
-              ),
-              Text('КИНОТЕАТР', style: AppFonts.homeBtns,),
-            ],
-          ),
-        ),
-      );
     } else {
       color = AppColors.emptyTile;
     }
@@ -136,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
               hexagonPadding: 8,
               hexagonBorderRadius: 15,
               hexagonWidth: 174,
-              buildHexagon: tileBuilder,
+              buildHexagon: _tileBuilder,
             ),
           ),
         ),

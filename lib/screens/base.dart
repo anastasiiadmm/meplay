@@ -25,7 +25,6 @@ class NavItems {
   static const int login = 3;
   static const int tv = 4;
   static const int radio = 5;
-  static const int cinema = 6;
 
   static void inDevelopment(BuildContext context, {
     String title: 'Эта страница'
@@ -60,7 +59,6 @@ class _BaseScreenState extends State<BaseScreen> {
       default: return HomeScreen(
         watchTv: _watchTV,
         listenToRadio: () {NavItems.inDevelopment(context, title: 'Радио');},
-        watchCinema: () {NavItems.inDevelopment(context, title: 'Кинотеатр');},
       );
     }
   }
