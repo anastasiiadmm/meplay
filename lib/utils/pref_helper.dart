@@ -4,10 +4,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 abstract class PrefKeys {
-  static const channelListType = 'channelListType';
+  static const listType = 'chlistType';
   static const user = 'user';
 
-  static String videoAR(int channelId) => 'videoAR$channelId';
+  static String ratio(int channelId) => 'ratio$channelId';
 }
 
 

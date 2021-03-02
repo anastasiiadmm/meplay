@@ -165,7 +165,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
   
   Future<void> _loadRatio() async {
-    String prefKey = PrefKeys.videoAR(widget.channel.id);
+    String prefKey = PrefKeys.ratio(widget.channel.id);
     VideoAR ratio = await PrefHelper.loadString(
       prefKey,
       VideoAR.getByName,
@@ -174,7 +174,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   void _saveRatio() {
-    String prefKey = PrefKeys.videoAR(widget.channel.id);
+    String prefKey = PrefKeys.ratio(widget.channel.id);
     PrefHelper.saveString(prefKey, _ratio);
   }
 
