@@ -689,10 +689,12 @@ class _VideoScrubber extends StatefulWidget {
   _VideoScrubber({
     @required this.child,
     @required this.controller,
+    this.hiddenDuration: Duration.zero,
   });
 
   final Widget child;
   final VideoPlayerController controller;
+  final Duration hiddenDuration;
 
   @override
   _VideoScrubberState createState() => _VideoScrubberState();
@@ -702,6 +704,7 @@ class _VideoScrubberState extends State<_VideoScrubber> {
   bool _controllerWasPlaying = false;
 
   VideoPlayerController get controller => widget.controller;
+  Duration get hiddenDuration => widget.hiddenDuration;
 
   @override
   Widget build(BuildContext context) {
@@ -709,7 +712,7 @@ class _VideoScrubberState extends State<_VideoScrubber> {
       final RenderBox box = context.findRenderObject();
       final Offset tapPos = box.globalToLocal(globalPosition);
       final double relative = tapPos.dx / box.size.width;
-      final Duration position = controller.value.duration * relative;
+      final Duration position = (controller.value.duration - hiddenDuration) * relative;
       controller.seekTo(position);
     }
 
@@ -811,6 +814,8 @@ class _VideoProgressIndicatorState extends State<VideoProgressIndicator> {
 
   VideoProgressColors get colors => widget.colors;
 
+  Duration get hiddenDuration => widget.hiddenDuration;
+
   @override
   void initState() {
     super.initState();
@@ -823,26 +828,39 @@ class _VideoProgressIndicatorState extends State<VideoProgressIndicator> {
     super.deactivate();
   }
 
+  int visibleDuration() {
+    int duration = controller.value.duration.inMilliseconds
+        - hiddenDuration.inMilliseconds;
+    if (duration < 1) return 1;
+    return duration;
+  }
+
+  int positionOf(int duration) {
+    int position = controller.value.position.inMilliseconds;
+    if (position > duration) return duration;
+    return position;
+  }
+
+  int maxBufferingOf(int duration) {
+    int maxBuffering = 0;
+    for (DurationRange range in controller.value.buffered) {
+      final int end = range.end.inMilliseconds;
+      if (end > maxBuffering) {
+        maxBuffering = end;
+      }
+    }
+    if (maxBuffering > duration) return duration;
+    return maxBuffering;
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget progressIndicator;
     if (controller.value.initialized) {
-      int duration = controller.value.duration.inMilliseconds
-          - widget.hiddenDuration.inMilliseconds;
-      if (duration < 0) duration = 0;
-      int position = controller.value.position.inMilliseconds;
-      if (position > duration) position = duration;
-
+      final duration = visibleDuration();
+      final position = positionOf(duration);
+      final maxBuffering = maxBufferingOf(duration);
       if (position < duration) print("$position / $duration");
-
-      int maxBuffering = 0;
-      for (DurationRange range in controller.value.buffered) {
-        final int end = range.end.inMilliseconds;
-        if (end > maxBuffering) {
-          maxBuffering = end;
-        }
-      }
-      if (maxBuffering > duration) maxBuffering = duration;
 
       progressIndicator = Stack(
         fit: StackFit.passthrough,
@@ -874,6 +892,7 @@ class _VideoProgressIndicatorState extends State<VideoProgressIndicator> {
       return _VideoScrubber(
         child: paddedProgressIndicator,
         controller: controller,
+        hiddenDuration: hiddenDuration,
       );
     } else {
       return paddedProgressIndicator;

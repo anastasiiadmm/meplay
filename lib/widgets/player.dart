@@ -61,11 +61,15 @@ const int swipeFactor = 200;
 // Time required to show or hide controls.
 const controlsAnimationDuration = Duration(milliseconds: 200);
 
-// Can not be scrolled manually
-const scrollHideDuration = Duration(seconds: 25);
+// Hidden live buffer where "Go Live" button jumps.
+// Twice the length of the video fragment.
+const liveBuffer = Duration(seconds: 20);
 
-// Live jumps to the end of video minus this
-const hiddenLiveDuration = Duration(seconds: 15);
+// Invisible scrollbar part where user can not seek manually.
+// Equals to the liveBuffer + extra 10 seconds (video fragment duration)
+// to hide buffered part on the scrollbar,
+// when a new video fragment was added to the buffer.
+const scrollBuffer = Duration(seconds: 30);
 
 
 class HLSPlayer extends StatefulWidget {
@@ -257,7 +261,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
       child: _controller == null ? null : VideoProgressIndicator(
         _controller,
         allowScrubbing: true,
-        hiddenDuration: scrollHideDuration,
+        hiddenDuration: scrollBuffer,
         colors: VideoProgressColors(
           backgroundColor: AppColors.transparentGray,
           playedColor: AppColors.gray5,
@@ -268,7 +272,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   void _goLive() {
-    _controller.seekTo(_controller.value.duration - hiddenLiveDuration);
+    _controller.seekTo(_controller.value.duration - liveBuffer);
   }
 
   void _detectAction(Offset delta) {
