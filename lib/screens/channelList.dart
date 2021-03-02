@@ -602,7 +602,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       child: Scaffold(
         backgroundColor: _listType == ListType.hexal
             ? AppColors.megaPurple
-            : AppColors.white,
+            : AppColors.gray0,
         extendBody: true,
         extendBodyBehindAppBar: true,
         appBar: _appBar,
