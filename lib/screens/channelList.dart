@@ -10,6 +10,7 @@ import '../widgets/modals.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/ellipsis.dart';
+import '../utils/pref_helper.dart';
 import 'player.dart';
 
 
@@ -27,6 +28,14 @@ class ListType {
   static const list = ListType('Список', 'list');
   static const blocks = ListType('Блоки', 'blocks');
   static const choices = [hexal, list, blocks];
+  static const defaultChoice = hexal;
+
+  static ListType getByName(String name) {
+    for (ListType choice in choices) {
+      if(choice.name == name) return choice;
+    }
+    return defaultChoice;
+  }
 }
 
 
@@ -51,7 +60,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   final _keyboardVisibility = KeyboardVisibilityNotification();
   int _keyboardVisibilityListenerId;
   final _searchController = TextEditingController();
-  ListType _listType = ListType.hexal;
+  ListType _listType = ListType.defaultChoice;
 
   @override
   void initState() {
@@ -62,6 +71,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     _keyboardVisibilityListenerId = _keyboardVisibility.addNewListener(
       onShow: _restoreSystemOverlays,
     );
+    _loadListType();
   }
 
   @override
@@ -70,6 +80,14 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     _keyboardVisibility.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadListType() async {
+    ListType listType = await PrefHelper.loadString(
+        PrefKeys.channelListType,
+        ListType.getByName,
+    );
+    setState(() { _listType = listType; });
   }
 
   void _restoreSystemOverlays() {
@@ -464,14 +482,16 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   }
 
   void _selectListType() {
-    // TODO: persist
     selectorModal(
       title: Text('Вид списка каналов:', textAlign: TextAlign.center,),
       context: context,
       choices: ListType.choices,
-      onSelect: (ListType selected) => setState(() {
-        _listType = selected;
-      }),
+      onSelect: (ListType selected) {
+        setState(() {
+          _listType = selected;
+        });
+        PrefHelper.saveString(PrefKeys.channelListType, selected);
+      },
     );
   }
   
