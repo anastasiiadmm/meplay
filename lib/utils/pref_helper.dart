@@ -7,7 +7,7 @@ abstract class PrefKeys {
   static const channelListType = 'channelListType';
   static const user = 'user';
 
-  static String channelAspectRatio(int id) => 'channelAR$id';
+  static String videoAR(int channelId) => 'videoAR$channelId';
 }
 
 

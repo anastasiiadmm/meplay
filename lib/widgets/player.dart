@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:me_play/utils/pref_helper.dart';
 import 'package:screen/screen.dart';
 import '../utils/hls_video_cache.dart';
 import '../video_player_fork/video_player.dart';
@@ -25,16 +26,23 @@ class VideoAR {
   static const r169 = VideoAR('16:9', 16/9);
   static const r1610 = VideoAR('16:10', 16/10);
   static const r219 = VideoAR('21:9', 64/27);
-  static const defaultRatio = r43;
   static const choices = [r43, r169, r1610, r219];
+  static const defaultChoice = r43;
 
-  static VideoAR findRatio(double value) {
+  static VideoAR getByValue(double value) {
     for (VideoAR choice in choices) {
       if((choice.value - value).abs() <= 0.05) {
         return choice;
       }
     }
-    return defaultRatio;
+    return defaultChoice;
+  }
+
+  static VideoAR getByName(String name) {
+    for (VideoAR choice in choices) {
+      if(choice.name == name) return choice;
+    }
+    return defaultChoice;
   }
 }
 
@@ -83,7 +91,7 @@ class HLSPlayer extends StatefulWidget {
 
 class _HLSPlayerState extends State<HLSPlayer> {
   VideoPlayerController _controller;
-  VideoAR _ratio;
+  VideoAR _ratio = VideoAR.defaultChoice;
   bool _controlsVisible = false;
   HLSVideoCache _cache;
   Timer _controlsTimer;
@@ -147,11 +155,27 @@ class _HLSPlayerState extends State<HLSPlayer> {
         setState(() {
           _controller = controller;
           _volume = _controller.value.volume;
-          _ratio = VideoAR.findRatio(controller.value.aspectRatio);
         });
         controller.play();
+        _loadRatio();
       }
     }
+  }
+  
+  Future<void> _loadRatio() async {
+    String prefKey = PrefKeys.videoAR(widget.channel.id);
+    VideoAR ratio = await PrefHelper.loadString(
+      prefKey,
+      (name) => name == null
+          ? VideoAR.getByValue(_controller.value.aspectRatio)
+          : VideoAR.getByName(name),
+    );
+    setState(() { _ratio = ratio; });
+  }
+
+  void _saveRatio() {
+    String prefKey = PrefKeys.videoAR(widget.channel.id);
+    PrefHelper.saveString(prefKey, _ratio);
   }
 
   void _showSettings() {
@@ -170,6 +194,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
         setState(() {
           _ratio = value;
         });
+        _saveRatio();
       },
     );
   }
@@ -564,7 +589,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
               child: _controller == null
                   ? Animations.progressIndicator
                   : AspectRatio(
-                aspectRatio: (_ratio ?? VideoAR.defaultRatio).value,
+                aspectRatio: (_ratio ?? VideoAR.defaultChoice).value,
                 child: VideoPlayer(
                   _controller,
                 ),
@@ -585,7 +610,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
       onPanUpdate: _onPanUpdate,
       onPanEnd: _onPanEnd,
       child: AspectRatio(
-        aspectRatio: (_ratio ?? VideoAR.defaultRatio).value,
+        aspectRatio: (_ratio ?? VideoAR.defaultChoice).value,
         child: Material(
           color: AppColors.black,
           child: Stack(
@@ -606,7 +631,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   Widget get _pipModePlayer {
     return AspectRatio(
-      aspectRatio: (_ratio ?? VideoAR.defaultRatio).value,
+      aspectRatio: (_ratio ?? VideoAR.defaultChoice).value,
       child: Material(
         color: AppColors.black,
         child: _controller == null ? Center(
