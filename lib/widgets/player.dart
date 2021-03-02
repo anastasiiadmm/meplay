@@ -8,7 +8,6 @@ import '../models.dart';
 import '../theme.dart';
 import '../utils/orientation_helper.dart';
 import '../widgets/modals.dart';
-import '../screens/base.dart';
 import 'package:flutter_video_cast/flutter_video_cast.dart';
 
 
@@ -61,6 +60,12 @@ const int swipeFactor = 200;
 
 // Time required to show or hide controls.
 const controlsAnimationDuration = Duration(milliseconds: 200);
+
+// Can not be scrolled manually
+const scrollHideDuration = Duration(seconds: 25);
+
+// Live jumps to the end of video minus this
+const hiddenLiveDuration = Duration(seconds: 15);
 
 
 class HLSPlayer extends StatefulWidget {
@@ -160,6 +165,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
             _ratio = VideoAR.getByValue(controller.value.aspectRatio);
         });
         controller.play();
+        _goLive();
       }
     }
   }
@@ -251,6 +257,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
       child: _controller == null ? null : VideoProgressIndicator(
         _controller,
         allowScrubbing: true,
+        hiddenDuration: scrollHideDuration,
         colors: VideoProgressColors(
           backgroundColor: AppColors.transparentGray,
           playedColor: AppColors.gray5,
@@ -261,7 +268,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   void _goLive() {
-    NavItems.inDevelopment(context, title: 'Эта функция');
+    _controller.seekTo(_controller.value.duration - hiddenLiveDuration);
   }
 
   void _detectAction(Offset delta) {

@@ -237,7 +237,7 @@ class HLSVideoCache {
   Timer _playlistCheckTimer;
   bool _disposed = false;
 
-  static const Duration playlistCheckTimeout = Duration(seconds: 20);
+  static const Duration playlistCheckTimeout = Duration(seconds: 10);
 
   HLSVideoCache(url):
     assert (url != null),

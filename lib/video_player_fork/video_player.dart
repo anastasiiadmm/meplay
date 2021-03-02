@@ -765,6 +765,7 @@ class VideoProgressIndicator extends StatefulWidget {
         VideoProgressColors colors,
         this.allowScrubbing,
         this.padding = const EdgeInsets.only(top: 5.0),
+        this.hiddenDuration = Duration.zero,
       }) : colors = colors ?? VideoProgressColors();
 
   /// The [VideoPlayerController] that actually associates a video with this
@@ -787,6 +788,8 @@ class VideoProgressIndicator extends StatefulWidget {
   ///
   /// Defaults to `top: 5.0`.
   final EdgeInsets padding;
+
+  final Duration hiddenDuration;
 
   @override
   _VideoProgressIndicatorState createState() => _VideoProgressIndicatorState();
@@ -824,8 +827,13 @@ class _VideoProgressIndicatorState extends State<VideoProgressIndicator> {
   Widget build(BuildContext context) {
     Widget progressIndicator;
     if (controller.value.initialized) {
-      final int duration = controller.value.duration.inMilliseconds;
-      final int position = controller.value.position.inMilliseconds;
+      int duration = controller.value.duration.inMilliseconds
+          - widget.hiddenDuration.inMilliseconds;
+      if (duration < 0) duration = 0;
+      int position = controller.value.position.inMilliseconds;
+      if (position > duration) position = duration;
+
+      if (position < duration) print("$position / $duration");
 
       int maxBuffering = 0;
       for (DurationRange range in controller.value.buffered) {
@@ -834,6 +842,7 @@ class _VideoProgressIndicatorState extends State<VideoProgressIndicator> {
           maxBuffering = end;
         }
       }
+      if (maxBuffering > duration) maxBuffering = duration;
 
       progressIndicator = Stack(
         fit: StackFit.passthrough,
