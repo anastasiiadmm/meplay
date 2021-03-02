@@ -155,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
   }
 
   Future<void> _saveUser(User user) async {
-    return PrefHelper.saveObject('user', user);
+    return PrefHelper.saveJson(PrefKeys.user, user);
   }
 
   Future<void> _sendSms() async {

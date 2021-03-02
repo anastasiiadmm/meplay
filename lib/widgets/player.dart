@@ -166,10 +166,8 @@ class _HLSPlayerState extends State<HLSPlayer> {
     String prefKey = PrefKeys.videoAR(widget.channel.id);
     VideoAR ratio = await PrefHelper.loadString(
       prefKey,
-      (name) => name == null
-          ? VideoAR.getByValue(_controller.value.aspectRatio)
-          : VideoAR.getByName(name),
-    );
+      VideoAR.getByName,
+    ) ?? VideoAR.getByValue(_controller.value.aspectRatio);
     setState(() { _ratio = ratio; });
   }
 

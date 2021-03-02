@@ -25,9 +25,8 @@ abstract class PrefHelper {
       [dynamic Function(String data) restore,]
   ) async {
     SharedPreferences prefs = await(_prefs);
-    String data;
-    if (prefs.containsKey(key))
-      data = prefs.getString(key);
+    if (!prefs.containsKey(key)) return null;
+    String data = prefs.getString(key);
     if (restore == null) return data;
     return restore(data);
   }
@@ -42,12 +41,11 @@ abstract class PrefHelper {
 
   static Future<dynamic> loadJson(
       String key,
-      [dynamic Function(Map<String, dynamic> data) restore,]
+      [dynamic Function(dynamic data) restore,]
   ) async {
     SharedPreferences prefs = await(_prefs);
-    Map<String, dynamic> data;
-    if (prefs.containsKey(key))
-      data = jsonDecode(prefs.getString(key));
+    if (!prefs.containsKey(key)) return null;
+    dynamic data = jsonDecode(prefs.getString(key));
     if (restore == null) return data;
     return restore(data);
   }
