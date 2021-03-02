@@ -16,6 +16,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 
+const exclusivePackets = [5, 6, 7];
+
 class _ProfileScreenState extends State<ProfileScreen> {
   List<Packet> _packets;
   
@@ -45,6 +47,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<bool> _addPacket(Packet packet) async {
+    // Костыль, должно быть сделано на бэкенде.
+    if (exclusivePackets.contains(packet.id)) {
+      for (Packet p in _packets) {
+        if (p.isActive && exclusivePackets.contains(p.id)) {
+          await _removePacket(p);
+        }
+      }
+    }
     List<Packet> packets = await widget.user.addPacket(packet);
     if (packets == null) return false;
     setState(() {
