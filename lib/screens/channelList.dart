@@ -77,7 +77,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     _initialChannels.sort(
             (ch1, ch2) => ch1.number.compareTo(ch2.number)
     );
-    _channels = _initialChannels;
+    _channels = _initialChannels.toList();  // copy
     _keyboardVisibilityListenerId = _keyboardVisibility.addNewListener(
       onShow: _restoreSystemOverlays,
     );
@@ -224,6 +224,13 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   Future<void> _addFavorite(Channel channel) async {
     User user = await User.getUser();
     if (user != null) await user.addFavorite(channel);
+
+    if(widget.selectedNavId == NavItems.fav) {
+      setState(() {
+        _initialChannels.add(channel);
+        _channels.add(channel);
+      });
+    }
   }
 
   Future<void> _removeFavorite(Channel channel) async {
@@ -462,7 +469,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       itemCount: _channels.length,
     );
   }
-  
+
   Widget get _body {
     switch (_listType) {
       case ListViewType.hexagonal:
@@ -527,7 +534,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       },
     );
   }
-  
+
   Widget get _appBar {
     return AppBar(
       backgroundColor: AppColors.megaPurple,
