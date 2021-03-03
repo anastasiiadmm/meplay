@@ -11,27 +11,28 @@ import '../models.dart';
 import '../theme.dart';
 import '../utils/ellipsis.dart';
 import '../utils/pref_helper.dart';
+import 'base.dart';
 import 'player.dart';
 
 
-class ListType {
+class ListViewType {
   final String name;
   final String value;
 
-  const ListType(this.name, this.value);
+  const ListViewType(this.name, this.value);
 
   String toString() {
     return name;
   }
 
-  static const hexal = ListType('Шестиугольники', 'hexal');
-  static const list = ListType('Список', 'list');
-  static const blocks = ListType('Блоки', 'blocks');
-  static const choices = [hexal, list, blocks];
-  static const defaultType = hexal;
+  static const hexagonal = ListViewType('Шестиугольники', 'hexagonal');
+  static const list = ListViewType('Список', 'list');
+  static const blocks = ListViewType('Блоки', 'blocks');
+  static const choices = [hexagonal, list, blocks];
+  static const defaultType = hexagonal;
 
-  static ListType getByName(String name) {
-    for (ListType choice in choices) {
+  static ListViewType getByName(String name) {
+    for (ListViewType choice in choices) {
       if(choice.name == name) return choice;
     }
     return defaultType;
@@ -42,8 +43,10 @@ class ListType {
 class ChannelListScreen extends StatefulWidget {
   final List<Channel> channels;
   final String title;
+  final int activeNav;
 
-  ChannelListScreen({Key key, this.channels, this.title}): super();
+  ChannelListScreen({Key key, this.channels,
+    this.title, this.activeNav}) : super();
 
   @override
   _ChannelListScreenState createState() => _ChannelListScreenState();
@@ -60,7 +63,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   final _keyboardVisibility = KeyboardVisibilityNotification();
   int _keyboardVisibilityListenerId;
   final _searchController = TextEditingController();
-  ListType _listType = ListType.defaultType;
+  ListViewType _listType = ListViewType.defaultType;
 
   @override
   void initState() {
@@ -83,10 +86,10 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   }
 
   Future<void> _loadListType() async {
-    ListType listType = await PrefHelper.loadString(
+    ListViewType listType = await PrefHelper.loadString(
       PrefKeys.listType,
-      restore: ListType.getByName,
-      defaultValue: ListType.defaultType,
+      restore: ListViewType.getByName,
+      defaultValue: ListViewType.defaultType,
     );
     setState(() { _listType = listType; });
   }
@@ -102,7 +105,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   }
 
   void _onNavTap(int index) {
-    Navigator.of(context).pop(index);
+    if (index != widget.activeNav) Navigator.of(context).pop(index);
   }
 
   Widget get _bottomBar {
@@ -118,7 +121,9 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
           label: 'Главная',
         ),
         BottomNavigationBarItem(
-          icon: AppIcons.star,
+          icon: widget.activeNav == NavItems.fav
+              ? AppIcons.starActive
+              : AppIcons.star,
           label: 'Избранное',
         ),
         BottomNavigationBarItem(
@@ -427,11 +432,11 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   
   Widget get _body {
     switch (_listType) {
-      case ListType.hexal:
+      case ListViewType.hexagonal:
         return _hexChannelGrid;
-      case ListType.list:
+      case ListViewType.list:
         return _channelList;
-      case ListType.blocks:
+      case ListViewType.blocks:
         return _channelBlockList;
       default:
         return _hexChannelGrid;
@@ -486,8 +491,8 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     selectorModal(
       title: Text('Вид списка каналов:', textAlign: TextAlign.center,),
       context: context,
-      choices: ListType.choices,
-      onSelect: (ListType selected) {
+      choices: ListViewType.choices,
+      onSelect: (ListViewType selected) {
         setState(() {
           _listType = selected;
         });
@@ -600,7 +605,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     return WillPopScope(
       onWillPop: _willPop,
       child: Scaffold(
-        backgroundColor: _listType == ListType.hexal
+        backgroundColor: _listType == ListViewType.hexagonal
             ? AppColors.megaPurple
             : AppColors.gray0,
         extendBody: true,

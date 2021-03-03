@@ -246,7 +246,7 @@ class User {
       restore: (channelIds) => channels.where(
               (channel) => channelIds.contains(channel.id)
       ),
-      defaultValue: [],
+      defaultValue: <Channel>[],
     );
   }
   

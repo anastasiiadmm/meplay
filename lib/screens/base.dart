@@ -88,6 +88,19 @@ class _BaseScreenState extends State<BaseScreen> {
     }
   }
 
+  Future<void> _showFavorites() async {
+    List<Channel> favorites = await _user.getFavorites(_channels);
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (BuildContext context) {
+        return ChannelListScreen(
+          channels: favorites,
+          title: 'Избранное',
+          activeNav: NavItems.fav,
+        );
+      },
+    ));
+  }
+
   void _onNavTap(int index) {
     if (index == NavItems.home) {
       setState(() {
@@ -98,8 +111,9 @@ class _BaseScreenState extends State<BaseScreen> {
         _login(index);
       } else {
         if (index == NavItems.fav) {
-          NavItems.inDevelopment(context, title: 'Избранное');
-        } else if (index == NavItems.profile) {
+          _showFavorites();
+        }
+        else if (index == NavItems.profile) {
           setState(() {
             _currentIndex = index;
           });
