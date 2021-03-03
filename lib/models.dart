@@ -164,7 +164,7 @@ class User {
   String refreshToken;
   int id;
   List<Packet> _packets;
-  List<Channel> _favorites;
+  List<int> _favorites;
 
   User({this.username, this.password, this.token, this.refreshToken, this.id});
 
@@ -220,42 +220,42 @@ class User {
     }
   }
 
-  Future<List<Channel>> getFavorites(List<Channel> channels) async {
+  Future<List<int>> getFavorites() async {
     if (_favorites == null)
-      await _loadFavorites(channels);
+      await _loadFavorites();
     return _favorites;
   }
 
-  Future<bool> addToFavorites(Channel channel) async {
-    if (_favorites == null) return false;
-    if (!_favorites.contains(channel)) _favorites.add(channel);
-    await _saveFavorites();
-    return true;
+  Future<List<Channel>> filterFavorites(List<Channel> channels) async {
+    List<int> favorites = await getFavorites();
+    return channels.where((channel) => favorites.contains(channel.id))
+        .toList();
   }
 
-  Future<bool> removeFromFavorites(Channel channel) async {
-    if (_favorites == null) return false;
-    if(_favorites.contains(channel)) _favorites.remove(channel);
+  Future<void> addFavorite(Channel channel) async {
+    List<int> favorites = await getFavorites();
+    if (!favorites.contains(channel.id)) favorites.add(channel.id);
     await _saveFavorites();
-    return true;
+  }
+
+  Future<void> removeFavorite(Channel channel) async {
+    List<int> favorites = await getFavorites();
+    if(favorites.contains(channel.id)) favorites.remove(channel.id);
+    await _saveFavorites();
   }
 
   Future<void> _loadFavorites(List<Channel> channels) async {
     _favorites = await PrefHelper.loadJson(
       PrefKeys.favorites(id),
-      restore: (channelIds) => channels.where(
-              (channel) => channelIds.contains(channel.id)
-      ),
-      defaultValue: <Channel>[],
+      defaultValue: <int>[],
+      restore: (data) => data.cast<int>(),
     );
   }
   
   Future<void> _saveFavorites() async {
     await PrefHelper.saveJson(
-        PrefKeys.favorites(id),
-        _favorites.map(
-                (channel) => channel.id
-        ).toList()
+      PrefKeys.favorites(id),
+      _favorites,
     );
   }
 }

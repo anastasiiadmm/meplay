@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:me_play/screens/profile.dart';
 import 'home.dart';
 import 'login.dart';
 import 'splash.dart';
+import 'profile.dart';
 import 'channelList.dart';
 import '../theme.dart';
 import '../models.dart';
@@ -89,13 +89,14 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _showFavorites() async {
-    List<Channel> favorites = await _user.getFavorites(_channels);
-    Navigator.of(context).push(MaterialPageRoute(
+    List<Channel> favorites = await _user.filterFavorites(_channels);
+    int index = await Navigator.of(context).push(MaterialPageRoute(
       builder: (BuildContext context) {
         return ChannelListScreen(
-          channels: favorites,
+          channels: _channels,
+          filtered: favorites,
           title: 'Избранное',
-          activeNav: NavItems.fav,
+          selectedNavId: NavItems.fav,
         );
       },
     ));

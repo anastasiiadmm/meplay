@@ -42,11 +42,12 @@ class ListViewType {
 
 class ChannelListScreen extends StatefulWidget {
   final List<Channel> channels;
+  final List<Channel> filtered;
   final String title;
-  final int activeNav;
+  final int selectedNavId;
 
-  ChannelListScreen({Key key, this.channels,
-    this.title, this.activeNav}) : super();
+  ChannelListScreen({Key key, this.channels, this.filtered,
+    this.title, this.selectedNavId}) : super();
 
   @override
   _ChannelListScreenState createState() => _ChannelListScreenState();
@@ -55,6 +56,7 @@ class ChannelListScreen extends StatefulWidget {
 
 class _ChannelListScreenState extends State<ChannelListScreen> {
   HexGridSize _gridSize;
+  List<Channel> _initialChannels;
   List<Channel> _channels;
   Iterator _iterator;
   final int _borderRows = 2;
@@ -69,9 +71,13 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   void initState() {
     super.initState();
     _loadListType();
-    _channels = widget.channels..sort(
-      (ch1, ch2) => ch1.number.compareTo(ch2.number)
+    _initialChannels = widget.filtered == null
+        ? widget.channels
+        : widget.filtered;
+    _initialChannels.sort(
+            (ch1, ch2) => ch1.number.compareTo(ch2.number)
     );
+    _channels = _initialChannels;
     _keyboardVisibilityListenerId = _keyboardVisibility.addNewListener(
       onShow: _restoreSystemOverlays,
     );
@@ -114,16 +120,15 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       showSelectedLabels: false,
       showUnselectedLabels: false,
       onTap: _onNavTap,
-      currentIndex: 0,
+      currentIndex: widget.selectedNavId ?? 0,
       items: [
         BottomNavigationBarItem(
           icon: AppIcons.home,
           label: 'Главная',
         ),
         BottomNavigationBarItem(
-          icon: widget.activeNav == NavItems.fav
-              ? AppIcons.starActive
-              : AppIcons.star,
+          icon: AppIcons.star,
+          activeIcon: AppIcons.starActive,
           label: 'Избранное',
         ),
         BottomNavigationBarItem(
@@ -458,9 +463,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   void _clearSearch() {
     _searchController.value = TextEditingValue.empty;
     FocusScope.of(context).unfocus();
-    setState(() {
-      _channels = widget.channels;
-    });
+    setState(() { _channels = _initialChannels; });
   }
 
   void _toggleSearch() {
@@ -469,17 +472,13 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   }
 
   void _filterChannels(String value) {
-    List<Channel> filteredChannels;
-    if (value.isEmpty) {
-      filteredChannels = widget.channels;
-    } else {
-      filteredChannels = widget.channels.where(
+    List<Channel> channels = _initialChannels;
+    if (value.isNotEmpty) {
+      channels = channels.where(
         (channel) => channel.name.toLowerCase().contains(value.toLowerCase())
       ).toList();
     }
-    setState(() {
-      _channels = filteredChannels;
-    });
+    setState(() { _channels = channels; });
   }
 
   void _searchSubmit() {
