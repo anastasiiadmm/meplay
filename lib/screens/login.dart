@@ -12,7 +12,6 @@ import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../theme.dart';
 import '../models.dart';
 import '../api_client.dart';
-import '../utils/pref_helper.dart';
 
 
 const String appHash = 'g8xZvf1R7yJ';
@@ -144,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
     });
     try {
       User user = await ApiClient.auth(_phone, _code);
-      await _saveUser(user);
+      await User.setUser(user);
       Navigator.of(context).pop<User>(user);
     } on ApiException catch(e) {
       setState(() {
@@ -152,10 +151,6 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
         _loading = false;
       });
     }
-  }
-
-  Future<void> _saveUser(User user) async {
-    return PrefHelper.saveJson(PrefKeys.user, user);
   }
 
   Future<void> _sendSms() async {

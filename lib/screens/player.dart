@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:screen/screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_android_pip/flutter_android_pip.dart';
@@ -70,10 +68,9 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   Future<void> _restoreUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey('user')) {
-      String userInfo = prefs.getString('user');
-      _user =  User.fromJson(jsonDecode(userInfo));
+    User user = await User.getUser();
+    if (user != null) {
+      setState(() { _user = user; });
     }
   }
 

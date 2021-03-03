@@ -165,8 +165,31 @@ class User {
   int id;
   List<Packet> _packets;
   List<int> _favorites;
+  static User _user;
 
   User({this.username, this.password, this.token, this.refreshToken, this.id});
+
+  static Future<User> getUser() async {
+    if (_user == null)
+      _user = await PrefHelper.loadJson(
+        PrefKeys.user,
+        restore: (data) => User.fromJson(data),
+      );
+    return _user;
+  }
+
+  static Future<void> setUser(User user) async {
+    _user = user;
+    await PrefHelper.saveJson(
+      PrefKeys.user,
+      user,
+    );
+  }
+
+  static Future<void> clearUser() async {
+    _user = null;
+    await PrefHelper.clear(PrefKeys.user);
+  }
 
   User.fromJson(Map<String, dynamic> data) {
     this.id = data['id'];

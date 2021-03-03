@@ -9,7 +9,6 @@ import '../theme.dart';
 import '../models.dart';
 import '../widgets/modals.dart';
 import '../api_client.dart';
-import '../utils/pref_helper.dart';
 
 
 class BaseScreen extends StatefulWidget {
@@ -146,15 +145,12 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _loadUser() async {
-    User user = await PrefHelper.loadJson(
-      PrefKeys.user,
-      restore: (data) => User.fromJson(data),
-    );
+    User user = await User.getUser();
     if (user != null) setState(() { _user = user; });
   }
 
   void _clearUser() async {
-    PrefHelper.clear(PrefKeys.user);
+    User.clearUser();
     setState(() { _user = null; });
   }
 
