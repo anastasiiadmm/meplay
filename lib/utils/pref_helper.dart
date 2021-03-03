@@ -7,6 +7,8 @@ abstract class PrefKeys {
   static const listType = 'chlistType';
   static const user = 'user';
 
+  static String favorites(int userId) => 'fav$userId';
+
   static String ratio(int channelId) => 'ratio$channelId';
 }
 
@@ -20,12 +22,12 @@ abstract class PrefHelper {
     prefs.setString(key, object.toString());
   }
 
-  static Future<dynamic> loadString(
-      String key,
-      [dynamic Function(String data) restore,]
-  ) async {
+  static Future<dynamic> loadString(String key, {
+    dynamic Function(String data) restore,
+    dynamic defaultValue,
+  }) async {
     SharedPreferences prefs = await(_prefs);
-    if (!prefs.containsKey(key)) return null;
+    if (!prefs.containsKey(key)) return defaultValue;
     String data = prefs.getString(key);
     if (restore == null) return data;
     return restore(data);
@@ -39,12 +41,12 @@ abstract class PrefHelper {
     prefs.setString(key, jsonEncode(object));
   }
 
-  static Future<dynamic> loadJson(
-      String key,
-      [dynamic Function(dynamic data) restore,]
-  ) async {
+  static Future<dynamic> loadJson(String key, {
+    dynamic Function(dynamic data) restore,
+    dynamic defaultValue,
+  }) async {
     SharedPreferences prefs = await(_prefs);
-    if (!prefs.containsKey(key)) return null;
+    if (!prefs.containsKey(key)) return defaultValue;
     dynamic data = jsonDecode(prefs.getString(key));
     if (restore == null) return data;
     return restore(data);

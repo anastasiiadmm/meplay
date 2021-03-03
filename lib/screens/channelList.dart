@@ -85,7 +85,8 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   Future<void> _loadListType() async {
     ListType listType = await PrefHelper.loadString(
       PrefKeys.listType,
-      ListType.getByName,
+      restore: ListType.getByName,
+      defaultValue: ListType.defaultType,
     );
     setState(() { _listType = listType; });
   }

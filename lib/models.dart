@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'api_client.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
+import 'api_client.dart';
+import 'utils/pref_helper.dart';
 
 
 String rPlural(int count, List<String> forms) {
@@ -162,6 +164,7 @@ class User {
   String refreshToken;
   int id;
   List<Packet> _packets;
+  List<Channel> _favorites;
 
   User({this.username, this.password, this.token, this.refreshToken, this.id});
 
@@ -186,15 +189,12 @@ class User {
 
   Future<List<Packet>> getPackets() async {
     // TODO: add persistence.
-    if(_noPackets) await _getPackets();
+    if(_packets == null)
+      await _loadPackets();
     return _packets;
   }
 
-  bool get _noPackets {
-    return _packets == null;
-  }
-
-  Future<void> _getPackets() async {
+  Future<void> _loadPackets() async {
     try {
       _packets = await ApiClient.getPackets(this);
     } on ApiException {
@@ -218,6 +218,45 @@ class User {
     } on ApiException {
       return null;
     }
+  }
+
+  Future<List<Channel>> getFavorites(List<Channel> channels) async {
+    if (_favorites == null)
+      await _loadFavorites(channels);
+    return _favorites;
+  }
+
+  Future<bool> addToFavorites(Channel channel) async {
+    if (_favorites == null) return false;
+    if (!_favorites.contains(channel)) _favorites.add(channel);
+    await _saveFavorites();
+    return true;
+  }
+
+  Future<bool> removeFromFavorites(Channel channel) async {
+    if (_favorites == null) return false;
+    if(_favorites.contains(channel)) _favorites.remove(channel);
+    await _saveFavorites();
+    return true;
+  }
+
+  Future<void> _loadFavorites(List<Channel> channels) async {
+    _favorites = await PrefHelper.loadJson(
+      PrefKeys.favorites(id),
+      restore: (channelIds) => channels.where(
+              (channel) => channelIds.contains(channel.id)
+      ),
+      defaultValue: [],
+    );
+  }
+  
+  Future<void> _saveFavorites() async {
+    await PrefHelper.saveJson(
+        PrefKeys.favorites(id),
+        _favorites.map(
+                (channel) => channel.id
+        ).toList()
+    );
   }
 }
 
