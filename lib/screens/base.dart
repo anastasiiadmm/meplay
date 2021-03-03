@@ -100,6 +100,9 @@ class _BaseScreenState extends State<BaseScreen> {
         );
       },
     ));
+    if (index != null) {
+      _openPage(index, next: NavItems.tv);
+    }
   }
 
   void _onNavTap(int index) {

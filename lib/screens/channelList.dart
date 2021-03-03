@@ -110,8 +110,8 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     _gridSize = HexGridSize(rows + _borderRows * 2, cols + _borderCols * 2 + 1);
   }
 
-  void _onNavTap(int index) {
-    if (index != widget.activeNav) Navigator.of(context).pop(index);
+  void _navTo(int index) {
+    if (index != widget.selectedNavId) Navigator.of(context).pop(index);
   }
 
   Widget get _bottomBar {
@@ -119,7 +119,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       backgroundColor: AppColors.bottomBar,
       showSelectedLabels: false,
       showUnselectedLabels: false,
-      onTap: _onNavTap,
+      onTap: _navTo,
       currentIndex: widget.selectedNavId ?? 0,
       items: [
         BottomNavigationBarItem(
@@ -231,9 +231,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
         ),
       ),
     );
-    if (index != null) {
-      Navigator.of(context).pop(index);
-    }
+    if (index != null) _navTo(index);
   }
 
   Channel _nextChannel(Channel channel) {
