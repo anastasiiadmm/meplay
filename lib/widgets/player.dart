@@ -28,6 +28,15 @@ class VideoAR {
   static const choices = [r43, r169, r1610, r219];
   static const defaultRatio = r43;
 
+  static VideoAR getByValue(double value) {
+    for (VideoAR choice in choices) {
+      if((choice.value - value).abs() <= 0.05) {
+        return choice;
+      }
+    }
+    return defaultRatio;
+  }
+
   static VideoAR getByName(String name) {
     for (VideoAR choice in choices) {
       if(choice.name == name) return choice;
@@ -156,6 +165,9 @@ class _HLSPlayerState extends State<HLSPlayer> {
         setState(() {
           _controller = controller;
           _volume = _controller.value.volume;
+          // used to get ratio default for video,
+          // but now we are using our own defaults.
+          // VideoAR.getByValue(controller.value.aspectRatio);
         });
         controller.play();
         _goLive();
