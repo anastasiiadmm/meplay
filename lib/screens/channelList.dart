@@ -607,9 +607,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   }
 
   void _back() {
-    if (_search) {
-      _hideSearch();
-    } else if (_channels.length != widget.channels.length) {
+    if (_channels.length != _initialChannels.length) {
       _clearSearch();
     } else {
       Navigator.of(context).pop();
@@ -617,10 +615,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
   }
 
   Future<bool> _willPop() async {
-    if (_search) {
-      _hideSearch();
-      return false;
-    } else if (_channels.length != widget.channels.length) {
+    if (_channels.length != _initialChannels.length) {
       _clearSearch();
       return false;
     }
