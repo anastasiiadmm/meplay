@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../theme.dart';
 
 
@@ -169,5 +170,34 @@ void selectorModal<T>({
         );
       }).toList(),
     ),
+  );
+}
+
+
+// common toast with some setup available.
+void toast(BuildContext context, Widget content, Color color) {
+  FToast fToast = FToast();
+  fToast.init(context);
+  fToast.showToast(
+    toastDuration: Duration(seconds: 3),
+    gravity: ToastGravity.BOTTOM,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25.0),
+        color: color,
+      ),
+      child: content,
+    ),
+  );
+}
+
+
+// toast with transparent gray background and white text
+void grayToast(BuildContext context, String text) {
+  toast(
+    context,
+    Text(text, textAlign: TextAlign.center, style: AppFonts.toastText,),
+    AppColors.toastBg,
   );
 }

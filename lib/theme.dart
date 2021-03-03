@@ -48,6 +48,7 @@ class AppColors {
   static const lockBg = Color.fromRGBO(191, 191, 182, 0.48);  // #BFBFB6 48%
   static const transparentBlack = Color.fromRGBO(0, 0, 0, 0.6);  // #000000 60%
   static const transparentLight = Color.fromRGBO(250, 250, 247, 0.85);  // #FAFAF7 85%
+  static const toastBg = Color.fromRGBO(26, 25, 23, 0.8);
 
   static const gradientTop = LinearGradient(
     begin: Alignment.topCenter,
@@ -176,6 +177,9 @@ class AppFonts {
   static const videoSettingValues = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.w400, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.gray0);
+  static const toastText = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 13, height: 17/13,
+      letterSpacing: -0.24, color: AppColors.gray0);
 }
 
 
