@@ -206,7 +206,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
       }
       content = GestureDetector(
         onTap: () { _openChannel(channel); },
-        onLongPress: () { _addToFavorites(channel); },
+        // onLongPress: () { _toggleFavorite(channel); },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -221,6 +221,38 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     );
   }
 
+  Future<void> _addFavorite(Channel channel) async {
+    User user = await User.getUser();
+    if (user != null) await user.addFavorite(channel);
+  }
+
+  Future<void> _removeFavorite(Channel channel) async {
+    User user = await User.getUser();
+    if (user != null) await user.removeFavorite(channel);
+
+    if(widget.selectedNavId == NavItems.fav) {
+      setState(() {
+        _initialChannels.remove(channel);
+        _channels.remove(channel);
+      });
+    }
+  }
+
+  // Future<void> _toggleFavorite(Channel channel) async {
+  //   User user = await User.getUser();
+  //   if (user != null) {
+  //     String message;
+  //     if (await user.hasFavorite(channel)) {
+  //       await _removeFavorite(channel);
+  //       message = 'Канал "${channel.name}" добавлен в избранное!';
+  //     } else {
+  //       await _addFavorite(channel);
+  //       message = 'Канал "${channel.name}" удалён из избранного!';
+  //     }
+  //     infoModal(context: context, title: Text(message),);
+  //   }
+  // }
+
   Future<void> _openChannel(Channel channel) async {
     int index = await Navigator.of(context).push(
       MaterialPageRoute(
@@ -228,6 +260,8 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
           channel: channel,
           getNextChannel: _nextChannel,
           getPrevChannel: _prevChannel,
+          addFavorite: _addFavorite,
+          removeFavorite: _removeFavorite,
         ),
       ),
     );
@@ -280,15 +314,11 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     );
   }
 
-  _addToFavorites(Channel channel) {
-    // TODO;
-  }
-
   Widget _listChannelTile(Channel channel, int id) {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
       onTap: () => _openChannel(channel),
-      onLongPress: () => _addToFavorites(channel),
+      // onLongPress: () => _toggleFavorite(channel),
       leading: FutureBuilder(
         future: channel.logo,
         builder: (
@@ -348,7 +378,7 @@ class _ChannelListScreenState extends State<ChannelListScreen> {
     }
     return GestureDetector(
       onTap: () { _openChannel(channel); },
-      onLongPress: () { _addToFavorites(channel); },
+      // onLongPress: () { _toggleFavorite(channel); },
       child: Container(
         margin: margin,
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),

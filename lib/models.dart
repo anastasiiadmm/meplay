@@ -267,7 +267,12 @@ class User {
     await _saveFavorites();
   }
 
-  Future<void> _loadFavorites(List<Channel> channels) async {
+  Future<bool> hasFavorite(Channel channel) async {
+    List<int> favorites = await getFavorites();
+    return favorites.contains(channel.id);
+  }
+
+  Future<void> _loadFavorites() async {
     _favorites = await PrefHelper.loadJson(
       PrefKeys.favorites(id),
       defaultValue: <int>[],

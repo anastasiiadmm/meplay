@@ -18,12 +18,16 @@ class PlayerScreen extends StatefulWidget {
   final Channel channel;
   final Channel Function(Channel) getNextChannel;
   final Channel Function(Channel) getPrevChannel;
+  final Future<void> Function(Channel) addFavorite;
+  final Future<void> Function(Channel) removeFavorite;
 
   PlayerScreen({
     Key key,
     @required this.channel,
     this.getNextChannel,
     this.getPrevChannel,
+    this.addFavorite,
+    this.removeFavorite,
   }) : super(key: key);
 
   @override
@@ -40,6 +44,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   double _initialBrightness;
   int _androidSdkLevel = 0;
   bool _pipMode = false;
+  bool _favorite = false;
 
   @override
   void initState() {
@@ -69,8 +74,15 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   Future<void> _restoreUser() async {
     User user = await User.getUser();
-    if (user != null) {
+    if (user != null)
       setState(() { _user = user; });
+    _loadFavorite();
+  }
+
+  Future<void> _loadFavorite() async {
+    if (_user != null) {
+      bool favorite = await _user.hasFavorite(_channel);
+      setState(() { _favorite = favorite; });
     }
   }
 
@@ -127,6 +139,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       _channel = widget.getPrevChannel(_channel);
       _playerKey = GlobalKey();
     });
+    _loadFavorite();
   }
 
   void _toNextChannel() {
@@ -134,6 +147,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       _channel = widget.getNextChannel(_channel);
       _playerKey = GlobalKey();
     });
+    _loadFavorite();
   }
 
   void _enterPipMode() {
@@ -171,6 +185,31 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     Navigator.of(context).pop(NavItems.profile);
   }
 
+  Future<void> _addFavorite() async {
+    await widget.addFavorite(_channel);
+    setState(() { _favorite = true; });
+  }
+
+  Future<void> _removeFavorite() async {
+    await widget.removeFavorite(_channel);
+    setState(() { _favorite = false; });
+  }
+
+  Widget get _favButton {
+    if (_user == null) return IconButton(
+      icon: AppIcons.favAdd,
+      onPressed: _login,
+    );
+    if (_favorite) return IconButton(
+      icon: AppIcons.favRemove,
+      onPressed: _removeFavorite,
+    );
+    return IconButton(
+      icon: AppIcons.favAdd,
+      onPressed: _addFavorite,
+    );
+  }
+
   Widget get _appBar {
     return AppBar(
       backgroundColor: AppColors.megaPurple,
@@ -183,10 +222,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       title: Text(_channel.title, style: AppFonts.screenTitle),
       centerTitle: true,
       actions: [
-        IconButton(
-          icon: AppIcons.favAdd,
-          onPressed: () {NavItems.inDevelopment(context, title: 'Избранное');},
-        ),
+        _favButton,
       ],
     );
   }
@@ -393,7 +429,3 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     );
   }
 }
-
-
-// TODO: сделать кнопку live.
-// TODO: вывести инфо о днях в программе.
