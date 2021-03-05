@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "885756236025",
+    "project_id": "meplay-d0973",
+    "storage_bucket": "meplay-d0973.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:885756236025:android:63fc17799e8efa8eb61228",
+        "android_client_info": {
+          "package_name": "com.tvclick.meplay_2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "885756236025-qepd0c67ks546uc7kb4ofur7if8vr2so.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tvclick.meplay_2",
+            "certificate_hash": "b0787844085fb0573382b0b67de6ba4634c46667"
+          }
+        },
+        {
+          "client_id": "885756236025-6hhed0cqmb4lr3su5atgcdhnfcqvdaml.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOV9XKaBXdXNgku0G6pyubwrqhi_AY9FM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "885756236025-6hhed0cqmb4lr3su5atgcdhnfcqvdaml.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
