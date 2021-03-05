@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:me_play/utils/notifications.dart';
 import 'screens/base.dart';
 
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  initMessages();
   runApp(MePlay());
+}
+
+void initMessages() async {
+  await FirebaseHelper.init();
+  FirebaseHelper.sendToken();
+  FirebaseHelper.receiveMessages();
 }
 
 
