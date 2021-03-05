@@ -1,4 +1,4 @@
-package com.tvclick.me_play
+package com.tvclick.meplay_2
 
 import android.content.Context
 import io.flutter.app.FlutterApplication

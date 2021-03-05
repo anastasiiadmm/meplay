@@ -1,4 +1,4 @@
-package com.tvclick.me_play
+package com.tvclick.meplay_2
 
 import com.google.android.gms.cast.framework.CastContext
 
