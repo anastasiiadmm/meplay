@@ -12,6 +12,7 @@ import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../theme.dart';
 import '../models.dart';
 import '../api_client.dart';
+import '../utils/notification_helper.dart';
 
 
 const String appHash = 'g8xZvf1R7yJ';
@@ -144,6 +145,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
     try {
       User user = await ApiClient.auth(_phone, _code);
       await User.setUser(user);
+      NotificationHelper.instance.sendToken(user);
       Navigator.of(context).pop<User>(user);
     } on ApiException catch(e) {
       setState(() {
@@ -454,6 +456,4 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
 
 // TODO: on tap outside hide kb
 // semi-transparent bg behind form
-// auto detect sms
 // display loading circle,
-// persist user in base.

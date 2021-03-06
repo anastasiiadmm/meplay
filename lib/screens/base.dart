@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'login.dart';
@@ -46,7 +45,6 @@ class _BaseScreenState extends State<BaseScreen> {
   User _user;
   void Function() _splashHide;
   List<Channel> _channels;
-  NotificationHelper _notificationHelper;
 
   void initState() {
     super.initState();
@@ -153,12 +151,11 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _initNotifications() async {
-    _notificationHelper = await NotificationHelper.instance;
-    _doneLoading();  // may hide splash screen now
-    await _notificationHelper.sendToken();
-    RemoteMessage message = await _notificationHelper.getInitialMessage();
-    // TODO: if message has something to do with navigation,
-    //  navigate to another screen.
+    await NotificationHelper.initialize();
+    NotificationHelper.instance.sendToken(_user);
+    // if it needs navigation
+    // RemoteMessage initial = await NotificationHelper.instance
+    //     .getInitialMessage();
   }
 
   void _clearUser() async {
@@ -174,8 +171,7 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   void _doneLoading() {
-    if(_channels != null && _splashHide != null
-        && _notificationHelper != null) {
+    if(_channels != null && _splashHide != null) {
       _splashHide();
     }
   }
