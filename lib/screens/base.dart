@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'login.dart';
@@ -9,6 +10,7 @@ import '../theme.dart';
 import '../models.dart';
 import '../widgets/modals.dart';
 import '../api_client.dart';
+import '../utils/notification_helper.dart';
 
 
 class BaseScreen extends StatefulWidget {
@@ -44,10 +46,11 @@ class _BaseScreenState extends State<BaseScreen> {
   User _user;
   void Function() _splashHide;
   List<Channel> _channels;
+  NotificationHelper _notificationHelper;
 
   void initState() {
     super.initState();
-    _init();
+    _initAsync();
   }
 
   Widget get _body {
@@ -149,19 +152,30 @@ class _BaseScreenState extends State<BaseScreen> {
     if (user != null) setState(() { _user = user; });
   }
 
+  Future<void> _initNotifications() async {
+    _notificationHelper = await NotificationHelper.instance;
+    _doneLoading();  // may hide splash screen now
+    await _notificationHelper.sendToken();
+    RemoteMessage message = await _notificationHelper.getInitialMessage();
+    // TODO: if message has something to do with navigation,
+    //  navigate to another screen.
+  }
+
   void _clearUser() async {
     User.clearUser();
     setState(() { _user = null; });
   }
 
-  Future<void> _init() async {
+  Future<void> _initAsync() async {
     await _loadUser();
     await _loadChannels();
+    await _initNotifications();
     _doneLoading();
   }
 
   void _doneLoading() {
-    if(_channels != null && _splashHide != null) {
+    if(_channels != null && _splashHide != null
+        && _notificationHelper != null) {
       _splashHide();
     }
   }

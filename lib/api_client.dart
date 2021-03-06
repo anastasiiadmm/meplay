@@ -175,7 +175,7 @@ class ApiClient {
     final url = '$BASE_API_URL/stalker_portal/meplay/fcm_token';
     final body = {
       'token': token,
-      'user_id': user?.id,
+      'user_id': '${user?.id ?? ''}',
     };
     return _wrapRequest<void>(
       () =>  http.post(url, body: body),
