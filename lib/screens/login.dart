@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
     try {
       User user = await ApiClient.auth(_phone, _code);
       await User.setUser(user);
-      NotificationHelper.instance.sendToken(user);
+      NotificationHelper.instance.sendToken();
       Navigator.of(context).pop<User>(user);
     } on ApiException catch(e) {
       setState(() {

@@ -4,30 +4,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../api_client.dart';
-import '../models.dart';
-
-
-// helper function for logging Firebase messages
-void _logMessage(RemoteMessage message, {String type: 'ANY'}) {
-  print('\nReceived firebase message of type $type, id: ${message.messageId}');
-  print('data: ${message.data}');
-  if (message.notification != null) {
-    print("notification: ${message.notification}\n");
-  }
-}
-
-
-// Handles fb messages received while app in background
-// doc says it should be top level function
-Future<void> _bgMessageHandler(RemoteMessage message) async {
-  _logMessage(message, type: 'BACKGROUND');
-}
 
 
 class NotificationHelper {
   static NotificationHelper _instance;
-  FlutterLocalNotificationsPlugin _flnp;
+  FlutterLocalNotificationsPlugin _localPlugin;
   AndroidNotificationChannel _channel;
+  String _fcmToken;
 
   NotificationHelper._();
 
@@ -40,32 +23,43 @@ class NotificationHelper {
     await _instance._initChannel();
   }
 
+  String get fcmToken => _fcmToken;
+
   Future<void> _initFirebase() async {
     await Firebase.initializeApp();
     FirebaseMessaging.onMessage.listen(_fgMessageHandler);
     FirebaseMessaging.onBackgroundMessage(_bgMessageHandler);
     FirebaseMessaging.onMessageOpenedApp.listen(_remoteMessageOpen);
-    FirebaseMessaging.instance.onTokenRefresh.listen(
-        ApiClient.saveFirebaseToken
-    );
+    await _initToken();
+  }
+
+  Future<void> _initToken() async {
+    _fcmToken = await FirebaseMessaging.instance.getToken();
+    sendToken();
+    FirebaseMessaging.instance.onTokenRefresh.listen((String token) {
+      if (token != _fcmToken) {
+        _fcmToken = token;
+        sendToken();
+      }
+    });
+  }
+
+  Future<void> sendToken() async {
+    return ApiClient.saveFCMToken(_fcmToken);
   }
 
   Future<void> _initLocal() async {
-    _flnp = FlutterLocalNotificationsPlugin();
-    const AndroidInitializationSettings androidInitSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
-    );
-    final IOSInitializationSettings iOSInitSettings = IOSInitializationSettings(
-      onDidReceiveLocalNotification: _localMsgHandler,
-    );
-    final MacOSInitializationSettings macOSInitSettings = MacOSInitializationSettings();
-    final InitializationSettings initSettings = InitializationSettings(
-      android: androidInitSettings,
-      iOS: iOSInitSettings,
-      macOS: macOSInitSettings,
-    );
-    await _flnp.initialize(
-      initSettings,
+    _localPlugin = FlutterLocalNotificationsPlugin();
+    final InitializationSettings settings =
+      InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        iOS: IOSInitializationSettings(
+          onDidReceiveLocalNotification: _localMsgHandler,
+        ),
+        macOS: MacOSInitializationSettings(),  // empty
+      );
+    await _localPlugin.initialize(
+      settings,
       onSelectNotification: _localMsgOpen,
     );
   }
@@ -77,14 +71,9 @@ class NotificationHelper {
       'Уведомления MePlay',  // description
       importance: Importance.max,
     );
-    _flnp.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+    _localPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(_channel);
-  }
-
-  Future<void> sendToken([User user]) async {
-    final FirebaseMessaging messaging = FirebaseMessaging.instance;
-    String token = await messaging.getToken();
-    await ApiClient.saveFirebaseToken(token, user);
   }
 
   // Handles local messages received while app in foreground
@@ -129,7 +118,7 @@ class NotificationHelper {
   }
 
   void showNotification(int id, String title, String text) {
-    _flnp.show(
+    _localPlugin.show(
       id, title, text,
       NotificationDetails(
         android: AndroidNotificationDetails(
@@ -140,6 +129,21 @@ class NotificationHelper {
       ),
     );
   }
+
+  // Handles fb messages received while app in background
+  // doc says it should be top level function, static method may also work
+  static Future<void> _bgMessageHandler(RemoteMessage message) async {
+    _logMessage(message, type: 'BACKGROUND');
+  }
+
+  // helper function for logging Firebase messages
+  static void _logMessage(RemoteMessage message, {String type: 'ANY'}) {
+    print('\nReceived firebase message of type $type, id: ${message.messageId}');
+    print('data: ${message.data}');
+    if (message.notification != null) {
+      print("notification: ${message.notification}\n");
+    }
+  }
 }
 
 
@@ -147,6 +151,3 @@ class NotificationHelper {
 
 // schedule local program messages
 // handle local program messages to open specific channel.
-
-
-// TODO: handle ios messages, config and notification

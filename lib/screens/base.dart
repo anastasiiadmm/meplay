@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'login.dart';
@@ -152,10 +153,11 @@ class _BaseScreenState extends State<BaseScreen> {
 
   Future<void> _initNotifications() async {
     await NotificationHelper.initialize();
-    NotificationHelper.instance.sendToken(_user);
-    // if it needs navigation
-    // RemoteMessage initial = await NotificationHelper.instance
-    //     .getInitialMessage();
+    RemoteMessage initial = await NotificationHelper
+        .instance.getInitialMessage();
+    if (initial != null) {
+      // TODO: do something with it, maybe navigate somewhere.
+    }
   }
 
   void _clearUser() async {

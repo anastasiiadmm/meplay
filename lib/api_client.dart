@@ -170,12 +170,12 @@ class ApiClient {
     );
   }
 
-  static Future<void> saveFirebaseToken(String token, [User user]) async {
-    user ??= await User.getUser();
+  static Future<void> saveFCMToken(String token) async {
+    User user = await User.getUser();
     final url = '$BASE_API_URL/stalker_portal/meplay/fcm_token';
     final body = {
       'token': token,
-      'user_id': '${user?.id ?? ''}',
+      if (user != null) 'user_id': '${user.id}',
     };
     return _wrapRequest<void>(
       () =>  http.post(url, body: body),
