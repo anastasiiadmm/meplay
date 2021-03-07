@@ -17,12 +17,10 @@ class NotificationHelper {
   static NotificationHelper get instance => _instance;
 
   static Future<NotificationHelper> initialize() async {
-    if (_instance == null) {
-      _instance = NotificationHelper._();
-      await _instance._initFirebase();
-      await _instance._initLocal();
-      await _instance._initChannel();
-    }
+    _instance = NotificationHelper._();
+    await _instance._initFirebase();
+    await _instance._initLocal();
+    await _instance._initChannel();
     return _instance;
   }
 
