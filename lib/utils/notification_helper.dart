@@ -16,11 +16,14 @@ class NotificationHelper {
 
   static NotificationHelper get instance => _instance;
 
-  static Future<void> initialize() async {
-    _instance = NotificationHelper._();
-    await _instance._initFirebase();
-    await _instance._initLocal();
-    await _instance._initChannel();
+  static Future<NotificationHelper> initialize() async {
+    if (_instance == null) {
+      _instance = NotificationHelper._();
+      await _instance._initFirebase();
+      await _instance._initLocal();
+      await _instance._initChannel();
+    }
+    return _instance;
   }
 
   String get fcmToken => _fcmToken;

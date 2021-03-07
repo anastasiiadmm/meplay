@@ -152,9 +152,8 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _initNotifications() async {
-    await NotificationHelper.initialize();
-    RemoteMessage initial = await NotificationHelper
-        .instance.getInitialMessage();
+    NotificationHelper helper = await NotificationHelper.initialize();
+    RemoteMessage initial = await helper.getInitialMessage();
     if (initial != null) {
       // TODO: do something with it, maybe navigate somewhere.
     }
