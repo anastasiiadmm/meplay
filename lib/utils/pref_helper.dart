@@ -4,12 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 abstract class PrefKeys {
-  static const listType = 'chlistType';
+  static const listType = 'channelListType';
   static const user = 'user';
 
   static String favorites(int userId) => 'fav$userId';
 
   static String ratio(int channelId) => 'ratio$channelId';
+
+  static const notifications = 'notifications';
 }
 
 
