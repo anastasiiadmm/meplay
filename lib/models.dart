@@ -200,15 +200,14 @@ class User {
     this.refreshToken = data.containsKey('refreshToken') ? data['refreshToken'] : null;
   }
 
-  String toJson() {
-    Map<String, dynamic> data = {
+  Map<String, dynamic> toJson() {
+    return {
       'id': id,
       'username': username,
       'password': password,
       'token': token,
       'refreshToken': refreshToken,
     };
-    return jsonEncode(data);
   }
 
   Future<List<Packet>> getPackets() async {
@@ -329,7 +328,7 @@ class Notification {
   static List<Notification> _list;
 
   Notification({this.id, this.title, this.text,
-    this.time, this.remote, this.active, this.data}) {
+    this.time, this.remote: false, this.active: true, this.data}) {
     if (this.id == null) this.id = this.hashCode;
   }
 
