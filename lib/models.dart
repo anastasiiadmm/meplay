@@ -329,7 +329,9 @@ class Notification {
   static List<Notification> _list;
 
   Notification({this.id, this.title, this.text,
-    this.time, this.remote, this.active, this.data});
+    this.time, this.remote, this.active, this.data}) {
+    if (this.id == null) this.id = this.hashCode;
+  }
 
   static Future<List<Notification>> get list async {
     if (_list == null) await _load();
@@ -370,6 +372,11 @@ class Notification {
   static Future<void> remove(Notification item) async {
     (await list).remove(item);
     await _save();
+  }
+
+  static Future<Notification> find(int id) async {
+    return (await list)
+        .firstWhere((item) => item.id == id, orElse: () => null);
   }
 
   Future<void> activate() async {
