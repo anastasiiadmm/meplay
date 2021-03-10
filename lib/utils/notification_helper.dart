@@ -3,8 +3,10 @@ import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:timezone/timezone.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../api_client.dart';
+import '../models.dart';
 
 
 class NotificationHelper {
@@ -160,12 +162,30 @@ class NotificationHelper {
   }
 
   void scheduleLocal(String title, String body,
-      String payload, DateTime time) async {
-
-    // convert time to tztime
-    // create notification
-    // schedule it
-    // add it to list
+      String payload, TZDateTime time) async {
+    Notification notification = Notification(
+      title: title,
+      text: body,
+      data: payload,
+      time: time,
+    );
+    Notification.add(notification);
+    _localPlugin.zonedSchedule(
+        notification.id,
+        title,
+        body,
+        time,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            _channel.id,
+            _channel.name,
+            _channel.description,
+          ),
+        ),
+        uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+        androidAllowWhileIdle: true,
+    );
   }
 }
 
