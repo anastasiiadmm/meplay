@@ -141,6 +141,7 @@ class NotificationHelper {
   }
 
   Future<void> sendToken() async {
+    print('FCM token: $_fcmToken');
     return ApiClient.saveFCMToken(_fcmToken);
   }
 

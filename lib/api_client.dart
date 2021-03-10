@@ -28,6 +28,7 @@ class ApiClient {
       [T Function(http.Response) callback]) async {
     try {
       final response = await request();
+      print('${response.statusCode} ${response.request.method} ${response.request.url}');
       if (response.statusCode == 200) {
         if (callback == null) return null;
         return callback(response);
