@@ -11,6 +11,7 @@ import '../models.dart';
 import '../widgets/modals.dart';
 import '../api_client.dart';
 import '../utils/notification_helper.dart';
+import '../utils/tz_helper.dart';
 
 
 class BaseScreen extends StatefulWidget {
@@ -159,6 +160,10 @@ class _BaseScreenState extends State<BaseScreen> {
     }
   }
 
+  Future<void> _initTz() async {
+    return TZHelper.init();
+  }
+
   void _clearUser() async {
     User.clearUser();
     setState(() { _user = null; });
@@ -168,6 +173,7 @@ class _BaseScreenState extends State<BaseScreen> {
     await _loadUser();
     await _loadChannels();
     await _initNotifications();
+    await _initTz();
     _doneLoading();
   }
 
