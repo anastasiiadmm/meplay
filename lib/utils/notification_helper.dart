@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -28,9 +29,9 @@ class NotificationHelper {
 
   Future<void> _initFirebase() async {
     await Firebase.initializeApp();
-    FirebaseMessaging.onMessage.listen(_fgMessageHandler);
-    FirebaseMessaging.onBackgroundMessage(_bgMessageHandler);
-    FirebaseMessaging.onMessageOpenedApp.listen(_remoteMessageOpen);
+    FirebaseMessaging.onMessage.listen(_remoteFgHandler);
+    FirebaseMessaging.onBackgroundMessage(_remoteBgHandler);
+    FirebaseMessaging.onMessageOpenedApp.listen(_remoteOpenHandler);
     await _initToken();
   }
 
@@ -45,23 +46,19 @@ class NotificationHelper {
     });
   }
 
-  Future<void> sendToken() async {
-    return ApiClient.saveFCMToken(_fcmToken);
-  }
-
   Future<void> _initLocal() async {
     _localPlugin = FlutterLocalNotificationsPlugin();
     final InitializationSettings settings =
       InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
         iOS: IOSInitializationSettings(
-          onDidReceiveLocalNotification: _localMsgHandler,
+          onDidReceiveLocalNotification: _localHandler,
         ),
         macOS: MacOSInitializationSettings(),  // empty
       );
     await _localPlugin.initialize(
       settings,
-      onSelectNotification: _localMsgOpen,
+      onSelectNotification: _localOpenHandler,
     );
   }
 
@@ -78,19 +75,26 @@ class NotificationHelper {
   }
 
   // Handles local messages received while app in foreground
-  Future<void> _localMsgHandler(int id, String title,
+  Future<void> _localHandler(int id, String title,
       String body, String payload) async {
     print("\nLOCAL\n$id\n$title\n$body\n$payload\n");
+
+    // show it in foreground then remove
   }
 
-  // Handles app opening when local notification tapped
-  Future<void> _localMsgOpen(String payload) async {
-    print("\nLOCAL OPEN\n$payload\n");
+  // Handles app opening when local message tapped
+  // works from foreground.
+  Future<void> _localOpenHandler(String payload) async {
+    if (payload.isNotEmpty) {
+      print("\nLOCAL OPEN\n$payload\n");
+      // handle
+    }
   }
 
-  // Handles fb messages received while app in foreground
-  Future<void> _fgMessageHandler(RemoteMessage message) async {
-    _logMessage(message, type: 'FOREGROUND');
+  // Handles remote messages received in foreground
+  // and turns them into local.
+  Future<void> _remoteFgHandler(RemoteMessage message) async {
+    _logRemote(message, type: 'REMOTE FOREGROUND');
 
     RemoteNotification notification = message.notification;
     if (notification != null) {
@@ -98,27 +102,49 @@ class NotificationHelper {
         message.hashCode,
         notification.title,
         notification.body,
+        payload: jsonEncode(message.data),
       );
     }
   }
 
   // Handles app opening when remote message tapped
-  Future<void> _remoteMessageOpen(RemoteMessage message) async {
-    _logMessage(message, type: 'OPEN WITH');
+  // works from background.
+  Future<void> _remoteOpenHandler(RemoteMessage message) async {
+    _logRemote(message, type: 'REMOTE OPEN');
+
     // this may open specific screen or something,
     // depending on the message payload
   }
 
-  // Need to be called somewhere to get the message which opened the app.
-  // from terminated state.
-  Future<RemoteMessage> getInitialMessage() async {
-    RemoteMessage message = await FirebaseMessaging.instance.getInitialMessage();
-    if (message != null)
-      _logMessage(message, type: 'INITIAL');
-    return message;
+  // Handles fcm messages received while app in background
+  // doc says it should be top level function, static method may also work
+  static Future<void> _remoteBgHandler(RemoteMessage message) async {
+    _logRemote(message, type: 'REMOTE BACKGROUND');
   }
 
-  void showNotification(int id, String title, String text) {
+  // helper function for logging Firebase messages
+  static void _logRemote(RemoteMessage message, {String type: 'ANY'}) {
+    print('\nReceived remote message of type $type, id: ${message.messageId}');
+    print('data: ${message.data}');
+    if (message.notification != null) {
+      print("notification: ${message.notification}\n");
+    }
+  }
+
+  // Call this somewhere on app start to get initial remote message,
+  // which opened the app from terminated state.
+  Future<RemoteMessage> getInitialMessage() async {
+    RemoteMessage initial = await FirebaseMessaging.instance.getInitialMessage();
+    if (initial != null)
+      _logRemote(initial, type: 'REMOTE INITIAL');
+    return initial;
+  }
+
+  Future<void> sendToken() async {
+    return ApiClient.saveFCMToken(_fcmToken);
+  }
+
+  void showNotification(int id, String title, String text, {String payload}) {
     _localPlugin.show(
       id, title, text,
       NotificationDetails(
@@ -128,27 +154,21 @@ class NotificationHelper {
           _channel.description,
         ),
       ),
+      payload: payload,
     );
   }
 
-  // Handles fb messages received while app in background
-  // doc says it should be top level function, static method may also work
-  static Future<void> _bgMessageHandler(RemoteMessage message) async {
-    _logMessage(message, type: 'BACKGROUND');
-  }
+  void scheduleLocal(String title, String body,
+      String payload, DateTime time) async {
 
-  // helper function for logging Firebase messages
-  static void _logMessage(RemoteMessage message, {String type: 'ANY'}) {
-    print('\nReceived firebase message of type $type, id: ${message.messageId}');
-    print('data: ${message.data}');
-    if (message.notification != null) {
-      print("notification: ${message.notification}\n");
-    }
+    // convert time to tztime
+    // create notification
+    // schedule it
+    // add it to list
   }
 }
 
 
 // store last 50 messages to the database (title, text, id, date) including scheduled
 
-// schedule local program messages
-// handle local program messages to open specific channel.
+// todo: make some notifications repeatable - daily, weekly or monthly at the same time.
