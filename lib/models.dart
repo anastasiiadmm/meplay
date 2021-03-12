@@ -372,11 +372,6 @@ class Notification {
     await _save();
   }
 
-  static Future<Notification> find(int id) async {
-    return (await list)
-        .firstWhere((item) => item.id == id, orElse: () => null);
-  }
-
   Future<void> activate() async {
     active = true;
     await _save();
