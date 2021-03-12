@@ -108,6 +108,7 @@ class NotificationHelper {
         payload: jsonEncode(message.data),
       );
     }
+    _saveRemote(message);
   }
 
   // Handles app opening when remote message tapped
@@ -123,6 +124,7 @@ class NotificationHelper {
   // doc says it should be top level function, static method may also work
   static Future<void> _remoteBgHandler(RemoteMessage message) async {
     _logRemote(message, type: 'REMOTE BACKGROUND');
+    _saveRemote(message);
   }
 
   // helper function for logging Firebase messages
@@ -211,6 +213,20 @@ class NotificationHelper {
       androidAllowWhileIdle: true,
       payload: item.data,
     );
+  }
+
+  static Future<void> _saveRemote(RemoteMessage message) async {
+    if(message.notification != null) {
+      Notification item = Notification(
+        id: message.hashCode,
+        title: message.notification.title,
+        text: message.notification.body,
+        time: TZHelper.fromNaive(message.sentTime),
+        remote: true,
+        data: jsonEncode(message.data),
+      );
+      await Notification.add(item);
+    }
   }
 }
 
