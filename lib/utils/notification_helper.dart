@@ -7,6 +7,7 @@ import 'package:timezone/timezone.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../api_client.dart';
 import '../models.dart';
+import 'tz_helper.dart';
 
 
 class NotificationHelper {
@@ -161,30 +162,54 @@ class NotificationHelper {
     );
   }
 
-  void scheduleLocal(String title, String body,
-      String payload, TZDateTime time) async {
-    Notification notification = Notification(
+  Future<void> schedule(String title, String text,
+      DateTime time, Map<String, dynamic> data) async {
+    Notification item = Notification(
       title: title,
-      text: body,
-      data: payload,
-      time: time,
+      text: text,
+      time: TZHelper.fromNaive(time),
+      data: jsonEncode(data),
     );
-    Notification.add(notification);
-    _localPlugin.zonedSchedule(
-        notification.id,
-        title,
-        body,
-        time,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            _channel.id,
-            _channel.name,
-            _channel.description,
-          ),
+    await Notification.add(item);
+    await _schedule(item);
+  }
+
+  Future<void> deactivate(Notification item) async {
+    if(item.active) {
+      await _localPlugin.cancel(item.id);
+      await item.deactivate();
+    }
+  }
+
+  Future<void> activate(Notification item) async {
+    if(!item.active) {
+      await _schedule(item);
+      await item.activate();
+    }
+  }
+  
+  Future<void> remove(Notification item) async {
+    await _localPlugin.cancel(item.id);
+    await Notification.remove(item);
+  }
+
+  Future<void> _schedule(Notification item) async {
+    await _localPlugin.zonedSchedule(
+      item.id,
+      item.title,
+      item.text,
+      item.time,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          _channel.id,
+          _channel.name,
+          _channel.description,
         ),
-        uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true,
+      ),
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      androidAllowWhileIdle: true,
+      payload: item.data,
     );
   }
 }
