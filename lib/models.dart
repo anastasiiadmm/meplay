@@ -212,7 +212,6 @@ class User {
   }
 
   Future<List<Packet>> getPackets() async {
-    // TODO: add persistence.
     if(_packets == null)
       await _loadPackets();
     return _packets;
