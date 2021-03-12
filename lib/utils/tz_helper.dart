@@ -18,4 +18,8 @@ class TZHelper {
   static TZDateTime fromNaive(DateTime dateTime) {
     return TZDateTime.from(dateTime, local);
   }
+
+  static TZDateTime parse(String string) {
+    return TZDateTime.parse(local, string);
+  }
 }

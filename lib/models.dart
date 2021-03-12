@@ -7,6 +7,7 @@ import 'package:timezone/timezone.dart';
 
 import 'api_client.dart';
 import 'utils/pref_helper.dart';
+import 'utils/tz_helper.dart';
 
 
 String rPlural(int count, List<String> forms) {
@@ -353,8 +354,7 @@ class Notification {
     this.id = data['id'];
     this.title = data['title'];
     this.text = data['text'];
-    // TODO: get Location and parse in local datetime
-    // this.time = TZDateTime.parse(... , data['time']);
+    this.time = TZHelper.parse(data['time']);
     this.remote = data['remote'];
     this.active = data['active'];
     this.data = data['data'];
