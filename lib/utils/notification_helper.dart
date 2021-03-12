@@ -3,8 +3,9 @@ import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:timezone/timezone.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart';
+
 import '../api_client.dart';
 import '../models.dart';
 import 'tz_helper.dart';
@@ -166,14 +167,19 @@ class NotificationHelper {
 
   Future<void> schedule(String title, String text,
       DateTime time, Map<String, dynamic> data) async {
+    TZDateTime scheduleTime = TZHelper.fromNaive(time);
+    TZDateTime now = TZHelper.now();
+    if (scheduleTime.isBefore(now)) {
+      scheduleTime = now.add(Duration(seconds: 3));
+    }
     Notification item = Notification(
       title: title,
       text: text,
-      time: TZHelper.fromNaive(time),
+      time: scheduleTime,
       data: jsonEncode(data),
     );
-    await Notification.add(item);
     await _schedule(item);
+    await Notification.add(item);
   }
 
   Future<void> deactivate(Notification item) async {

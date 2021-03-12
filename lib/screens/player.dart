@@ -12,6 +12,8 @@ import '../models.dart';
 import '../theme.dart';
 import '../utils/orientation_helper.dart';
 import '../widgets/player.dart';
+import '../utils/notification_helper.dart';
+import '../widgets/modals.dart';
 
 
 class PlayerScreen extends StatefulWidget {
@@ -257,6 +259,21 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     });
   }
 
+  void _scheduleProgramNotification(Program program) {
+    confirmModal(
+      context: context,
+      title: Text('Напомнить вам о передаче "${program.title}"?',),
+      action: () {
+        NotificationHelper.instance.schedule(
+          'Передача "${program.title}" начнётся в ${program.startTime}!',
+          'На канале "${_channel.title}"',
+          program.start.subtract(Duration(minutes: 5)),
+          {'programId': program.id, 'channelId': _channel.id},
+        );
+      }
+    );
+  }
+
   Widget get _expandBtn {
     return AnimatedAlign(
       child: ExpandableButton (
@@ -325,30 +342,33 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         ),
       );
     }
-    return Padding(
-      padding: EdgeInsets.fromLTRB(0, first ? 0 : 5, 50, 0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 50,
-            padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-            child: Text(
-              program.startTime,
-              style: first ? AppFonts.currentProgramTime : AppFonts.programTime,
-              textAlign: TextAlign.right,
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: programText,
+    return GestureDetector(
+      onLongPress: () => _scheduleProgramNotification(program),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0, first ? 0 : 5, 50, 0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 50,
+              padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+              child: Text(
+                program.startTime,
+                style: first ? AppFonts.currentProgramTime : AppFonts.programTime,
+                textAlign: TextAlign.right,
               ),
             ),
-          ),
-        ],
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: programText,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
