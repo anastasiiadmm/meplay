@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.tvclick.meplay_2",
+    "sha256_cert_fingerprints":
+    ["AE:DA:7B:84:4E:BA:8D:14:B0:B3:29:5F:47:74:EA:DC:EE:41:E2:CF:20:A4:AB:70:35:55:7C:D6:D8:F3:B8:01",
+    "46:28:67:C4:65:8A:64:57:1C:83:3E:F7:77:4C:1F:2D:3E:D9:57:5C:4C:AA:77:A7:85:50:6D:B7:A2:35:FF:ED"]
+  }
+}]
