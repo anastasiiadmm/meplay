@@ -49,5 +49,20 @@
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
     <!-- Probably will work with <true/> instead -->
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>meplay.com</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>meplay</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
