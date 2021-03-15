@@ -77,25 +77,22 @@ class NotificationHelper {
         ?.createNotificationChannel(_channel);
   }
 
-  // Handles local messages received while app in foreground
+  // handles local messages received
   Future<void> _localHandler(int id, String title,
       String body, String payload) async {
     print("\nLOCAL\n$id\n$title\n$body\n$payload\n");
 
-    // show it in foreground then remove
   }
 
-  // Handles app opening when local message tapped
-  // works from foreground.
+  // handles local messages opening the app
   Future<void> _localOpenHandler(String payload) async {
     if (payload.isNotEmpty) {
       print("\nLOCAL OPEN\n$payload\n");
-      // handle
+
     }
   }
 
-  // Handles remote messages received in foreground
-  // and turns them into local.
+  // handles remote messages received in foreground
   Future<void> _remoteFgHandler(RemoteMessage message) async {
     _logRemote(message, type: 'REMOTE FOREGROUND');
 
@@ -110,22 +107,19 @@ class NotificationHelper {
     }
   }
 
-  // Handles app opening when remote message tapped
-  // works from background.
+  // handles remote messages taps opening the app
   Future<void> _remoteOpenHandler(RemoteMessage message) async {
     _logRemote(message, type: 'REMOTE OPEN');
 
-    // this may open specific screen or something,
-    // depending on the message payload
   }
 
-  // Handles fcm messages received while app in background
-  // doc says it should be top level function, static method may also work
+  // handles remote messages received in background
   static Future<void> _remoteBgHandler(RemoteMessage message) async {
     _logRemote(message, type: 'REMOTE BACKGROUND');
+
   }
 
-  // helper function for logging Firebase messages
+  // log firebase messages
   static void _logRemote(RemoteMessage message, {String type: 'ANY'}) {
     print('\nReceived remote message of type $type, id: ${message.messageId}');
     print('data: ${message.data}');
@@ -134,8 +128,7 @@ class NotificationHelper {
     }
   }
 
-  // Call this somewhere on app start to get initial remote message,
-  // which opened the app from terminated state.
+  // gets initial message from background
   Future<RemoteMessage> getInitialMessage() async {
     RemoteMessage initial = await FirebaseMessaging.instance.getInitialMessage();
     if (initial != null)
