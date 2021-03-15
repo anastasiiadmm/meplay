@@ -7,7 +7,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart';
 
 import '../api_client.dart';
-import '../models.dart';
 import 'tz_helper.dart';
 
 
@@ -102,14 +101,13 @@ class NotificationHelper {
 
     RemoteNotification notification = message.notification;
     if (notification != null) {
-      showNotification(
+      show(
         message.hashCode,
         notification.title,
         notification.body,
         payload: jsonEncode(message.data),
       );
     }
-    _saveRemote(message);
   }
 
   // Handles app opening when remote message tapped
@@ -125,7 +123,6 @@ class NotificationHelper {
   // doc says it should be top level function, static method may also work
   static Future<void> _remoteBgHandler(RemoteMessage message) async {
     _logRemote(message, type: 'REMOTE BACKGROUND');
-    _saveRemote(message);
   }
 
   // helper function for logging Firebase messages
@@ -151,7 +148,7 @@ class NotificationHelper {
     return ApiClient.saveFCMToken(_fcmToken);
   }
 
-  void showNotification(int id, String title, String text, {String payload}) {
+  void show(int id, String title, String text, {String payload}) {
     _localPlugin.show(
       id, title, text,
       NotificationDetails(
@@ -172,41 +169,12 @@ class NotificationHelper {
     if (scheduleTime.isBefore(now)) {
       scheduleTime = now.add(Duration(seconds: 3));
     }
-    Notification item = Notification(
-      title: title,
-      text: text,
-      time: scheduleTime,
-      data: jsonEncode(data),
-    );
-    await _schedule(item);
-    await Notification.add(item);
-  }
-
-  Future<void> deactivate(Notification item) async {
-    if(item.active) {
-      await _localPlugin.cancel(item.id);
-      await item.deactivate();
-    }
-  }
-
-  Future<void> activate(Notification item) async {
-    if(!item.active) {
-      await _schedule(item);
-      await item.activate();
-    }
-  }
-  
-  Future<void> remove(Notification item) async {
-    await _localPlugin.cancel(item.id);
-    await Notification.remove(item);
-  }
-
-  Future<void> _schedule(Notification item) async {
+    data['time'] = time.toIso8601String();
     await _localPlugin.zonedSchedule(
-      item.id,
-      item.title,
-      item.text,
-      item.time,
+      now.millisecondsSinceEpoch.hashCode,
+      title,
+      text,
+      time,
       NotificationDetails(
         android: AndroidNotificationDetails(
           _channel.id,
@@ -215,28 +183,17 @@ class NotificationHelper {
         ),
       ),
       uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
+        UILocalNotificationDateInterpretation.absoluteTime,
       androidAllowWhileIdle: true,
-      payload: item.data,
+      payload: jsonEncode(data),
     );
   }
 
-  static Future<void> _saveRemote(RemoteMessage message) async {
-    if(message.notification != null) {
-      Notification item = Notification(
-        id: message.hashCode,
-        title: message.notification.title,
-        text: message.notification.body,
-        time: TZHelper.fromNaive(message.sentTime),
-        remote: true,
-        data: jsonEncode(message.data),
-      );
-      await Notification.add(item);
-    }
+  Future<void> cancel(int id) async {
+    await _localPlugin.cancel(id);
+  }
+
+  Future<List<PendingNotificationRequest>> list() async {
+    return _localPlugin.pendingNotificationRequests();
   }
 }
-
-
-// store last 50 messages to the database (title, text, id, date) including scheduled
-
-// todo: make some notifications repeatable - daily, weekly or monthly at the same time.
