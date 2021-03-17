@@ -47,16 +47,22 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
-            <!-- Deep linking -->
-            <!-- https://developer.android.com/training/app-links/deep-linking -->
-            <!-- https://developer.android.com/training/app-links/verify-site-associations -->
-            <!-- https://flutter.dev/docs/development/ui/navigation/deep-linking -->
-            <meta-data android:name="flutter_deeplinking_enabled" android:value="true" />
+            <!-- Deep links -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="meplay" android:host="teleclick.kg" />
+            </intent-filter>
+
+            <!-- App links -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" android:host="teleclick.kg" />
+                <data android:scheme="http"
+                    android:host="teleclick.kg"
+                    android:pathPrefix="/deeplinks" />
                 <data android:scheme="https" />
             </intent-filter>
         </activity>

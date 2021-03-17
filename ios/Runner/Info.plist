@@ -48,9 +48,12 @@
 	</dict>
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
-    <!-- Probably will work with <true/> instead -->
+
+	<!-- Probably will work with <true/> instead -->
 	<key>FlutterDeepLinkingEnabled</key>
 	<true/>
+
+	<!-- Deeplinks -->
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -60,7 +63,7 @@
 			<string>teleclick.kg</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>http</string>
+				<string>meplay</string>
 			</array>
 		</dict>
 	</array>

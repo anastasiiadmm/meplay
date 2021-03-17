@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TODO",
+        "paths": [
+          "/deeplinks/*"
+        ]
+      }
+    ]
+  }
+}
