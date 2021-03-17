@@ -139,12 +139,7 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _loadChannels() async {
-    try {
-      _channels = await ApiClient.getChannels(_user);
-    } on ApiException catch (e) {
-      print(e.message);
-      _channels = <Channel>[];
-    }
+    _channels = await Channel.getList();
   }
 
   Future<void> _loadUser() async {

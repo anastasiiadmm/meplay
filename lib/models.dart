@@ -28,6 +28,22 @@ class Channel {
   String logoUrl;
   List<Program> _program;
   File _logo;
+  static List<Channel> _list;
+
+  static Future<List<Channel>> getList() async {
+    if(_list == null) await _load();
+    return _list;
+  }
+
+  static Future<void> _load() async {
+    try {
+      User user = await User.getUser();
+      _list = await ApiClient.getChannels(user);
+    } on ApiException catch (e) {
+      print(e.message);
+      _list = <Channel>[];
+    }
+  }
 
   Channel({this.id, this.name, this.url, this.number, this.locked,
     this.logoUrl});
