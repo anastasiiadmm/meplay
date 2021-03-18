@@ -9,8 +9,8 @@ import 'channelList.dart';
 import '../theme.dart';
 import '../models.dart';
 import '../widgets/modals.dart';
-import '../api_client.dart';
-import '../utils/notification_helper.dart';
+import '../utils/fcm_message_helper.dart';
+import '../utils/local_notification_helper.dart';
 import '../utils/tz_helper.dart';
 
 
@@ -147,12 +147,16 @@ class _BaseScreenState extends State<BaseScreen> {
     if (user != null) setState(() { _user = user; });
   }
 
-  Future<void> _initNotifications() async {
-    NotificationHelper helper = await NotificationHelper.initialize();
+  Future<void> _initFcm() async {
+    FCMMessageHelper helper = await FCMMessageHelper.initialize();
     RemoteMessage initial = await helper.getInitialMessage();
     if (initial != null) {
-      // TODO: do something with it, maybe navigate somewhere.
+      // do something with it, maybe navigate somewhere.
     }
+  }
+
+  Future<void> _initNotifications() async {
+    await LocalNotificationHelper.init();
   }
 
   Future<void> _initTz() async {
@@ -167,8 +171,9 @@ class _BaseScreenState extends State<BaseScreen> {
   Future<void> _initAsync() async {
     await _loadUser();
     await _loadChannels();
-    await _initNotifications();
     await _initTz();
+    await _initNotifications();
+    await _initFcm();
     _doneLoading();
   }
 
