@@ -33,7 +33,7 @@ class FCMHelper {
   }
 
   Future<void> _initToken() async {
-    _fcmToken = await _loadToken();
+    await _loadToken();
     String token = await FirebaseMessaging.instance.getToken();
     await _updateToken(token);
     print('FCM token: $_fcmToken');
@@ -45,8 +45,8 @@ class FCMHelper {
     if (_fcmToken != token) return _saveToken(token);
   }
 
-  Future<String> _loadToken() async {
-    return PrefHelper.loadString(PrefKeys.fcmToken);
+  Future<void> _loadToken() async {
+    _fcmToken = (await PrefHelper.loadString(PrefKeys.fcmToken)) as String;
   }
 
   Future<void> _saveToken(token) async {
