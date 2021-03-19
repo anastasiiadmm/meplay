@@ -12,7 +12,7 @@ import '../models.dart';
 import '../theme.dart';
 import '../utils/orientation_helper.dart';
 import '../widgets/player.dart';
-import '../utils/notification_helper.dart';
+import '../utils/local_notification_helper.dart';
 import '../widgets/modals.dart';
 
 
@@ -264,11 +264,11 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       context: context,
       title: Text('Напомнить вам о передаче "${program.title}"?',),
       action: () {
-        NotificationHelper.instance.schedule(
+        LocalNotificationHelper.instance.schedule(
           'Передача "${program.title}" начнётся в ${program.startTime}!',
           'На канале "${_channel.title}"',
           program.start.subtract(Duration(minutes: 5)),
-          {'programId': program.id, 'channelId': _channel.id},
+          data: {'programId': program.id, 'channelId': _channel.id},
         );
       }
     );

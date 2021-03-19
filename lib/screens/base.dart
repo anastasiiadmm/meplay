@@ -9,7 +9,7 @@ import 'channelList.dart';
 import '../theme.dart';
 import '../models.dart';
 import '../widgets/modals.dart';
-import '../utils/fcm_message_helper.dart';
+import '../utils/fcm_helper.dart';
 import '../utils/local_notification_helper.dart';
 import '../utils/tz_helper.dart';
 
@@ -148,7 +148,7 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _initFcm() async {
-    FCMMessageHelper helper = await FCMMessageHelper.initialize();
+    FCMHelper helper = await FCMHelper.initialize();
     RemoteMessage initial = await helper.getInitialMessage();
     if (initial != null) {
       // do something with it, maybe navigate somewhere.

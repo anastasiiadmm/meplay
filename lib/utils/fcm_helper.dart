@@ -8,16 +8,16 @@ import 'local_notification_helper.dart';
 import 'pref_helper.dart';
 
 
-class FCMMessageHelper {
-  static FCMMessageHelper _instance;
+class FCMHelper {
+  static FCMHelper _instance;
   String _fcmToken;
 
-  FCMMessageHelper._();
+  FCMHelper._();
 
-  static FCMMessageHelper get instance => _instance;
+  static FCMHelper get instance => _instance;
 
-  static Future<FCMMessageHelper> initialize() async {
-    _instance = FCMMessageHelper._();
+  static Future<FCMHelper> initialize() async {
+    _instance = FCMHelper._();
     await _instance._initFirebase();
     await _instance._initToken();
     return _instance;
@@ -27,9 +27,9 @@ class FCMMessageHelper {
 
   Future<void> _initFirebase() async {
     await Firebase.initializeApp();
-    FirebaseMessaging.onMessage.listen(_onReceiveFg);
-    FirebaseMessaging.onBackgroundMessage(_onReceiveBg);
-    FirebaseMessaging.onMessageOpenedApp.listen(_onOpen);
+    FirebaseMessaging.onMessage.listen(_receiveFg);
+    FirebaseMessaging.onBackgroundMessage(_receiveBg);
+    FirebaseMessaging.onMessageOpenedApp.listen(_open);
   }
 
   Future<void> _initToken() async {
@@ -56,7 +56,7 @@ class FCMMessageHelper {
   }
 
   // handles remote messages received in foreground
-  Future<void> _onReceiveFg(RemoteMessage message) async {
+  Future<void> _receiveFg(RemoteMessage message) async {
     _log(message, type: 'REMOTE FOREGROUND');
 
     RemoteNotification notification = message.notification;
@@ -70,14 +70,14 @@ class FCMMessageHelper {
   }
 
   // handles remote messages taps opening the app
-  Future<void> _onOpen(RemoteMessage message) async {
+  Future<void> _open(RemoteMessage message) async {
     _log(message, type: 'REMOTE OPEN');
 
   }
 
   // handles remote messages received in background
   // should be top level function or static method according to the docs.
-  static Future<void> _onReceiveBg(RemoteMessage message) async {
+  static Future<void> _receiveBg(RemoteMessage message) async {
     _log(message, type: 'REMOTE BACKGROUND');
 
   }
