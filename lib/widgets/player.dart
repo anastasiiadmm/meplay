@@ -250,12 +250,6 @@ class _HLSPlayerState extends State<HLSPlayer> {
     }
   }
 
-  // TODO: chromecast
-  // void _chromecast() {
-  //   https://pub.dev/packages/flutter_video_cast/
-  // }
-
-
   Widget get _scrollBar {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
@@ -430,11 +424,6 @@ class _HLSPlayerState extends State<HLSPlayer> {
                           ) : null,
                         ),
                       ),
-                      // TODO: chromecast
-                      // IconButton(
-                      //   icon: AppIcons.chromecast,
-                      //   onPressed: _chromecast,
-                      // ),
                       ChromeCastButton(
                         onButtonCreated: (controller) {
                           setState(() => _castController = controller);
