@@ -125,14 +125,7 @@ class LocalNotificationHelper {
     return scheduleTime;
   }
 
-  int _getId() {
-    int id = DateTime.now().millisecondsSinceEpoch.hashCode;
-    const int maxInt = 2147483648;  // 2^31 - 1
-    while (id > maxInt) {
-      id = id ~/ 2 - 1;
-    }
-    return id;
-  }
+  int _getId() => DateTime.now().millisecondsSinceEpoch.hashCode % 2147483647;
 
   // TODO: allow schedule periodic.
 }
