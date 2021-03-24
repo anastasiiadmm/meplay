@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show PlatformException;
+import 'package:uni_links/uni_links.dart';
 import 'home.dart';
 import 'login.dart';
 import 'splash.dart';
@@ -47,10 +49,34 @@ class _BaseScreenState extends State<BaseScreen> {
   User _user;
   void Function() _splashHide;
   List<Channel> _channels;
+  StreamSubscription _uniSub;
 
   void initState() {
     super.initState();
     _initAsync();
+  }
+
+  @override
+  void dispose() {
+    _uniSub.cancel();
+    super.dispose();
+  }
+
+  Future<Null> _initUniLinks() async {
+    try {
+      String initialLink = await getInitialLink();
+      print(initialLink);
+      // TODO: navigate here somewhere
+    } on PlatformException {
+      // TODO: print error
+    }
+
+    _uniSub = getLinksStream().listen((String link) {
+      print(link);
+      // TODO: navigate here somewhere
+    }, onError: (err) {
+      // TODO: print error
+    });
   }
 
   Widget get _body {
@@ -169,11 +195,14 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _initAsync() async {
-    await _loadUser();
-    await _loadChannels();
-    await _initTz();
-    await _initNotifications();
-    await _initFcm();
+    await Future.wait([
+      _loadUser().then((_) => _loadChannels()),
+      _initTz().then((_) => Future.wait([
+        _initNotifications(),
+        _initFcm(),
+      ])),
+      _initUniLinks(),
+    ]);
     _doneLoading();
   }
 
