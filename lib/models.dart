@@ -127,6 +127,12 @@ class Channel {
   }
 
   String get _programCacheKey => 'program$id';
+
+  Future<bool> get isFavorite async {
+    User user = await User.getUser();
+    if (user == null) return false;
+    return user.hasFavorite(this);
+  }
 }
 
 
