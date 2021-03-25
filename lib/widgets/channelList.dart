@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../hexagon/hexagon_widget.dart';
@@ -34,16 +33,12 @@ class ChannelListType {
 
 class ChannelList extends StatefulWidget {
   final List<Channel> channels;
-  final bool Function(Channel) filter;
-  final void Function(Channel) openChannel;
-  final void Function(Channel) addToFavorites;
-  final void Function(Channel) removeFromFavorites;
+  final void Function(Channel) onChannelTap;
   final ChannelListType listType;
 
   ChannelList({Key key, @required this.channels,
     this.listType: ChannelListType.defaultType,
-    this.filter, this.openChannel,
-    this.addToFavorites, this.removeFromFavorites})
+    @required this.onChannelTap})
       : assert(listType != null),
         assert(channels != null),
         super();
@@ -65,18 +60,6 @@ class _ChannelListState extends State<ChannelList> {
   @override
   void initState() {
     super.initState();
-  }
-
-  void _openChannel(Channel channel) {
-    widget.openChannel?.call(channel);
-  }
-
-  Future<void> _toggleFavorite(Channel channel) async {
-    if (await channel.isFavorite) {
-      widget.removeFromFavorites?.call(channel);
-    } else {
-      widget.addToFavorites?.call(channel);
-    }
   }
 
   void _calcGridSize() {
@@ -148,8 +131,7 @@ class _ChannelListState extends State<ChannelList> {
         if (channel.locked) AppIcons.lockChannel,
       ];
       content = GestureDetector(
-        onTap: () { _openChannel(channel); },
-        onLongPress: () { _toggleFavorite(channel); },
+        onTap: () { widget.onChannelTap(channel); },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -194,8 +176,7 @@ class _ChannelListState extends State<ChannelList> {
     Channel channel = widget.channels[index];
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-      onTap: () { _openChannel(channel); },
-      onLongPress: () => _toggleFavorite(channel),
+      onTap: () { widget.onChannelTap(channel); },
       leading: FutureBuilder(
         future: channel.logo,
         builder: (
@@ -249,8 +230,7 @@ class _ChannelListState extends State<ChannelList> {
       margin = EdgeInsets.only(left: 2.5);
     }
     return GestureDetector(
-      onTap: () { _openChannel(channel); },
-      onLongPress: () { _toggleFavorite(channel); },
+      onTap: () { widget.onChannelTap(channel); },
       child: Container(
         margin: margin,
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
