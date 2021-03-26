@@ -17,8 +17,8 @@ class TVChannelsScreen extends StatefulWidget {
 
 
 class _TVChannelsScreenState extends State<TVChannelsScreen> {
-  List<Channel> _initialChannels;
-  List<Channel> _channels;
+  List<Channel> _initialChannels = [];
+  List<Channel> _channels = [];
   bool _search = false;
   final _keyboardVisibility = KeyboardVisibilityNotification();
   int _keyboardVisibilityListenerId;
@@ -191,9 +191,11 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   void _filterChannels(String value) {
     List<Channel> channels = _initialChannels;
     if (value.isNotEmpty) {
-      channels = channels.where(
-        (channel) => channel.name.toLowerCase().contains(value.toLowerCase())
-      ).toList();
+      channels = channels.where((channel) {
+        return channel.name.toLowerCase().contains(
+          value.toLowerCase(),
+        );
+      }).toList();
     }
     setState(() { _channels = channels; });
   }
