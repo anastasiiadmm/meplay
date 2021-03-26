@@ -279,11 +279,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
           Align(
             alignment: Alignment.centerRight,
             child: IconButton(
-              icon: Icon(
-                Icons.cancel,
-                color: AppColors.white,
-                size: 16,
-              ),
+              icon: AppIcons.cancel,
               onPressed: _clearSearch,
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
             ),

@@ -222,6 +222,7 @@ class AppIcons {
   static final check = SvgPicture.asset('assets/icons/check_hex.svg', width: 31, height: 36,);
   static final list = SvgPicture.asset('assets/icons/list.svg', width: 28, height: 28,);
   static final listLight = SvgPicture.asset('assets/icons/list_light.svg', width: 28, height: 28,);
+  static final cancel = SvgPicture.asset('assets/icons/cancel.svg', width: 16, height: 16,);
 }
 
 
