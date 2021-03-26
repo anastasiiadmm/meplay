@@ -166,6 +166,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   Widget get _body => ChannelList(
     channels: _channels,
     onChannelTap: _openChannel,
+    listType: _listType,
   );
 
   void _openSearch() {
