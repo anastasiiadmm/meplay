@@ -44,7 +44,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   }
 
   Future<void> _loadChannels() async {
-    List<Channel> allChannels = await Channel.getList();
+    List<Channel> allChannels = await Channel.getChannels();
     allChannels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
     setState(() {
       _initialChannels = allChannels;
@@ -94,17 +94,9 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     );
   }
 
-  //
   // Future<void> _addFavorite(Channel channel) async {
   //   User user = await User.getUser();
   //   if (user != null) await user.addFavorite(channel);
-  //
-  //   if(widget.selectedNavId == NavItems.fav) {
-  //     setState(() {
-  //       _initialChannels.add(channel);
-  //       _channels.add(channel);
-  //     });
-  //   }
   // }
   //
   // Future<void> _removeFavorite(Channel channel) async {

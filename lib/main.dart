@@ -10,6 +10,25 @@ void main() {
 
 
 class MePlay extends StatelessWidget {
+  // Map<String, Widget Function(BuildContext)> _routes = {
+  //   '/': (BuildContext context) => BaseScreen(),
+  //   '/favorites': (BuildContext context) => BaseScreen(initial: NavItems.fav),
+  //   '/profile': (BuildContext context) => BaseScreen(initial: NavItems.profile),
+  //   '/login': (BuildContext context) => LoginScreen(),
+  //   '/tv': (BuildContext context) => ChannelListScreen(
+  //
+  //   ),
+  //   '/radio': (BuildContext context) => ChannelListScreen(
+  //
+  //   ),
+  // };
+  //
+  // Route<dynamic> _makeRoute(RouteSettings settings) {
+  //   String name = settings.name;
+  //   Object args = settings.arguments;
+  //   // TODO: convert _routes to large if
+  // }
+
   @override
   Widget build(BuildContext context) {
     // Defaults

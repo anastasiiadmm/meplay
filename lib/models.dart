@@ -30,12 +30,12 @@ class Channel {
   File _logo;
   static List<Channel> _list;
 
-  static Future<List<Channel>> getList() async {
-    if(_list == null) await _load();
+  static Future<List<Channel>> getChannels() async {
+    if(_list == null) await loadChannels();
     return _list;
   }
 
-  static Future<void> _load() async {
+  static Future<void> loadChannels() async {
     try {
       User user = await User.getUser();
       _list = await ApiClient.getChannels(user);
@@ -192,12 +192,15 @@ class User {
   User({this.username, this.password, this.token, this.refreshToken, this.id});
 
   static Future<User> getUser() async {
-    if (_user == null)
-      _user = await PrefHelper.loadJson(
-        PrefKeys.user,
-        restore: (data) => User.fromJson(data),
-      );
+    if (_user == null) await loadUser();
     return _user;
+  }
+
+  static Future<void> loadUser() async {
+    _user = await PrefHelper.loadJson(
+      PrefKeys.user,
+      restore: (data) => User.fromJson(data),
+    );
   }
 
   static Future<void> setUser(User user) async {

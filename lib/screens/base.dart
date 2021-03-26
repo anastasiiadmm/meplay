@@ -44,13 +44,13 @@ class NavItems {
 
 
 class _BaseScreenState extends State<BaseScreen> {
-  // used by bottom navbar
   int _currentIndex;
   bool _loading = true;
-  User _user;
-  void Function() _splashHide;
-  List<Channel> _channels;
+  bool _asyncInitDone = false;
+  bool _splashAnimationDone = false;
+  bool _isSplashShowing = true;
   StreamSubscription _uniSub;
+  bool _isAuthenticated = false;
 
   void initState() {
     super.initState();
@@ -66,14 +66,12 @@ class _BaseScreenState extends State<BaseScreen> {
   Future<Null> _initUniLinks() async {
     try {
       String initialLink = await getInitialLink();
-      print(initialLink);
       // TODO: navigate here somewhere
     } on PlatformException {
       // TODO: print error
     }
 
     _uniSub = getLinksStream().listen((String link) {
-      print(link);
       // TODO: navigate here somewhere
     }, onError: (err) {
       // TODO: print error
@@ -83,7 +81,7 @@ class _BaseScreenState extends State<BaseScreen> {
   Widget get _body {
     switch(_currentIndex) {
       case NavItems.profile:
-        return ProfileScreen(user: _user, logout: _logoutDialog);
+        return ProfileScreen(logout: _logoutDialog);
       case NavItems.home:
       default: return HomeScreen(
         watchTv: _watchTV,
@@ -93,18 +91,12 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _login(int next) async {
-    User user = await Navigator.of(context).push(
+    bool result = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => LoginScreen(),
       ),
     );
-    if (user != null) {
-      setState(() {
-        _user = user;
-      });
-      await _loadChannels();
-      _openPage(next);
-    }
+    if (result) _openPage(next);
   }
   
   void _openPage(int index, {int next: NavItems.home}) {
@@ -126,13 +118,12 @@ class _BaseScreenState extends State<BaseScreen> {
     }
   }
 
-  void _onNavTap(int index) {
+  void _onNavTap(int index) async {
     if (index == NavItems.home) {
-      setState(() {
-        _currentIndex = index;
-      });
+      setState(() { _currentIndex = index; });
     } else {
-      if (_user == null) {
+      User user = await User.getUser();
+      if (user == null) {
         _login(index);
       } else {
         if (index == NavItems.fav) {
@@ -157,15 +148,6 @@ class _BaseScreenState extends State<BaseScreen> {
     return false;
   }
 
-  Future<void> _loadChannels() async {
-    _channels = await Channel.getList();
-  }
-
-  Future<void> _loadUser() async {
-    User user = await User.getUser();
-    if (user != null) setState(() { _user = user; });
-  }
-
   Future<void> _initFcm() async {
     FCMHelper helper = await FCMHelper.initialize();
     RemoteMessage initial = await helper.getInitialMessage();
@@ -182,37 +164,57 @@ class _BaseScreenState extends State<BaseScreen> {
     return TZHelper.init();
   }
 
-  void _clearUser() async {
-    User.clearUser();
-    setState(() { _user = null; });
+  Future<void> _loadUser() async {
+    User user = await User.getUser();
+    setState(() {
+      _isAuthenticated = user != null;
+    });
+  }
+
+  Future<void> _clearUser() async {
+    await User.clearUser();
+    setState(() {
+      _isAuthenticated = false;
+    });
+  }
+
+  Future<void> _loadChannels() async {
+    await Channel.loadChannels();
   }
 
   Future<void> _initAsync() async {
     await Future.wait([
-      _loadUser().then((_) => _loadChannels()),
-      _initTz().then((_) => Future.wait([
-        _initNotifications(),
-        _initFcm(),
-      ])),
       _initUniLinks(),
+      _initTz().then((_) {
+        Future.wait([
+          _initNotifications(),
+          _initFcm(),
+        ]);
+      }),
+      _loadUser().then((_) {
+        _loadChannels();
+      }),
     ]);
+    _asyncInitDone = true;
     _doneLoading();
   }
 
   void _doneLoading() {
-    if(_channels != null && _splashHide != null) {
-      _splashHide();
+    if(_asyncInitDone && _splashAnimationDone) {
+      setState(() {
+        _isSplashShowing = false;
+      });
     }
   }
 
-  void _afterSplashShow(void Function() splashHide) {
-    _splashHide = splashHide;
+  void _splashShow() {
+    _splashAnimationDone = true;
     _doneLoading();
   }
 
-  void _afterSplashHide() {
+  void _splashHide() {
     _watchTV();
-    Timer(Duration(milliseconds: 500), (){
+    Timer(Duration(milliseconds: 300), (){
       setState(() {
         _loading = false;
       });
@@ -252,20 +254,20 @@ class _BaseScreenState extends State<BaseScreen> {
     }
     return null;
   }
-  
-  Future<bool> _logout()  async {
-    _clearUser();
+
+  Future<bool> _logout() async {
+    await _clearUser();
     await _loadChannels();
     setState(() { _currentIndex = NavItems.home; });
     return true;
   }
-  
+
   void _logoutDialog() {
     asyncConfirmModal(
-        context: context,
-        title: Text('Выход'),
-        content: Text('Вы уверены, что хотите выйти?'),
-        action: _logout 
+      context: context,
+      title: Text('Выход'),
+      content: Text('Вы уверены, что хотите выйти?'),
+      action: _logout,
     );
   }
 
@@ -285,9 +287,9 @@ class _BaseScreenState extends State<BaseScreen> {
         icon: AppIcons.back,
       ),
       actions: _isHome ? [
-        (_user == null) ? TextButton(
-            onPressed: () { _login(NavItems.tv); },
-            child: Text('Вход', style: AppFonts.appBarAction,)
+        (_isAuthenticated == null) ? TextButton(
+          onPressed: () { _login(NavItems.tv); },
+          child: Text('Вход', style: AppFonts.appBarAction,),
         ) : TextButton(
           onPressed: _logoutDialog,
           child: Text('Выход', style: AppFonts.appBarAction,)
@@ -328,8 +330,9 @@ class _BaseScreenState extends State<BaseScreen> {
   @override
   Widget build(BuildContext context) {
     return _loading ? SplashScreen(
-      afterShow: _afterSplashShow,
-      afterHide: _afterSplashHide,
+      onShow: _splashShow,
+      onHide: _splashHide,
+      isSplashShowing: _isSplashShowing,
     ) : WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(

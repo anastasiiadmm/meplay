@@ -50,11 +50,16 @@ final _hexBackground = SplashHexBackground();
 
 
 class SplashScreen extends StatefulWidget {
-  final void Function(void Function() hideCallback) afterShow;
-  final void Function() afterHide;
+  final bool isSplashShowing;
+  final void Function() onShow;
+  final void Function() onHide;
 
-  SplashScreen({Key key, @required this.afterShow, @required this.afterHide})
-      : super(key: key);
+  SplashScreen({
+    Key key,
+    this.isSplashShowing = true,
+    this.onShow,
+    this.onHide,
+  }) : super(key: key);
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -63,40 +68,47 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   double _opacity;
-  Curve _curve;
-  Duration _animationDuration = Duration(milliseconds: 1500);
-  Duration _waitDuration = Duration(milliseconds: 2000);
+  Duration _animationDuration = const Duration(milliseconds: 1500);
+  Duration _waitDuration = const Duration(milliseconds: 2000);
 
   void initState() {
     super.initState();
-    _opacity = 0;
-    _curve = Curves.easeOut;
-    Timer.run(show);
+    _opacity = widget.isSplashShowing ? 0 : 1;
   }
 
   void show() {
-    setState(() {
-      _opacity = 1;
-    });
-    Timer(_animationDuration + _waitDuration, () {
-      widget.afterShow(hide);
+    Timer.run(() {
+      setState(() { _opacity = 1; });
+      if (widget.onShow != null) {
+        Timer(_animationDuration + _waitDuration, widget.onShow);
+      }
     });
   }
 
   void hide() {
-    setState(() {
-      _curve = Curves.easeIn;
-      _opacity = 0;
+    Timer.run(() {
+      setState(() { _opacity = 0; });
+      if (widget.onHide != null) {
+        Timer(_animationDuration, widget.onHide);
+      }
     });
-    Timer(_animationDuration, widget.afterHide);
+  }
+
+  void toggle() {
+    if(widget.isSplashShowing) {
+      if(_opacity != 1) show();
+    } else {
+      if(_opacity != 0) hide();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    toggle();
     return AnimatedOpacity(
       opacity: _opacity,
       duration: _animationDuration,
-      curve: _curve,
+      curve: Curves.linear,
         child: Material (
         color: AppColors.megaPurple,
         child: Stack(

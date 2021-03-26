@@ -56,7 +56,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
   }
 
   Future<void> _loadChannels() async {
-    List<Channel> allChannels = await Channel.getList();
+    List<Channel> allChannels = await Channel.getChannels();
     allChannels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
     List<int> favIds = await _user.getFavorites();
     List<Channel> favChannels = allChannels.where((channel) {
