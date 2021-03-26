@@ -7,7 +7,7 @@ import 'home.dart';
 import 'login.dart';
 import 'splash.dart';
 import 'profile.dart';
-import 'channelList.dart';
+import 'tvChannels.dart';
 import '../theme.dart';
 import '../models.dart';
 import '../widgets/modals.dart';
@@ -120,12 +120,7 @@ class _BaseScreenState extends State<BaseScreen> {
     List<Channel> favorites = await _user.filterFavorites(_channels);
     int index = await Navigator.of(context).push(MaterialPageRoute(
       builder: (BuildContext context) {
-        return ChannelListScreen(
-          channels: _channels,
-          filtered: favorites,
-          title: 'Избранное',
-          selectedNavId: NavItems.fav,
-        );
+        return TVChannelsScreen();
       },
     ));
     if (index != null) {
@@ -229,10 +224,7 @@ class _BaseScreenState extends State<BaseScreen> {
   Future<void> _watchTV() async {
     int index = await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (BuildContext context) => ChannelListScreen(
-          channels: _channels,
-          title: 'ТВ Каналы',
-        ),
+        builder: (BuildContext context) => TVChannelsScreen(),
       ),
     );
     if (index != null) {
