@@ -269,12 +269,6 @@ class User {
     return _favorites;
   }
 
-  Future<List<Channel>> filterFavorites(List<Channel> channels) async {
-    List<int> favorites = await getFavorites();
-    return channels.where((channel) => favorites.contains(channel.id))
-        .toList();
-  }
-
   Future<void> addFavorite(Channel channel) async {
     List<int> favorites = await getFavorites();
     if (!favorites.contains(channel.id)) favorites.add(channel.id);

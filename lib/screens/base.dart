@@ -8,6 +8,7 @@ import 'login.dart';
 import 'splash.dart';
 import 'profile.dart';
 import 'tvChannels.dart';
+import 'tvFavorites.dart';
 import '../theme.dart';
 import '../models.dart';
 import '../widgets/modals.dart';
@@ -117,11 +118,8 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _showFavorites() async {
-    List<Channel> favorites = await _user.filterFavorites(_channels);
     int index = await Navigator.of(context).push(MaterialPageRoute(
-      builder: (BuildContext context) {
-        return TVChannelsScreen();
-      },
+      builder: (BuildContext context) => TVFavoritesScreen(),
     ));
     if (index != null) {
       _openPage(index, next: NavItems.tv);
