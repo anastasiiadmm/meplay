@@ -4,7 +4,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../hexagon/hexagon_widget.dart';
@@ -76,7 +75,6 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
     mask: '# # # # # #',
     filter: { '#': RegExp(r'[0-9]') },
   );
-  final _keyboardVisibility = KeyboardVisibilityNotification();
   final _userAgreementTapDetector = TapGestureRecognizer();
   final _sendSmsTapDetector = TapGestureRecognizer();
   final _inputController = TextEditingController();
@@ -95,9 +93,6 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
   @override
   void initState() {
     super.initState();
-    _keyboardVisibilityListenerId = _keyboardVisibility.addNewListener(
-      onShow: _restoreSystemOverlays,
-    );
     _userAgreementTapDetector.onTap = _viewUserAgreement;
     _sendSmsTapDetector.onTap = _sendSms;
   }
@@ -106,8 +101,6 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
   void dispose() {
     cancel();              // CodeAutoFill methods
     unregisterListener();  // CodeAutoFill methods
-    _keyboardVisibility.removeListener(_keyboardVisibilityListenerId);
-    _keyboardVisibility.dispose();
     _userAgreementTapDetector.dispose();
     _sendSmsTapDetector.dispose();
     _inputController.dispose();
@@ -267,29 +260,34 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
         textAlign: TextAlign.center,
       ),
       Padding(
-        child: TextFormField(
-          inputFormatters: [_waitingForSms ? _codeMask : _phoneMask],
-          keyboardType: TextInputType.phone,
-          style: AppFonts.loginInputText,
-          textAlign: TextAlign.center,
-          controller: _inputController,
-          onFieldSubmitted: _fieldSubmit,
-          onChanged: _inputChanged,
-          autocorrect: false,
-          autofocus: true,
-          textInputAction: TextInputAction.send,
-          autofillHints: [ _waitingForSms ? AutofillHints.oneTimeCode : AutofillHints.telephoneNumber ],
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(13),
-            hintText: _waitingForSms ? 'Введите код подтверждения' : '+996 --- ------',
-            hintStyle: AppFonts.loginInputHint,
-            fillColor: AppColors.white,
-            filled: true,
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(6),
+        child: Focus(
+          onFocusChange: (hasFocus) {
+            if(hasFocus) _restoreSystemOverlays();
+          },
+          child: TextFormField(
+            inputFormatters: [_waitingForSms ? _codeMask : _phoneMask],
+            keyboardType: TextInputType.phone,
+            style: AppFonts.loginInputText,
+            textAlign: TextAlign.center,
+            controller: _inputController,
+            onFieldSubmitted: _fieldSubmit,
+            onChanged: _inputChanged,
+            autocorrect: false,
+            autofocus: true,
+            textInputAction: TextInputAction.send,
+            autofillHints: [ _waitingForSms ? AutofillHints.oneTimeCode : AutofillHints.telephoneNumber ],
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(13),
+              hintText: _waitingForSms ? 'Введите код подтверждения' : '+996 --- ------',
+              hintStyle: AppFonts.loginInputHint,
+              fillColor: AppColors.white,
+              filled: true,
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              errorMaxLines: 1,
             ),
-            errorMaxLines: 1
           ),
         ),
         padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
@@ -456,5 +454,4 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
 
 
 // TODO: on tap outside hide kb
-// semi-transparent bg behind form
 // display loading circle,

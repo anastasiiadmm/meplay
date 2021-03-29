@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 import '../widgets/modals.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -20,8 +19,6 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   List<Channel> _initialChannels = [];
   List<Channel> _channels = [];
   bool _search = false;
-  final _keyboardVisibility = KeyboardVisibilityNotification();
-  int _keyboardVisibilityListenerId;
   final _searchController = TextEditingController();
   ChannelListType _listType = ChannelListType.defaultType;
 
@@ -30,15 +27,10 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     super.initState();
     _loadListType();
     _loadChannels();
-    _keyboardVisibilityListenerId = _keyboardVisibility.addNewListener(
-      onShow: _restoreSystemOverlays,
-    );
   }
 
   @override
   void dispose() {
-    _keyboardVisibility.removeListener(_keyboardVisibilityListenerId);
-    _keyboardVisibility.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -240,25 +232,30 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
       height: 36,
       child: Stack(
         children: [
-          TextFormField(
-            keyboardType: TextInputType.text,
-            style: AppFonts.searchInputText,
-            textAlign: TextAlign.center,
-            textAlignVertical: TextAlignVertical.center,
-            controller: _searchController,
-            onFieldSubmitted: _filterChannels,
-            textInputAction: TextInputAction.search,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 32),
-              hintText: 'Введите название канала',
-              hintStyle: AppFonts.searchInputHint,
-              fillColor: AppColors.transparentDark,
-              filled: true,
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(10)
+          Focus(
+            onFocusChange: (hasFocus) {
+              if(hasFocus) _restoreSystemOverlays();
+            },
+            child: TextFormField(
+              keyboardType: TextInputType.text,
+              style: AppFonts.searchInputText,
+              textAlign: TextAlign.center,
+              textAlignVertical: TextAlignVertical.center,
+              controller: _searchController,
+              onFieldSubmitted: _filterChannels,
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 32),
+                hintText: 'Введите название канала',
+                hintStyle: AppFonts.searchInputHint,
+                fillColor: AppColors.transparentDark,
+                filled: true,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                errorMaxLines: 1,
               ),
-              errorMaxLines: 1
             ),
           ),
           Align(
