@@ -6,10 +6,9 @@ import '../widgets/modals.dart';
 
 
 class ProfileScreen extends StatefulWidget {
-  final User user;
   final void Function() logout;
 
-  ProfileScreen({Key key, this.user, this.logout}): super(key: key);
+  ProfileScreen({Key key, this.logout}): super(key: key);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -20,11 +19,22 @@ const exclusivePackets = [5, 6, 7];
 
 class _ProfileScreenState extends State<ProfileScreen> {
   List<Packet> _packets;
+  User _user;
   
   @override
   void initState() {
     super.initState();
-    _loadPackets();
+    _initAsync();
+  }
+
+  Future<void> _initAsync() async {
+    await _loadUser();
+    await _loadPackets();
+  }
+
+  Future<void> _loadUser() async {
+    User user = await User.getUser();
+    setState(() { _user = user; });
   }
 
   String get _activePacketNames {
@@ -55,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       }
     }
-    List<Packet> packets = await widget.user.addPacket(packet);
+    List<Packet> packets = await _user.addPacket(packet);
     if (packets == null) return false;
     setState(() {
       _packets = packets;
@@ -64,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<bool> _removePacket(Packet packet) async {
-    List<Packet> packets = await widget.user.removePacket(packet);
+    List<Packet> packets = await _user.removePacket(packet);
     if (packets == null) return false;
     setState(() {
       _packets = packets;
@@ -197,7 +207,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
   
   Future<void> _loadPackets() async {
-    List<Packet> packets = await widget.user.getPackets();
+    List<Packet> packets = await _user.getPackets();
     setState(() {
       _packets = packets;
     });
@@ -220,7 +230,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 AppIcons.profile,
-                Text('+' + widget.user.username, style: AppFonts.profileName,),
+                Text(_user == null ? 'Профиль' : '+' + _user.username, style: AppFonts.profileName,),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   child: Text('ПОДКЛЮЧЕННЫЕ\nПАКЕТЫ', style: AppFonts.activePacketsTitle, textAlign: TextAlign.center,),
