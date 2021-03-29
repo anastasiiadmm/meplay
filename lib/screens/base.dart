@@ -50,7 +50,6 @@ class _BaseScreenState extends State<BaseScreen> {
   bool _splashAnimationDone = false;
   bool _isSplashShowing = true;
   StreamSubscription _uniSub;
-  bool _isAuthenticated = false;
 
   void initState() {
     super.initState();
@@ -91,12 +90,13 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _login(int next) async {
-    bool result = await Navigator.of(context).push(
+    await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => LoginScreen(),
       ),
     );
-    if (result) _openPage(next);
+    setState(() {});
+    if (await _isAuthenticated) _openPage(next);
   }
   
   void _openPage(int index, {int next: NavItems.home}) {
@@ -165,17 +165,17 @@ class _BaseScreenState extends State<BaseScreen> {
   }
 
   Future<void> _loadUser() async {
-    User user = await User.getUser();
-    setState(() {
-      _isAuthenticated = user != null;
-    });
+    await User.loadUser();
   }
 
   Future<void> _clearUser() async {
     await User.clearUser();
-    setState(() {
-      _isAuthenticated = false;
-    });
+    setState(() {});
+  }
+
+  Future<bool> get _isAuthenticated async {
+    User user = await User.getUser();
+    return user != null;
   }
 
   Future<void> _loadChannels() async {
@@ -275,6 +275,27 @@ class _BaseScreenState extends State<BaseScreen> {
     return (_currentIndex ?? 0) == NavItems.home;
   }
 
+  Widget get _authBtn {
+    return FutureBuilder<bool>(
+      future: _isAuthenticated,
+      initialData: false,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        bool isAuthenticated = snapshot.data;
+        if(isAuthenticated) {
+          return TextButton(
+              onPressed: _logoutDialog,
+              child: Text('Выход', style: AppFonts.appBarAction,)
+          );
+        } else {
+          return TextButton(
+            onPressed: () { _login(NavItems.tv); },
+            child: Text('Вход', style: AppFonts.appBarAction,),
+          );
+        }
+      },
+    );
+  }
+
   Widget get _appBar {
     return AppBar(
       backgroundColor: _isHome
@@ -286,15 +307,9 @@ class _BaseScreenState extends State<BaseScreen> {
         onPressed: _back,
         icon: AppIcons.back,
       ),
-      actions: _isHome ? [
-        (_isAuthenticated == null) ? TextButton(
-          onPressed: () { _login(NavItems.tv); },
-          child: Text('Вход', style: AppFonts.appBarAction,),
-        ) : TextButton(
-          onPressed: _logoutDialog,
-          child: Text('Выход', style: AppFonts.appBarAction,)
-        ),
-      ] : [],
+      actions: [
+        if(_isHome) _authBtn,
+      ],
       title: _appBarTitle,
       centerTitle: true,
     );
