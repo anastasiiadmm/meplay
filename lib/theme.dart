@@ -79,6 +79,9 @@ class AppFonts {
   static const screenTitle = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.w600, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.gray0);
+  static const screenSubTitle = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
+      letterSpacing: -0.41, color: AppColors.gray0);
   static const formBtn = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.w600, fontSize: 17, height: 22/17,
       letterSpacing: -0.41, color: AppColors.white);
@@ -223,6 +226,7 @@ class AppIcons {
   static final list = SvgPicture.asset('assets/icons/list.svg', width: 28, height: 28,);
   static final listLight = SvgPicture.asset('assets/icons/list_light.svg', width: 28, height: 28,);
   static final cancel = SvgPicture.asset('assets/icons/cancel.svg', width: 16, height: 16,);
+  static final cog = SvgPicture.asset('assets/icons/cog-8_contour.svg', width: 28, height: 28);
 }
 
 

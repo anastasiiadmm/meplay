@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'base.dart';
 import '../models.dart';
 import '../theme.dart';
-import '../widgets/modals.dart';
+import '../widgets/modals.dart' as modals;
+import '../widgets/bottomNavBar.dart';
 
 
 class ProfileScreen extends StatefulWidget {
@@ -49,7 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _changePassword() {
-    NavItems.inDevelopment(context, title: 'Смена пароля');
+    modals.inDevelopment(context, title: 'Смена пароля');
   }
 
   void _logout() {
@@ -101,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'Не удалось подключить пакет. Проверьте подключение к интернету и баланс, и попробуйте ещё раз.',
        textAlign: TextAlign.center
     );
-    asyncConfirmModal(
+    modals.asyncConfirmModal(
       context: context,
       title: title,
       content: text,
@@ -129,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'Не удалось отключить пакет. Проверьте подключение к интернету, и попробуйте ещё раз.',
       textAlign: TextAlign.center,
     );
-    asyncConfirmModal(
+    modals.asyncConfirmModal(
       context: context,
       title: title,
       content: text,
@@ -213,8 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget get _body {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: Column(
@@ -272,6 +271,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  void _back() {
+    Navigator.of(context).pop();
+  }
+
+  void _openSettings() {
+
+  }
+
+  Widget get _appBar {
+    return AppBar(
+      backgroundColor: AppColors.megaPurple,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      leading: IconButton(
+        onPressed: _back,
+        icon: AppIcons.back,
+      ),
+      actions: [
+        IconButton(
+          onPressed: _openSettings,
+          icon: AppIcons.cog,
+        )
+      ],
+      title: _appBarTitle,
+      centerTitle: true,
+    );
+  }
+
+  Widget get _appBarTitle => _user == null ? Text(
+    'Личный кабинет',
+    style: AppFonts.screenTitle,
+    textAlign: TextAlign.center,
+  ) : Column(
+    children: [
+      Text(_user.username, style: AppFonts.screenTitle),
+      Text('Личный кабинет', style: AppFonts.screenSubTitle),
+    ],
+  );
+
+  Widget get _bottomNavBar => BottomNavBar(index: NavItems.profile);
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.megaPurple,
+      appBar: _appBar,
+      body: _body,
+      bottomNavigationBar: _bottomNavBar,
     );
   }
 }

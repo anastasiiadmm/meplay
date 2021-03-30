@@ -201,3 +201,12 @@ void grayToast(BuildContext context, String text) {
     AppColors.toastBg,
   );
 }
+
+
+void inDevelopment(BuildContext context, {String title: 'Эта страница'}) {
+  infoModal(
+    context: context,
+    title: Text(title),
+    content: Text('Находится в разработке.'),
+  );
+}

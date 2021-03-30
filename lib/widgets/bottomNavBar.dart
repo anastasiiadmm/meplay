@@ -2,11 +2,21 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 
 
-const Map<int, String> routesMapping = {
-  0: '/',
-  1: 'tv/favorites/',
-  2: 'profile/',
-};
+class NavItems {
+  static const home = 0;
+  static const favorites = 1;
+  static const profile =  2;
+
+  static const routes = <int, String>{
+    home: '/',
+    favorites: 'tv/favorites/',
+    profile: 'profile/',
+  };
+
+  static bool hasIndex(int index) {
+    return !(index == null || index < 0 || index > 2);
+  }
+}
 
 
 class BottomNavBar extends StatelessWidget {
@@ -17,13 +27,9 @@ class BottomNavBar extends StatelessWidget {
   void _onNavTap(BuildContext context, int newIndex) {
     if (newIndex != index) {
       Navigator.of(context).popUntil((route) => route.isFirst);
-      Navigator.pushNamed(context, routesMapping[index]);
+      Navigator.pushNamed(context, NavItems.routes[index]);
     }
   }
-
-  bool get _noIndex => index == null || index < 0 || index > 2;
-
-  int get _index => _noIndex ? 0 : index;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +38,13 @@ class BottomNavBar extends StatelessWidget {
       showSelectedLabels: false,
       showUnselectedLabels: false,
       onTap: (int index) => _onNavTap(context, index),
-      currentIndex: _index,
+      currentIndex: NavItems.hasIndex(index) ? index : 0,
       items: [
         BottomNavigationBarItem(
           icon: AppIcons.home,
-          activeIcon: _noIndex ? AppIcons.home : AppIcons.homeActive,
+          activeIcon: NavItems.hasIndex(index)
+              ? AppIcons.home
+              : AppIcons.homeActive,
           label: 'Главная',
         ),
         BottomNavigationBarItem(
