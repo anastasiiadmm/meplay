@@ -234,16 +234,13 @@ class _HomeScreenState extends State<HomeScreen> {
   );
 
   Future<void> _login() async {
-    await Navigator.of(context).push(
+    User user = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => LoginScreen(),
       ),
     );
-    User user = await User.getUser();
-    if (user != null) {
-      setState(() {});  // just to refresh the state
-      _watchTV();
-    }
+    setState(() {});  // just to refresh the state
+    if (user != null) _watchTV();
   }
 
   Future<void> _logout() async {
@@ -262,15 +259,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _authBtn {
-    return FutureBuilder(
-      future: User.getUser(),
+    return FutureBuilder<bool>(
+      future: User.hasUser(),
+      initialData: false,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return snapshot.data == null ? TextButton(
-          onPressed: _login,
-          child: Text('Вход', style: AppFonts.appBarAction),
-        ) : TextButton(
+        bool hasUser = snapshot.data;
+        return hasUser ? TextButton(
           onPressed: _logoutDialog,
           child: Text('Выход', style: AppFonts.appBarAction),
+        ) : TextButton(
+          onPressed: _login,
+          child: Text('Вход', style: AppFonts.appBarAction),
         );
       },
     );

@@ -196,6 +196,10 @@ class User {
     return _user;
   }
 
+  static Future<bool> hasUser() async {
+    return await getUser() == null;
+  }
+
   static Future<void> loadUser() async {
     _user = await PrefHelper.loadJson(
       PrefKeys.user,
