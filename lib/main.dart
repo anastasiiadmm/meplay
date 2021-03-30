@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'screens/base.dart';
+import 'screens/home.dart';
 
 
 void main() {
@@ -50,7 +50,7 @@ class MePlay extends StatelessWidget {
     return MaterialApp(
       title: 'Me Play',
       theme: ThemeData(fontFamily: 'SF Pro Text'),
-      home: BaseScreen(),
+      home: HomeScreen(),
     );
   }
 }

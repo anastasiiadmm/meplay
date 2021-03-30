@@ -83,8 +83,8 @@ class _BaseScreenState extends State<BaseScreen> {
         return ProfileScreen(logout: _logoutDialog);
       case NavItems.home:
       default: return HomeScreen(
-        watchTv: _watchTV,
-        listenToRadio: () {NavItems.inDevelopment(context, title: 'Радио');},
+        // watchTv: _watchTV,
+        // listenToRadio: () {NavItems.inDevelopment(context, title: 'Радио');},
       );
     }
   }
