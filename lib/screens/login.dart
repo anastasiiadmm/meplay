@@ -79,7 +79,6 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
   final _sendSmsTapDetector = TapGestureRecognizer();
   final _inputController = TextEditingController();
   final _hexBackground = LoginHexBackground();
-  int _keyboardVisibilityListenerId;
   bool _waitingForSms = false;
   String _phone;
   String  _phoneText;
