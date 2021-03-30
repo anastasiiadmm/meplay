@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../models.dart';
-import '../theme.dart';
+import 'login.dart';
 import '../widgets/modals.dart' as modals;
 import '../widgets/bottomNavBar.dart';
+import '../models.dart';
+import '../theme.dart';
 
 
 class ProfileScreen extends StatefulWidget {
@@ -28,13 +29,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _initAsync() async {
-    await _loadUser();
-    await _loadPackets();
+    User user = await User.getUser();
+    if (user == null) user = await _login();
+    if (user == null) Navigator.of(context).pop();
+    else {
+      List<Packet> packets = await user.getPackets();
+      setState(() {
+        _user = user;
+        _packets = packets;
+      });
+    }
   }
 
-  Future<void> _loadUser() async {
-    User user = await User.getUser();
-    setState(() { _user = user; });
+  Future<User> _login() async {
+    return Navigator.of(context).push<User>(
+      MaterialPageRoute(
+        builder: (BuildContext context) => LoginScreen(),
+      ),
+    );
   }
 
   String get _activePacketNames {
@@ -204,13 +216,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final Packet packet = item;
       return _buildPacketTile(packet);
     }).toList();
-  }
-  
-  Future<void> _loadPackets() async {
-    List<Packet> packets = await _user.getPackets();
-    setState(() {
-      _packets = packets;
-    });
   }
 
   Widget get _body {
