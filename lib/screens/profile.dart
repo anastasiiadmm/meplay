@@ -324,7 +324,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ],
   );
 
-  Widget get _bottomNavBar => BottomNavBar(index: NavItems.profile);
+  Widget get _bottomNavBar => BottomNavBar(showIndex: NavItems.profile);
 
   Widget build(BuildContext context) {
     return Scaffold(

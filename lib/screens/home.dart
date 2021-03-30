@@ -279,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget get _bottomNavBar => BottomNavBar(index: 0);
+  Widget get _bottomNavBar => BottomNavBar(showIndex: 0);
 
   @override
   Widget build(BuildContext context) {

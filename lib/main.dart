@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/home.dart';
+import 'screens/login.dart';
+import 'screens/profile.dart';
+import 'screens/tvChannels.dart';
+import 'screens/tvFavorites.dart';
 
 
 void main() {
@@ -10,24 +14,31 @@ void main() {
 
 
 class MePlay extends StatelessWidget {
-  // Map<String, Widget Function(BuildContext)> _routes = {
-  //   '/': (BuildContext context) => BaseScreen(),
-  //   '/favorites': (BuildContext context) => BaseScreen(initial: NavItems.fav),
-  //   '/profile': (BuildContext context) => BaseScreen(initial: NavItems.profile),
-  //   '/login': (BuildContext context) => LoginScreen(),
-  //   '/tv': (BuildContext context) => ChannelListScreen(
-  //
-  //   ),
-  //   '/radio': (BuildContext context) => ChannelListScreen(
-  //
-  //   ),
-  // };
-  //
-  // Route<dynamic> _makeRoute(RouteSettings settings) {
-  //   String name = settings.name;
-  //   Object args = settings.arguments;
-  //   // TODO: convert _routes to large if
-  // }
+  final Map<String, Widget Function(BuildContext)> routes = {
+    '/': (BuildContext context) => HomeScreen(),
+    '/login': (BuildContext context) => LoginScreen(),
+    '/profile': (BuildContext context) => ProfileScreen(),
+    '/tv': (BuildContext context) => TVChannelsScreen(),
+    '/favorites': (BuildContext context) => TVFavoritesScreen(),
+    // TODO:
+    // '/radio': (BuildContext context) => null,
+    // '/favorites/tv'
+    // '/favorites/radio': (BuildContext context) => null,
+  };
+
+  Route<dynamic> _makeRoute(RouteSettings settings) {
+    String name = settings.name;
+    Object args = settings.arguments;
+    Widget Function(BuildContext) builder;
+    print('Route: $name, args: $args');
+    if(routes.containsKey(name)) {
+      builder = routes[name];
+    } else {
+      // TODO check for dynamic routes like /tv/1, /tv/2, ... etc.
+      builder = routes['/'];
+    }
+    return MaterialPageRoute(builder: builder);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +61,8 @@ class MePlay extends StatelessWidget {
     return MaterialApp(
       title: 'Me Play',
       theme: ThemeData(fontFamily: 'SF Pro Text'),
-      home: HomeScreen(),
+      onGenerateRoute: _makeRoute,
+      initialRoute: '/',
     );
   }
 }

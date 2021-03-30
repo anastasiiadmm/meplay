@@ -7,27 +7,27 @@ class NavItems {
   static const favorites = 1;
   static const profile =  2;
 
-  static const routes = <int, String>{
-    home: '/',
-    favorites: 'tv/favorites/',
-    profile: 'profile/',
-  };
+  static const routes = <String>['/', '/favorites', '/profile'];
 
   static bool hasIndex(int index) {
-    return !(index == null || index < 0 || index > 2);
+    return !(index == null || index < 0 || index > routes.length);
   }
 }
 
 
 class BottomNavBar extends StatelessWidget {
-  final int index;
+  final int showIndex;
 
-  BottomNavBar({Key key, this.index}): super(key: key);
+  BottomNavBar({Key key, this.showIndex}): super(key: key);
 
-  void _onNavTap(BuildContext context, int newIndex) {
-    if (newIndex != index) {
-      Navigator.of(context).popUntil((route) => route.isFirst);
-      Navigator.pushNamed(context, NavItems.routes[index]);
+  void _onNavTap(BuildContext context, int index) {
+    if (index != showIndex) {
+      NavigatorState navState = Navigator.of(context);
+      navState.popUntil((route) => route.isFirst);
+      if(index != NavItems.home) {
+        String route = NavItems.routes[index];
+        navState.pushNamed(route);
+      }
     }
   }
 
@@ -38,11 +38,11 @@ class BottomNavBar extends StatelessWidget {
       showSelectedLabels: false,
       showUnselectedLabels: false,
       onTap: (int index) => _onNavTap(context, index),
-      currentIndex: NavItems.hasIndex(index) ? index : 0,
+      currentIndex: NavItems.hasIndex(showIndex) ? showIndex : 0,
       items: [
         BottomNavigationBarItem(
           icon: AppIcons.home,
-          activeIcon: NavItems.hasIndex(index)
+          activeIcon: NavItems.hasIndex(showIndex)
               ? AppIcons.homeActive
               : AppIcons.home,
           label: 'Главная',
