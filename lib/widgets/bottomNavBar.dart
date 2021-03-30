@@ -43,8 +43,8 @@ class BottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: AppIcons.home,
           activeIcon: NavItems.hasIndex(index)
-              ? AppIcons.home
-              : AppIcons.homeActive,
+              ? AppIcons.homeActive
+              : AppIcons.home,
           label: 'Главная',
         ),
         BottomNavigationBarItem(
