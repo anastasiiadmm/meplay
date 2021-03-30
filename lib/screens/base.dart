@@ -80,7 +80,7 @@ class _BaseScreenState extends State<BaseScreen> {
   Widget get _body {
     switch(_currentIndex) {
       case NavItems.profile:
-        return ProfileScreen(logout: _logoutDialog);
+        return ProfileScreen();
       case NavItems.home:
       default: return HomeScreen(
         // watchTv: _watchTV,

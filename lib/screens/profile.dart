@@ -7,16 +7,10 @@ import '../theme.dart';
 
 
 class ProfileScreen extends StatefulWidget {
-  final void Function() logout;
-
-  ProfileScreen({Key key, this.logout}): super(key: key);
-
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-
-const exclusivePackets = [5, 6, 7];
 
 class _ProfileScreenState extends State<ProfileScreen> {
   List<Packet> _packets;
@@ -49,6 +43,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Future<void> _logout() async {
+    await User.clearUser();
+    await Channel.loadChannels();
+    Navigator.of(context).pop();
+  }
+
+  void _logoutDialog() {
+    modals.confirmModal(
+      context: context,
+      title: Text('Выход'),
+      content: Text('Вы уверены, что хотите выйти?'),
+      action: _logout,
+    );
+  }
+
   String get _activePacketNames {
     if (_packets == null) {
       return 'Информация о пакетах недоступна';
@@ -64,12 +73,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     modals.inDevelopment(context, title: 'Смена пароля');
   }
 
-  void _logout() {
-    widget.logout();
-  }
-
   Future<bool> _addPacket(Packet packet) async {
     // Костыль, должно быть сделано на бэкенде.
+    const exclusivePackets = [5, 6, 7];
     if (exclusivePackets.contains(packet.id)) {
       for (Packet p in _packets) {
         if (p.isActive && exclusivePackets.contains(p.id)) {
@@ -250,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       Expanded(child: Container()),
                       TextButton(
-                        onPressed: _logout,
+                        onPressed: _logoutDialog,
                         child: Text('Выход', style: AppFonts.profileAction,),
                       ),
                     ],
