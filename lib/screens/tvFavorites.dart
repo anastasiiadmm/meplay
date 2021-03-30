@@ -6,6 +6,7 @@ import '../models.dart';
 import '../theme.dart';
 import '../utils/pref_helper.dart';
 import '../widgets/channelList.dart';
+import '../widgets/bottomNavBar.dart';
 import 'player.dart';
 
 
@@ -79,28 +80,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
   }
 
   Widget get _bottomBar {
-    return BottomNavigationBar(
-      backgroundColor: AppColors.bottomBar,
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      onTap: _navTo,
-      currentIndex: 1,
-      items: [
-        BottomNavigationBarItem(
-          icon: AppIcons.home,
-          label: 'Главная',
-        ),
-        BottomNavigationBarItem(
-          icon: AppIcons.star,
-          activeIcon: AppIcons.starActive,
-          label: 'Избранное',
-        ),
-        BottomNavigationBarItem(
-          icon: AppIcons.user,
-          label: 'Профиль',
-        ),
-      ],
-    );
+    return BottomNavBar(showIndex: NavItems.favorites);
   }
 
   //
@@ -237,7 +217,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
       ),
       title: _search
           ? _searchInput()
-          : Text('ТВ Каналы', style: AppFonts.screenTitle),
+          : Text('Избранное', style: AppFonts.screenTitle),
       centerTitle: !_search,
       actions: [
         IconButton(
