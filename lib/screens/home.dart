@@ -137,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  Future<Null> _initUniLinks() async {
+  Future<void> _initUniLinks() async {
     try {
       String initialLink = await getInitialLink();
       // TODO: navigate here somewhere
@@ -174,7 +174,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _clearUser() async {
     await User.clearUser();
-    setState(() {});
   }
 
   Future<void> _loadChannels() async {
@@ -184,15 +183,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _initAsync() async {
     await Future.wait([
       _initUniLinks(),
-      _initTz().then((_) {
-        Future.wait([
-          _initNotifications(),
-          _initFcm(),
-        ]);
-      }),
-      _loadUser().then((_) {
-        _loadChannels();
-      }),
+      _initTz().then((_) => Future.wait([
+        _initNotifications(),
+        _initFcm(),
+      ])),
+      _loadUser().then((_) => _loadChannels())
     ]);
     _asyncInitDone = true;
     _doneLoading();
@@ -239,14 +234,14 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (BuildContext context) => LoginScreen(),
       ),
     );
-    setState(() {});  // just to refresh the state
+    setState(() {});  // refresh the state for the login/logout button
     if (user != null) _watchTV();
   }
 
   Future<void> _logout() async {
     await _clearUser();
     await _loadChannels();
-    setState(() {});  // just to refresh the state
+    setState(() {});  // refresh the state for the login/logout button
   }
 
   void _logoutDialog() {
