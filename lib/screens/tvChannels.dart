@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../widgets/bottomNavBar.dart';
 import '../widgets/modals.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -57,34 +58,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     Timer(Duration(milliseconds: 1001), SystemChrome.restoreSystemUIOverlays);
   }
 
-  void _navTo(int index) {
-    Navigator.of(context).pop(index);
-  }
-
-  Widget get _bottomBar {
-    return BottomNavigationBar(
-      backgroundColor: AppColors.bottomBar,
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      onTap: _navTo,
-      currentIndex: 0,
-      items: [
-        BottomNavigationBarItem(
-          icon: AppIcons.home,
-          label: 'Главная',
-        ),
-        BottomNavigationBarItem(
-          icon: AppIcons.star,
-          activeIcon: AppIcons.starActive,
-          label: 'Избранное',
-        ),
-        BottomNavigationBarItem(
-          icon: AppIcons.user,
-          label: 'Профиль',
-        ),
-      ],
-    );
-  }
+  Widget get _bottomBar => BottomNavBar();
 
   // Future<void> _addFavorite(Channel channel) async {
   //   User user = await User.getUser();
@@ -119,7 +93,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   // }
 
   Future<void> _openChannel(Channel channel) async {
-    int index = await Navigator.of(context).push(
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => PlayerScreen(
           channel: channel,
@@ -128,7 +102,6 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
         ),
       ),
     );
-    if (index != null) _navTo(index);
   }
 
   Channel _nextChannel(Channel channel) {

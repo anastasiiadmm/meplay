@@ -75,10 +75,6 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
     Timer(Duration(milliseconds: 1001), SystemChrome.restoreSystemUIOverlays);
   }
 
-  void _navTo(int index) {
-    Navigator.of(context).pop(index);
-  }
-
   Widget get _bottomBar {
     return BottomNavBar(showIndex: NavItems.favorites);
   }
@@ -124,7 +120,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
   // }
 
   Future<void> _openChannel(Channel channel) async {
-    int index = await Navigator.of(context).push(
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => PlayerScreen(
           channel: channel,
@@ -133,7 +129,6 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
         ),
       ),
     );
-    if (index != null) _navTo(index);
   }
 
   Channel _nextChannel(Channel channel) {

@@ -7,12 +7,12 @@ import 'package:wakelock/wakelock.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_android_pip/flutter_android_pip.dart';
 import 'package:device_info/device_info.dart';
-import 'base.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/orientation_helper.dart';
-import '../widgets/player.dart';
 import '../utils/local_notification_helper.dart';
+import '../widgets/player.dart';
+import '../widgets/bottomNavBar.dart';
 import '../widgets/modals.dart';
 
 
@@ -167,24 +167,16 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     });
   }
 
-  Future<bool> _willPop() async {
-    return true;
-  }
-
   void _back() {
     Navigator.of(context).pop();
   }
 
-  void _onNavTap(int index) {
-    Navigator.of(context).pop(index);
-  }
-
   void _login() {
-    Navigator.of(context).pop(NavItems.login);
+    Navigator.of(context).pushNamed('/login');
   }
 
   void _profile() {
-    Navigator.of(context).pop(NavItems.profile);
+    Navigator.of(context).pushNamed('/profile');
   }
 
   Future<void> _addFavorite() async {
@@ -229,29 +221,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     );
   }
 
-  Widget get _bottomBar {
-    return BottomNavigationBar(
-      backgroundColor: AppColors.bottomBar,
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      onTap: _onNavTap,
-      currentIndex: 0,
-      items: [
-        BottomNavigationBarItem(
-          icon: AppIcons.home,
-          label: 'Главная',
-        ),
-        BottomNavigationBarItem(
-          icon: AppIcons.star,
-          label: 'Избранное',
-        ),
-        BottomNavigationBarItem(
-          icon: AppIcons.user,
-          label: 'Профиль',
-        ),
-      ],
-    );
-  }
+  Widget get _bottomBar => BottomNavBar();
 
   void _toggleProgram() {
     setState(() {
@@ -438,14 +408,11 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   @override
   Widget build(BuildContext context) {
     if (_pipMode) return _player;
-    return WillPopScope(
-      onWillPop: _willPop,
-      child: Scaffold(
-        backgroundColor: AppColors.white,
-        appBar: _fullscreen ? null : _appBar,
-        body: _body,
-        bottomNavigationBar: _fullscreen ? null : _bottomBar,
-      ),
+    return Scaffold(
+      backgroundColor: AppColors.white,
+      appBar: _fullscreen ? null : _appBar,
+      body: _body,
+      bottomNavigationBar: _fullscreen ? null : _bottomBar,
     );
   }
 }
