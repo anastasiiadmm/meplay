@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'api_client.dart';
@@ -187,13 +188,15 @@ class User {
   int id;
   List<Packet> _packets;
   List<int> _favorites;
-  static User _user;
+  static ValueNotifier<User> _user = ValueNotifier<User>(null);
 
   User({this.username, this.password, this.token, this.refreshToken, this.id});
 
+  static ValueNotifier<User> get userNotifier => _user;
+
   static Future<User> getUser() async {
-    if (_user == null) await loadUser();
-    return _user;
+    if (_user.value == null) await loadUser();
+    return _user.value;
   }
 
   static Future<bool> hasUser() async {
@@ -201,14 +204,14 @@ class User {
   }
 
   static Future<void> loadUser() async {
-    _user = await PrefHelper.loadJson(
+    _user.value = await PrefHelper.loadJson(
       PrefKeys.user,
       restore: (data) => User.fromJson(data),
     );
   }
 
   static Future<void> setUser(User user) async {
-    _user = user;
+    _user.value = user;
     await PrefHelper.saveJson(
       PrefKeys.user,
       user,
@@ -216,7 +219,7 @@ class User {
   }
 
   static Future<void> clearUser() async {
-    _user = null;
+    _user.value = null;
     await PrefHelper.clear(PrefKeys.user);
   }
 

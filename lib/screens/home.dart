@@ -13,6 +13,7 @@ import 'splash.dart';
 import 'tvChannels.dart';
 import '../widgets/modals.dart' as modals;
 import '../widgets/bottomNavBar.dart';
+import '../inherited/auth_notifier.dart';
 import '../theme.dart';
 import '../models.dart';
 
@@ -254,18 +255,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _authBtn {
-    return FutureBuilder<bool>(
-      future: User.hasUser(),
-      initialData: false,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return snapshot.data ? TextButton(
-          onPressed: _logoutDialog,
-          child: Text('Выход', style: AppFonts.appBarAction),
-        ) : TextButton(
-          onPressed: _login,
-          child: Text('Вход', style: AppFonts.appBarAction),
-        );
-      },
+    return AuthNotifier(
+      child: Builder(
+        builder: (BuildContext context) {
+          User user = AuthNotifier.of(context);
+          return user == null ? TextButton(
+            onPressed: _login,
+            child: Text('Вход', style: AppFonts.appBarAction),
+          ) : TextButton(
+            onPressed: _logoutDialog,
+            child: Text('Выход', style: AppFonts.appBarAction),
+          );
+        },
+      ),
+      notifier: User.userNotifier,
     );
   }
 
@@ -282,7 +285,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('rebuild');
     return _loading ? SplashScreen(
       onShow: _splashShow,
       onHide: _splashHide,
