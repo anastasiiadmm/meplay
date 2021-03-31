@@ -5,6 +5,7 @@ import 'screens/login.dart';
 import 'screens/profile.dart';
 import 'screens/tvChannels.dart';
 import 'screens/tvFavorites.dart';
+import 'models.dart';
 
 
 void main() {
@@ -14,30 +15,17 @@ void main() {
 
 
 class MePlay extends StatelessWidget {
-  final Map<String, Widget Function(BuildContext)> routes = {
-    '/': (BuildContext context) => HomeScreen(),
-    '/login': (BuildContext context) => LoginScreen(),
-    '/profile': (BuildContext context) => ProfileScreen(),
-    '/tv': (BuildContext context) => TVChannelsScreen(),
-    '/favorites': (BuildContext context) => TVFavoritesScreen(),
-    // TODO:
-    // '/radio': (BuildContext context) => null,
-    // '/favorites/tv'
-    // '/favorites/radio': (BuildContext context) => null,
-  };
-
   Route<dynamic> _makeRoute(RouteSettings settings) {
-    String name = settings.name;
-    Object args = settings.arguments;
-    Widget Function(BuildContext) builder;
-    print('Route: $name, args: $args');
-    if(routes.containsKey(name)) {
-      builder = routes[name];
-    } else {
-      // TODO check for dynamic routes like /tv/1, /tv/2, ... etc.
-      builder = routes['/'];
+    switch(settings.name) {
+      case '/login':
+        return MaterialPageRoute<User>(
+          builder: (BuildContext context) => LoginScreen(),
+        );
+      default:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => HomeScreen(),
+        );
     }
-    return MaterialPageRoute(builder: builder);
   }
 
   @override
@@ -61,7 +49,23 @@ class MePlay extends StatelessWidget {
     return MaterialApp(
       title: 'Me Play',
       theme: ThemeData(fontFamily: 'SF Pro Text'),
+
+      // "static" routes (not containing variables and not returning anything)
+      routes: {
+        '/': (BuildContext context) => HomeScreen(),
+        '/profile': (BuildContext context) => ProfileScreen(),
+        '/tv': (BuildContext context) => TVChannelsScreen(),
+        '/favorites': (BuildContext context) => TVFavoritesScreen(),
+
+        // TODO:
+        // '/radio': (BuildContext context) => null,
+        // '/favorites/tv': (BuildContext context) => null
+        // '/favorites/radio': (BuildContext context) => null,
+      },
+
+      // dynamic routes (containing variables or returning something)
       onGenerateRoute: _makeRoute,
+
       initialRoute: '/',
     );
   }

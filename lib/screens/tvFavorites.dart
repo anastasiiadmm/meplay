@@ -38,14 +38,21 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
   }
 
   Future<void> _initAsync() async {
-    _loadUser().then((_) {
-      if (_user != null) _loadChannels();
-    });
-    _loadListType();
+    await _loadUser();
+    if (_user == null) await _login();
+    if (_user == null) Navigator.of(context).pop();
+    else {
+      _loadListType();
+      _loadChannels();
+    }
   }
-  
+
   Future<void> _loadUser() async {
     _user = await User.getUser();
+  }
+
+  Future<void> _login() async {
+    _user = await Navigator.of(context).pushNamed<User>('/login');
   }
 
   Future<void> _loadChannels() async {

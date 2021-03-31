@@ -258,8 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
       future: User.hasUser(),
       initialData: false,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        bool hasUser = snapshot.data;
-        return hasUser ? TextButton(
+        return snapshot.data ? TextButton(
           onPressed: _logoutDialog,
           child: Text('Выход', style: AppFonts.appBarAction),
         ) : TextButton(
@@ -283,6 +282,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('rebuild');
     return _loading ? SplashScreen(
       onShow: _splashShow,
       onHide: _splashHide,

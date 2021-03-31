@@ -197,7 +197,7 @@ class User {
   }
 
   static Future<bool> hasUser() async {
-    return await getUser() == null;
+    return await getUser() != null;
   }
 
   static Future<void> loadUser() async {

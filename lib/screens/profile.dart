@@ -23,24 +23,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _initAsync() async {
-    User user = await User.getUser();
-    if (user == null) user = await _login();
-    if (user == null) Navigator.of(context).pop();
-    else {
-      List<Packet> packets = await user.getPackets();
-      setState(() {
-        _user = user;
-        _packets = packets;
-      });
-    }
+    await _loadUser();
+    if (_user == null) await _login();
+    if (_user == null) Navigator.of(context).pop();
+    else _loadPackets();
   }
 
-  Future<User> _login() async {
-    return Navigator.of(context).push<User>(
-      MaterialPageRoute(
-        builder: (BuildContext context) => LoginScreen(),
-      ),
-    );
+  Future<void> _loadUser() async {
+    User user = await User.getUser();
+    setState(() { _user = user; });
+  }
+
+  Future<void> _login() async {
+    User user = await Navigator.of(context).pushNamed<User>('/login');
+    setState(() { _user = user; });
+  }
+
+  Future<void> _loadPackets() async {
+    List<Packet> packets = await _user.getPackets();
+    setState(() { _packets = packets; });
   }
 
   Future<void> _logout() async {
