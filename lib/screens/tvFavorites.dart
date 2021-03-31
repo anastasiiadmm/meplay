@@ -86,44 +86,15 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
     return BottomNavBar(showIndex: NavItems.favorites);
   }
 
-  //
+  // TODO: add star button into channel list items
   // Future<void> _addFavorite(Channel channel) async {
   //   User user = await User.getUser();
-  //   if (user != null) await user.addFavorite(channel);
-  //
-  //   if(widget.selectedNavId == NavItems.fav) {
-  //     setState(() {
-  //       _initialChannels.add(channel);
-  //       _channels.add(channel);
-  //     });
-  //   }
+  //   if(user != null) await user.addFavorite(channel);
   // }
   //
   // Future<void> _removeFavorite(Channel channel) async {
   //   User user = await User.getUser();
-  //   if (user != null) await user.removeFavorite(channel);
-  //
-  //   if(widget.selectedNavId == NavItems.fav) {
-  //     setState(() {
-  //       _initialChannels.remove(channel);
-  //       _channels.remove(channel);
-  //     });
-  //   }
-  // }
-  //
-  // Future<void> _toggleFavorite(Channel channel) async {
-  //   User user = await User.getUser();
-  //   if (user != null) {
-  //     String message;
-  //     if (await user.hasFavorite(channel)) {
-  //       await _removeFavorite(channel);
-  //       message = 'Канал "${channel.name}" удалён из избранного';
-  //     } else {
-  //       await _addFavorite(channel);
-  //       message = 'Канал "${channel.name}" добавлен в избранное';
-  //     }
-  //     grayToast(context, message);
-  //   }
+  //   if(user != null) await user.removeFavorite(channel);
   // }
 
   Future<void> _openChannel(Channel channel) async {
@@ -156,7 +127,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
 
   Widget get _body => ChannelList(
     channels: _channels,
-    onChannelTap: _openChannel,
+    openChannel: _openChannel,
     listType: _listType,
   );
 

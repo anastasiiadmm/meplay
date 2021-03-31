@@ -31,14 +31,18 @@ class ChannelListType {
 }
 
 
+// TODO: add star button into channel list items
 class ChannelList extends StatefulWidget {
   final List<Channel> channels;
-  final void Function(Channel) onChannelTap;
+  final void Function(Channel) openChannel;
+  final void Function(Channel) addToFavorites;
+  final void Function(Channel) removeFromFavorites;
   final ChannelListType listType;
 
   ChannelList({Key key, @required this.channels,
     this.listType: ChannelListType.defaultType,
-    @required this.onChannelTap})
+    this.addToFavorites, this.removeFromFavorites,
+    @required this.openChannel,})
       : assert(listType != null),
         assert(channels != null),
         super();
@@ -131,7 +135,7 @@ class _ChannelListState extends State<ChannelList> {
         if (channel.locked) AppIcons.lockChannel,
       ];
       content = GestureDetector(
-        onTap: () { widget.onChannelTap(channel); },
+        onTap: () { widget.openChannel(channel); },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -176,7 +180,7 @@ class _ChannelListState extends State<ChannelList> {
     Channel channel = widget.channels[index];
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-      onTap: () { widget.onChannelTap(channel); },
+      onTap: () { widget.openChannel(channel); },
       leading: FutureBuilder(
         future: channel.logo,
         builder: (
@@ -230,7 +234,7 @@ class _ChannelListState extends State<ChannelList> {
       margin = EdgeInsets.only(left: 2.5);
     }
     return GestureDetector(
-      onTap: () { widget.onChannelTap(channel); },
+      onTap: () { widget.openChannel(channel); },
       child: Container(
         margin: margin,
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),

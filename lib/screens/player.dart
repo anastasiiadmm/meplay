@@ -20,16 +20,12 @@ class PlayerScreen extends StatefulWidget {
   final Channel channel;
   final Channel Function(Channel) getNextChannel;
   final Channel Function(Channel) getPrevChannel;
-  final Future<void> Function(Channel) addFavorite;
-  final Future<void> Function(Channel) removeFavorite;
 
   PlayerScreen({
     Key key,
     @required this.channel,
     this.getNextChannel,
     this.getPrevChannel,
-    this.addFavorite,
-    this.removeFavorite,
   }) : super(key: key);
 
   @override
@@ -180,13 +176,19 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   Future<void> _addFavorite() async {
-    await widget.addFavorite(_channel);
-    setState(() { _favorite = true; });
+    User user = await User.getUser();
+    if(user != null) {
+      await user.addFavorite(_channel);
+      setState(() { _favorite = true; });
+    }
   }
 
   Future<void> _removeFavorite() async {
-    await widget.removeFavorite(_channel);
-    setState(() { _favorite = false; });
+    User user = await User.getUser();
+    if(user != null) {
+      await user.removeFavorite(_channel);
+      setState(() { _favorite = false; });
+    }
   }
 
   Widget get _favButton {

@@ -131,7 +131,7 @@ class Channel {
 
   Future<bool> get isFavorite async {
     User user = await User.getUser();
-    if (user == null) return false;
+    if(user == null) return false;
     return user.hasFavorite(this);
   }
 }
