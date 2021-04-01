@@ -17,13 +17,13 @@ import '../widgets/modals.dart';
 
 
 class PlayerScreen extends StatefulWidget {
-  final Channel channel;
+  final int channelId;
   final Channel Function(Channel) getNextChannel;
   final Channel Function(Channel) getPrevChannel;
 
   PlayerScreen({
     Key key,
-    @required this.channel,
+    @required this.channelId,
     this.getNextChannel,
     this.getPrevChannel,
   }) : super(key: key);
@@ -47,14 +47,26 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   @override
   void initState() {
     super.initState();
-    _channel = widget.channel;
     OrientationHelper.allowAll();
-    _restoreUser();
-    _initBrightness();
-    _initPlatformState();
+    _initAsync();
     _expandableController = ExpandableController(initialExpanded: _expandProgram);
     _expandableController.addListener(_toggleProgram);
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future<void> _initAsync() async {
+    print(widget.channelId);
+    _initBrightness();
+    _initPlatformState();
+    Future.wait([
+      _loadUser(),
+      _loadChannel(),
+    ]).then((_) => _loadFavorite());
+  }
+
+  Future<void> _loadChannel() async {
+    Channel channel = await Channel.getChannel(widget.channelId);
+    setState(() { _channel = channel; });
   }
 
   Future<void> _initPlatformState() async {
@@ -70,15 +82,13 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     }
   }
 
-  Future<void> _restoreUser() async {
+  Future<void> _loadUser() async {
     User user = await User.getUser();
-    if (user != null)
-      setState(() { _user = user; });
-    _loadFavorite();
+    if (user != null) setState(() { _user = user; });
   }
 
   Future<void> _loadFavorite() async {
-    if (_user != null) {
+    if (_user != null && _channel != null) {
       bool favorite = await _user.hasFavorite(_channel);
       setState(() { _favorite = favorite; });
     }
@@ -98,8 +108,8 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   void dispose() {
     Wakelock.disable();
     _restoreBrightness();
-    WidgetsBinding.instance.removeObserver(this);
     OrientationHelper.forcePortrait();
+    WidgetsBinding.instance.removeObserver(this);
     _expandableController.removeListener(_toggleProgram);
     _expandableController.dispose();
     super.dispose();
@@ -215,7 +225,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         onPressed: _back,
         icon: AppIcons.back,
       ),
-      title: Text(_channel.title, style: AppFonts.screenTitle),
+      title: Text(_channel?.title ?? '', style: AppFonts.screenTitle),
       centerTitle: true,
       actions: [
         _favButton,
@@ -381,11 +391,11 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     if(_fullscreen || _pipMode) return _player;
     List<Widget> children = [
       FutureBuilder(
-        future: _channel.program,
+        future: _channel?.program ?? null,
         builder: _program,
       ),
     ];
-    if(_channel.locked) {
+    if(_channel?.locked ?? false) {
       children.add(_lockInfo);
     }
     return Column(

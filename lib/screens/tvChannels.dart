@@ -90,7 +90,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => PlayerScreen(
-          channel: channel,
+          channelId: channel.id,
           getNextChannel: _nextChannel,
           getPrevChannel: _prevChannel,
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:me_play/screens/player.dart';
 import 'screens/home.dart';
 import 'screens/login.dart';
 import 'screens/profile.dart';
@@ -16,16 +17,20 @@ void main() {
 
 class MePlay extends StatelessWidget {
   Route<dynamic> _makeRoute(RouteSettings settings) {
-    switch(settings.name) {
-      case '/login':
-        return MaterialPageRoute<User>(
-          builder: (BuildContext context) => LoginScreen(),
-        );
-      default:
-        return MaterialPageRoute(
-          builder: (BuildContext context) => HomeScreen(),
-        );
+    String name = settings.name;
+    if(name == '/login') return MaterialPageRoute<User>(
+      builder: (BuildContext context) => LoginScreen(),
+      settings: settings,
+    );
+    else if(name.startsWith('/tv/')) {
+      List<String> parts = name.split('/');
+      int id = int.tryParse(parts[2]);
+      return MaterialPageRoute(
+        builder: (BuildContext context) => PlayerScreen(channelId: id),
+        settings: settings,
+      );
     }
+    else return null;
   }
 
   @override
@@ -56,16 +61,15 @@ class MePlay extends StatelessWidget {
         '/profile': (BuildContext context) => ProfileScreen(),
         '/tv': (BuildContext context) => TVChannelsScreen(),
         '/favorites': (BuildContext context) => TVFavoritesScreen(),
+        '/favorites/tv': (BuildContext context) => TVFavoritesScreen(),
 
         // TODO:
         // '/radio': (BuildContext context) => null,
-        // '/favorites/tv': (BuildContext context) => null
         // '/favorites/radio': (BuildContext context) => null,
       },
 
       // dynamic routes (containing variables or returning something)
       onGenerateRoute: _makeRoute,
-
       initialRoute: '/',
     );
   }

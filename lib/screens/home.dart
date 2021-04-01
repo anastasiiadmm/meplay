@@ -139,15 +139,31 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _initUniLinks() async {
+    // TODO: make deeplink helper
+    //  prevent opening deeplink routes if it is current or invalid.
+    //  close old channel if one opened.
+
     try {
       String initialLink = await getInitialLink();
-      // TODO: navigate here somewhere
+      if(initialLink != null) {
+        print(initialLink);
+        String link = initialLink.replaceAll('http://teleclick.kg/deeplinks', '');
+        link = link.replaceAll('https://teleclick.kg/deeplinks', '');
+        link = link.replaceAll('meplay://teleclick.kg', '');
+        if(link == '') link = '/';
+        Navigator.of(context).pushNamed(link);
+      }
     } on PlatformException {
       // TODO: print error
     }
 
     _uniSub = getLinksStream().listen((String link) {
-      // TODO: navigate here somewhere
+      print(link);
+      link = link.replaceAll('http://teleclick.kg/deeplinks', '');
+      link = link.replaceAll('https://teleclick.kg/deeplinks', '');
+      link = link.replaceAll('meplay://teleclick.kg', '');
+      if(link == '') link = '/';
+      Navigator.of(context).pushNamed(link);
     }, onError: (err) {
       // TODO: print error
     });
@@ -213,11 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _watchTV() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => TVChannelsScreen(),
-      ),
-    );
+    Navigator.of(context).pushNamed('/tv');
   }
 
   void _listenRadio() {
@@ -230,11 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
   );
 
   Future<void> _login() async {
-    User user = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => LoginScreen(),
-      ),
-    );
+    User user = await Navigator.of(context).pushNamed('/login');
     setState(() {});  // refresh the state for the login/logout button
     if (user != null) _watchTV();
   }

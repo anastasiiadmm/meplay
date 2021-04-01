@@ -118,10 +118,12 @@ class _HLSPlayerState extends State<HLSPlayer> {
   void initState() {
     super.initState();
     _initBrightness();
-    if (!widget.channel.locked) {
-      _loadChannel();
+    if(widget.channel != null) {
+      if(!widget.channel.locked) {
+        _loadChannel();
+      }
+      _loadRatio();
     }
-    _loadRatio();
   }
 
   @override

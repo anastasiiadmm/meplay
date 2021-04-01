@@ -36,6 +36,14 @@ class Channel {
     return _list;
   }
 
+  static Future<Channel> getChannel(int id) async {
+    List<Channel> channels = await getChannels();
+    return channels.firstWhere(
+      (channel) => channel.id == id,
+      orElse: () => null,
+    );
+  }
+
   static Future<void> loadChannels() async {
     try {
       User user = await User.getUser();
