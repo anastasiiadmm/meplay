@@ -26,13 +26,7 @@ class MePlay extends StatelessWidget {
       List<String> parts = name.split('/');
       int id = int.tryParse(parts[2]);
       return MaterialPageRoute(
-        builder: (BuildContext context) {
-          String currentName = ModalRoute.of(context).settings.name;
-          if(currentName.startsWith('/tv/')) {
-            Navigator.of(context).pop();
-          }
-          return PlayerScreen(channelId: id);
-        },
+        builder: (BuildContext context) => PlayerScreen(channelId: id),
         settings: settings,
       );
     }

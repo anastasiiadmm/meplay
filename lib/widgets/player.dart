@@ -127,6 +127,17 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   @override
+  void didUpdateWidget(oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(widget.channel != null) {
+      if(!widget.channel.locked) {
+        _loadChannel();
+      }
+      _loadRatio();
+    }
+  }
+
+  @override
   void dispose() {
     _disposeVideo();
     _disposeCast();

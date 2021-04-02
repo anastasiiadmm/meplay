@@ -92,6 +92,7 @@ class M3UPlaylist {
   String get path => _file?.path;
 
   Future<void> load() async {
+    print('Loading: $url');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       parse(response.body);
@@ -216,6 +217,7 @@ class M3UChunk {
   File get file => _file;
 
   Future<double> load() async {
+    print('Loading: $url');
     _file = await DefaultCacheManager().getSingleFile(url);
     return duration;
   }

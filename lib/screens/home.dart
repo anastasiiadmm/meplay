@@ -190,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _splashHide() {
-    _watchTV();
+    if(!_deeplinkHelper.navigated) _watchTV();
     Timer(Duration(milliseconds: 300), (){
       setState(() { _loading = false; });
     });

@@ -20,6 +20,7 @@ const routePatterns = [
 class DeeplinkHelper {
   BuildContext _context;
   StreamSubscription _sub;
+  bool _navigated = false;
 
   DeeplinkHelper._(BuildContext context)
       : _context = context;
@@ -27,12 +28,13 @@ class DeeplinkHelper {
   static DeeplinkHelper _instance;
   static DeeplinkHelper get instance => _instance;
 
-
   static DeeplinkHelper initialize(BuildContext context) {
     _instance = DeeplinkHelper._(context);
     _instance._subscribe();
     return _instance;
   }
+
+  bool get navigated => _navigated;
 
   void _subscribe() {
     _sub = getLinksStream().listen(
@@ -55,9 +57,11 @@ class DeeplinkHelper {
   void navigateTo(String link) {
     print(link);
     String path = _getPath(link);
-    String currentPath = ModalRoute.of(_context).settings.name;
-    if(_pathExists(path) && path != currentPath) {
-      Navigator.of(_context).pushNamed(link);
+    // TODO: check, if route is the same
+    if(_pathExists(path)) {
+      // TODO: pop, if it's a player
+      Navigator.of(_context).pushNamed(path);
+      _navigated = true;
     }
   }
 
