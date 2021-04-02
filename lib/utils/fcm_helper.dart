@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import '../api_client.dart';
 import 'local_notification_helper.dart';
 import 'pref_helper.dart';
+import 'deeplink_helper.dart';
 
 
 class FCMHelper {
@@ -72,7 +73,7 @@ class FCMHelper {
   // handles remote messages taps opening the app
   Future<void> _open(RemoteMessage message) async {
     _log(message, type: 'REMOTE OPEN');
-
+    if(message.data != null) _openLink(message);
   }
 
   // handles remote messages received in background
@@ -91,11 +92,19 @@ class FCMHelper {
     }
   }
 
-  // gets initial message from background
-  Future<RemoteMessage> getInitialMessage() async {
-    RemoteMessage initial = await FirebaseMessaging.instance.getInitialMessage();
-    if (initial != null) _log(initial, type: 'REMOTE INITIAL');
-    return initial;
+  // checks initial message from background
+  Future<void> checkInitialMessage() async {
+    RemoteMessage message = await FirebaseMessaging.instance.getInitialMessage();
+    if (message != null) {
+      _log(message, type: 'REMOTE INITIAL');
+      if(message.data != null) _openLink(message);
+    }
+  }
+
+  void _openLink(RemoteMessage message) {
+    if(message.data.containsKey('link')) {
+      DeeplinkHelper.instance.navigateTo(message.data['link']);
+    }
   }
 
   Future<void> sendToken() async {

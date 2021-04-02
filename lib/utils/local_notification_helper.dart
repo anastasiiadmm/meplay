@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart';
 
 import 'tz_helper.dart';
+import 'deeplink_helper.dart';
 
 
 class LocalNotificationHelper {
@@ -111,8 +112,8 @@ class LocalNotificationHelper {
   Future<void> _onOpen(String payload) async {
     if (payload.isNotEmpty) {
       print("\nOPEN LOCAL\n$payload\n");
-
-      // TODO: open channel here if there is a channel in a notification
+      Map<String, dynamic> data = _getData(payload);
+      if(data!= null) _openLink(data);
     }
   }
 
@@ -126,6 +127,22 @@ class LocalNotificationHelper {
   }
 
   int _getId() => DateTime.now().millisecondsSinceEpoch.hashCode % 2147483647;
+
+  Map<String, dynamic> _getData(String payload) {
+    Map<String, dynamic> data;
+    try {
+      data = jsonDecode(payload);
+    } on Exception catch(e) {
+      print(e);
+    }
+    return data;
+  }
+
+  void _openLink(Map<String, dynamic> data) {
+    if(data.containsKey('link')) {
+      DeeplinkHelper.instance.navigateTo(data['link']);
+    }
+  }
 
   // TODO: allow schedule periodic.
 }

@@ -2,15 +2,14 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show PlatformException;
+import 'package:me_play/utils/deeplink_helper.dart';
 import 'package:uni_links/uni_links.dart';
 import '../hexagon/hexagon_widget.dart';
 import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../utils/fcm_helper.dart';
 import '../utils/local_notification_helper.dart';
 import '../utils/tz_helper.dart';
-import 'login.dart';
 import 'splash.dart';
-import 'tvChannels.dart';
 import '../widgets/modals.dart' as modals;
 import '../widgets/bottomNavBar.dart';
 import '../inherited/auth_notifier.dart';
@@ -125,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _asyncInitDone = false;
   bool _splashAnimationDone = false;
   bool _isSplashShowing = true;  // if splash animates from hidden to visible or back
-  StreamSubscription _uniSub;
+  DeeplinkHelper _deeplinkHelper;
 
   void initState() {
     super.initState();
@@ -134,47 +133,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    _uniSub.cancel();
+    _deeplinkHelper.dispose();
     super.dispose();
   }
 
-  Future<void> _initUniLinks() async {
-    // TODO: make deeplink helper
-    //  prevent opening deeplink routes if it is current or invalid.
-    //  close old channel if one opened.
-
-    try {
-      String initialLink = await getInitialLink();
-      if(initialLink != null) {
-        print(initialLink);
-        String link = initialLink.replaceAll('http://teleclick.kg/deeplinks', '');
-        link = link.replaceAll('https://teleclick.kg/deeplinks', '');
-        link = link.replaceAll('meplay://teleclick.kg', '');
-        if(link == '') link = '/';
-        Navigator.of(context).pushNamed(link);
-      }
-    } on PlatformException {
-      // TODO: print error
-    }
-
-    _uniSub = getLinksStream().listen((String link) {
-      print(link);
-      link = link.replaceAll('http://teleclick.kg/deeplinks', '');
-      link = link.replaceAll('https://teleclick.kg/deeplinks', '');
-      link = link.replaceAll('meplay://teleclick.kg', '');
-      if(link == '') link = '/';
-      Navigator.of(context).pushNamed(link);
-    }, onError: (err) {
-      // TODO: print error
-    });
+  Future<void> _initDeeplinks() async {
+    _deeplinkHelper = DeeplinkHelper.initialize(context);
+    await _deeplinkHelper.checkInitialLink();
   }
 
   Future<void> _initFcm() async {
     FCMHelper helper = await FCMHelper.initialize();
-    RemoteMessage initial = await helper.getInitialMessage();
-    if (initial != null) {
-      // do something with it, maybe navigate somewhere.
-    }
+    await helper.checkInitialMessage();
   }
 
   Future<void> _initNotifications() async {
@@ -198,14 +168,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _initAsync() async {
-    await Future.wait([
-      _initUniLinks(),
-      _initTz().then((_) => Future.wait([
-        _initNotifications(),
-        _initFcm(),
-      ])),
-      _loadUser().then((_) => _loadChannels())
-    ]);
+    await _loadUser();
+    await _loadChannels();
+    await _initTz();
+    await _initDeeplinks();
+    await _initNotifications();
+    await _initFcm();
     _asyncInitDone = true;
     _doneLoading();
   }
