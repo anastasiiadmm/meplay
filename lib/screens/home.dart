@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _initDeeplinks() async {
-    _deeplinkHelper = DeeplinkHelper.initialize(context);
+    _deeplinkHelper = DeeplinkHelper.instance;
     await _deeplinkHelper.checkInitialLink();
   }
 

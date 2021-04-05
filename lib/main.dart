@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:me_play/screens/player.dart';
 import 'screens/home.dart';
 import 'screens/login.dart';
 import 'screens/profile.dart';
 import 'screens/tvChannels.dart';
 import 'screens/tvFavorites.dart';
+import 'screens/player.dart';
 import 'models.dart';
 
 
@@ -13,6 +13,11 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MePlay());
 }
+
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>(
+    debugLabel: 'Main Navigator Key'
+);
 
 
 class MePlay extends StatelessWidget {
@@ -70,7 +75,7 @@ class MePlay extends StatelessWidget {
 
       // dynamic routes (containing variables or returning something)
       onGenerateRoute: _makeRoute,
-      initialRoute: '/',
+      navigatorKey: navigatorKey,
     );
   }
 }

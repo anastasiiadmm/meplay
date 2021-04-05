@@ -4,32 +4,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uni_links/uni_links.dart';
 
+import '../main.dart';
 
-// patterns for exact match
-const routePatterns = [
+
+const allowedPathPatterns = [
   '/',
   '/profile',
   '/tv',
   '/favorites',
   '/favorites/tv',
-  '/login',
   '/tv/[0-9]+'
 ];
 
 
 class DeeplinkHelper {
-  BuildContext _context;
   StreamSubscription _sub;
   bool _navigated = false;
 
-  DeeplinkHelper._(BuildContext context)
-      : _context = context;
+  DeeplinkHelper._();
 
   static DeeplinkHelper _instance;
-  static DeeplinkHelper get instance => _instance;
+  static DeeplinkHelper get instance {
+    if(_instance == null) init();
+    return _instance;
+  }
 
-  static DeeplinkHelper initialize(BuildContext context) {
-    _instance = DeeplinkHelper._(context);
+  static DeeplinkHelper init() {
+    _instance = DeeplinkHelper._();
     _instance._subscribe();
     return _instance;
   }
@@ -55,23 +56,22 @@ class DeeplinkHelper {
   }
 
   void navigateTo(String link) {
-    print(link);
     String path = _getPath(link);
-    // TODO: check, if route is the same
-    if(_pathExists(path)) {
-      // TODO: pop, if it's a player
-      Navigator.of(_context).pushNamed(path);
+    print("$link : $path");
+    if(_pathAllowed(path)) {
+      NavigatorState navState = navigatorKey.currentState;
+      // todo add NavigatorObserver to manage history
+      // if player - replace channel
+      // prevent same path pushing
+      navState.pushNamed(path);
       _navigated = true;
     }
   }
 
-  bool _pathExists(String path) {
-    for (String pattern in routePatterns) {
-      if(RegExp('^' + pattern + r'$').hasMatch(path)) {
-        return true;
-      }
-    }
-    return false;
+  bool _pathAllowed(String path) {
+    return allowedPathPatterns.any((pattern) => RegExp(
+      '^' + pattern + r'$',
+    ).hasMatch(path));
   }
 
   String _getPath(String link) {
