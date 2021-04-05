@@ -262,14 +262,16 @@ class HLSVideoCache {
   }
 
   Future<void> _updatePlaylist() async {
-    M3UPlaylist playlist = M3UPlaylist(url);
-    await playlist.load();
-    _playlist.merge(playlist);
-    await _playlist.loadChunks();
+    if(!_disposed) {
+      M3UPlaylist playlist = M3UPlaylist(url);
+      await playlist.load();
+      _playlist.merge(playlist);
+      await _playlist.loadChunks();
+    }
   }
 
   void clear() {
-    if (!_disposed) {
+    if(!_disposed) {
       _disposed = true;
       _playlistCheckTimer?.cancel();
       _playlist.clearCache();
