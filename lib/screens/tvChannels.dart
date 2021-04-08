@@ -94,6 +94,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
           getNextChannel: _nextChannel,
           getPrevChannel: _prevChannel,
         ),
+        settings: RouteSettings(name: '/tv/${channel.id}'),
       ),
     );
   }

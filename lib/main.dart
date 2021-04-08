@@ -16,8 +16,38 @@ void main() {
 
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>(
-    debugLabel: 'Main Navigator Key'
+  debugLabel: 'App Nav Key',
 );
+
+
+class AppNavigatorObserver extends NavigatorObserver {
+  @override
+  void didPop(Route route, Route previousRoute) {
+    super.didPop(route, previousRoute);
+    print('pop ${route.settings}');
+  }
+
+  @override
+  void didPush(Route route, Route previousRoute) {
+    super.didPush(route, previousRoute);
+    print('push ${route.settings}');
+  }
+
+  @override
+  void didRemove(Route route, Route previousRoute) {
+    super.didRemove(route, previousRoute);
+    print('remove ${route.settings}');
+  }
+
+  @override
+  void didReplace({Route newRoute, Route oldRoute}) {
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    print('replace ${newRoute?.settings}');
+  }
+}
+
+
+final historyManager = AppNavigatorObserver();
 
 
 class MePlay extends StatelessWidget {
@@ -76,6 +106,7 @@ class MePlay extends StatelessWidget {
       // dynamic routes (containing variables or returning something)
       onGenerateRoute: _makeRoute,
       navigatorKey: navigatorKey,
+      navigatorObservers: [historyManager],
     );
   }
 }

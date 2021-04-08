@@ -105,6 +105,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
           getNextChannel: _nextChannel,
           getPrevChannel: _prevChannel,
         ),
+        settings: RouteSettings(name: '/tv/${channel.id}'),
       ),
     );
   }
