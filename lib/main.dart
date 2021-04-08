@@ -21,28 +21,44 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>(
 
 
 class AppNavigatorObserver extends NavigatorObserver {
-  @override
-  void didPop(Route route, Route previousRoute) {
-    super.didPop(route, previousRoute);
-    print('pop ${route.settings}');
-  }
+  List<Route> _history = [];
+
+  List<Route> get history => _history;
+
+  Route get currentRoute => _history.length > 0
+      ? _history[_history.length - 1]
+      : null;
 
   @override
   void didPush(Route route, Route previousRoute) {
     super.didPush(route, previousRoute);
     print('push ${route.settings}');
+    _history.add(route);
+  }
+
+  @override
+  void didPop(Route route, Route previousRoute) {
+    super.didPop(route, previousRoute);
+    print('pop ${route.settings}');
+    _history.removeLast();
   }
 
   @override
   void didRemove(Route route, Route previousRoute) {
     super.didRemove(route, previousRoute);
     print('remove ${route.settings}');
+    _history.remove(route);
   }
 
   @override
   void didReplace({Route newRoute, Route oldRoute}) {
     super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-    print('replace ${newRoute?.settings}');
+    print('replace ${oldRoute?.settings} with ${newRoute?.settings}');
+    if(oldRoute != null) {
+      int index = _history.indexOf(oldRoute);
+      if(index > 0) _history.removeAt(index);
+      if(newRoute != null) _history.insert(index, newRoute);
+    }
   }
 }
 
