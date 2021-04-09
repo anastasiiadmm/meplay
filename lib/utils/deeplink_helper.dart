@@ -4,16 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uni_links/uni_links.dart';
 
-import '../main.dart';
+import '../router.dart';
 
 
-const allowedPathPatterns = [
+const deeplinkPatterns = [
   '/',
+  '/login',
   '/profile',
   '/tv',
+  '/tv/[0-9]+',
+  '/radio',
+  '/radio/[0-9]+',
   '/favorites',
   '/favorites/tv',
-  '/tv/[0-9]+'
+  '/favorites/radio',
+];
+
+
+const playerPatterns = [
+  '/tv/[0-9]+',
+  '/radio/[0-9]+',
 ];
 
 
@@ -60,18 +70,37 @@ class DeeplinkHelper {
     print("$link : $path");
     if(_pathAllowed(path)) {
       NavigatorState navState = navigatorKey.currentState;
-      // todo add NavigatorObserver to manage history
-      // if player - replace channel
-      // prevent same path pushing
-      navState.pushNamed(path);
+      // TODO: better logic
+      navState.popUntil((route) => route.isFirst);
+      if(path != '/') navState.pushNamed(path);
       _navigated = true;
     }
   }
 
   bool _pathAllowed(String path) {
-    return allowedPathPatterns.any((pattern) => RegExp(
-      '^' + pattern + r'$',
-    ).hasMatch(path));
+    return deeplinkPatterns.any((pattern) => _toRegex(pattern).hasMatch(path));
+  }
+
+  bool _isPlayer(String path) {
+    return playerPatterns.any((pattern) => _toRegex(pattern).hasMatch(path));
+  }
+
+  bool _isModal(String path) {
+    return path.startsWith('/modal');
+  }
+
+  bool _isSame(String path1, String path2) {
+    if(path1 == path2) return true;
+    return playerPatterns.any((pattern) {
+      RegExp re = _toRegex(pattern);
+      return re.hasMatch(path1) && re.hasMatch(path2);
+    });
+  }
+
+  RegExp _toRegex(String pattern) {
+    if(!pattern.startsWith('^')) pattern = '^$pattern';
+    if(!pattern.endsWith(r'$')) pattern = pattern + r'$';
+    return RegExp(pattern);
   }
 
   String _getPath(String link) {
