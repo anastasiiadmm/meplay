@@ -155,8 +155,11 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   Future<void> _disposeVideo() async {
-    await _controller?.dispose();
-    _cache?.clear();
+    try {
+      await _controller?.dispose();
+    } finally {
+      _cache?.clear();
+    }
   }
 
   Future<void> _disposeCast() async {

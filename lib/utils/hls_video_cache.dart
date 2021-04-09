@@ -199,7 +199,10 @@ class M3UPlaylist {
   String get cacheKey => '$url$mediaSequence';
 
   void clearCache() {
-    chunks.forEach((e) => e.clearCache());
+    while(chunks.length > 0) {
+      M3UChunk chunk = chunks.removeLast();
+      chunk.clearCache();
+    }
     DefaultCacheManager().removeFile(cacheKey);
   }
 }
@@ -257,12 +260,15 @@ class HLSVideoCache {
     await _playlist.loadChunks(awaitMode: M3UPlaylist.awaitModeAll);
     _playlistCheckTimer = Timer.periodic(
       playlistCheckTimeout,
-      (Timer timer) => _updatePlaylist()
+      (Timer timer) => _updatePlaylist(),
     );
   }
 
   Future<void> _updatePlaylist() async {
-    if(!_disposed) {
+    if(_disposed) {
+      _playlistCheckTimer.cancel();
+      _playlist.clearCache();
+    } else {
       M3UPlaylist playlist = M3UPlaylist(url);
       await playlist.load();
       _playlist.merge(playlist);
