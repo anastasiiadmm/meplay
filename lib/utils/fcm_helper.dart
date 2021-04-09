@@ -103,7 +103,7 @@ class FCMHelper {
 
   void _openLink(RemoteMessage message) {
     if(message.data.containsKey('link')) {
-      DeeplinkHelper.instance.navigateTo(message.data['link']);
+      DeeplinkHelper.instance.navigateTo(message.data['link'].toString());
     }
   }
 

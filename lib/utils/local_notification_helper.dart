@@ -140,7 +140,7 @@ class LocalNotificationHelper {
 
   void _openLink(Map<String, dynamic> data) {
     if(data.containsKey('link')) {
-      DeeplinkHelper.instance.navigateTo(data['link']);
+      DeeplinkHelper.instance.navigateTo(data['link'].toString());
     }
   }
 
