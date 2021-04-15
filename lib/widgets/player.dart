@@ -170,19 +170,19 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Future<void> _loadChannel() async {
     _cache = HLSVideoCache(widget.channel.url);
     await _cache.load();
-    if(!mounted) {
-      _disposeVideo();
-    } else {
+    if(!mounted) _cache.clear();
+    else {
       VideoPlayerController controller = VideoPlayerController.cache(_cache);
       await controller.initialize();
       if(!mounted) {
-        _disposeVideo();
+        controller.dispose();
+        _cache.clear();
       } else {
         setState(() {
           _controller = controller;
           _volume = _controller.value.volume;
-          // used to get ratio default for video,
-          // but now we are using our own defaults.
+          // may be used to get default aspect ratio for video,
+          // but it may be quite "wild", so we are using our own.
           // VideoAR.getByValue(controller.value.aspectRatio);
         });
         controller.play();

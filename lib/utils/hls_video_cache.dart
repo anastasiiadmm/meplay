@@ -17,11 +17,17 @@ class M3UHeaders {
   static const extInf = '#EXTINF';
 }
 
+enum WaitMode {
+  waitAll,   // load all at once and waits
+  waitEach,  // load one by one and waits
+}
 
 class M3UPlaylist {
   final String url;
-  List<M3UChunk> chunks;
-  Map<String, String> headers;
+  final WaitMode _waitMode;
+  final bool _cached;
+  List<M3UChunk> _chunks = [];
+  Map<String, String> _headers = {};
   File _file;
   int _mediaSequence;
   int _version;
@@ -29,10 +35,20 @@ class M3UPlaylist {
   int _lastChunkId = -1;
   double _bufferedDuration = 0;
   double _totalDuration = 0;
+  bool _disposed = false;
 
-  static const awaitModeAll = 'awaitAll';
-  static const awaitModeOneByOne = 'awaitOneByOne';
-  static const awaitModeNone = 'awaitNone';
+  M3UPlaylist(this.url, {
+    WaitMode waitMode: WaitMode.waitAll,
+    bool cached: true,
+    Map<String, String> headers,
+  })
+      : assert(url != null),
+        assert(cached != null),
+        assert(waitMode != null),
+        _cached = cached,
+        _waitMode = waitMode {
+    if(headers != null) _headers.addAll(headers);
+  }
 
   Duration get bufferedDuration {
     return Duration(microseconds:(_bufferedDuration * 1000000).floor());
@@ -42,20 +58,13 @@ class M3UPlaylist {
     return Duration(microseconds:(_totalDuration * 1000000).floor());
   }
 
-  M3UPlaylist(this.url) {
-    chunks = <M3UChunk>[];
-    headers = <String, String>{};
-  }
-
   String getHeader(String key, {String defaultValue}) {
-    if (headers.containsKey(key)) {
-      return headers[key];
-    }
+    if (_headers.containsKey(key)) return _headers[key];
     return defaultValue;
   }
 
   void setHeader(String key, dynamic value) {
-    headers[key] = value.toString();
+    _headers[key] = value.toString();
   }
 
   int get mediaSequence {
@@ -64,7 +73,7 @@ class M3UPlaylist {
   }
 
   set mediaSequence(int value) {
-    setHeader(M3UHeaders.mediaSequence, value);
+    setHeader(M3UHeaders.mediaSequence, '$value');
     _mediaSequence = value;
   }
 
@@ -74,7 +83,7 @@ class M3UPlaylist {
   }
 
   set targetDuration(double value) {
-    setHeader(M3UHeaders.targetDuration, value);
+    setHeader(M3UHeaders.targetDuration, '$value');
     _targetDuration = value;
   }
 
@@ -85,49 +94,59 @@ class M3UPlaylist {
 
   set version(int value) {
     _version = value;
-    setHeader(M3UHeaders.version, value);
+    setHeader(M3UHeaders.version, '$value');
   }
 
+  Map<String, String> get headers => _headers;
+  List<M3UChunk> get chunks => _chunks;
   File get file => _file;
   String get path => _file?.path;
 
   Future<void> load() async {
-    print('Loading: $url');
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      parse(response.body);
-      await save();
+    if(_disposed) return;
+    await _loadPlaylist();
+    if(_cached) {
+      await _save();
+      await _loadChunks();
+      if(_disposed) _clearCache();
     }
   }
 
-  Future<void> loadChunks({String awaitMode: awaitModeNone}) async {
-    final chunksToLoad = chunks.where((e) => e.file == null);
-    switch (awaitMode) {
-      case awaitModeNone:
-        var futures = chunksToLoad.map(
-          (e) => e.load().then((d) => _bufferedDuration += d)
-        );
-        Future.wait(futures).then((_) => save());
+  Future<void> update(M3UPlaylist from) async {
+    if(_disposed) return;
+    from.chunks.forEach((chunk) {addChunk(chunk);});
+    if(_cached) {
+      await _loadChunks();
+      if(_disposed) _clearCache();
+    }
+  }
+
+  Future<void> _loadPlaylist() async {
+    print('HLS Playlist: $url');
+    final response = await http.get(url);
+    if (response.statusCode == 200) parse(response.body);
+  }
+
+  Future<void> _loadChunks() async {
+    final chunks = _chunks.where((chunk) => chunk.file == null);
+    switch (_waitMode) {
+      case WaitMode.waitAll:
+        await Future.wait(chunks.map((chunk) async {
+          await chunk.load();
+          _bufferedDuration += chunk.duration;
+        }));
+        await _save();
         break;
-      case awaitModeOneByOne:
-        await Future.forEach(
-          chunksToLoad,
-          (e) async => await e.load().then((d) => _bufferedDuration += d)
-        ).then((_) => save());
-        break;
-      case awaitModeAll:
-        var futures = chunksToLoad.map(
-          (e) => e.load().then((d) => _bufferedDuration += d)
-        );
-        await Future.wait(futures).then((_) => save());
+      case WaitMode.waitEach:
+        await Future.forEach(chunks, (chunk) async {
+          await chunk.load();
+          _bufferedDuration += chunk.duration;
+          await _save();
+        });
         break;
       default:
-        throw Exception('Unsupported mode');
+        throw Exception('Invalid mode');
     }
-  }
-
-  void merge(M3UPlaylist other) {
-    other.chunks.forEach((e) => addChunk(e));
   }
 
   void parse(String m3u) {
@@ -153,7 +172,7 @@ class M3UPlaylist {
         }
       } else {
         var chunk = M3UChunk(
-          _formatChunkUrl(line),
+          _makeChunkUrl(line),
           mediaSequence + id,
           duration,
         );
@@ -171,7 +190,7 @@ class M3UPlaylist {
     }
   }
 
-  String _formatChunkUrl(String chunkName) {
+  String _makeChunkUrl(String chunkName) {
     var parts = url.split('/');
     parts[parts.length - 1] = chunkName;
     return parts.join('/');
@@ -180,12 +199,12 @@ class M3UPlaylist {
   String get hlsString {
     List<String> lines = [M3UHeaders.format];
     headers.forEach((key, value) => lines.add('$key:$value'));
-    chunks.where((e) => e.file != null)
+    chunks.where((chunk) => chunk.file != null)
         .forEach((chunk) => lines.add(chunk.hlsString));
     return lines.join('\n');
   }
 
-  Future<void> save() async {
+  Future<void> _save() async {
     if(_file == null) {
       _file = await DefaultCacheManager().putFile(
         cacheKey,
@@ -198,12 +217,20 @@ class M3UPlaylist {
 
   String get cacheKey => '$url$mediaSequence';
 
-  void clearCache() {
-    while(chunks.length > 0) {
-      M3UChunk chunk = chunks.removeLast();
-      chunk.clearCache();
+  void dispose() {
+    _disposed = true;
+    _clearCache();
+  }
+
+  void _clearCache() {
+    if (_file != null) {
+      DefaultCacheManager().removeFile(cacheKey);
+      _file = null;
     }
-    DefaultCacheManager().removeFile(cacheKey);
+    if(_chunks.length > 0) {
+      _chunks.forEach((chunk) {chunk.dispose();});
+      _chunks = <M3UChunk>[];
+    }
   }
 }
 
@@ -213,24 +240,34 @@ class M3UChunk {
   final double duration;
   final int id;
   File _file;
+  bool _disposed = false;
 
-  M3UChunk(this.url,  this.id, this.duration);
+  M3UChunk(this.url, this.id, this.duration);
 
   String get path => _file?.path;
   File get file => _file;
 
-  Future<double> load() async {
-    print('Loading: $url');
+  Future<void> load() async {
+    if(_disposed) return;
+    print('HLS chunk: $url');
     _file = await DefaultCacheManager().getSingleFile(url);
-    return duration;
+    if(_disposed) _clearCache();
   }
 
   String get hlsString {
     return "#EXTINF:$duration,\n$path";
   }
 
-  void clearCache() {
-    DefaultCacheManager().removeFile(url);
+  void dispose() {
+    _disposed = true;
+    _clearCache();
+  }
+
+  void _clearCache() {
+    if(_file != null) {
+      DefaultCacheManager().removeFile(url);
+      _file = null;
+    }
   }
 }
 
@@ -246,7 +283,10 @@ class HLSVideoCache {
 
   HLSVideoCache(url):
     assert (url != null),
-    _playlist = M3UPlaylist(url);
+    _playlist = M3UPlaylist(url, headers: {
+      M3UHeaders.version: '4',
+      M3UHeaders.playlistType: M3UHeaders.playlistTypeEvent,
+    });
 
   String get path => _playlist.path;
   File get file => _playlist.file;
@@ -254,33 +294,28 @@ class HLSVideoCache {
   Duration get duration => _playlist.bufferedDuration;
 
   Future<void> load() async {
+    if(_disposed) return;
     await _playlist.load();
-    _playlist.setHeader(M3UHeaders.version, 4);
-    _playlist.setHeader(M3UHeaders.playlistType, M3UHeaders.playlistTypeEvent);
-    await _playlist.loadChunks(awaitMode: M3UPlaylist.awaitModeAll);
     _playlistCheckTimer = Timer.periodic(
-      playlistCheckTimeout,
-      (Timer timer) => _updatePlaylist(),
+      playlistCheckTimeout, (Timer timer) => _updatePlaylist(),
     );
+    if(_disposed) _dispose();
   }
 
   Future<void> _updatePlaylist() async {
-    if(_disposed) {
-      _playlistCheckTimer.cancel();
-      _playlist.clearCache();
-    } else {
-      M3UPlaylist playlist = M3UPlaylist(url);
-      await playlist.load();
-      _playlist.merge(playlist);
-      await _playlist.loadChunks();
-    }
+    M3UPlaylist playlist = M3UPlaylist(url, cached: false,);
+    await playlist.load();
+    await _playlist.update(playlist);
   }
 
   void clear() {
-    if(!_disposed) {
-      _disposed = true;
-      _playlistCheckTimer?.cancel();
-      _playlist.clearCache();
-    }
+    print('HLS cache dispose');
+    _disposed = true;
+    _dispose();
+  }
+
+  void _dispose() {
+    _playlist.dispose();
+    _playlistCheckTimer?.cancel();
   }
 }
