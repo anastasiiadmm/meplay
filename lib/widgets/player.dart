@@ -116,6 +116,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   @override
   void initState() {
+    print('INIT PLAYER ${this.hashCode}');
     super.initState();
     _initBrightness();
     if(widget.channel != null) {
@@ -129,16 +130,22 @@ class _HLSPlayerState extends State<HLSPlayer> {
   @override
   void didUpdateWidget(oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(widget.channel != null) {
-      if(!widget.channel.locked) {
-        _loadChannel();
+    // todo: instead of mounted check
+    // check if it has a controller and a cache already, and do not change them
+    // if channel is the same.
+    if(mounted) {
+      if (widget.channel != null) {
+        if (!widget.channel.locked) {
+          _loadChannel();
+        }
+        _loadRatio();
       }
-      _loadRatio();
     }
   }
 
   @override
   void dispose() {
+    print('DISPOSE PLAYER ${this.hashCode}');
     _disposeVideo();
     _disposeCast();
     _controlsTimer?.cancel();

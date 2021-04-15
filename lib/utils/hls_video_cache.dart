@@ -296,7 +296,7 @@ class HLSVideoCache {
   Future<void> load() async {
     if(_disposed) return;
     await _playlist.load();
-    _playlistCheckTimer = Timer.periodic(
+    if(!_disposed) _playlistCheckTimer = Timer.periodic(
       playlistCheckTimeout, (Timer timer) => _updatePlaylist(),
     );
     if(_disposed) _dispose();
