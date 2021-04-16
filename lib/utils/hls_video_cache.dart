@@ -17,14 +17,14 @@ class M3UHeaders {
   static const extInf = '#EXTINF';
 }
 
-enum WaitMode {
+enum ChunkLoadMode {
   waitAll,   // load all at once and waits
   waitEach,  // load one by one and waits
 }
 
 class M3UPlaylist {
   final String url;
-  final WaitMode _waitMode;
+  final ChunkLoadMode _waitMode;
   final bool _cached;
   List<M3UChunk> _chunks = [];
   Map<String, String> _headers = {};
@@ -38,8 +38,8 @@ class M3UPlaylist {
   bool _disposed = false;
 
   M3UPlaylist(this.url, {
-    WaitMode waitMode: WaitMode.waitAll,
     bool cached: true,
+    ChunkLoadMode waitMode: ChunkLoadMode.waitAll,
     Map<String, String> headers,
   })
       : assert(url != null),
@@ -112,9 +112,9 @@ class M3UPlaylist {
     }
   }
 
-  Future<void> update(M3UPlaylist from) async {
+  Future<void> merge(M3UPlaylist other) async {
     if(_disposed) return;
-    from.chunks.forEach((chunk) {addChunk(chunk);});
+    other.chunks.forEach((chunk) {addChunk(chunk);});
     if(_cached) {
       await _loadChunks();
       if(_disposed) _clearCache();
@@ -124,20 +124,20 @@ class M3UPlaylist {
   Future<void> _loadPlaylist() async {
     print('HLS Playlist: $url');
     final response = await http.get(url);
-    if (response.statusCode == 200) parse(response.body);
+    if (response.statusCode == 200) _parse(response.body);
   }
 
   Future<void> _loadChunks() async {
     final chunks = _chunks.where((chunk) => chunk.file == null);
     switch (_waitMode) {
-      case WaitMode.waitAll:
+      case ChunkLoadMode.waitAll:
         await Future.wait(chunks.map((chunk) async {
           await chunk.load();
           _bufferedDuration += chunk.duration;
         }));
         await _save();
         break;
-      case WaitMode.waitEach:
+      case ChunkLoadMode.waitEach:
         await Future.forEach(chunks, (chunk) async {
           await chunk.load();
           _bufferedDuration += chunk.duration;
@@ -149,7 +149,7 @@ class M3UPlaylist {
     }
   }
 
-  void parse(String m3u) {
+  void _parse(String m3u) {
     final lines = m3u.split('\n');
     final format = lines.removeAt(0);
     assert(format == M3UHeaders.format, 'Invalid playlist format');
@@ -227,10 +227,7 @@ class M3UPlaylist {
       DefaultCacheManager().removeFile(cacheKey);
       _file = null;
     }
-    if(_chunks.length > 0) {
-      _chunks.forEach((chunk) {chunk.dispose();});
-      _chunks = <M3UChunk>[];
-    }
+    _chunks.forEach((chunk) {chunk.dispose();});
   }
 }
 
@@ -296,8 +293,10 @@ class HLSVideoCache {
   Future<void> load() async {
     if(_disposed) return;
     await _playlist.load();
-    if(!_disposed) _playlistCheckTimer = Timer.periodic(
-      playlistCheckTimeout, (Timer timer) => _updatePlaylist(),
+    if(_disposed) _playlist.dispose();
+    else _playlistCheckTimer = Timer.periodic(
+      playlistCheckTimeout,
+      (Timer timer) {_updatePlaylist();},
     );
     if(_disposed) _dispose();
   }
@@ -305,7 +304,7 @@ class HLSVideoCache {
   Future<void> _updatePlaylist() async {
     M3UPlaylist playlist = M3UPlaylist(url, cached: false,);
     await playlist.load();
-    await _playlist.update(playlist);
+    await _playlist.merge(playlist);
   }
 
   void clear() {
