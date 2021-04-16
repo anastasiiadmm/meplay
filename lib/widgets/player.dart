@@ -120,9 +120,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
     super.initState();
     _initBrightness();
     if(widget.channel != null) {
-      if(!widget.channel.locked) {
-        _loadChannel();
-      }
+      if(!widget.channel.locked) _loadChannel();
       _loadRatio();
     }
   }
@@ -130,16 +128,14 @@ class _HLSPlayerState extends State<HLSPlayer> {
   @override
   void didUpdateWidget(oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // todo: instead of mounted check
-    // check if it has a controller and a cache already, and do not change them
-    // if channel is the same.
-    if(mounted) {
-      if (widget.channel != null) {
-        if (!widget.channel.locked) {
-          _loadChannel();
-        }
-        _loadRatio();
-      }
+    if(mounted && oldWidget.channel != widget.channel) _reload();
+  }
+
+  Future<void> _reload() async {
+    await _disposeVideo();
+    if(widget.channel != null) {
+      if(!widget.channel.locked) _loadChannel();
+      _loadRatio();
     }
   }
 
