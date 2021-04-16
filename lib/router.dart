@@ -8,8 +8,7 @@ import 'screens/player.dart';
 import 'models.dart';
 
 
-
-// used for static routes which do not accept variables or have a return type
+// static routes which do not accept variables or have a return type
 final Map<String, WidgetBuilder> routes = {
   '/': (BuildContext context) => HomeScreen(),
   '/profile': (BuildContext context) => ProfileScreen(),
@@ -21,7 +20,8 @@ final Map<String, WidgetBuilder> routes = {
   // '/favorites/radio': (BuildContext context) => null,  // TODO
 };
 
-// used for dynamic routes which accept variables or have specific return type
+
+// dynamic routes which accept variables or have specific return type
 Route<dynamic> router(RouteSettings settings) {
   String name = settings.name;
   if(name == '/login') {

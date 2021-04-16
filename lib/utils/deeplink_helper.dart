@@ -70,9 +70,13 @@ class DeeplinkHelper {
     print("$link : $path");
     if(_pathAllowed(path)) {
       NavigatorState navState = navigatorKey.currentState;
-      // TODO: better logic
-      navState.popUntil((route) => route.isFirst);
-      if(path != '/') navState.pushNamed(path);
+      String currentName;
+      navState.popUntil((route) {
+        currentName = route.settings.name;
+        return path.startsWith(currentName) || route.isFirst;
+      });
+      // TODO: push possible parents before.
+      if(path != currentName) navState.pushNamed(path);
       _navigated = true;
     }
   }
