@@ -120,12 +120,13 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
       _code = _inputController.text.replaceAll(' ', '');
       _authenticate();
     } else {
-      if (_time < 0) {
+      if(_inputController.text == _phoneText) {
+        if(_time < 0) _sendSms();
+        else _enterCode();
+      } else {
         _phoneText = _inputController.text;
         _phone = _inputController.text.replaceAll(' ', '').replaceAll('+', '');
         _sendSms();
-      } else {
-        _enterCode();
       }
     }
   }
