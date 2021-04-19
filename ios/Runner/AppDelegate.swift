@@ -1,6 +1,11 @@
 import UIKit
 import Flutter
 import GoogleCast
+import YandexMobileMetrica
+
+
+let YMApiKey = ""
+
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate, GCKLoggerDelegate {
@@ -17,6 +22,10 @@ import GoogleCast
     GCKCastContext.setSharedInstanceWith(options)
     GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
     GCKLogger.sharedInstance().delegate = self
+
+    let configuration = YMMYandexMetricaConfiguration.init(apiKey: YMApiKey)
+    YMMYandexMetrica.activate(with: configuration!)
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
