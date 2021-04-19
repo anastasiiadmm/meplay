@@ -178,10 +178,12 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void _login() {
+    Navigator.of(context).popUntil((route) => route.isFirst);
     Navigator.of(context).pushNamed('/login');
   }
 
   void _profile() {
+    Navigator.of(context).popUntil((route) => route.isFirst);
     Navigator.of(context).pushNamed('/profile');
   }
 
