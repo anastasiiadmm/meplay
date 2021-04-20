@@ -164,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadChannels() async {
-    await Channel.loadChannels();
+    await TVChannel.loadChannels();
   }
 
   Future<void> _initAsync() async {

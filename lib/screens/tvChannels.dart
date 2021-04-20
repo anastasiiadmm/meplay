@@ -17,8 +17,8 @@ class TVChannelsScreen extends StatefulWidget {
 
 
 class _TVChannelsScreenState extends State<TVChannelsScreen> {
-  List<Channel> _initialChannels = [];
-  List<Channel> _channels = [];
+  List<TVChannel> _initialChannels = [];
+  List<TVChannel> _channels = [];
   bool _search = false;
   final _searchController = TextEditingController();
   ChannelListType _listType = ChannelListType.defaultType;
@@ -37,7 +37,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   }
 
   Future<void> _loadChannels() async {
-    List<Channel> allChannels = await Channel.getChannels();
+    List<TVChannel> allChannels = await TVChannel.getChannels();
     allChannels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
     setState(() {
       _initialChannels = allChannels;
@@ -86,7 +86,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   //   }
   // }
 
-  Future<void> _openChannel(Channel channel) async {
+  Future<void> _openChannel(TVChannel channel) async {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => PlayerScreen(
@@ -99,7 +99,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     );
   }
 
-  Channel _nextChannel(Channel channel) {
+  TVChannel _nextChannel(TVChannel channel) {
     int index = _initialChannels.indexOf(channel);
     if(index < _initialChannels.length - 1) {
       return _initialChannels[index + 1];
@@ -107,7 +107,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     return _initialChannels[0];
   }
 
-  Channel _prevChannel(Channel channel) {
+  TVChannel _prevChannel(TVChannel channel) {
     int index = _initialChannels.indexOf(channel);
     if(index > 0) {
       return _initialChannels[index - 1];
@@ -141,7 +141,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   }
 
   void _filterChannels(String value) {
-    List<Channel> channels = _initialChannels;
+    List<TVChannel> channels = _initialChannels;
     if (value.isNotEmpty) {
       channels = channels.where((channel) {
         return channel.name.toLowerCase().contains(
