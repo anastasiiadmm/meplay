@@ -7,14 +7,15 @@ import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
 
 
-const val YM_API_KEY = ""  // TODO
-
 class Application: FlutterApplication() {
     override fun onCreate() {
         super.onCreate()
-        val config = YandexMetricaConfig.newConfigBuilder(YM_API_KEY).build()
-        YandexMetrica.activate(applicationContext, config)
-        YandexMetrica.enableActivityAutoTracking(this)
+        val apiKey: String = getString(R.string.ym_api_key)
+        if(apiKey.isNotEmpty()) {
+            val config = YandexMetricaConfig.newConfigBuilder(apiKey).build()
+            YandexMetrica.activate(applicationContext, config)
+            YandexMetrica.enableActivityAutoTracking(this)
+        }
     }
 
     override fun attachBaseContext(base: Context) {

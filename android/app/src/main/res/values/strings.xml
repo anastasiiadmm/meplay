@@ -2,4 +2,5 @@
 <resources>
     <string name="facebook_app_id">319343952880622</string>
     <string name="fb_login_protocol_scheme">fb319343952880622</string>
+    <string name="ym_api_key"></string>
 </resources>
