@@ -33,10 +33,10 @@ class ChannelListType {
 
 // TODO: add star button into channel list items
 class ChannelList extends StatefulWidget {
-  final List<TVChannel> channels;
-  final void Function(TVChannel) openChannel;
-  final void Function(TVChannel) addToFavorites;
-  final void Function(TVChannel) removeFromFavorites;
+  final List<Channel> channels;
+  final void Function(Channel) openChannel;
+  final void Function(Channel) addToFavorites;
+  final void Function(Channel) removeFromFavorites;
   final ChannelListType listType;
 
   ChannelList({Key key, @required this.channels,
@@ -92,7 +92,7 @@ class _ChannelListState extends State<ChannelList> {
     } else {
       color = AppColors.gray5;
       elevation = 2.0;
-      TVChannel channel = _iterator.current;
+      Channel channel = _iterator.current;
       List<Widget> children = [
         Container(
           height: 71,
@@ -177,7 +177,7 @@ class _ChannelListState extends State<ChannelList> {
   }
 
   Widget _listTileBuilder(BuildContext context, int index) {
-    TVChannel channel = widget.channels[index];
+    Channel channel = widget.channels[index];
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
       onTap: () { widget.openChannel(channel); },
@@ -224,7 +224,7 @@ class _ChannelListState extends State<ChannelList> {
     );
   }
 
-  Widget _blockTileBuilder(TVChannel channel, int oddity) {
+  Widget _blockTileBuilder(Channel channel, int oddity) {
     EdgeInsetsGeometry margin;
     if (oddity < 1) {
       margin = EdgeInsets.only(right: 2.5);

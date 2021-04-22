@@ -73,7 +73,7 @@ const scrollBuffer = Duration(seconds: 30);
 
 
 class HLSPlayer extends StatefulWidget {
-  final TVChannel channel;
+  final Channel channel;
   final void Function() toPrevChannel;
   final void Function() toNextChannel;
   final void Function() toggleFullscreen;

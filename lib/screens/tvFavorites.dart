@@ -17,9 +17,9 @@ class TVFavoritesScreen extends StatefulWidget {
 
 
 class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
-  List<TVChannel> _allChannels = [];
-  List<TVChannel> _initialChannels = [];
-  List<TVChannel> _channels = [];
+  List<Channel> _allChannels = [];
+  List<Channel> _initialChannels = [];
+  List<Channel> _channels = [];
   User _user;
   bool _search = false;
   final _searchController = TextEditingController();
@@ -56,10 +56,10 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
   }
 
   Future<void> _loadChannels() async {
-    List<TVChannel> allChannels = await TVChannel.getChannels();
+    List<Channel> allChannels = await Channel.getChannels();
     allChannels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
-    List<int> favIds = await _user.getTvFavorites();
-    List<TVChannel> favChannels = allChannels.where((channel) {
+    List<int> favIds = await _user.getFavorites();
+    List<Channel> favChannels = allChannels.where((channel) {
       return favIds.contains(channel.id);
     }).toList();
     setState(() {
@@ -97,7 +97,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
   //   if(user != null) await user.removeFavorite(channel);
   // }
 
-  Future<void> _openChannel(TVChannel channel) async {
+  Future<void> _openChannel(Channel channel) async {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => PlayerScreen(
@@ -110,7 +110,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
     );
   }
 
-  TVChannel _nextChannel(TVChannel channel) {
+  Channel _nextChannel(Channel channel) {
     int index = _allChannels.indexOf(channel);
     if(index < _allChannels.length - 1) {
       return _allChannels[index + 1];
@@ -118,7 +118,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
     return _allChannels[0];
   }
 
-  TVChannel _prevChannel(TVChannel channel) {
+  Channel _prevChannel(Channel channel) {
     int index = _allChannels.indexOf(channel);
     if(index > 0) {
       return _allChannels[index - 1];
@@ -152,7 +152,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
   }
 
   void _filterChannels(String value) {
-    List<TVChannel> channels = _initialChannels;
+    List<Channel> channels = _initialChannels;
     if (value.isNotEmpty) {
       channels = channels.where((channel) {
         return channel.name.toLowerCase().contains(

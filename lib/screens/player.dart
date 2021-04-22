@@ -18,8 +18,8 @@ import '../widgets/modals.dart';
 
 class PlayerScreen extends StatefulWidget {
   final int channelId;
-  final TVChannel Function(TVChannel) getNextChannel;
-  final TVChannel Function(TVChannel) getPrevChannel;
+  final Channel Function(Channel) getNextChannel;
+  final Channel Function(Channel) getPrevChannel;
 
   PlayerScreen({
     Key key,
@@ -36,7 +36,7 @@ class PlayerScreen extends StatefulWidget {
 class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver {
   User _user;
   bool _expandProgram = false;
-  TVChannel _channel;
+  Channel _channel;
   ExpandableController _expandableController;
   Key _playerKey = GlobalKey();
   double _initialBrightness;
@@ -65,7 +65,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   Future<void> _loadChannel() async {
-    TVChannel channel = await TVChannel.getChannel(widget.channelId);
+    Channel channel = await Channel.getChannel(widget.channelId);
     setState(() { _channel = channel; });
   }
 
@@ -89,7 +89,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   Future<void> _loadFavorite() async {
     if (_user != null && _channel != null) {
-      bool favorite = await _user.hasTvFavorite(_channel);
+      bool favorite = await _user.hasFavorite(_channel);
       setState(() { _favorite = favorite; });
     }
   }
@@ -190,7 +190,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   Future<void> _addFavorite() async {
     User user = await User.getUser();
     if(user != null) {
-      await user.addTvFavorite(_channel);
+      await user.addFavorite(_channel);
       setState(() { _favorite = true; });
     }
   }
@@ -198,7 +198,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   Future<void> _removeFavorite() async {
     User user = await User.getUser();
     if(user != null) {
-      await user.removeTvFavorite(_channel);
+      await user.removeFavorite(_channel);
       setState(() { _favorite = false; });
     }
   }
