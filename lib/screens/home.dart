@@ -164,7 +164,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadChannels() async {
-    await Channel.loadChannels();
+    await Future.wait([
+      Channel.loadChannels(ChannelType.tv),
+      Channel.loadChannels(ChannelType.radio),
+    ]);
   }
 
   Future<void> _initAsync() async {
@@ -217,7 +220,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _logout() async {
     await _clearUser();
-    await _loadChannels();
+    await Future.wait([
+      Channel.loadChannels(ChannelType.tv),
+      Channel.loadChannels(ChannelType.radio),
+    ]);
     setState(() {});  // refresh the state for the login/logout button
   }
 

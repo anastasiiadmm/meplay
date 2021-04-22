@@ -37,7 +37,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   }
 
   Future<void> _loadChannels() async {
-    List<Channel> allChannels = await Channel.getChannels();
+    List<Channel> allChannels = await Channel.tvChannels();
     allChannels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
     setState(() {
       _initialChannels = allChannels;
@@ -91,6 +91,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
       MaterialPageRoute(
         builder: (BuildContext context) => PlayerScreen(
           channelId: channel.id,
+          channelType: ChannelType.tv,
           getNextChannel: _nextChannel,
           getPrevChannel: _prevChannel,
         ),

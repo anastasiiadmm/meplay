@@ -20,6 +20,12 @@ String rPlural(int count, List<String> forms) {
 }
 
 
+enum ChannelType {
+  tv,
+  radio,
+}
+
+
 class Channel {
   int id;
   String name;
@@ -29,41 +35,60 @@ class Channel {
   String logoUrl;
   List<Program> _program;
   File _logo;
-  static List<Channel> _list;
+  ChannelType _type;
+  static List<Channel> _tvList;
+  static List<Channel> _radioList;
 
-  static Future<List<Channel>> getChannels() async {
-    if(_list == null) await loadChannels();
-    return _list;
+  static Future<List<Channel>> tvChannels() async {
+    if(_tvList == null)
+      _tvList = await loadChannels(ChannelType.tv);
+    return _tvList;
   }
 
-  static Future<Channel> getChannel(int id) async {
-    List<Channel> channels = await getChannels();
+  static Future<List<Channel>> radioChannels() async {
+    if(_radioList == null)
+      _radioList = await loadChannels(ChannelType.radio);
+    return _radioList;
+  }
+
+  static Future<List<Channel>> _getChannels(ChannelType type) async {
+    return type == ChannelType.tv
+        ? await tvChannels()
+        : await radioChannels();
+  }
+
+  static Future<Channel> getChannel(int id, ChannelType type) async {
+    List<Channel> channels = await _getChannels(type);
     return channels.firstWhere(
       (channel) => channel.id == id,
       orElse: () => null,
     );
   }
 
-  static Future<void> loadChannels() async {
+  static Future<List<Channel>> loadChannels(ChannelType type) async {
     try {
       User user = await User.getUser();
-      _list = await ApiClient.getChannels(user);
+      return await ApiClient.getChannels(type, user);
     } on ApiException catch (e) {
       print(e.message);
-      _list = <Channel>[];
+      return <Channel>[];
     }
   }
 
+  ChannelType get type => _type;
+
   Channel({this.id, this.name, this.url, this.number, this.locked,
-    this.logoUrl});
+    this.logoUrl, ChannelType type: ChannelType.tv}): _type = type;
   
-  Channel.fromJson(Map<String, dynamic> data) {
+  Channel.fromJson(Map<String, dynamic> data, {
+    ChannelType type: ChannelType.tv,
+  }): this._type = type {
     this.id = data['id'];
     this.name = data['name'];
     this.url = data['url'];
     this.number = data['number'];
     this.locked = data['locked'];
-    this.logoUrl = data['logo'];
+    this.logoUrl = data.containsKey('logo') ? data['logo'] : null;
   }
 
   String get title {
@@ -71,6 +96,7 @@ class Channel {
   }
 
   Future<List<Program>> get program async {
+    if(_type != ChannelType.tv) return null;
     DateTime now = DateTime.now();
     if(_noProgram(now)) {
       await _loadProgram();
@@ -84,6 +110,7 @@ class Channel {
   }
 
   Future<Program> get currentProgram async {
+    if(_type != ChannelType.tv) return null;
     List<Program> fullProgram = await program;
     if (fullProgram == null) return null;
     return fullProgram.first;
@@ -195,7 +222,8 @@ class User {
   String refreshToken;
   int id;
   List<Packet> _packets;
-  List<int> _favorites;
+  List<int> _tvFavorites;
+  List<int> _radioFavorites;
   static ValueNotifier<User> _user = ValueNotifier<User>(null);
 
   User({this.username, this.password, this.token, this.refreshToken, this.id});
@@ -281,41 +309,60 @@ class User {
     }
   }
 
-  Future<List<int>> getFavorites() async {
-    if (_favorites == null)
-      await _loadFavorites();
-    return _favorites;
+  Future<List<int>> _getFavorites(ChannelType type) async {
+    return type == ChannelType.tv
+        ? await tvFavorites()
+        : await radioFavorites();
+  }
+
+  Future<List<int>> tvFavorites() async {
+    if (_tvFavorites == null)
+      _tvFavorites = await _loadFavorites(ChannelType.tv);
+    return _tvFavorites;
+  }
+
+  Future<List<int>> radioFavorites() async {
+    if (_radioFavorites == null)
+      _radioFavorites = await _loadFavorites(ChannelType.radio);
+    return _radioFavorites;
   }
 
   Future<void> addFavorite(Channel channel) async {
-    List<int> favorites = await getFavorites();
+    List<int> favorites = await _getFavorites(channel.type);
     if (!favorites.contains(channel.id)) favorites.add(channel.id);
-    await _saveFavorites();
+    await _saveFavorites(channel.type);
   }
 
   Future<void> removeFavorite(Channel channel) async {
-    List<int> favorites = await getFavorites();
+    List<int> favorites = await _getFavorites(channel.type);
     if(favorites.contains(channel.id)) favorites.remove(channel.id);
-    await _saveFavorites();
+    await _saveFavorites(channel.type);
   }
 
   Future<bool> hasFavorite(Channel channel) async {
-    List<int> favorites = await getFavorites();
+    List<int> favorites = await _getFavorites(channel.type);
     return favorites.contains(channel.id);
   }
 
-  Future<void> _loadFavorites() async {
-    _favorites = await PrefHelper.loadJson(
-      PrefKeys.favorites(id),
+  Future<List<int>> _loadFavorites(ChannelType type) async {
+    String prefKey = type == ChannelType.tv
+        ? PrefKeys.tvFavorites(id)
+        : PrefKeys.radioFavorites(id);
+    return await PrefHelper.loadJson(
+      prefKey,
       defaultValue: <int>[],
       restore: (data) => data.cast<int>(),
     );
   }
   
-  Future<void> _saveFavorites() async {
-    await PrefHelper.saveJson(
-      PrefKeys.favorites(id),
-      _favorites,
+  Future<void> _saveFavorites(ChannelType type) async {
+    if(type == ChannelType.tv) await PrefHelper.saveJson(
+      PrefKeys.tvFavorites(id),
+      _tvFavorites,
+    );
+    else await PrefHelper.saveJson(
+      PrefKeys.radioFavorites(id),
+      _radioFavorites,
     );
   }
 }

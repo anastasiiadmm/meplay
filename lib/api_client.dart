@@ -42,16 +42,15 @@ class ApiClient {
     }
   }
 
-  static Future<List<Channel>> getChannels([User user]) async {
-    String url = '$BASE_API_URL/stalker_portal/meplay/tv-channels';
-    if(user != null) {
-      url += '?msisdn=${user.username}';
-    }
+  static Future<List<Channel>> getChannels(ChannelType type, [User user]) async {
+    String typeString = type == ChannelType.tv ? 'tv' : 'radio';
+    String url = '$BASE_API_URL/stalker_portal/meplay/$typeString-channels';
+    if(user != null) url += '?msisdn=${user.username}';
     return _wrapRequest<List<Channel>>(
       () => http.get(url),
       (response) {
         List<dynamic> data = jsonDecode(response.body)['data'];
-        return data.map((item) => Channel.fromJson(item)).toList();
+        return data.map((item) => Channel.fromJson(item, type: type)).toList();
       }
     );
   }

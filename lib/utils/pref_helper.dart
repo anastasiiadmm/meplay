@@ -7,7 +7,8 @@ abstract class PrefKeys {
   static const listType = 'channelListType';
   static const user = 'user';
 
-  static String favorites(int userId) => 'fav$userId';
+  static String tvFavorites(int userId) => 'favTv$userId';
+  static String radioFavorites(int userId) => 'favRadio$userId';
 
   static String ratio(int channelId) => 'ratio$channelId';
 

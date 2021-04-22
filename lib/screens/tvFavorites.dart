@@ -56,9 +56,9 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
   }
 
   Future<void> _loadChannels() async {
-    List<Channel> allChannels = await Channel.getChannels();
+    List<Channel> allChannels = await Channel.tvChannels();
     allChannels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
-    List<int> favIds = await _user.getFavorites();
+    List<int> favIds = await _user.tvFavorites();
     List<Channel> favChannels = allChannels.where((channel) {
       return favIds.contains(channel.id);
     }).toList();
@@ -102,6 +102,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
       MaterialPageRoute(
         builder: (BuildContext context) => PlayerScreen(
           channelId: channel.id,
+          channelType: ChannelType.tv,
           getNextChannel: _nextChannel,
           getPrevChannel: _prevChannel,
         ),

@@ -18,12 +18,14 @@ import '../widgets/modals.dart';
 
 class PlayerScreen extends StatefulWidget {
   final int channelId;
+  final ChannelType channelType;
   final Channel Function(Channel) getNextChannel;
   final Channel Function(Channel) getPrevChannel;
 
   PlayerScreen({
     Key key,
     @required this.channelId,
+    this.channelType: ChannelType.tv,
     this.getNextChannel,
     this.getPrevChannel,
   }) : super(key: key);
@@ -65,7 +67,10 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   Future<void> _loadChannel() async {
-    Channel channel = await Channel.getChannel(widget.channelId);
+    Channel channel = await Channel.getChannel(
+      widget.channelId,
+      widget.channelType,
+    );
     setState(() { _channel = channel; });
   }
 
@@ -391,15 +396,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   Widget get _body {
     if(_fullscreen || _pipMode) return _player;
-    List<Widget> children = [
-      FutureBuilder(
-        future: _channel?.program ?? null,
-        builder: _program,
-      ),
-    ];
-    if(_channel?.locked ?? false) {
-      children.add(_lockInfo);
-    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -410,7 +406,13 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
               padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: children,
+                children: [
+                  if(widget.channelType == ChannelType.tv) FutureBuilder(
+                    future: _channel?.program ?? null,
+                    builder: _program,
+                  ),
+                  if(_channel?.locked ?? false) _lockInfo,
+                ],
               ),
             ),
           ),
