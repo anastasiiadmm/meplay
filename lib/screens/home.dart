@@ -65,19 +65,16 @@ class HomeHexGrid extends StatelessWidget {
       color = AppColors.gray10;
       content = GestureDetector(
         onTap: listenRadio,
-        child: Opacity(
-          opacity: 0.5,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                child: AppIcons.radio,
-                padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
-              ),
-              Text('РАДИО', style: AppFonts.homeBtns,),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              child: AppIcons.radio,
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+            ),
+            Text('РАДИО', style: AppFonts.homeBtns,),
+          ],
         ),
       );
     } else {
@@ -204,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _listenRadio() {
-    modals.inDevelopment(context, title: 'Радио');
+    Navigator.of(context).pushNamed('/radio');
   }
 
   Widget get _body => HomeHexGrid(
