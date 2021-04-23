@@ -136,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _initAsync() async {
     await User.getUser();
-    await Channel.loadChannels();
+    await Channel.loadAllChannels();
     await TZHelper.init();
     _deeplinkHelper = DeeplinkHelper.instance;
     await _deeplinkHelper.checkInitialLink();

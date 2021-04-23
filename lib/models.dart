@@ -69,7 +69,7 @@ class Channel {
     _radioList = await _loadChannels(ChannelType.radio);
   }
 
-  static Future<void> loadChannels() async {
+  static Future<void> loadAllChannels() async {
     return Future.wait([
       loadTvChannels(),
       loadRadioChannels(),
