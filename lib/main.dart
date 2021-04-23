@@ -35,7 +35,6 @@ class MePlay extends StatelessWidget {
       initialRoute: '/',
       onGenerateRoute: router,
       navigatorKey: navigatorKey,
-      navigatorObservers: [historyManager],
     );
   }
 }

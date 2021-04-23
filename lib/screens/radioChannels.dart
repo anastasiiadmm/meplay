@@ -10,13 +10,13 @@ import '../widgets/channelList.dart';
 import 'player.dart';
 
 
-class TVChannelsScreen extends StatefulWidget {
+class RadioChannelsScreen extends StatefulWidget {
   @override
-  _TVChannelsScreenState createState() => _TVChannelsScreenState();
+  _RadioChannelsScreenState createState() => _RadioChannelsScreenState();
 }
 
 
-class _TVChannelsScreenState extends State<TVChannelsScreen> {
+class _RadioChannelsScreenState extends State<RadioChannelsScreen> {
   List<Channel> _initialChannels = [];
   List<Channel> _channels = [];
   bool _search = false;
@@ -37,7 +37,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   }
 
   Future<void> _loadChannels() async {
-    List<Channel> allChannels = await Channel.tvChannels();
+    List<Channel> allChannels = await Channel.radioChannels();
     allChannels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
     setState(() {
       _initialChannels = allChannels;
@@ -91,11 +91,11 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
       MaterialPageRoute(
         builder: (BuildContext context) => PlayerScreen(
           channelId: channel.id,
-          channelType: ChannelType.tv,
+          channelType: ChannelType.radio,
           getNextChannel: _nextChannel,
           getPrevChannel: _prevChannel,
         ),
-        settings: RouteSettings(name: '/tv/${channel.id}'),
+        settings: RouteSettings(name: '/radio/${channel.id}'),
       ),
     );
   }

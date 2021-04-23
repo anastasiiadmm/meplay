@@ -10,13 +10,13 @@ import '../widgets/bottomNavBar.dart';
 import 'player.dart';
 
 
-class TVFavoritesScreen extends StatefulWidget {
+class RadioFavoritesScreen extends StatefulWidget {
   @override
-  _TVFavoritesScreenState createState() => _TVFavoritesScreenState();
+  _RadioFavoritesScreenState createState() => _RadioFavoritesScreenState();
 }
 
 
-class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
+class _RadioFavoritesScreenState extends State<RadioFavoritesScreen> {
   List<Channel> _allChannels = [];
   List<Channel> _initialChannels = [];
   List<Channel> _channels = [];
@@ -56,9 +56,9 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
   }
 
   Future<void> _loadChannels() async {
-    List<Channel> allChannels = await Channel.tvChannels();
+    List<Channel> allChannels = await Channel.radioChannels();
     allChannels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
-    List<int> favIds = await _user.tvFavorites();
+    List<int> favIds = await _user.radioFavorites();
     List<Channel> favChannels = allChannels.where((channel) {
       return favIds.contains(channel.id);
     }).toList();
@@ -102,11 +102,11 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
       MaterialPageRoute(
         builder: (BuildContext context) => PlayerScreen(
           channelId: channel.id,
-          channelType: ChannelType.tv,
+          channelType: ChannelType.radio,
           getNextChannel: _nextChannel,
           getPrevChannel: _prevChannel,
         ),
-        settings: RouteSettings(name: '/tv/${channel.id}'),
+        settings: RouteSettings(name: '/radio/${channel.id}'),
       ),
     );
   }
