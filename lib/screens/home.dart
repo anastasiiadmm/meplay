@@ -134,43 +134,15 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  Future<void> _initDeeplinks() async {
+  Future<void> _initAsync() async {
+    await User.getUser();
+    await Channel.loadChannels();
+    await TZHelper.init();
     _deeplinkHelper = DeeplinkHelper.instance;
     await _deeplinkHelper.checkInitialLink();
-  }
-
-  Future<void> _initFcm() async {
+    await LocalNotificationHelper.init();
     FCMHelper helper = await FCMHelper.initialize();
     await helper.checkInitialMessage();
-  }
-
-  Future<void> _initNotifications() async {
-    await LocalNotificationHelper.init();
-  }
-
-  Future<void> _initTz() async {
-    return TZHelper.init();
-  }
-
-  Future<void> _loadUser() async {
-    await User.getUser();
-  }
-
-  Future<void> _clearUser() async {
-    await User.clearUser();
-  }
-
-  Future<void> _loadChannels() async {
-    await Channel.loadAll();
-  }
-
-  Future<void> _initAsync() async {
-    await _loadUser();
-    await _loadChannels();
-    await _initTz();
-    await _initDeeplinks();
-    await _initNotifications();
-    await _initFcm();
     _asyncInitDone = true;
     _doneLoading();
   }
@@ -213,8 +185,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _logout() async {
-    await _clearUser();
-    await Channel.loadAll();
+    await User.clearUser();
+    await Channel.loadTvChannels();
     setState(() {});  // refresh the state for the login/logout button
   }
 

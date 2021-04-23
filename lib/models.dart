@@ -51,23 +51,29 @@ class Channel {
     return _radioList;
   }
 
-  static Future<List<Channel>> _getChannels(ChannelType type) async {
-    return type == ChannelType.tv
+  static Future<Channel> getChannel(int id, ChannelType type) async {
+    List<Channel> channels = type == ChannelType.tv
         ? await tvChannels()
         : await radioChannels();
-  }
-
-  static Future<Channel> getChannel(int id, ChannelType type) async {
-    List<Channel> channels = await _getChannels(type);
     return channels.firstWhere(
       (channel) => channel.id == id,
       orElse: () => null,
     );
   }
 
-  static Future<void> loadAll() async {
+  static Future<void> loadTvChannels() async {
     _tvList = await _loadChannels(ChannelType.tv);
+  }
+
+  static Future<void> loadRadioChannels() async {
     _radioList = await _loadChannels(ChannelType.radio);
+  }
+
+  static Future<void> loadChannels() async {
+    return Future.wait([
+      loadTvChannels(),
+      loadRadioChannels(),
+    ]);
   }
 
   static Future<List<Channel>> _loadChannels(ChannelType type) async {
