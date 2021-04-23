@@ -166,6 +166,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
         _waitingForSms = true;
         _allowContinue = false;
       });
+      _stopCodeTimer();
       _startCodeTimer();
       _inputController.clear();
     } on ApiException catch(e) {
