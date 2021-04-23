@@ -161,10 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadChannels() async {
-    await Future.wait([
-      Channel.loadChannels(ChannelType.tv),
-      Channel.loadChannels(ChannelType.radio),
-    ]);
+    await Channel.loadAll();
   }
 
   Future<void> _initAsync() async {
@@ -217,10 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _logout() async {
     await _clearUser();
-    await Future.wait([
-      Channel.loadChannels(ChannelType.tv),
-      Channel.loadChannels(ChannelType.radio),
-    ]);
+    await Channel.loadAll();
     setState(() {});  // refresh the state for the login/logout button
   }
 
@@ -237,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return AuthNotifier(
       child: Builder(
         builder: (BuildContext context) {
-          User user = AuthNotifier.of(context);
+          User user = AuthNotifier.of(context).user;
           return user == null ? TextButton(
             onPressed: _login,
             child: Text('Вход', style: AppFonts.appBarAction),

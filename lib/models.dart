@@ -41,13 +41,13 @@ class Channel {
 
   static Future<List<Channel>> tvChannels() async {
     if(_tvList == null)
-      _tvList = await loadChannels(ChannelType.tv);
+      _tvList = await _loadChannels(ChannelType.tv);
     return _tvList;
   }
 
   static Future<List<Channel>> radioChannels() async {
     if(_radioList == null)
-      _radioList = await loadChannels(ChannelType.radio);
+      _radioList = await _loadChannels(ChannelType.radio);
     return _radioList;
   }
 
@@ -65,7 +65,12 @@ class Channel {
     );
   }
 
-  static Future<List<Channel>> loadChannels(ChannelType type) async {
+  static Future<void> loadAll() async {
+    _tvList = await _loadChannels(ChannelType.tv);
+    _radioList = await _loadChannels(ChannelType.radio);
+  }
+
+  static Future<List<Channel>> _loadChannels(ChannelType type) async {
     try {
       User user = await User.getUser();
       return await ApiClient.getChannels(type, user);
@@ -87,7 +92,7 @@ class Channel {
     this.name = data['name'];
     this.url = data['url'];
     this.number = data['number'];
-    this.locked = _type == ChannelType.radio ? false : data['locked'];
+    this.locked = (type == ChannelType.tv) ? data['locked'] : false;
     this.logoUrl = data.containsKey('logo') ? data['logo'] : null;
   }
 

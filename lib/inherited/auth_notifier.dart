@@ -9,9 +9,9 @@ class AuthNotifier extends InheritedNotifier<ValueNotifier<User>> {
     ValueNotifier<User> notifier,
   }) : super(key: key, child: child, notifier: notifier);
 
-  static User of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<AuthNotifier>()
-        .notifier
-        .value;
+  static AuthNotifier of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<AuthNotifier>();
   }
+
+  User get user => notifier.value;
 }

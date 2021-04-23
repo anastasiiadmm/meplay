@@ -45,10 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _logout() async {
     await User.clearUser();
-    await Future.wait([
-      Channel.loadChannels(ChannelType.tv),
-      Channel.loadChannels(ChannelType.radio),
-    ]);
+    await Channel.loadAll();
     Navigator.of(context).pop();
   }
 
