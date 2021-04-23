@@ -136,7 +136,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _initAsync() async {
     await User.getUser();
-    await Channel.loadAllChannels();
+    await Future.wait([
+      Channel.loadTv(),
+      Channel.loadRadio(),
+    ]);
     await TZHelper.init();
     _deeplinkHelper = DeeplinkHelper.instance;
     await _deeplinkHelper.checkInitialLink();
@@ -186,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _logout() async {
     await User.clearUser();
-    await Channel.loadTvChannels();
+    await Channel.loadTv();
     setState(() {});  // refresh the state for the login/logout button
   }
 

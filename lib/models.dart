@@ -41,13 +41,13 @@ class Channel {
 
   static Future<List<Channel>> tvChannels() async {
     if(_tvList == null)
-      _tvList = await _loadChannels(ChannelType.tv);
+      _tvList = await loadChannels(ChannelType.tv);
     return _tvList;
   }
 
   static Future<List<Channel>> radioChannels() async {
     if(_radioList == null)
-      _radioList = await _loadChannels(ChannelType.radio);
+      _radioList = await loadChannels(ChannelType.radio);
     return _radioList;
   }
 
@@ -61,22 +61,15 @@ class Channel {
     );
   }
 
-  static Future<void> loadTvChannels() async {
-    _tvList = await _loadChannels(ChannelType.tv);
+  static Future<void> loadTv() async {
+    _tvList = await loadChannels(ChannelType.tv);
   }
 
-  static Future<void> loadRadioChannels() async {
-    _radioList = await _loadChannels(ChannelType.radio);
+  static Future<void> loadRadio() async {
+    _radioList = await loadChannels(ChannelType.radio);
   }
 
-  static Future<void> loadAllChannels() async {
-    return Future.wait([
-      loadTvChannels(),
-      loadRadioChannels(),
-    ]);
-  }
-
-  static Future<List<Channel>> _loadChannels(ChannelType type) async {
+  static Future<List<Channel>> loadChannels(ChannelType type) async {
     try {
       User user = await User.getUser();
       return await ApiClient.getChannels(type, user);
