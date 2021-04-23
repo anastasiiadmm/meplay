@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'login.dart';
 import '../widgets/modals.dart' as modals;
 import '../widgets/bottomNavBar.dart';
 import '../models.dart';
