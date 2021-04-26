@@ -91,7 +91,7 @@ class Channel {
     this.name = data['name'];
     this.url = data['url'];
     this.number = data['number'];
-    this.locked = (type == ChannelType.tv) ? data['locked'] : false;
+    this.locked = data['locked'];
     this.logoUrl = data.containsKey('logo') ? data['logo'] : null;
   }
 

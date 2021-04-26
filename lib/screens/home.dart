@@ -189,7 +189,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _logout() async {
     await User.clearUser();
-    await Channel.loadTv();
+    await Future.wait([
+      Channel.loadTv(),
+      Channel.loadRadio(),
+    ]);
     setState(() {});  // refresh the state for the login/logout button
   }
 

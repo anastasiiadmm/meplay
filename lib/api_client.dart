@@ -50,7 +50,10 @@ class ApiClient {
       () => http.get(url),
       (response) {
         List<dynamic> data = jsonDecode(response.body)['data'];
-        return data.map((item) => Channel.fromJson(item, type: type)).toList();
+        return data.map((item) {
+          if(type == ChannelType.radio) item['locked'] = user == null;
+          return Channel.fromJson(item, type: type);
+        }).toList();
       }
     );
   }
