@@ -15,7 +15,7 @@ class TZHelper {
     return TZDateTime.now(local);
   }
 
-  static TZDateTime fromNaive(DateTime dateTime) {
+  static TZDateTime makeAware(DateTime dateTime) {
     return TZDateTime.from(dateTime, local);
   }
 

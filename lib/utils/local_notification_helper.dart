@@ -85,7 +85,7 @@ class LocalNotificationHelper {
     data['time'] = scheduleTime.toIso8601String();
     await _plugin.zonedSchedule(
       id, title, text,
-      time, _details,
+      scheduleTime, _details,
       uiLocalNotificationDateInterpretation:
         UILocalNotificationDateInterpretation.absoluteTime,
       androidAllowWhileIdle: true,
@@ -118,7 +118,7 @@ class LocalNotificationHelper {
   }
 
   TZDateTime _checkTime(DateTime time) {
-    TZDateTime scheduleTime = TZHelper.fromNaive(time);
+    TZDateTime scheduleTime = TZHelper.makeAware(time);
     TZDateTime now = TZHelper.now();
     if (scheduleTime.isBefore(now)) {
       scheduleTime = now.add(Duration(seconds: 3));

@@ -257,7 +257,12 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
           'Передача "${program.title}" начнётся в ${program.startTime}!',
           'На канале "${_channel.title}"',
           program.start.subtract(Duration(minutes: 5)),
-          data: {'programId': program.id, 'channelId': _channel.id},
+          data: {
+            'programId': program.id,
+            'channelId': _channel.id,
+            'link': (_channel.type == ChannelType.tv ? '/tv/' : '/radio/')
+                + _channel.id.toString(),
+          },
         );
       }
     );
