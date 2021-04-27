@@ -227,6 +227,8 @@ class AppIcons {
   static final listLight = SvgPicture.asset('assets/icons/list_light.svg', width: 28, height: 28,);
   static final cancel = SvgPicture.asset('assets/icons/cancel.svg', width: 16, height: 16,);
   static final cog = SvgPicture.asset('assets/icons/cog-8_contour.svg', width: 28, height: 28);
+  static final trashRed = SvgPicture.asset('assets/icons/trash-red.svg', width: 28, height: 28);
+  static final notificationsBell = SvgPicture.asset('assets/icons/notifications-bell.svg', width: 28, height: 28);
 }
 
 

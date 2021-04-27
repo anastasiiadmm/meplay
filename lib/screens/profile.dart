@@ -292,8 +292,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.of(context).pop();
   }
 
-  void _openSettings() {
-
+  void _showNotifications() {
+    Navigator.pushNamed(context, '/profile/notifications');
   }
 
   Widget get _appBar {
@@ -307,8 +307,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       actions: [
         IconButton(
-          onPressed: _openSettings,
-          icon: AppIcons.cog,
+          onPressed: _showNotifications,
+          icon: AppIcons.notificationsBell,
         )
       ],
       title: _appBarTitle,

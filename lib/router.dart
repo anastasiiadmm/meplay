@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:me_play/screens/notifications.dart';
 import 'screens/home.dart';
 import 'screens/login.dart';
 import 'screens/profile.dart';
 import 'screens/tvChannels.dart';
 import 'screens/tvFavorites.dart';
+import 'screens/notifications.dart';
 import 'screens/radioChannels.dart';
 import 'screens/radioFavorites.dart';
 import 'screens/player.dart';
@@ -14,6 +16,7 @@ import 'models.dart';
 final Map<String, WidgetBuilder> routes = {
   '/': (BuildContext context) => HomeScreen(),
   '/profile': (BuildContext context) => ProfileScreen(),
+  '/profile/notifications': (BuildContext context) => NotificationListScreen(),
   '/tv': (BuildContext context) => TVChannelsScreen(),
   '/radio': (BuildContext context) => RadioChannelsScreen(),
   '/favorites': (BuildContext context) => TVFavoritesScreen(),
