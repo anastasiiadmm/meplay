@@ -101,16 +101,13 @@ class Channel {
 
   Future<List<Program>> get program async {
     if(_type != ChannelType.tv) return null;
-    DateTime now = DateTime.now();
-    if(_noProgram(now)) {
-      await _loadProgram();
-      if(_noProgram(now)) {
-        await _requestProgram();
-        if(_noProgram(now)) return null;
-        _saveProgram();
-      }
+    if(_emptyProgram) await _loadProgram();
+    if(_emptyProgram) {
+      await _requestProgram();
+      if(_emptyProgram) return null;
+      _saveProgram();
     }
-    return _program.where((p) => p.end.isAfter(now)).toList();
+    return _program.where((p) => p.end.isAfter(DateTime.now())).toList();
   }
 
   Future<Program> get currentProgram async {
@@ -130,23 +127,43 @@ class Channel {
     return _logo;
   }
 
-  bool _noProgram(DateTime by) {
-    return _program == null || _program.isEmpty
-        || _program.last.end.isBefore(by);
-  }
-
   Future<void> _loadProgram() async {
     FileInfo info = await DefaultCacheManager()
         .getFileFromCache(_programCacheKey);
     if (info != null) {
       String json = info.file.readAsStringSync();
       try {
-        List<dynamic> data = jsonDecode(json);
-        _program = data.map((item) => Program.fromJson(item)).toList();
+        dynamic data = jsonDecode(json);
+        if(data is List) await _clearProgram();
+        else {
+          data = data as Map<String, dynamic>;
+          List<dynamic> programData = data['program'];
+          DateTime cacheTime = DateTime.parse(data['datetime']);
+          if(_oldProgramCache(cacheTime)) await _clearProgram();
+          else _program = programData
+              .map((item) => Program.fromJson(item))
+              .toList();
+          if(_oldProgram) await _clearProgram();
+        }
       } on FormatException {
-        _program = null;
+        await _clearProgram();
       }
     }
+  }
+
+  Future<void> _clearProgram() async {
+    await DefaultCacheManager().removeFile(_programCacheKey);
+    _program = null;
+  }
+
+  bool get _emptyProgram => _program == null || _program.isEmpty;
+
+  bool get _oldProgram => _program.last.end.isBefore(DateTime.now());
+
+  bool _oldProgramCache(DateTime cacheTime) {
+    DateTime now = DateTime.now();
+    DateTime morning = DateTime(now.year, now.month, now.day, 6, 0, 0);
+    return cacheTime.isBefore(morning) && now.isAfter(morning);
   }
 
   Future<void> _requestProgram() async {
@@ -163,7 +180,10 @@ class Channel {
         Uint8List(0),
         fileExtension: 'json',
     );
-    file.writeAsStringSync(jsonEncode(_program));
+    file.writeAsStringSync(jsonEncode(<String, dynamic>{
+      'program': _program,
+      'datetime': DateTime.now().toIso8601String(),
+    }));
   }
 
   String get _programCacheKey => 'program$id';
