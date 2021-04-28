@@ -50,6 +50,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   void initState() {
     super.initState();
     OrientationHelper.allowAll();
+    Wakelock.enable();
     _initAsync();
     _expandableController = ExpandableController(initialExpanded: _expandProgram);
     _expandableController.addListener(_toggleProgram);
