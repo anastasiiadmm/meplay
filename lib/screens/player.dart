@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:screen/screen.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:expandable/expandable.dart';
-import 'package:flutter_android_pip/flutter_android_pip.dart';
 import 'package:device_info/device_info.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -45,6 +44,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   int _androidSdkLevel = 0;
   bool _pipMode = false;
   bool _favorite = false;
+  static const platform = const MethodChannel('PIP_CHANNEL');
 
   @override
   void initState() {
@@ -61,6 +61,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     print(widget.channelId);
     _initBrightness();
     _initPlatformState();
+    _enablePip();
     Future.wait([
       _loadUser(),
       _loadChannel(),
@@ -114,6 +115,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   void dispose() {
     Wakelock.disable();
     _restoreBrightness();
+    _disablePip();
     OrientationHelper.forcePortrait();
     WidgetsBinding.instance.removeObserver(this);
     _expandableController.removeListener(_toggleProgram);
@@ -123,6 +125,14 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   @override void didChangeMetrics() {
     Wakelock.enable();
+  }
+
+  void _enablePip() {
+    platform.invokeMethod('enablePip');
+  }
+
+  void _disablePip() {
+    platform.invokeMethod('disablePip');
   }
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -166,7 +176,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   void _enterPipMode() {
     if(_androidSdkLevel != null && _androidSdkLevel > 25) {
-      FlutterAndroidPip.enterPictureInPictureMode;
       setState(() {
         _pipMode = true;
       });
