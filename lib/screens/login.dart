@@ -14,7 +14,7 @@ import '../api_client.dart';
 import '../utils/fcm_helper.dart';
 
 
-const String appHash = 'g8xZvf1R7yJ';
+const String appHash = 'rgYa0J5D1z4';
 
 
 class LoginHexBackground extends StatelessWidget {
