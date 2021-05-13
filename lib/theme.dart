@@ -183,6 +183,15 @@ class AppFonts {
   static const toastText = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 13, height: 17/13,
       letterSpacing: -0.24, color: AppColors.gray0);
+  static const settingsItem = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
+      letterSpacing: -0.24, color: AppColors.gray80);
+  static const settingsSelected = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 15, height: 20/15,
+      letterSpacing: -0.24, color: AppColors.megaPurple);
+  static const settingsTitle = TextStyle(fontFamily: 'SF Pro Text',
+      fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
+      letterSpacing: -0.08, color: AppColors.gray60);
 }
 
 
@@ -222,7 +231,8 @@ class AppIcons {
   static final hideProgram = SvgPicture.asset('assets/icons/program_close.svg', width: 44, height: 44,);
   static final pinkDot = Image.asset('assets/icons/pink_dot.png', width: 8, height: 8,);
   static final plus = SvgPicture.asset('assets/icons/plus.svg', width: 36, height: 36,);
-  static final check = SvgPicture.asset('assets/icons/check_hex.svg', width: 31, height: 36,);
+  static final checkHex = SvgPicture.asset('assets/icons/check_hex.svg', width: 31, height: 36,);
+  static final check = SvgPicture.asset('assets/icons/check.svg', width: 28, height: 28,);
   static final list = SvgPicture.asset('assets/icons/list.svg', width: 28, height: 28,);
   static final listLight = SvgPicture.asset('assets/icons/list_light.svg', width: 28, height: 28,);
   static final cancel = SvgPicture.asset('assets/icons/cancel.svg', width: 16, height: 16,);

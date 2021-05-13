@@ -199,7 +199,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-            packet.isActive ? AppIcons.check : AppIcons.plus,
+            packet.isActive ? AppIcons.checkHex : AppIcons.plus,
           ],
         ),
       ),
@@ -296,6 +296,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.pushNamed(context, '/profile/notifications');
   }
 
+  void _openSettings() {
+    Navigator.pushNamed(context, '/profile/settings');
+  }
+
   Widget get _appBar {
     return AppBar(
       backgroundColor: AppColors.megaPurple,
@@ -309,7 +313,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         IconButton(
           onPressed: _showNotifications,
           icon: AppIcons.notificationsBell,
-        )
+        ),
+        IconButton(
+          icon: AppIcons.cog,
+          onPressed: _openSettings,
+        ),
       ],
       title: _appBarTitle,
       centerTitle: true,
