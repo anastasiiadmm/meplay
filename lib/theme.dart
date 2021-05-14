@@ -43,6 +43,7 @@ class AppColors {
   static const gray60 = Color.fromRGBO(83, 83, 78, 1);  // #53534E
   static const gray70 = Color.fromRGBO(38, 38, 35, 1);  // #262623
   static const gray80 = Color.fromRGBO(26, 25, 23, 1);  // #1A1917
+  static const settingsItem = Color.fromRGBO(243, 243, 248, 1);  // #F3F3F8
   static const transparentDark = Color.fromRGBO(26, 25, 23, 0.48);  // #1A1917 48%
   static const transparentGray = Color.fromRGBO(83, 83, 78, 0.48);  // #53534E 48%
   static const lockBg = Color.fromRGBO(191, 191, 182, 0.48);  // #BFBFB6 48%

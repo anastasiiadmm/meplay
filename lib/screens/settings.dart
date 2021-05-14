@@ -31,8 +31,8 @@ class Language {
 
   const Language(this.name, this.value);
 
-  static const ru = Language('Русский', Locale('ru', 'ru'));
-  static const ky = Language('Кыргызча', Locale('ky', 'kg'));
+  static const ru = Language('Русский', Locale('ru', 'RU'));
+  static const ky = Language('Кыргызча', Locale('ky', 'KG'));
   static const choices = [ky, ru];
   static const defaultChoice = ru;
 
@@ -62,10 +62,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadPrefs() async {
-    String name = await PrefHelper.loadString(PrefKeys.language);
-    _language = Language.getByName(name);
-    name = await PrefHelper.loadString(PrefKeys.listType);
-    _listType = ListType.getByName(name);
+    String langName = await PrefHelper.loadString(PrefKeys.language);
+    String listTypeName = await PrefHelper.loadString(PrefKeys.listType);
+    setState(() {
+      _language = Language.getByName(langName);
+      _listType = ListType.getByName(listTypeName);
+    });
   }
 
   Future<void> _savePref(dynamic pref, String key) async {
@@ -86,51 +88,86 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   }
 
+  Widget _listTile({
+    void Function() onTap,
+    Widget leading,
+    Widget title,
+    Widget subtitle,
+    Widget trailing,
+    EdgeInsets padding: EdgeInsets.zero,
+    Color color: AppColors.transparent,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: padding,
+        color: color,
+        child: Row(
+          children: [
+            if(leading != null) leading,
+            Expanded(
+              child: Column(
+                children: [
+                  if(title != null) title,
+                  if(subtitle != null) subtitle,
+                ],
+              ),
+            ),
+            if(trailing != null) trailing,
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _settingsTile(BuildContext context, int index) {
     int generalItemsCount = 1;
     int listTypeTitle = generalItemsCount;  // 0 + ...
     int languageTitle = listTypeTitle + ListType.choices.length + 1;
     if(index == 0) {
-      return ListTile(
+      return _listTile(
         title: Text('О программе', style: AppFonts.settingsItem),
-        contentPadding: EdgeInsets.fromLTRB(15, 11, 15, 11),
+        padding: EdgeInsets.fromLTRB(15, 11, 15, 11),
+        color: AppColors.settingsItem,
         onTap: _openAbout,
       );
     } else if (index == listTypeTitle) {
-      return ListTile(
+      return _listTile(
         title: Text('ВИД СПИСКА КАНАЛОВ', style: AppFonts.settingsTitle),
-        contentPadding: EdgeInsets.fromLTRB(15, 20, 15, 11),
+        padding: EdgeInsets.fromLTRB(15, 20, 15, 11),
       );
     } else if (index > listTypeTitle && index < languageTitle) {
       ListType type = ListType.choices[index - listTypeTitle - 1];
-      return ListTile(
+      return _listTile(
         title: Text(
           type.name,
           style: type == _listType
               ? AppFonts.settingsSelected
               : AppFonts.settingsItem,
         ),
-        contentPadding: EdgeInsets.fromLTRB(15, 11, 15, 11),
+        padding: EdgeInsets.fromLTRB(15, 11, 15, 11),
         trailing: type == _listType ? AppIcons.check : null,
         onTap: () => _setListType(type),
+        color: AppColors.settingsItem,
       );
     } else if (index == languageTitle) {
-      return ListTile(
+      return _listTile(
         title: Text('ЯЗЫК', style: AppFonts.settingsTitle),
-        contentPadding: EdgeInsets.fromLTRB(15, 20, 15, 11),
+        padding: EdgeInsets.fromLTRB(15, 20, 15, 11),
       );
     } else {
       Language lang = Language.choices[index - languageTitle - 1];
-      return ListTile(
+      return _listTile(
         title: Text(
           lang.name,
           style: lang == _language
               ? AppFonts.settingsSelected
               : AppFonts.settingsItem,
         ),
-        contentPadding: EdgeInsets.fromLTRB(15, 11, 15, 11),
+        padding: EdgeInsets.fromLTRB(15, 11, 15, 11),
         trailing: lang == _language ? AppIcons.check : null,
         onTap: () => _setLanguage(lang),
+        color: AppColors.settingsItem,
       );
     }
   }

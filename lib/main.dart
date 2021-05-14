@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'screens/settings.dart';
 
 
 void main() {
@@ -38,17 +39,14 @@ class MePlay extends StatelessWidget {
       onGenerateRoute: router,
       navigatorKey: navigatorKey,
 
-      locale: Locale('ru', 'ru'),
+      locale: Language.defaultChoice.value,
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: [
-        const Locale('ru', 'ru'),
-        const Locale('ky', 'kg'),
-      ],
+      supportedLocales: Language.choices.map((lang) => lang.value),
     );
   }
 }
