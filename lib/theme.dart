@@ -20,35 +20,39 @@ class AppColors {
       opacity = 0.27 + rnd.nextDouble() * 0.13;
     return Color.fromRGBO(255, 255, 255, opacity);
   }
-  static const megaPurple = Color.fromRGBO(88, 33, 122, 1);  // #58217A
-  static const lightPurple = Color.fromRGBO(114, 73, 137, 1);  // #724989
-  static const darkPurple = Color.fromRGBO(95, 36, 159, 1);  // #5F249F
-  static const bluePurple = Color.fromRGBO(88, 86, 214, 1);  // #5856D6
-  static const megaGreen = Color.fromRGBO(47, 140, 45, 1);  // #2F8C2D
-  static const megaGray = Color.fromRGBO(198, 198, 198, 1);  // #C6C6C6
-  static const white = Color.fromRGBO(255, 255, 255, 1);  // #FFFFFF
-  static const black = Color.fromRGBO(0, 0, 0, 1);  // #000000
-  static const transparent = Color.fromRGBO(0, 0, 0, 0);  // #000000
-  static const bottomBar = Color.fromRGBO(247, 247, 247, 0.72);  // #F7F7F7 72%
-  static const yellow = Color.fromRGBO(255, 204, 0, 1);  // #FFCC00
-  static const accentPink = Color.fromRGBO(255, 45, 85, 1);  // #FF2D55
-  static const gray0 = Color.fromRGBO(250, 250, 247, 1);  // #FAFAF7
-  static const gray5 = Color.fromRGBO(243, 243, 240, 1);  // #F3F3F0
-  static const gray10 = Color.fromRGBO(234, 234, 228, 1);  // #EAEAE4
+
+  static const megaPurple = Color.fromRGBO(88, 33, 122, 1); // #58217A
+  static const lightPurple = Color.fromRGBO(114, 73, 137, 1); // #724989
+  static const darkPurple = Color.fromRGBO(95, 36, 159, 1); // #5F249F
+  static const bluePurple = Color.fromRGBO(88, 86, 214, 1); // #5856D6
+  static const megaGreen = Color.fromRGBO(47, 140, 45, 1); // #2F8C2D
+  static const megaGray = Color.fromRGBO(198, 198, 198, 1); // #C6C6C6
+  static const white = Color.fromRGBO(255, 255, 255, 1); // #FFFFFF
+  static const black = Color.fromRGBO(0, 0, 0, 1); // #000000
+  static const transparent = Color.fromRGBO(0, 0, 0, 0); // #000000
+  static const bottomBar = Color.fromRGBO(247, 247, 247, 0.72); // #F7F7F7 72%
+  static const yellow = Color.fromRGBO(255, 204, 0, 1); // #FFCC00
+  static const accentPink = Color.fromRGBO(255, 45, 85, 1); // #FF2D55
+  static const gray0 = Color.fromRGBO(250, 250, 247, 1); // #FAFAF7
+  static const gray5 = Color.fromRGBO(243, 243, 240, 1); // #F3F3F0
+  static const gray10 = Color.fromRGBO(234, 234, 228, 1); // #EAEAE4
   static const gray15 = Color.fromRGBO(225, 225, 214, 1);
-  static const gray20 = Color.fromRGBO(215, 215, 207, 1);  // #D7D7CF
-  static const gray30 = Color.fromRGBO(191, 191, 182, 1);  // #BFBFB6
-  static const gray40 = Color.fromRGBO(162, 162, 153, 1);  // #A2A299
-  static const gray50 = Color.fromRGBO(126, 126, 118, 1);  // #7E7E76
-  static const gray60 = Color.fromRGBO(83, 83, 78, 1);  // #53534E
-  static const gray70 = Color.fromRGBO(38, 38, 35, 1);  // #262623
-  static const gray80 = Color.fromRGBO(26, 25, 23, 1);  // #1A1917
-  static const settingsItem = Color.fromRGBO(243, 243, 248, 1);  // #F3F3F8
-  static const transparentDark = Color.fromRGBO(26, 25, 23, 0.48);  // #1A1917 48%
-  static const transparentGray = Color.fromRGBO(83, 83, 78, 0.48);  // #53534E 48%
-  static const lockBg = Color.fromRGBO(191, 191, 182, 0.48);  // #BFBFB6 48%
-  static const transparentBlack = Color.fromRGBO(0, 0, 0, 0.6);  // #000000 60%
-  static const transparentLight = Color.fromRGBO(250, 250, 247, 0.85);  // #FAFAF7 85%
+  static const gray20 = Color.fromRGBO(215, 215, 207, 1); // #D7D7CF
+  static const gray30 = Color.fromRGBO(191, 191, 182, 1); // #BFBFB6
+  static const gray40 = Color.fromRGBO(162, 162, 153, 1); // #A2A299
+  static const gray50 = Color.fromRGBO(126, 126, 118, 1); // #7E7E76
+  static const gray60 = Color.fromRGBO(83, 83, 78, 1); // #53534E
+  static const gray70 = Color.fromRGBO(38, 38, 35, 1); // #262623
+  static const gray80 = Color.fromRGBO(26, 25, 23, 1); // #1A1917
+  static const settingsItem = Color.fromRGBO(243, 243, 248, 1); // #F3F3F8
+  static const transparentDark = Color.fromRGBO(
+      26, 25, 23, 0.48); // #1A1917 48%
+  static const transparentGray = Color.fromRGBO(
+      83, 83, 78, 0.48); // #53534E 48%
+  static const lockBg = Color.fromRGBO(191, 191, 182, 0.48); // #BFBFB6 48%
+  static const transparentBlack = Color.fromRGBO(0, 0, 0, 0.6); // #000000 60%
+  static const transparentLight = Color.fromRGBO(
+      250, 250, 247, 0.85); // #FAFAF7 85%
   static const toastBg = Color.fromRGBO(26, 25, 23, 0.8);
 
   static const gradientTop = LinearGradient(
@@ -61,6 +65,47 @@ class AppColors {
     end: Alignment.topCenter,
     colors: [transparentBlack, AppColors.transparent],
   );
+}
+
+
+class AppColorsV2 {
+  // Will replace AppColors once all re-design is done.
+  // these colors are present in the color map.
+  static const purple = Color.fromRGBO(127, 88, 236, 1);
+  static const purpleActive = Color.fromRGBO(104, 62, 222, 1);
+  static const purpleDisabled = Color.fromRGBO(98, 70, 174, 1);
+  static const purpleShadow = Color.fromRGBO(117, 82, 217, 1);
+  static const green = Color.fromRGBO(43, 204, 119, 1);
+  static const darkBg = Color.fromRGBO(29, 28, 31, 1);
+  static const blockBg = Color.fromRGBO(45, 43, 49, 1);
+  static const item = Color.fromRGBO(73, 70, 82, 1);
+  static const red = Color.fromRGBO(252, 92, 101, 1);
+  static const text = Color.fromRGBO(237, 238, 240, 1);
+  static const textDisabled = Color.fromRGBO(175, 175, 177, 1);
+
+  // these colors are not present in the color map, but found in design.
+  static const itemFocus = Color.fromRGBO(171, 165, 189, 1);
+  static const darkShadow = Color.fromRGBO(0, 0, 0, 0.55);
+  static const textShadow1 = Color.fromRGBO(50, 50, 71, 0.06);
+  static const textShadow2 = Color.fromRGBO(50, 50, 71, 0.06);
+  static const purpleBgDark = Color.fromRGBO(52, 31, 109, 1);
+  static const brightPurpleShadow = Color.fromRGBO(127, 88, 236, 1);
+  static const decorativeGray = Color.fromRGBO(60, 58, 67, 1);
+  static const navBg = Color.fromRGBO(60, 58, 67, 0.72);
+  static const modalOverlay = Color.fromRGBO(0, 0, 0, 0.7);
+  static const appbarBorder = Color.fromRGBO(255, 255, 255, 0.2);
+
+  // these are used for text in different parts of the design.
+  static const primaryText = Color.fromRGBO(255, 255, 255, 1);  // white
+  static const secondaryText = Color.fromRGBO(215, 215, 207, 1);  // gray 20%
+  static const primaryTextMute = Color.fromRGBO(191, 191, 182, 1);  // gray 30%
+  static const secondaryTextMute = Color.fromRGBO(162, 162, 153, 1);  // gray 40%
+
+  // and these are for inputs.
+  static const darkInputText = Color.fromRGBO(250, 250, 247, 1);  // gray 0%
+  static const darkInputPlaceholder = Color.fromRGBO(126, 126, 118, 1);  // gray 50%
+  static const lightInputText = Color.fromRGBO(234, 234, 228, 1);  // gray 10%
+  static const lightInputPlaceholder = Color.fromRGBO(191, 191, 182, 1);  // gray 30%
 }
 
 
