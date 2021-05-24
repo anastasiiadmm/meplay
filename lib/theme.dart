@@ -290,6 +290,7 @@ class AppIcons {
 class AppIconsV2 {
   static final arrowLeft = SvgPicture.asset('assets/icons/new/arrow_left.svg', width: 28, height: 28,);
   static final bell = SvgPicture.asset('assets/icons/new/bell.svg', width: 28, height: 28,);
+  static final lockBig = SvgPicture.asset('assets/icons/new/lock_big.svg', width: 48, height: 48,);
   static final burger = SvgPicture.asset('assets/icons/new/burger.svg', width: 28, height: 28,);
   static final check = SvgPicture.asset('assets/icons/new/check.svg', width: 24, height: 24,);
   static final chevronLeft = SvgPicture.asset('assets/icons/new/chevron_left.svg', width: 28, height: 28,);
@@ -325,6 +326,19 @@ class AppIconsV2 {
   static final starActive = SvgPicture.asset('assets/icons/new/star_active.svg', width: 28, height: 28,);
   static final user = SvgPicture.asset('assets/icons/new/user.svg', width: 28, height: 28,);
   static final userActive = SvgPicture.asset('assets/icons/new/user_active.svg', width: 28, height: 28,);
+  static final more = SvgPicture.asset('assets/icons/new/more.svg', width: 20, height: 20,);
+  static final live = SizedBox(
+    width: 8,
+    height: 8,
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: ColoredBox(
+        color: AppColorsV2.red,
+      ),
+    ),
+  );
 }
 
 
