@@ -290,7 +290,6 @@ class AppIcons {
 class AppIconsV2 {
   static final arrowLeft = SvgPicture.asset('assets/icons/new/arrow_left.svg', width: 28, height: 28,);
   static final bell = SvgPicture.asset('assets/icons/new/bell.svg', width: 28, height: 28,);
-  static final lockBig = SvgPicture.asset('assets/icons/new/lock_big.svg', width: 48, height: 48,);
   static final burger = SvgPicture.asset('assets/icons/new/burger.svg', width: 28, height: 28,);
   static final check = SvgPicture.asset('assets/icons/new/check.svg', width: 24, height: 24,);
   static final chevronLeft = SvgPicture.asset('assets/icons/new/chevron_left.svg', width: 28, height: 28,);
@@ -314,6 +313,7 @@ class AppIconsV2 {
   static final largeTv = SvgPicture.asset('assets/icons/new/large_tv.svg', width: 56, height: 56,);
   static final loader = SvgPicture.asset('assets/icons/new/loader.svg', width: 28, height: 28,);
   static final lock = SvgPicture.asset('assets/icons/new/lock.svg', width: 20, height: 20,);
+  static final lockLarge = SvgPicture.asset('assets/icons/new/lock_large.svg', width: 48, height: 48,);
   static final next = SvgPicture.asset('assets/icons/new/next.svg', width: 24, height: 24,);
   static final pause = SvgPicture.asset('assets/icons/new/pause.svg', width: 48, height: 48,);
   static final play = SvgPicture.asset('assets/icons/new/play.svg', width: 48, height: 48,);
