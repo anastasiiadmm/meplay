@@ -461,6 +461,9 @@ class AppIconsV2 {
       ),
     ),
   );
+  static final largeLogoRaw = SvgPicture.asset('assets/icons/new/large_logo_raw.svg', width: 246, height: 267,);
+  static final smallLogoRaw = SvgPicture.asset('assets/icons/new/small_logo_raw.svg', width: 146, height: 48,);
+  static final largeLockRaw = SvgPicture.asset('assets/icons/new/large_lock_raw.svg', width: 140, height: 148,);
 }
 
 
