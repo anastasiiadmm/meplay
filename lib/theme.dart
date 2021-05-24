@@ -88,24 +88,24 @@ class AppColorsV2 {
   static const darkShadow = Color.fromRGBO(0, 0, 0, 0.55);
   static const textShadow1 = Color.fromRGBO(50, 50, 71, 0.06);
   static const textShadow2 = Color.fromRGBO(50, 50, 71, 0.06);
-  static const purpleBgDark = Color.fromRGBO(52, 31, 109, 1);
-  static const brightPurpleShadow = Color.fromRGBO(127, 88, 236, 1);
-  static const decorativeGray = Color.fromRGBO(60, 58, 67, 1);
+  static const purpleInputBg = Color.fromRGBO(52, 31, 109, 1);
+  static const lightPurpleShadow = Color.fromRGBO(127, 88, 236, 1);
+  static const decorationGray = Color.fromRGBO(60, 58, 67, 1);
   static const navBg = Color.fromRGBO(60, 58, 67, 0.72);
   static const modalOverlay = Color.fromRGBO(0, 0, 0, 0.7);
   static const appbarBorder = Color.fromRGBO(255, 255, 255, 0.2);
 
-  // these are used for text in different parts of the design.
-  static const primaryText = Color.fromRGBO(255, 255, 255, 1);  // white
-  static const secondaryText = Color.fromRGBO(215, 215, 207, 1);  // gray 20%
-  static const primaryTextMute = Color.fromRGBO(191, 191, 182, 1);  // gray 30%
-  static const secondaryTextMute = Color.fromRGBO(162, 162, 153, 1);  // gray 40%
+  // these are for text in different parts of the design.
+  static const textPrimary = Color.fromRGBO(255, 255, 255, 1);  // white
+  static const textSecondary = Color.fromRGBO(215, 215, 207, 1);  // gray 20%
+  static const textPrimaryMute = Color.fromRGBO(191, 191, 182, 1);  // gray 30%
+  static const textSecondaryMute = Color.fromRGBO(162, 162, 153, 1);  // gray 40%
 
   // and these are for inputs.
-  static const darkInputText = Color.fromRGBO(250, 250, 247, 1);  // gray 0%
-  static const darkInputPlaceholder = Color.fromRGBO(126, 126, 118, 1);  // gray 50%
-  static const lightInputText = Color.fromRGBO(234, 234, 228, 1);  // gray 10%
-  static const lightInputPlaceholder = Color.fromRGBO(191, 191, 182, 1);  // gray 30%
+  static const inputText = Color.fromRGBO(250, 250, 247, 1);  // gray 0%
+  static const inputPlaceholder = Color.fromRGBO(126, 126, 118, 1);  // gray 50%
+  static const searchText = Color.fromRGBO(234, 234, 228, 1);  // gray 10%
+  static const searchPlaceholder = Color.fromRGBO(191, 191, 182, 1);  // gray 30%
 }
 
 
@@ -238,6 +238,128 @@ class AppFonts {
   static const settingsTitle = TextStyle(fontFamily: 'SF Pro Text',
       fontWeight: FontWeight.normal, fontSize: 13, height: 18/13,
       letterSpacing: -0.08, color: AppColors.gray60);
+}
+
+
+class AppFontsV2 {
+  // large (common) text
+  static const textPrimary = TextStyle(fontFamily: 'Lato',
+    fontSize: 18, fontWeight: FontWeight.normal,
+    height: 24/18, color: AppColorsV2.textPrimary,);
+  static const textPrimaryMute = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 18,
+    height: 24/18, color: AppColorsV2.textPrimaryMute,);
+  static const textSecondary = TextStyle(fontFamily: 'Lato',
+    fontSize: 18, fontWeight: FontWeight.normal,
+    height: 24/18, color: AppColorsV2.textSecondary,);
+  static const textSecondaryMute = TextStyle(fontFamily: 'Lato',
+    fontSize: 18, fontWeight: FontWeight.normal,
+    height: 24/18, color: AppColorsV2.textSecondaryMute,);
+
+  // medium-sized text
+  static const midText = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 15,
+    height: 24/15, color: AppColorsV2.textSecondary,);
+
+  // small text
+  static const smallText = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 13,
+    height: 15.6/13, color: AppColorsV2.textPrimary,);
+  static const smallTextMute = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 13,
+    height: 15.6/13, color: AppColorsV2.textSecondaryMute,);
+
+  // input-related
+  static const input = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.normal, fontSize: 18,
+    height: 24/18, color: AppColorsV2.inputText,);
+  static const inputPlaceholder = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.normal, fontSize: 18,
+    height: 24/18, color: AppColorsV2.inputPlaceholder,);
+  static const inputAlert = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 13,
+    height: 15.6/13, color: AppColorsV2.red,);
+  static const search = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 15,
+    height: 24/15, color: AppColorsV2.searchText,);
+  static const searchPlaceholder = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 15,
+    height: 24/15, color: AppColorsV2.searchPlaceholder,);
+
+  // buttons
+  static const largeButton = TextStyle(fontFamily: 'Lato',
+    fontSize: 18, fontWeight: FontWeight.w700,
+    height: 24/18, color: AppColorsV2.text,);
+  static const largeButtonDisabled = TextStyle(fontFamily: 'Lato',
+    fontSize: 18, fontWeight: FontWeight.w700,
+    height: 24/18, color: AppColorsV2.textDisabled,);
+  static const smallButton = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w700, fontSize: 16,
+    height: 24/16, color: AppColorsV2.textPrimary,);
+
+  // items and blocks
+  static const blockTitle = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w800, fontSize: 18,
+    height: 24/18, color: AppColorsV2.textPrimary,);
+  static const itemTitle = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w500, fontSize: 18,
+    height: 24/18, color: AppColorsV2.textPrimary,);
+  static const itemTextPrimary = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 15,
+    height: 18/15, color: AppColorsV2.textPrimary,);
+  static const itemTextSecondary = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 15,
+    height: 18/15, color: AppColorsV2.textSecondary,);
+
+  // other titles
+  static const settingsTitle = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 15,
+    height: 24/15, color: AppColorsV2.textSecondaryMute,);
+  static const screenTitle = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w700, fontSize: 20,
+    height: 28/20, color: AppColorsV2.textPrimary,);
+  static const introTitle = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w900, fontSize: 32,
+    height: 40/32, color: AppColorsV2.textPrimary,);
+
+  // modals
+  static const modalTitle = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w700, fontSize: 18,
+    height: 24/18, color: AppColorsV2.textPrimary,);
+  static const modalText = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 13,
+    height: 15.6/13, color: AppColorsV2.textSecondary,);
+  static const modalButtonPrimary = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w500, fontSize: 18,
+    height: 24/18, color: AppColorsV2.textPrimary,);
+  static const modalButtonSecondary = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 18,
+    height: 24/18, color: AppColorsV2.textPrimary,);
+
+  // channel program
+  static const program = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 16,
+    height: 20/16, color: AppColorsV2.textSecondary,);
+  static const programLive = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w500, fontSize: 16,
+    height: 20/16, color: AppColorsV2.textSecondary,);
+  static const programMute = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 16,
+    height: 20/16, color: AppColorsV2.textSecondaryMute,);
+
+  // other texts
+  static const tabSwitch = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 13,
+    height: 18/13, color: AppColorsV2.textPrimaryMute,);
+  static const tabSwitchActive = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w700, fontSize: 13,
+    height: 18/13, color: AppColorsV2.purple,);
+  static const tabbar = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w500, fontSize: 11,
+    height: 13/11, color: AppColorsV2.textSecondary,);
+  static const link = TextStyle(fontFamily: 'Lato',
+    fontSize: 18, fontWeight: FontWeight.w400,
+    height: 24/18, color: AppColorsV2.purple,);
 }
 
 
