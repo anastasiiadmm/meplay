@@ -237,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return _loading ? SplashScreen(
       onShow: _splashShow,
       onHide: _splashHide,
-      isSplashShowing: _isSplashShowing,
+      isVisible: _isSplashShowing,
     ) : Scaffold(
       backgroundColor: AppColors.megaPurple,
       appBar: _appBar,
