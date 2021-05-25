@@ -269,6 +269,14 @@ class AppFontsV2 {
     fontWeight: FontWeight.w400, fontSize: 13,
     height: 15.6/13, color: AppColorsV2.textSecondaryMute,);
 
+  // logo
+  static const largeLogo = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w900, fontSize: 50,
+    height: 50/50, color: AppColorsV2.textPrimary,);
+  static const smallLogo = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w900, fontSize: 28,
+    height: 28/28, color: AppColorsV2.textPrimary,);
+
   // input-related
   static const input = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.normal, fontSize: 18,
