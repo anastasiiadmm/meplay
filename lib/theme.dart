@@ -461,9 +461,13 @@ class AppIconsV2 {
       ),
     ),
   );
-  static final largeLogoRaw = SvgPicture.asset('assets/icons/new/large_logo_raw.svg', width: 246, height: 267,);
-  static final smallLogoRaw = SvgPicture.asset('assets/icons/new/small_logo_raw.svg', width: 146, height: 48,);
-  static final largeLockRaw = SvgPicture.asset('assets/icons/new/large_lock_raw.svg', width: 140, height: 148,);
+}
+
+
+class AppImages {
+  static final logo = Image.asset('assets/images/logo.png', width: 246, height: 267, filterQuality: FilterQuality.high,);
+  static final logoTop = Image.asset('assets/images/logo_top.png', width: 146, height: 48, filterQuality: FilterQuality.medium,);
+  static final lock = Image.asset('assets/images/lock.png', width: 140, height: 148, filterQuality: FilterQuality.high,);
 }
 
 
