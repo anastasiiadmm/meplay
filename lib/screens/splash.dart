@@ -75,7 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
             children: [
               AppImages.logo,
               Text(
-                gl(context).splashText,
+                locale(context).splashText,
                 textAlign: TextAlign.center,
                 style: AppFontsV2.textPrimary,
               ),

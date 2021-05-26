@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import '../utils/fcm_helper.dart';
 import '../utils/local_notification_helper.dart';
 import '../utils/tz_helper.dart';
@@ -10,6 +11,7 @@ import '../inherited/auth_notifier.dart';
 import '../theme.dart';
 import '../models.dart';
 import '../router.dart';
+import '../utils/settings.dart';
 import 'splash.dart';
 
 
@@ -66,69 +68,136 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _splashHide() {
     if(!_deeplinkHelper.navigated) _watchTV();
-    Timer(Duration(milliseconds: 300), (){
+    Timer(Duration(milliseconds: 300), () {
       setState(() { _loading = false; });
     });
   }
 
   void _watchTV() {
-    Navigator.of(context).pushNamed('/tv');
+    Navigator.of(context).pushNamed(Routes.tv);
   }
 
   void _listenRadio() {
-    Navigator.of(context).pushNamed('/radio');
+    Navigator.of(context).pushNamed(Routes.radio);
   }
 
-  Widget get _body => Container();
-
-  Future<void> _login() async {
-    User user = await Navigator.of(context).pushNamed('/login');
-    setState(() {});  // refresh the state for the login/logout button
-    if (user != null) _watchTV();
+  void _openProfile() {
+    Navigator.of(context).pushNamed(Routes.favorites);
   }
 
-  Future<void> _logout() async {
-    await User.clearUser();
-    await Future.wait([
-      Channel.loadTv(),
-      Channel.loadRadio(),
-    ]);
-    setState(() {});  // refresh the state for the login/logout button
+  void _openFavorites() {
+    Navigator.of(context).pushNamed(Routes.profile);
   }
 
-  void _logoutDialog() {
-    modals.confirmModal(
-      context: context,
-      title: Text('Выход'),
-      content: Text('Вы уверены, что хотите выйти?'),
-      action: _logout,
-    );
-  }
-
-  Widget get _authBtn {
-    return AuthNotifier(
-      child: Builder(
-        builder: (BuildContext context) {
-          User user = AuthNotifier.of(context).user;
-          return user == null ? TextButton(
-            onPressed: _login,
-            child: Text('Вход', style: AppFonts.appBarAction),
-          ) : TextButton(
-            onPressed: _logoutDialog,
-            child: Text('Выход', style: AppFonts.appBarAction),
-          );
-        },
+  Widget _mainButton(Image image, {
+    @required String text,
+    @required void Function() onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: ColoredBox(
+        color: AppColorsV2.decorationGray,
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: 5),
+                child: image,
+              ),
+              Text(text, style: AppFontsV2.itemTitle,)
+            ],
+          ),
+        ),
       ),
-      notifier: User.userNotifier,
     );
   }
+
+  Widget get _mainButtonBlock {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(bottom: 1),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 1),
+                    child:_mainButton(
+                      AppImages.tv,
+                      text: locale(context).homeTv,
+                      onTap: _watchTV,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: _mainButton(
+                    AppImages.radio,
+                    text: locale(context).homeRadio,
+                    onTap: _listenRadio,
+                  ),
+                ),
+              ]
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(right: 1),
+                child: _mainButton(
+                  AppImages.favorites,
+                  text: locale(context).homeFavorites,
+                  onTap: _openFavorites,
+                ),
+              ),
+            ),
+            Expanded(
+              child: _mainButton(
+                AppImages.account,
+                text: locale(context).homeProfile,
+                onTap: _openProfile,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget get _body {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _mainButtonBlock,
+        ]
+      ),
+    );
+  }
+
+  // Widget get _authNotifierExample {
+  //   return AuthNotifier(
+  //     child: Builder(
+  //       builder: (BuildContext context) {
+  //         User user = AuthNotifier.of(context).user;
+  //         return user == null ? null : null;
+  //       },
+  //     ),
+  //     notifier: User.userNotifier,
+  //   );
+  // }
 
   void _openNotifications() {
     Navigator.of(context).pushNamed(Routes.notifications);
   }
 
   int get _notificationsCount {
-    // TODO
+    // TODO: get real count depending on user notifier.
     int count = 99;
     if(count > 99) count = 99;
     return count;
@@ -193,8 +262,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget get _bottomNavBar => BottomNavBar(showIndex: 0);
-
   @override
   Widget build(BuildContext context) {
     return _loading ? SplashScreen(
@@ -204,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ) : Scaffold(
       backgroundColor: AppColorsV2.darkBg,
       appBar: _appBar,
-      body: Center(child: AppImages.logoTop,),
+      body: _body,
       bottomNavigationBar: null,
     );
   }

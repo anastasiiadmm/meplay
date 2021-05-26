@@ -44,7 +44,8 @@ class AppLocale {
 }
 
 
+// TODO: add some cache with notifications.
 // get locale
-AppLocalizations gl(BuildContext context) {
+AppLocalizations locale(BuildContext context) {
   return AppLocalizations.of(context);
 }
