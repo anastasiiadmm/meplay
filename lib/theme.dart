@@ -94,6 +94,7 @@ class AppColorsV2 {
   static const navBg = Color.fromRGBO(60, 58, 67, 0.72);
   static const modalOverlay = Color.fromRGBO(0, 0, 0, 0.7);
   static const appbarBorder = Color.fromRGBO(255, 255, 255, 0.2);
+  static const iconBg = Color.fromRGBO(255, 255, 255, 1);  // white
 
   // these are for text in different parts of the design.
   static const textPrimary = Color.fromRGBO(255, 255, 255, 1);  // white
@@ -368,6 +369,9 @@ class AppFontsV2 {
   static const link = TextStyle(fontFamily: 'Lato',
     fontSize: 18, fontWeight: FontWeight.w400,
     height: 24/18, color: AppColorsV2.purple,);
+  static const notificationCount = TextStyle(fontFamily: 'Lato',
+    fontSize: 10, fontWeight: FontWeight.w700,
+    height: 12/10, color: AppColorsV2.textPrimary,);
 }
 
 

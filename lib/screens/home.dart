@@ -14,99 +14,6 @@ import '../models.dart';
 import 'splash.dart';
 
 
-
-class HomeHexGrid extends StatelessWidget {
-  final gridSize = HexGridSize(7, 5);
-  final logoTile = HexGridPoint(2, 2);
-  final tvButton = HexGridPoint(3, 1);
-  final radioButton = HexGridPoint(3, 2);
-  final void Function() watchTV;
-  final void Function() listenRadio;
-
-  HomeHexGrid({Key key, this.watchTV, this.listenRadio})
-      : super(key: key);
-
-  HexagonWidget _tileBuilder(HexGridPoint point) {
-    Color color;
-    Widget content;
-    if (point == logoTile) {
-      color = AppColors.gray5;
-      content = Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
-            child: AppIcons.logo,
-          ),
-          Text('MePlay', style: AppFonts.logoTitle,),
-        ],
-      );
-    } else if (point == tvButton) {
-      color = AppColors.gray10;
-      content = GestureDetector(
-        onTap: watchTV,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              child: AppIcons.tv,
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
-            ),
-            Text('ТВ КАНАЛЫ', style: AppFonts.homeBtns,),
-          ],
-        ),
-      );
-    } else if (point == radioButton) {
-      color = AppColors.gray10;
-      content = GestureDetector(
-        onTap: listenRadio,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              child: AppIcons.radio,
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
-            ),
-            Text('РАДИО', style: AppFonts.homeBtns,),
-          ],
-        ),
-      );
-    } else {
-      color = AppColors.emptyTile;
-    }
-    return HexagonWidget.template(color: color, child: content);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRect(
-      child: OverflowBox(
-        maxWidth: double.infinity,
-        maxHeight: double.infinity,
-        child: Container(
-          margin: EdgeInsets.only(bottom: 40),
-          child: Center(
-            child: HexagonOffsetGrid.oddPointy(
-              columns: gridSize.cols,
-              rows: gridSize.rows,
-              symmetrical: true,
-              color: AppColors.transparent,
-              hexagonPadding: 8,
-              hexagonBorderRadius: 15,
-              hexagonWidth: 174,
-              buildHexagon: _tileBuilder,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -173,10 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(context).pushNamed('/radio');
   }
 
-  Widget get _body => HomeHexGrid(
-    watchTV: _watchTV,
-    listenRadio: _listenRadio,
-  );
+  Widget get _body => Container();
 
   Future<void> _login() async {
     User user = await Navigator.of(context).pushNamed('/login');
@@ -220,12 +124,72 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _openNotifications() {
+    // TODO
+  }
+
+  int get _notificationsCount {
+    int count = 99; // TODO
+    if(count > 99) count = 99;
+    return count;
+  }
+
+  Widget get _notificationsBtn {
+    return SizedBox(
+        width: 48,
+        height: 48,
+        child: Material(
+          color: AppColorsV2.iconBg,
+          type: MaterialType.circle,
+          clipBehavior: Clip.hardEdge,
+          child: InkWell(
+            child: Stack(
+              children: [
+                Center(
+                  child: AppIconsV2.bell,
+                ),
+                if(_notificationsCount > 0) Positioned(
+                  top: 8,
+                  right: 7,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: AppColorsV2.purple,
+                    ),
+                    child: SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: Center(
+                        child: Text(
+                          _notificationsCount.toString(),
+                          style: AppFontsV2.notificationCount,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            onTap: _openNotifications, // TODO-x
+          ),
+        ),
+      );
+  }
+
   Widget get _appBar {
-    return AppBar(
-      backgroundColor: AppColors.transparent,
-      elevation: 0,
-      automaticallyImplyLeading: false,
-      actions: [ _authBtn, ],
+    return PreferredSize(
+      preferredSize: Size(double.infinity, 68),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(10, 10, 15, 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            AppImages.logoTop,
+            _notificationsBtn,
+          ],
+        ),
+      ),
     );
   }
 
@@ -238,12 +202,10 @@ class _HomeScreenState extends State<HomeScreen> {
       onHide: _splashHide,
       isVisible: _isSplashShowing,
     ) : Scaffold(
-      backgroundColor: AppColors.megaPurple,
+      backgroundColor: AppColorsV2.darkBg,
       appBar: _appBar,
-      extendBody: true,
-      extendBodyBehindAppBar: true,
-      body: _body,
-      bottomNavigationBar: _bottomNavBar,
+      body: Center(child: AppImages.logoTop,),
+      bottomNavigationBar: null,
     );
   }
 }
