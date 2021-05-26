@@ -425,7 +425,7 @@ class AppIconsV2 {
   static final chevronLeft = SvgPicture.asset('assets/icons/new/chevron_left.svg', width: 28, height: 28,);
   static final chromecast = SvgPicture.asset('assets/icons/new/chromecast.svg', width: 24, height: 24,);
   static final clear = SvgPicture.asset('assets/icons/new/clear.svg', width: 16, height: 16,);
-  static final clearLarge = SvgPicture.asset('assets/icons/new/clear_large.svg', width: 24, height: 24,);
+  static final clearBig = SvgPicture.asset('assets/icons/new/clear_big.svg', width: 24, height: 24,);
   static final close = SvgPicture.asset('assets/icons/new/close.svg', width: 18, height: 18,);
   static final cog = SvgPicture.asset('assets/icons/new/cog.svg', width: 28, height: 28,);
   static final cogSmall = SvgPicture.asset('assets/icons/new/cog_small.svg', width: 24, height: 24,);
@@ -435,22 +435,15 @@ class AppIconsV2 {
   static final heartActive = SvgPicture.asset('assets/icons/new/heart_active.svg', width: 28, height: 28,);
   static final home = SvgPicture.asset('assets/icons/new/home.svg', width: 28, height: 28,);
   static final homeActive = SvgPicture.asset('assets/icons/new/home_active.svg', width: 28, height: 28,);
-  static final largeAccount = SvgPicture.asset('assets/icons/new/large_account.svg', width: 56, height: 56,);
-  static final largeFavorites = SvgPicture.asset('assets/icons/new/large_favorites.svg', width: 56, height: 56,);
-  static final largeLock = SvgPicture.asset('assets/icons/new/large_lock.svg', width: 56, height: 56,);
-  static final largeLogo = SvgPicture.asset('assets/icons/new/large_logo.svg', width: 106, height: 122,);
-  static final largeRadio = SvgPicture.asset('assets/icons/new/large_radio.svg', width: 56, height: 56,);
-  static final largeTv = SvgPicture.asset('assets/icons/new/large_tv.svg', width: 56, height: 56,);
   static final loader = SvgPicture.asset('assets/icons/new/loader.svg', width: 28, height: 28,);
   static final lock = SvgPicture.asset('assets/icons/new/lock.svg', width: 20, height: 20,);
-  static final lockLarge = SvgPicture.asset('assets/icons/new/lock_large.svg', width: 48, height: 48,);
+  static final lockBig = SvgPicture.asset('assets/icons/new/lock_big.svg', width: 48, height: 48,);
   static final next = SvgPicture.asset('assets/icons/new/next.svg', width: 24, height: 24,);
   static final pause = SvgPicture.asset('assets/icons/new/pause.svg', width: 48, height: 48,);
   static final play = SvgPicture.asset('assets/icons/new/play.svg', width: 48, height: 48,);
   static final prev = SvgPicture.asset('assets/icons/new/prev.svg', width: 24, height: 24,);
   static final search = SvgPicture.asset('assets/icons/new/search.svg', width: 28, height: 28,);
   static final searchInput = SvgPicture.asset('assets/icons/new/search_input.svg', width: 16, height: 16,);
-  static final smallLogo = SvgPicture.asset('assets/icons/new/small_logo.svg', width: 30, height: 34.5,);
   static final smallScreen = SvgPicture.asset('assets/icons/new/small_screen.svg', width: 24, height: 24,);
   static final star = SvgPicture.asset('assets/icons/new/star.svg', width: 28, height: 28,);
   static final starActive = SvgPicture.asset('assets/icons/new/star_active.svg', width: 28, height: 28,);
@@ -474,7 +467,13 @@ class AppIconsV2 {
 
 class AppImages {
   static final logo = Image.asset('assets/images/logo.png', width: 246, height: 267, filterQuality: FilterQuality.high,);
-  static final logoTop = Image.asset('assets/images/logo_top.png', width: 146, height: 48, filterQuality: FilterQuality.medium,);
+  static final logoTop = Image.asset('assets/images/logo_top.png', width: 146, height: 48, filterQuality: FilterQuality.high,);
+  static final account = Image.asset('assets/images/account.png', width: 56, height: 56, filterQuality: FilterQuality.high,);
+  static final tv = Image.asset('assets/images/tv.png', width: 56, height: 56, filterQuality: FilterQuality.high,);
+  static final radio = Image.asset('assets/images/radio.png', width: 56, height: 56, filterQuality: FilterQuality.high,);
+  static final favorites = Image.asset('assets/images/favorites.png', width: 56, height: 56, filterQuality: FilterQuality.high,);
+  static final largeTv = Image.asset('assets/images/largeTv.png', width: 110, height: 110, filterQuality: FilterQuality.high,);
+  static final largeBell = Image.asset('assets/images/largeBell.png', width: 110, height: 110, filterQuality: FilterQuality.high,);
   static final lock = Image.asset('assets/images/lock.png', width: 140, height: 148, filterQuality: FilterQuality.high,);
 }
 
