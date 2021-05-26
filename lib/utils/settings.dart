@@ -23,19 +23,19 @@ class ListType {
 }
 
 
-class Language {
+class AppLocale {
   final String name;
   final Locale value;
 
-  const Language(this.name, this.value);
+  const AppLocale(this.name, this.value);
 
-  static const ru = Language('Русский', Locale('ru', 'RU'));
-  static const ky = Language('Кыргызча', Locale('ky', 'KG'));
+  static const ru = AppLocale('Русский', Locale('ru', 'RU'));
+  static const ky = AppLocale('Кыргызча', Locale('ky', 'KG'));
   static const choices = [ky, ru];
   static const defaultChoice = ru;
 
-  static Language getByName(String name) {
-    for (Language choice in choices) {
+  static AppLocale getByName(String name) {
+    for (AppLocale choice in choices) {
       if(choice.name == name) return choice;
     }
     return defaultChoice;
@@ -43,6 +43,7 @@ class Language {
 }
 
 
-AppLocalizations locale(BuildContext context) {
+// get locale
+AppLocalizations gl(BuildContext context) {
   return AppLocalizations.of(context);
 }

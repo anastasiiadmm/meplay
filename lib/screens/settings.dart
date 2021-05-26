@@ -12,7 +12,7 @@ class SettingsScreen extends StatefulWidget {
 
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  Language _language;
+  AppLocale _locale;
   ListType _listType;
 
   @override
@@ -25,7 +25,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     String langName = await PrefHelper.loadString(PrefKeys.language);
     String listTypeName = await PrefHelper.loadString(PrefKeys.listType);
     setState(() {
-      _language = Language.getByName(langName);
+      _locale = AppLocale.getByName(langName);
       _listType = ListType.getByName(listTypeName);
     });
   }
@@ -34,9 +34,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await PrefHelper.saveString(key, pref);
   }
 
-  void _setLanguage(Language lang) {
+  void _setLanguage(AppLocale lang) {
     _savePref(lang, PrefKeys.language);
-    setState(() { _language = lang; });
+    setState(() { _locale = lang; });
   }
 
   void _setListType(ListType type) {
@@ -116,16 +116,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: EdgeInsets.fromLTRB(15, 20, 15, 11),
       );
     } else {
-      Language lang = Language.choices[index - languageTitle - 1];
+      AppLocale lang = AppLocale.choices[index - languageTitle - 1];
       return _listTile(
         title: Text(
           lang.name,
-          style: lang == _language
+          style: lang == _locale
               ? AppFonts.settingsSelected
               : AppFonts.settingsItem,
         ),
         padding: EdgeInsets.fromLTRB(15, 11, 15, 11),
-        trailing: lang == _language ? AppIcons.check : null,
+        trailing: lang == _locale ? AppIcons.check : null,
         onTap: () => _setLanguage(lang),
         color: AppColors.settingsItem,
       );
@@ -136,7 +136,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return ListView.separated(
       itemBuilder: _settingsTile,
       separatorBuilder: (BuildContext context, int id) => Divider(height: 0,),
-      itemCount: Language.choices.length + ListType.choices.length + 3,
+      itemCount: AppLocale.choices.length + ListType.choices.length + 3,
     );
   }
 
