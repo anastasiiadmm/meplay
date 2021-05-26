@@ -1,18 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:me_play/utils/deeplink_helper.dart';
 import '../hexagon/hexagon_widget.dart';
 import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../utils/fcm_helper.dart';
 import '../utils/local_notification_helper.dart';
 import '../utils/tz_helper.dart';
-import 'splash.dart';
+import '../utils/deeplink_helper.dart';
 import '../widgets/modals.dart' as modals;
 import '../widgets/bottomNavBar.dart';
 import '../inherited/auth_notifier.dart';
 import '../theme.dart';
 import '../models.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'splash.dart';
 
 
 
