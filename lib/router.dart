@@ -17,7 +17,7 @@ abstract class Routes {
   static const profile = '/profile';
   static const settings = '/settings';
   static const notifications = '/notifications';
-  static const reminders = '/reminders';
+  static const alerts = '/alerts';
   static const news = '/news';
   static const tv = '/tv';
   static const radio = '/radio';
@@ -35,7 +35,7 @@ final Map<String, WidgetBuilder> routes = {
   Routes.home: (BuildContext context) => HomeScreen(),
   Routes.profile: (BuildContext context) => ProfileScreen(),
   Routes.notifications: (BuildContext context) => NotificationListScreen(),
-  Routes.reminders: (BuildContext context) => NotificationListScreen(),
+  Routes.alerts: (BuildContext context) => NotificationListScreen(),
   Routes.settings: (BuildContext context) => SettingsScreen(),
   Routes.tv: (BuildContext context) => TVChannelsScreen(),
   Routes.radio: (BuildContext context) => RadioChannelsScreen(),
