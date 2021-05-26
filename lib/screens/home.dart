@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../hexagon/hexagon_widget.dart';
-import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../utils/fcm_helper.dart';
 import '../utils/local_notification_helper.dart';
 import '../utils/tz_helper.dart';
@@ -11,6 +9,7 @@ import '../widgets/bottomNavBar.dart';
 import '../inherited/auth_notifier.dart';
 import '../theme.dart';
 import '../models.dart';
+import '../router.dart';
 import 'splash.dart';
 
 
@@ -125,11 +124,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _openNotifications() {
-    // TODO
+    Navigator.of(context).pushNamed(Routes.notifications);
   }
 
   int get _notificationsCount {
-    int count = 99; // TODO
+    // TODO
+    int count = 99;
     if(count > 99) count = 99;
     return count;
   }
@@ -171,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            onTap: _openNotifications, // TODO-x
+            onTap: _openNotifications,
           ),
         ),
       );

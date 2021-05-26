@@ -34,7 +34,7 @@ class MePlay extends StatelessWidget {
       title: 'Me Play',
       theme: ThemeData(fontFamily: 'SF Pro Text'),
       routes: routes,
-      initialRoute: '/',
+      initialRoute: Routes.home,
       onGenerateRoute: router,
       navigatorKey: navigatorKey,
 

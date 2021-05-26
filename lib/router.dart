@@ -12,30 +12,49 @@ import 'screens/player.dart';
 import 'models.dart';
 
 
+abstract class Routes {
+  static const home = '/';
+  static const profile = '/profile';
+  static const settings = '/profile/settings';
+  static const notifications = '/notifications';
+  static const alerts = '/notifications/alerts';
+  static const news = '/notifications/news';
+  static const tv = '/tv';
+  static const radio = '/radio';
+  static const favorites = '/favorites';
+  static const favoriteTv = '/favorites/tv';
+  static const favoriteRadio = '/favorites/radio';
+  static const login = '/login';
+  static const tvChannel = '/tv/';  // match this with String.startsWith
+  static const radioChannel = '/radio/';  // match this with String.startsWith
+}
+
+
 // static routes which do not accept variables or have a return type
 final Map<String, WidgetBuilder> routes = {
-  '/': (BuildContext context) => HomeScreen(),
-  '/profile': (BuildContext context) => ProfileScreen(),
-  '/profile/notifications': (BuildContext context) => NotificationListScreen(),
-  '/profile/settings': (BuildContext context) => SettingsScreen(),
-  '/tv': (BuildContext context) => TVChannelsScreen(),
-  '/radio': (BuildContext context) => RadioChannelsScreen(),
-  '/favorites': (BuildContext context) => TVFavoritesScreen(),
-  '/favorites/tv': (BuildContext context) => TVFavoritesScreen(),
-  '/favorites/radio': (BuildContext context) => RadioFavoritesScreen(),
+  Routes.home: (BuildContext context) => HomeScreen(),
+  Routes.profile: (BuildContext context) => ProfileScreen(),
+  Routes.notifications: (BuildContext context) => NotificationListScreen(),
+  Routes.alerts: (BuildContext context) => NotificationListScreen(),
+  Routes.settings: (BuildContext context) => SettingsScreen(),
+  Routes.tv: (BuildContext context) => TVChannelsScreen(),
+  Routes.radio: (BuildContext context) => RadioChannelsScreen(),
+  Routes.favorites: (BuildContext context) => TVFavoritesScreen(),
+  Routes.favoriteTv: (BuildContext context) => TVFavoritesScreen(),
+  Routes.favoriteRadio: (BuildContext context) => RadioFavoritesScreen(),
 };
 
 
 // dynamic routes which accept variables or have specific return type
 Route<dynamic> router(RouteSettings settings) {
   String name = settings.name;
-  if(name == '/login') {
+  if(name == Routes.login) {
     return MaterialPageRoute<User>(
       builder: (BuildContext context) => LoginScreen(),
       settings: settings,
     );
   }
-  else if(name.startsWith('/tv/')) {
+  else if(name.startsWith(Routes.tvChannel)) {
     List<String> parts = name.split('/');
     int id = int.tryParse(parts[2]);
     return MaterialPageRoute(
@@ -46,7 +65,7 @@ Route<dynamic> router(RouteSettings settings) {
       settings: settings,
     );
   }
-  else if(name.startsWith('/radio/')) {
+  else if(name.startsWith(Routes.radioChannel)) {
     List<String> parts = name.split('/');
     int id = int.tryParse(parts[2]);
     return MaterialPageRoute(
