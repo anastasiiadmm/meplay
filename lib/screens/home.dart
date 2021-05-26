@@ -113,56 +113,59 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _mainButtonBlock {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(bottom: 1),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 1),
-                    child:_mainButton(
-                      AppImages.tv,
-                      text: locale(context).homeTv,
-                      onTap: _watchTV,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: 1),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 1),
+                      child:_mainButton(
+                        AppImages.tv,
+                        text: locale(context).homeTv,
+                        onTap: _watchTV,
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
+                  Expanded(
+                    child: _mainButton(
+                      AppImages.radio,
+                      text: locale(context).homeRadio,
+                      onTap: _listenRadio,
+                    ),
+                  ),
+                ]
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: 1),
                   child: _mainButton(
-                    AppImages.radio,
-                    text: locale(context).homeRadio,
-                    onTap: _listenRadio,
+                    AppImages.favorites,
+                    text: locale(context).homeFavorites,
+                    onTap: _openFavorites,
                   ),
                 ),
-              ]
-          ),
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(right: 1),
+              ),
+              Expanded(
                 child: _mainButton(
-                  AppImages.favorites,
-                  text: locale(context).homeFavorites,
-                  onTap: _openFavorites,
+                  AppImages.account,
+                  text: locale(context).homeProfile,
+                  onTap: _openProfile,
                 ),
               ),
-            ),
-            Expanded(
-              child: _mainButton(
-                AppImages.account,
-                text: locale(context).homeProfile,
-                onTap: _openProfile,
-              ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 
