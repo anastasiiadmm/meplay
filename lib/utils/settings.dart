@@ -29,9 +29,10 @@ class AppLocale {
 
   const AppLocale(this.name, this.value);
 
+  // copy from AppLocalizations.supportedLocales and give names.
   static const ru = AppLocale('Русский', Locale('ru', 'RU'));
   static const ky = AppLocale('Кыргызча', Locale('ky', 'KG'));
-  static const choices = [ky, ru];
+  static const choices = [ky, ru];  // defines ordering.
   static const defaultChoice = ru;
 
   static AppLocale getByName(String name) {
