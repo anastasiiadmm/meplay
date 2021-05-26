@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../theme.dart';
+import '../utils/settings.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -74,7 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
             children: [
               AppImages.logo,
               Text(
-                "Телевизор в твоём\nмобильном!",
+                gl(context).splashText,
                 textAlign: TextAlign.center,
                 style: AppFontsV2.textPrimary,
               ),
