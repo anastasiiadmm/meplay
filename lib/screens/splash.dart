@@ -61,12 +61,25 @@ class _SplashScreenState extends State<SplashScreen> {
     _toggle();
     return Material (
       color: AppColorsV2.darkBg,
-      child: AnimatedOpacity(
-        opacity: _opacity,
-        duration: _animationDuration,
-        curve: Curves.linear,
-        child: Center(
-          child: AppImages.logo,
+      child: Padding(
+        // по дизайну отступ сверху 150, но тогда картинка
+        // на реальном телефоне оказывается почти в центре.
+        padding: EdgeInsets.symmetric(horizontal: 0, vertical: 75),
+        child: AnimatedOpacity(
+          opacity: _opacity,
+          duration: _animationDuration,
+          curve: Curves.linear,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AppImages.logo,
+              Text(
+                "Телевизор в твоём\nмобильном!",
+                textAlign: TextAlign.center,
+                style: AppFontsV2.textPrimary,
+              ),
+            ],
+          ),
         ),
       ),
     );
