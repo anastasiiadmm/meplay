@@ -15,15 +15,15 @@ import 'models.dart';
 abstract class Routes {
   static const home = '/';
   static const profile = '/profile';
-  static const settings = '/profile/settings';
+  static const settings = '/settings';
   static const notifications = '/notifications';
-  static const alerts = '/notifications/alerts';
-  static const news = '/notifications/news';
+  static const reminders = '/reminders';
+  static const news = '/news';
   static const tv = '/tv';
   static const radio = '/radio';
   static const favorites = '/favorites';
-  static const favoriteTv = '/favorites/tv';
-  static const favoriteRadio = '/favorites/radio';
+  static const favTv = '/fav/tv';
+  static const favRadio = '/fav/radio';
   static const login = '/login';
   static const tvChannel = '/tv/';  // match this with String.startsWith
   static const radioChannel = '/radio/';  // match this with String.startsWith
@@ -35,13 +35,13 @@ final Map<String, WidgetBuilder> routes = {
   Routes.home: (BuildContext context) => HomeScreen(),
   Routes.profile: (BuildContext context) => ProfileScreen(),
   Routes.notifications: (BuildContext context) => NotificationListScreen(),
-  Routes.alerts: (BuildContext context) => NotificationListScreen(),
+  Routes.reminders: (BuildContext context) => NotificationListScreen(),
   Routes.settings: (BuildContext context) => SettingsScreen(),
   Routes.tv: (BuildContext context) => TVChannelsScreen(),
   Routes.radio: (BuildContext context) => RadioChannelsScreen(),
   Routes.favorites: (BuildContext context) => TVFavoritesScreen(),
-  Routes.favoriteTv: (BuildContext context) => TVFavoritesScreen(),
-  Routes.favoriteRadio: (BuildContext context) => RadioFavoritesScreen(),
+  Routes.favTv: (BuildContext context) => TVFavoritesScreen(),
+  Routes.favRadio: (BuildContext context) => RadioFavoritesScreen(),
 };
 
 
