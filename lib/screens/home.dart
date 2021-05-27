@@ -10,6 +10,7 @@ import '../models.dart';
 import '../router.dart';
 import '../utils/settings.dart';
 import 'splash.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 
 class HomeScreen extends StatefulWidget {
