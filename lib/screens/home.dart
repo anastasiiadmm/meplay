@@ -113,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget get _bannerBlock {
     // в баннер уже заложен паддинг для показа тени,
-    // поэтому здесь паддинг не нужен.
+    // поэтому здесь паддинга нет.
     return BannerCarousel(
       banners: _banners,
       onTap: _onBannerTap,
