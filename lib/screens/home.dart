@@ -28,13 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isSplashShowing = true;  // if splash animates from hidden to visible or back
   DeeplinkHelper _deeplinkHelper;
   List<Channel> _recentChannels;
-  List<AppBanner> _banners = [
-    AppBanner(targetUrl: Routes.tv),
-    AppBanner(targetUrl: Routes.login),
-    AppBanner(targetUrl: Routes.radio),
-    AppBanner(targetUrl: Routes.tv),
-    AppBanner(targetUrl: Routes.tv),
-  ];
+  List<AppBanner> _banners;
 
   void initState() {
     super.initState();
@@ -74,6 +68,19 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     setState(() { _recentChannels = recent; });
+  }
+
+  Future<void> _loadBanners() async {
+    // TODO: stub
+    List<AppBanner> banners = [
+      AppBanner(targetUrl: Routes.tv),
+      AppBanner(targetUrl: Routes.login),
+      AppBanner(targetUrl: Routes.radio),
+      AppBanner(targetUrl: Routes.tv),
+      AppBanner(targetUrl: Routes.tv),
+    ];
+
+    setState(() { _banners = banners; });
   }
 
   void _doneLoading() {
