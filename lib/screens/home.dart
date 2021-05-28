@@ -13,6 +13,7 @@ import 'splash.dart';
 import '../widgets/banner_carousel.dart';
 import '../widgets/large_image_button.dart';
 import '../widgets/channel_carousel.dart';
+import '../widgets/future_block.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -27,8 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _splashAnimationDone = false;
   bool _isSplashShowing = true;  // if splash animates from hidden to visible or back
   DeeplinkHelper _deeplinkHelper;
-  List<Channel> _recentChannels;
+
+  // TODO: cache and load in models.
   List<AppBanner> _banners;
+  List<Channel> _recentChannels;
 
   void initState() {
     super.initState();
@@ -70,17 +73,19 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() { _recentChannels = recent; });
   }
 
-  Future<void> _loadBanners() async {
+  Future<List<AppBanner>> _loadBanners() async {
     // TODO: stub
-    List<AppBanner> banners = [
-      AppBanner(targetUrl: Routes.tv),
-      AppBanner(targetUrl: Routes.login),
-      AppBanner(targetUrl: Routes.radio),
-      AppBanner(targetUrl: Routes.tv),
-      AppBanner(targetUrl: Routes.tv),
-    ];
-
-    setState(() { _banners = banners; });
+    if(_banners == null) _banners = await Future<List<AppBanner>>.delayed(
+      Duration(seconds: 2),
+      () => [
+        AppBanner(targetUrl: Routes.tv),
+        AppBanner(targetUrl: Routes.login),
+        AppBanner(targetUrl: Routes.radio),
+        AppBanner(targetUrl: Routes.tv),
+        AppBanner(targetUrl: Routes.tv),
+      ],
+    );
+    return _banners;
   }
 
   void _doneLoading() {
@@ -182,11 +187,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _bannerBlock {
-    // в баннер уже заложен паддинг для показа тени,
-    // поэтому здесь паддинга нет.
-    return BannerCarousel(
-      banners: _banners,
-      onTap: _onBannerTap,
+    return FutureBlock<List<AppBanner>>(
+      future: _loadBanners(),
+      builder: (banners) => BannerCarousel(
+        banners: banners,
+        onTap: _onBannerTap,
+      ),
+      size: Size.fromHeight(BannerCarousel.totalHeight),
     );
   }
 

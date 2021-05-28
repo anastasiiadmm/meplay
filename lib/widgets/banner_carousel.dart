@@ -10,6 +10,13 @@ class BannerCarousel extends StatefulWidget {
   final List<AppBanner> banners;
   final void Function(int id) onTap;
 
+  static const double bannerHeight = 180;
+  static const double topShadowPadding = 20;
+  static const double bottomShadowPadding = 20;
+  static const double dotsHeight = 28;
+  static const totalHeight = bannerHeight + topShadowPadding
+      + bottomShadowPadding + dotsHeight;
+
   BannerCarousel({
     Key key,
     @required this.banners,
@@ -25,10 +32,6 @@ class BannerCarousel extends StatefulWidget {
 class _BannerCarouselState extends State<BannerCarousel> {
   int _activeId = 0;
   CarouselController _controller = CarouselController();
-  final double bannerHeight = 180;
-  final double topShadowPadding = 20;
-  final double bottomShadowPadding = 20;
-  final double dotsHeight = 28;
 
   void _switchTo(int id) {
     _controller.animateToPage(id);
@@ -93,12 +96,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
       );
     }
     return Padding(
-      padding: EdgeInsets.fromLTRB(
-        16,
-        topShadowPadding,
-        16,
-        bottomShadowPadding + dotsHeight,
-      ),
+      padding: EdgeInsets.fromLTRB(16, BannerCarousel.topShadowPadding,
+        16, BannerCarousel.bottomShadowPadding + BannerCarousel.dotsHeight,),
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
@@ -128,8 +127,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
       items: items,
       options: CarouselOptions(
         viewportFraction: 1,
-        height: bannerHeight + topShadowPadding
-            + dotsHeight + bottomShadowPadding,
+        height: BannerCarousel.totalHeight,
         autoPlay: true,
         onPageChanged: _pageChanged,
       ),
@@ -144,7 +142,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
         Positioned(
           left: 0,
           right: 0,
-          bottom: bottomShadowPadding,
+          bottom: BannerCarousel.bottomShadowPadding,
           child: _dots,
         ),
       ],
