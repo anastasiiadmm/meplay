@@ -115,12 +115,9 @@ class _BannerCarouselState extends State<BannerCarousel> {
     for(int id = 0; id < widget.banners.length; id++) {
       items.add(_dot(id));
     }
-    return Padding(
-      padding: EdgeInsets.only(top: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: items,
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: items,
     );
   }
 
@@ -141,12 +138,22 @@ class _BannerCarouselState extends State<BannerCarousel> {
       );
     }
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.fromLTRB(16, 10, 16, 38),
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: AppColorsV2.darkShadow,
+              offset: Offset(0, 10),
+              blurRadius: 35,
+            ),
+          ],
         ),
-        child: content,
+        child: FittedBox(
+          child: content,
+          fit: BoxFit.contain,
+        ),
       ),
     );
   }
@@ -160,8 +167,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
       carouselController: _controller,
       items: items,
       options: CarouselOptions(
-        viewportFraction: 1.0,
-        height: 180,
+        viewportFraction: 1,
+        height: 228,  // height of the picture + paddings for shadow.
         autoPlay: true,
         onPageChanged: _pageChanged,
       ),
@@ -170,12 +177,16 @@ class _BannerCarouselState extends State<BannerCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _bannerCarousel,
-          _dots,
-        ]
+    return Stack(
+      children: [
+        _bannerCarousel,
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 10,
+          child: _dots,
+        ),
+      ],
     );
   }
 }
@@ -279,7 +290,13 @@ class _HomeScreenState extends State<HomeScreen> {
   // }
 
   Widget get _bannerBlock {
-    return BannerCarousel(banners: _banners, onTap: _onBannerTap,);
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+      child: BannerCarousel(
+        banners: _banners,
+        onTap: _onBannerTap,
+      ),
+    );
   }
 
   Widget _mainButton(Image image, {
