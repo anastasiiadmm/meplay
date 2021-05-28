@@ -11,6 +11,7 @@ import '../router.dart';
 import '../utils/settings.dart';
 import 'splash.dart';
 import '../widgets/banner_carousel.dart';
+import '../widgets/large_image_button.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -88,11 +89,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _openProfile() {
-    Navigator.of(context).pushNamed(Routes.favorites);
+    Navigator.of(context).pushNamed(Routes.profile);
   }
 
   void _openFavorites() {
-    Navigator.of(context).pushNamed(Routes.profile);
+    Navigator.of(context).pushNamed(Routes.favorites);
   }
 
   void _onBannerTap(int id) {
@@ -119,32 +120,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _mainButton(Image image, {
-    @required String text,
-    @required void Function() onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: ColoredBox(
-        color: AppColorsV2.decorativeGray,
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(bottom: 5),
-                child: image,
-              ),
-              Text(text, style: AppFontsV2.itemTitle,)
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget get _mainButtonBlock {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
@@ -159,16 +134,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.only(right: 1),
-                      child:_mainButton(
-                        AppImages.tv,
+                      child: LargeImageButton(
+                        image: AppImages.tv,
                         text: locale(context).homeTv,
                         onTap: _watchTV,
                       ),
                     ),
                   ),
                   Expanded(
-                    child: _mainButton(
-                      AppImages.radio,
+                    child: LargeImageButton(
+                      image: AppImages.radio,
                       text: locale(context).homeRadio,
                       onTap: _listenRadio,
                     ),
@@ -181,16 +156,16 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(right: 1),
-                  child: _mainButton(
-                    AppImages.favorites,
+                  child: LargeImageButton(
+                    image: AppImages.favorites,
                     text: locale(context).homeFavorites,
                     onTap: _openFavorites,
                   ),
                 ),
               ),
               Expanded(
-                child: _mainButton(
-                  AppImages.account,
+                child: LargeImageButton(
+                  image: AppImages.account,
                   text: locale(context).homeProfile,
                   onTap: _openProfile,
                 ),
