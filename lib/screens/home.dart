@@ -111,12 +111,11 @@ class _HomeScreenState extends State<HomeScreen> {
   // }
 
   Widget get _bannerBlock {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-      child: BannerCarousel(
-        banners: _banners,
-        onTap: _onBannerTap,
-      ),
+    // в баннер уже заложен паддинг для показа тени,
+    // поэтому здесь паддинг не нужен.
+    return BannerCarousel(
+      banners: _banners,
+      onTap: _onBannerTap,
     );
   }
 

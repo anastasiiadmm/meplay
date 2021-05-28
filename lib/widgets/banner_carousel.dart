@@ -25,6 +25,10 @@ class BannerCarousel extends StatefulWidget {
 class _BannerCarouselState extends State<BannerCarousel> {
   int _activeId = 0;
   CarouselController _controller = CarouselController();
+  final double bannerHeight = 180;
+  final double topShadowPadding = 20;
+  final double bottomShadowPadding = 48;
+  final double dotsHeight = 28;
 
   void _switchTo(int id) {
     _controller.animateToPage(id);
@@ -89,7 +93,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
       );
     }
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, 10, 16, 38),
+      padding: EdgeInsets.fromLTRB(16, topShadowPadding, 16, bottomShadowPadding),
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
@@ -119,7 +123,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
       items: items,
       options: CarouselOptions(
         viewportFraction: 1,
-        height: 228,  // height of the picture + paddings for shadow.
+        height: bannerHeight + topShadowPadding + bottomShadowPadding,
         autoPlay: true,
         onPageChanged: _pageChanged,
       ),
@@ -134,7 +138,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
         Positioned(
           left: 0,
           right: 0,
-          bottom: 10,
+          bottom: bottomShadowPadding - dotsHeight,
           child: _dots,
         ),
       ],
