@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import '../utils/fcm_helper.dart';
 import '../utils/local_notification_helper.dart';
 import '../utils/tz_helper.dart';
@@ -10,7 +12,173 @@ import '../models.dart';
 import '../router.dart';
 import '../utils/settings.dart';
 import 'splash.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+
+
+class Circle extends StatelessWidget {
+  final Color color;
+  final double diameter;
+  final Widget child;
+
+  Circle({
+    Key key,
+    this.color: Colors.transparent,
+    this.diameter: 1,
+    this.child,
+  }): super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+      ),
+      child: SizedBox(
+        width: diameter,
+        height: diameter,
+        child: child,
+      ),
+    );
+  }
+}
+
+
+class Dot extends Circle {
+  Dot({
+    Key key,
+    Color color: Colors.transparent,
+    double diameter: 1,
+  }): super(
+    key: key,
+    color: color,
+    diameter: diameter,
+  );
+}
+
+
+class BannerCarousel extends StatefulWidget {
+  final List<AppBanner> banners;
+  final void Function(int id) onTap;
+
+  BannerCarousel({
+    Key key,
+    @required this.banners,
+    this.onTap,
+  }): assert(banners.length > 0),
+        super(key: key);
+  
+  @override
+  _BannerCarouselState createState() => _BannerCarouselState();
+}
+
+class _BannerCarouselState extends State<BannerCarousel> {
+  int _activeId = 0;
+  CarouselController _controller = CarouselController();
+
+  void _switchTo(int id) {
+    _controller.animateToPage(id);
+  }
+
+  void _pageChanged(int id, CarouselPageChangedReason reason) {
+    setState(() {
+      _activeId = id;
+    });
+  }
+
+  Widget _dot(id) {
+    Widget dot;
+    if (id == _activeId) {
+      dot = Dot(
+        color: AppColorsV2.purple,
+        diameter: 8,
+      );
+    } else {
+      dot = GestureDetector(
+        onTap: () => _switchTo(id),
+        child: Dot(
+          color: AppColorsV2.decorativeGray,
+          diameter: 8,
+        ),
+      );
+    }
+    if (id > 0) {
+      dot = Padding(
+        padding: EdgeInsets.only(left: 8),
+        child: dot,
+      );
+    }
+    return dot;
+  }
+
+  Widget get _dots {
+    List<Widget> items = [];
+    for(int id = 0; id < widget.banners.length; id++) {
+      items.add(_dot(id));
+    }
+    return Padding(
+      padding: EdgeInsets.only(top: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: items,
+      ),
+    );
+  }
+
+  Widget _banner(int id) {
+    AppBanner banner = widget.banners[id];
+    Widget content = FutureBuilder<File>(
+      future: banner.image,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? Image.file(snapshot.data)
+            : AppImages.bannerStub;
+      },
+    );
+    if (widget.onTap != null) {
+      content = GestureDetector(
+        onTap: () => widget.onTap(id),
+        child: content,
+      );
+    }
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: content,
+      ),
+    );
+  }
+
+  Widget get _bannerCarousel {
+    List<Widget> items = [];
+    for(int id = 0; id < widget.banners.length; id++) {
+      items.add(_banner(id));
+    }
+    return CarouselSlider(
+      carouselController: _controller,
+      items: items,
+      options: CarouselOptions(
+        viewportFraction: 1.0,
+        height: 180,
+        autoPlay: true,
+        onPageChanged: _pageChanged,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _bannerCarousel,
+          _dots,
+        ]
+    );
+  }
+}
 
 
 class HomeScreen extends StatefulWidget {
@@ -25,6 +193,14 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _splashAnimationDone = false;
   bool _isSplashShowing = true;  // if splash animates from hidden to visible or back
   DeeplinkHelper _deeplinkHelper;
+
+  List<AppBanner> _banners = [
+    AppBanner(targetUrl: Routes.tv),
+    AppBanner(targetUrl: Routes.login),
+    AppBanner(targetUrl: Routes.radio),
+    AppBanner(targetUrl: Routes.tv),
+    AppBanner(targetUrl: Routes.tv),
+  ];
 
   void initState() {
     super.initState();
@@ -87,6 +263,25 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(context).pushNamed(Routes.profile);
   }
 
+  void _onBannerTap(int id) {
+    String url = _banners[id].targetUrl;
+    if(Routes.allowed(url) && url != Routes.home) {
+      Navigator.of(context).pushNamed(url);
+    }
+  }
+
+  // Widget get _popularBlock {
+  //
+  // }
+  //
+  // Widget get _recentBlock {
+  //
+  // }
+
+  Widget get _bannerBlock {
+    return BannerCarousel(banners: _banners, onTap: _onBannerTap,);
+  }
+
   Widget _mainButton(Image image, {
     @required String text,
     @required void Function() onTap,
@@ -94,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       onTap: onTap,
       child: ColoredBox(
-        color: AppColorsV2.decorationGray,
+        color: AppColorsV2.decorativeGray,
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Column(
@@ -176,6 +371,9 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           _mainButtonBlock,
+          _bannerBlock,
+          // _recentBlock,
+          // _popularBlock,
         ]
       ),
     );

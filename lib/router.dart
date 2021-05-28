@@ -27,6 +27,14 @@ abstract class Routes {
   static const login = '/login';
   static const tvChannel = '/tv/';  // match this with String.startsWith
   static const radioChannel = '/radio/';  // match this with String.startsWith
+
+  static const ROUTES = [home, profile, settings, notifications, alerts,
+    news, tv, radio, favorites, favTv, favRadio, login];
+  static const MATCH_ROUTES = [tvChannel, radioChannel];
+  static bool allowed(String route) {
+    return ROUTES.contains(route)
+        || MATCH_ROUTES.any((r) => route.startsWith(r));
+  }
 }
 
 

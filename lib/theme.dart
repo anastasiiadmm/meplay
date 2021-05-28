@@ -90,7 +90,7 @@ class AppColorsV2 {
   static const textShadow2 = Color.fromRGBO(50, 50, 71, 0.06);
   static const purpleInputBg = Color.fromRGBO(52, 31, 109, 1);
   static const lightPurpleShadow = Color.fromRGBO(127, 88, 236, 1);
-  static const decorationGray = Color.fromRGBO(60, 58, 67, 1);
+  static const decorativeGray = Color.fromRGBO(60, 58, 67, 1);
   static const navBg = Color.fromRGBO(60, 58, 67, 0.72);
   static const modalOverlay = Color.fromRGBO(0, 0, 0, 0.7);
   static const appbarBorder = Color.fromRGBO(255, 255, 255, 0.2);
@@ -479,6 +479,9 @@ class AppImages {
   static final largeTv = Image.asset('assets/images/largeTv.png', width: 110, height: 110, filterQuality: FilterQuality.high,);
   static final largeBell = Image.asset('assets/images/largeBell.png', width: 110, height: 110, filterQuality: FilterQuality.high,);
   static final lock = Image.asset('assets/images/lock.png', width: 140, height: 148, filterQuality: FilterQuality.high,);
+
+  // used for testing and when banner image is not available
+  static final bannerStub = Image.asset('assets/images/banner_stub.png', width: 343, height: 180, filterQuality: FilterQuality.high);
 }
 
 

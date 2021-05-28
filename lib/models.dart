@@ -196,6 +196,23 @@ class Channel {
 }
 
 
+class AppBanner {
+  String imageUrl;
+  String targetUrl;
+  File _image;
+
+  AppBanner({this.imageUrl, this.targetUrl});
+
+  Future<File> get image async {
+    if (imageUrl == null) return null;
+    if(_image == null) {
+      _image = await DefaultCacheManager().getSingleFile(imageUrl);
+    }
+    return _image;
+  }
+}
+
+
 class Program {
   String title;
   int duration;
