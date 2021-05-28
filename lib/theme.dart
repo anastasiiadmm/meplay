@@ -455,7 +455,7 @@ class AppIconsV2 {
   static final user = SvgPicture.asset('assets/icons/new/user.svg', width: 28, height: 28,);
   static final userActive = SvgPicture.asset('assets/icons/new/user_active.svg', width: 28, height: 28,);
   static final more = SvgPicture.asset('assets/icons/new/more.svg', width: 20, height: 20,);
-  static final logoPlaceholder = SvgPicture.asset('assets/icons/new/logo.svg', width: 30, height: 34.5,);
+  static final logoPlaceholder = SvgPicture.asset('assets/icons/new/logo_placeholder.svg', width: 106, height: 122,);
 }
 
 

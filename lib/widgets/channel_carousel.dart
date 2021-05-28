@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import '../models.dart';
 import 'channel_logo.dart';
 
 
 class ChannelCarousel extends StatelessWidget {
   final List<Channel> channels;
+  static const double height = ChannelLogo.size;
 
   ChannelCarousel({
     Key key,
@@ -13,18 +13,31 @@ class ChannelCarousel extends StatelessWidget {
   }): assert(channels.length > 0),
         super(key: key);
 
+  void _openChannel(BuildContext context, Channel channel) {
+    Navigator.of(context).pushNamed('/tv/${channel.id}');
+  }
+
+  Widget _itemBuilder(BuildContext context, int id) {
+    Channel channel = channels[id];
+    return Padding(
+      padding: id == 0
+          ? EdgeInsets.symmetric(horizontal: 16)
+          : EdgeInsets.only(right: 16),
+      child: GestureDetector(
+        onTap: () => _openChannel(context, channel),
+        child: ChannelLogo(channel: channel),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return CarouselSlider(
-      items: channels.map((channel) => Padding(
-        padding: EdgeInsets.only(left: 16),
-        child: ChannelLogo(
-          channel: channel,
-        ),
-      )).toList(),
-      options: CarouselOptions(
-        autoPlay: false,
-        viewportFraction: 0.27,
+    return SizedBox(
+      height: height,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: channels.length,
+        itemBuilder: _itemBuilder,
       ),
     );
   }

@@ -79,7 +79,8 @@ class FutureBlock<T> extends StatelessWidget {
         future: future,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return snapshot.connectionState == ConnectionState.waiting
-              ? loader : builder(snapshot.data);
+              ? loader
+              : builder(snapshot.data);
         },
       )
     );

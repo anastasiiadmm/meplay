@@ -29,10 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isSplashShowing = true;  // if splash animates from hidden to visible or back
   DeeplinkHelper _deeplinkHelper;
 
-  // TODO: cache and load in models.
-  List<AppBanner> _banners;
-  List<Channel> _recentChannels;
-
   void initState() {
     super.initState();
     _initAsync();
@@ -50,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Channel.loadTv(),
       Channel.loadRadio(),
     ]);
-    await _loadRecent();
+    _loadRecent();
     await TZHelper.init();
     _deeplinkHelper = DeeplinkHelper.instance;
     await _deeplinkHelper.checkInitialLink();
@@ -61,20 +57,23 @@ class _HomeScreenState extends State<HomeScreen> {
     _doneLoading();
   }
 
+  List<Channel> _recentChannels;
   Future<void> _loadRecent() async {
+    // TODO: provide through notifier.
     List<Channel> recent = [];
 
-    // TODO: stub
+    // stub
     List<Channel> channels = await Channel.tvChannels();
-    for(int i = 0; i < 5; i++) {
-      recent.add(channels[i]);
-    }
+    for(int i = 0; i < 10; i++) { recent.add(channels[i]); }
 
     setState(() { _recentChannels = recent; });
   }
 
+  List<AppBanner> _banners;
   Future<List<AppBanner>> _loadBanners() async {
-    // TODO: stub
+    // TODO: load from api.
+
+    // stub
     if(_banners == null) _banners = await Future<List<AppBanner>>.delayed(
       Duration(seconds: 2),
       () => [
@@ -85,6 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
         AppBanner(targetUrl: Routes.tv),
       ],
     );
+
     return _banners;
   }
 
@@ -202,8 +202,15 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(locale(context).homeRecent, style: AppFontsV2.blockTitle,),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              locale(context).homeRecent,
+              style: AppFontsV2.blockTitle,
+            ),
+          ),
           Padding(
             padding: EdgeInsets.only(top: 16),
             child: ChannelCarousel(channels: _recentChannels),
@@ -225,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           _mainButtonBlock,
           _bannerBlock,
-          _recentBlock,
+          if(_recentChannels != null && _recentChannels.length > 0) _recentBlock,
           // _popularBlock,
         ]
       ),

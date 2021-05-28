@@ -6,6 +6,7 @@ import '../theme.dart';
 
 class ChannelLogo extends StatelessWidget {
   final Channel channel;
+  static const double size = 82;
 
   ChannelLogo({Key key, @required this.channel}): super(key: key);
 
@@ -17,8 +18,8 @@ class ChannelLogo extends StatelessWidget {
         color: AppColorsV2.channelBg,
       ),
       child: SizedBox(
-        width: 82,
-        height: 82,
+        width: size,
+        height: size,
         child: Padding(
           padding: EdgeInsets.all(5),
           child: Center(
