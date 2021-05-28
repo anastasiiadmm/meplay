@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/modals.dart' as modals;
-import '../widgets/bottomNavBar.dart';
+import '../widgets/bottom_navbar.dart';
 import '../models.dart';
 import '../theme.dart';
 

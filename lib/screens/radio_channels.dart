@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../widgets/bottomNavBar.dart';
+import '../widgets/bottom_navbar.dart';
 import '../widgets/modals.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/pref_helper.dart';
-import '../widgets/channelList.dart';
+import '../widgets/channel_list.dart';
 import 'player.dart';
 
 

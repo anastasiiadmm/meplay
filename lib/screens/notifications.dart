@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../utils/local_notification_helper.dart';
-import '../widgets/bottomNavBar.dart';
+import '../widgets/bottom_navbar.dart';
 import '../theme.dart';
 import '../widgets/modals.dart';
 

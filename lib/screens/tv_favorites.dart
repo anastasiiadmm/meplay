@@ -1,24 +1,26 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../widgets/bottomNavBar.dart';
 import '../widgets/modals.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/pref_helper.dart';
-import '../widgets/channelList.dart';
+import '../widgets/channel_list.dart';
+import '../widgets/bottom_navbar.dart';
 import 'player.dart';
 
 
-class TVChannelsScreen extends StatefulWidget {
+class TVFavoritesScreen extends StatefulWidget {
   @override
-  _TVChannelsScreenState createState() => _TVChannelsScreenState();
+  _TVFavoritesScreenState createState() => _TVFavoritesScreenState();
 }
 
 
-class _TVChannelsScreenState extends State<TVChannelsScreen> {
+class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
+  List<Channel> _allChannels = [];
   List<Channel> _initialChannels = [];
   List<Channel> _channels = [];
+  User _user;
   bool _search = false;
   final _searchController = TextEditingController();
   ChannelListType _listType = ChannelListType.defaultType;
@@ -26,8 +28,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadListType();
-    _loadChannels();
+    _initAsync();
   }
 
   @override
@@ -36,11 +37,34 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     super.dispose();
   }
 
+  Future<void> _initAsync() async {
+    await _loadUser();
+    if (_user == null) await _login();
+    if (_user == null) Navigator.of(context).pop();
+    else {
+      _loadListType();
+      _loadChannels();
+    }
+  }
+
+  Future<void> _loadUser() async {
+    _user = await User.getUser();
+  }
+
+  Future<void> _login() async {
+    _user = await Navigator.of(context).pushNamed<User>('/login');
+  }
+
   Future<void> _loadChannels() async {
     List<Channel> allChannels = await Channel.tvChannels();
     allChannels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
+    List<int> favIds = await _user.tvFavorites();
+    List<Channel> favChannels = allChannels.where((channel) {
+      return favIds.contains(channel.id);
+    }).toList();
     setState(() {
-      _initialChannels = allChannels;
+      _allChannels = allChannels;
+      _initialChannels = favChannels;
       _channels = _initialChannels.toList();  // copy
     });
   }
@@ -58,7 +82,9 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     Timer(Duration(milliseconds: 1001), SystemChrome.restoreSystemUIOverlays);
   }
 
-  Widget get _bottomBar => BottomNavBar();
+  Widget get _bottomBar {
+    return BottomNavBar(showIndex: NavItems.favorites);
+  }
 
   // TODO: add star button into channel list items
   // Future<void> _addFavorite(Channel channel) async {
@@ -69,21 +95,6 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   // Future<void> _removeFavorite(Channel channel) async {
   //   User user = await User.getUser();
   //   if(user != null) await user.removeFavorite(channel);
-  // }
-  //
-  // Future<void> _toggleFavorite(Channel channel) async {
-  //   User user = await User.getUser();
-  //   if (user != null) {
-  //     String message;
-  //     if (await user.hasFavorite(channel)) {
-  //       await _addFavorite(channel);
-  //       message = 'Канал "${channel.name}" удалён из избранного';
-  //     } else {
-  //       await _removeFavorite(channel);
-  //       message = 'Канал "${channel.name}" добавлен в избранное';
-  //     }
-  //     grayToast(context, message);
-  //   }
   // }
 
   Future<void> _openChannel(Channel channel) async {
@@ -101,19 +112,19 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   }
 
   Channel _nextChannel(Channel channel) {
-    int index = _initialChannels.indexOf(channel);
-    if(index < _initialChannels.length - 1) {
-      return _initialChannels[index + 1];
+    int index = _allChannels.indexOf(channel);
+    if(index < _allChannels.length - 1) {
+      return _allChannels[index + 1];
     }
-    return _initialChannels[0];
+    return _allChannels[0];
   }
 
   Channel _prevChannel(Channel channel) {
-    int index = _initialChannels.indexOf(channel);
+    int index = _allChannels.indexOf(channel);
     if(index > 0) {
-      return _initialChannels[index - 1];
+      return _allChannels[index - 1];
     }
-    return _initialChannels[_initialChannels.length - 1];
+    return _allChannels[_allChannels.length - 1];
   }
 
   Widget get _body => ChannelList(
@@ -181,7 +192,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
       ),
       title: _search
           ? _searchInput()
-          : Text('ТВ Каналы', style: AppFonts.screenTitle),
+          : Text('Избранное', style: AppFonts.screenTitle),
       centerTitle: !_search,
       actions: [
         IconButton(
@@ -221,7 +232,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
                 filled: true,
                 border: OutlineInputBorder(
                   borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(10)
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 errorMaxLines: 1,
               ),

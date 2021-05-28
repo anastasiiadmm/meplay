@@ -4,10 +4,10 @@ import 'screens/login.dart';
 import 'screens/profile.dart';
 import 'screens/notifications.dart';
 import 'screens/settings.dart';
-import 'screens/tvChannels.dart';
-import 'screens/tvFavorites.dart';
-import 'screens/radioChannels.dart';
-import 'screens/radioFavorites.dart';
+import 'screens/tv_channels.dart';
+import 'screens/tv_favorites.dart';
+import 'screens/radio_channels.dart';
+import 'screens/radio_favorites.dart';
 import 'screens/player.dart';
 import 'models.dart';
 

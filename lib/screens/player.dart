@@ -11,7 +11,7 @@ import '../theme.dart';
 import '../utils/orientation_helper.dart';
 import '../utils/local_notification_helper.dart';
 import '../widgets/player.dart';
-import '../widgets/bottomNavBar.dart';
+import '../widgets/bottom_navbar.dart';
 import '../widgets/modals.dart';
 
 
