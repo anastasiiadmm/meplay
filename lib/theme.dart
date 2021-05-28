@@ -95,6 +95,7 @@ class AppColorsV2 {
   static const modalOverlay = Color.fromRGBO(0, 0, 0, 0.7);
   static const appbarBorder = Color.fromRGBO(255, 255, 255, 0.2);
   static const iconBg = Color.fromRGBO(255, 255, 255, 1);  // white
+  static const channelBg = Color.fromRGBO(255, 255, 255, 1);
 
   // these are for text in different parts of the design.
   static const textPrimary = Color.fromRGBO(255, 255, 255, 1);  // white
@@ -454,18 +455,7 @@ class AppIconsV2 {
   static final user = SvgPicture.asset('assets/icons/new/user.svg', width: 28, height: 28,);
   static final userActive = SvgPicture.asset('assets/icons/new/user_active.svg', width: 28, height: 28,);
   static final more = SvgPicture.asset('assets/icons/new/more.svg', width: 20, height: 20,);
-  static final live = SizedBox(
-    width: 8,
-    height: 8,
-    child: DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: ColoredBox(
-        color: AppColorsV2.red,
-      ),
-    ),
-  );
+  static final logoPlaceholder = SvgPicture.asset('assets/icons/new/logo.svg', width: 30, height: 34.5,);
 }
 
 

@@ -12,6 +12,7 @@ import '../utils/settings.dart';
 import 'splash.dart';
 import '../widgets/banner_carousel.dart';
 import '../widgets/large_image_button.dart';
+import '../widgets/channel_carousel.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _splashAnimationDone = false;
   bool _isSplashShowing = true;  // if splash animates from hidden to visible or back
   DeeplinkHelper _deeplinkHelper;
-
+  List<Channel> _recentChannels;
   List<AppBanner> _banners = [
     AppBanner(targetUrl: Routes.tv),
     AppBanner(targetUrl: Routes.login),
@@ -52,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Channel.loadTv(),
       Channel.loadRadio(),
     ]);
+    await _loadRecent();
     await TZHelper.init();
     _deeplinkHelper = DeeplinkHelper.instance;
     await _deeplinkHelper.checkInitialLink();
@@ -60,6 +62,18 @@ class _HomeScreenState extends State<HomeScreen> {
     await helper.checkInitialMessage();
     _asyncInitDone = true;
     _doneLoading();
+  }
+
+  Future<void> _loadRecent() async {
+    List<Channel> recent = [];
+
+    // TODO: stub
+    List<Channel> channels = await Channel.tvChannels();
+    for(int i = 0; i < 5; i++) {
+      recent.add(channels[i]);
+    }
+
+    setState(() { _recentChannels = recent; });
   }
 
   void _doneLoading() {
@@ -101,23 +115,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if(Routes.allowed(url) && url != Routes.home) {
       Navigator.of(context).pushNamed(url);
     }
-  }
-
-  // Widget get _popularBlock {
-  //
-  // }
-  //
-  // Widget get _recentBlock {
-  //
-  // }
-
-  Widget get _bannerBlock {
-    // в баннер уже заложен паддинг для показа тени,
-    // поэтому здесь паддинга нет.
-    return BannerCarousel(
-      banners: _banners,
-      onTap: _onBannerTap,
-    );
   }
 
   Widget get _mainButtonBlock {
@@ -177,6 +174,36 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget get _bannerBlock {
+    // в баннер уже заложен паддинг для показа тени,
+    // поэтому здесь паддинга нет.
+    return BannerCarousel(
+      banners: _banners,
+      onTap: _onBannerTap,
+    );
+  }
+
+  Widget get _recentBlock {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(locale(context).homeRecent, style: AppFontsV2.blockTitle,),
+          Padding(
+            padding: EdgeInsets.only(top: 16),
+            child: ChannelCarousel(channels: _recentChannels),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  // Widget get _popularBlock {
+  //
+  // }
+
   Widget get _body {
     return SingleChildScrollView(
       child: Column(
@@ -184,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           _mainButtonBlock,
           _bannerBlock,
-          // _recentBlock,
+          _recentBlock,
           // _popularBlock,
         ]
       ),
