@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _splashAnimationDone = false;
   bool _isSplashShowing = true;  // if splash animates from hidden to visible or back
   DeeplinkHelper _deeplinkHelper;
+  bool _showBanner = false;  // while banner is not real - hide it.
 
   void initState() {
     super.initState();
@@ -187,6 +188,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _bannerBlock {
+    // баннер имеет 20px паддинг вокруг себя для показа тени
+    // поэтому здесь нет паддинга и нужно учитывать его наличие
+    // при подсчёте паддинга в других блоках.
     return FutureBlock<List<AppBanner>>(
       future: _loadBanners(),
       builder: (banners) => BannerCarousel(
@@ -199,7 +203,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget get _recentBlock {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10),
+      padding: _showBanner
+          ? EdgeInsets.symmetric(vertical: 10)
+          : EdgeInsets.fromLTRB(0, 20, 0, 10),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           _mainButtonBlock,
-          _bannerBlock,
+          if(_showBanner) _bannerBlock,
           if(_recentChannels != null && _recentChannels.length > 0) _recentBlock,
           // _popularBlock,
         ]
