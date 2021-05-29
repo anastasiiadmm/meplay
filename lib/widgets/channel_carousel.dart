@@ -14,7 +14,8 @@ class ChannelCarousel extends StatelessWidget {
         super(key: key);
 
   void _openChannel(BuildContext context, Channel channel) {
-    Navigator.of(context).pushNamed('/tv/${channel.id}');
+    String typeString = channel.type == ChannelType.tv ? 'tv' : 'radio';
+    Navigator.of(context).pushNamed('/$typeString/${channel.id}');
   }
 
   Widget _itemBuilder(BuildContext context, int id) {
