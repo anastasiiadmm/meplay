@@ -37,6 +37,8 @@
   "@homeProfile": {},
   "homeRecent": "Вы смотрели:",
   "@homeRecent": {},
+  "homeRecentEmpty": "Нет недавно просмотренных каналов.",
+  "@homeRecentEmpty": {},
   "homeTrending": "Популярные телеканалы:",
   "@homeTrending": {},
   "notifications": "Уведомления",
