@@ -28,7 +28,10 @@ class ChannelLogo extends StatelessWidget {
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 return snapshot.hasData
                     ? Image.file(snapshot.data)
-                    : AppIconsV2.logoPlaceholder;
+                    : Padding(
+                  padding: EdgeInsets.all(5),
+                  child: AppIconsV2.logoPlaceholder,
+                );
               },
             ),
           ),
