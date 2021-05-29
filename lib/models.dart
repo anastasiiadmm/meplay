@@ -70,17 +70,20 @@ class Channel {
     print('adding');
     if(channel == null) return;
     List<Channel> recent = await getRecent();
-    recent.removeWhere((item) => channel == item);
-    recent.insert(0, channel);
-    if(recent.length > maxRecent) recent.removeLast();
+    List<Channel> newRecent = [channel];
+    for(Channel ch in recent) {
+      if(ch == channel) continue;
+      newRecent.add(ch);
+      if(newRecent.length == maxRecent) break;
+    }
     await PrefHelper.saveJson(
       PrefKeys.recent,
-      recent.map((channel) => {
+      newRecent.map((channel) => {
         'type': channel.type == ChannelType.tv ? 'tv' : 'radio',
         'id': channel.id,
       }).toList(),
     );
-    _recent.value = recent;
+    _recent.value = newRecent;
   }
 
   static Future<List<Channel>> tvChannels() async {
