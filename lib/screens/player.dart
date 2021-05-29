@@ -72,7 +72,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void _addRecent() {
-    Channel.addRecent(_channel);
+    if(_channel.type == ChannelType.tv) Channel.addRecent(_channel);
   }
 
   Future<void> _loadChannel() async {
