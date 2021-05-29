@@ -190,38 +190,39 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _recentBlock {
-    return RecentNotifier(
-      notifier: Channel.recentNotifier,
-      child: Builder(
-        builder: (BuildContext context) {
-          List<Channel> recent = RecentNotifier.of(context).recentChannels;
-          return recent == null ? Text(
-            locale(context).homeRecentEmpty,
-            style: AppFontsV2.textSecondary,
-            textAlign: TextAlign.center,
-          ) : Padding(
-            padding: _showBanner
-              ? EdgeInsets.symmetric(vertical: 10)
-              : EdgeInsets.fromLTRB(0, 20, 0, 10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    locale(context).homeRecent,
-                    style: AppFontsV2.blockTitle,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 16),
-                  child: ChannelCarousel(channels: recent),
-                ),
-              ],
+    return Padding(
+      padding: _showBanner
+        ? EdgeInsets.symmetric(vertical: 10)
+        : EdgeInsets.fromLTRB(0, 20, 0, 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              locale(context).homeRecent,
+              style: AppFontsV2.blockTitle,
             ),
-          );
-        },
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 16),
+            child: RecentNotifier(
+              notifier: Channel.recentNotifier,
+              child: Builder(
+                builder: (BuildContext context) {
+                  List<Channel> recent = RecentNotifier.of(context)
+                      .recentChannels;
+                  return recent == null ? Text(
+                    locale(context).homeRecentEmpty,
+                    style: AppFontsV2.textSecondary,
+                    textAlign: TextAlign.center,
+                  ) : ChannelCarousel(channels: recent);
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
