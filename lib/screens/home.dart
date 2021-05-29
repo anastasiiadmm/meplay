@@ -71,8 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<AppBanner> _banners;
   Future<List<AppBanner>> _loadBanners() async {
-    // TODO: load from api.
-
     // stub
     if(_banners == null) _banners = await Future<List<AppBanner>>.delayed(
       Duration(seconds: 2),
