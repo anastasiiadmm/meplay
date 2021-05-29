@@ -62,10 +62,17 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     _initBrightness();
     _initPlatformState();
     _enablePip();
-    Future.wait([
+    await Future.wait([
       _loadUser(),
       _loadChannel(),
-    ]).then((_) => _loadFavorite());
+    ]).then((_) {
+      _loadFavorite();
+      _addRecent();
+    });
+  }
+
+  void _addRecent() {
+    Channel.addRecent(_channel);
   }
 
   Future<void> _loadChannel() async {

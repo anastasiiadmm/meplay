@@ -14,6 +14,8 @@ import '../widgets/banner_carousel.dart';
 import '../widgets/large_image_button.dart';
 import '../widgets/channel_carousel.dart';
 import '../widgets/future_block.dart';
+import '../inherited/auth_notifier.dart';
+import '../inherited/recent_notifier.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -47,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Channel.loadTv(),
       Channel.loadRadio(),
     ]);
+    Channel.loadRecent();
     await TZHelper.init();
     _deeplinkHelper = DeeplinkHelper.instance;
     await _deeplinkHelper.checkInitialLink();
@@ -55,18 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
     await helper.checkInitialMessage();
     _asyncInitDone = true;
     _doneLoading();
-  }
-
-  List<Channel> _recentChannels = [];
-  Future<void> _loadRecent() async {
-    // TODO: provide through notifier.
-    List<Channel> recent = [];
-
-    // stub
-    List<Channel> channels = await Channel.tvChannels();
-    for(int i = 0; i < 10; i++) { recent.add(channels[i]); }
-
-    setState(() { _recentChannels = recent; });
   }
 
   List<AppBanner> _banners;
@@ -199,30 +190,41 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _recentBlock {
-    return Padding(
-      padding: _showBanner
-          ? EdgeInsets.symmetric(vertical: 10)
-          : EdgeInsets.fromLTRB(0, 20, 0, 10),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              locale(context).homeRecent,
-              style: AppFontsV2.blockTitle,
+    return RecentNotifier(
+      notifier: Channel.recentNotifier,
+      child: Builder(
+        builder: (BuildContext context) {
+          List<Channel> recent = RecentNotifier.of(context).recentChannels;
+          return recent == null ? Text(
+            locale(context).homeRecentEmpty,
+            style: AppFontsV2.textSecondary,
+            textAlign: TextAlign.center,
+          ) : Padding(
+            padding: _showBanner
+              ? EdgeInsets.symmetric(vertical: 10)
+              : EdgeInsets.fromLTRB(0, 20, 0, 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    locale(context).homeRecent,
+                    style: AppFontsV2.blockTitle,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 16),
+                  child: ChannelCarousel(channels: recent),
+                ),
+              ],
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: ChannelCarousel(channels: _recentChannels),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
-
 
   // Widget get _popularBlock {
   //
@@ -235,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           _mainButtonBlock,
           if(_showBanner) _bannerBlock,
-          if(_recentChannels.length > 0) _recentBlock,
+          _recentBlock,
           // _popularBlock,
         ]
       ),
