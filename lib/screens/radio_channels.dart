@@ -181,7 +181,7 @@ class _RadioChannelsScreenState extends State<RadioChannelsScreen> {
       ),
       title: _search
           ? _searchInput()
-          : Text('ТВ Каналы', style: AppFonts.screenTitle),
+          : Text('Радио', style: AppFonts.screenTitle),
       centerTitle: !_search,
       actions: [
         IconButton(
