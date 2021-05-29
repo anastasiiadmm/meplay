@@ -47,7 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Channel.loadTv(),
       Channel.loadRadio(),
     ]);
-    _loadRecent();
     await TZHelper.init();
     _deeplinkHelper = DeeplinkHelper.instance;
     await _deeplinkHelper.checkInitialLink();
@@ -58,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _doneLoading();
   }
 
-  List<Channel> _recentChannels;
+  List<Channel> _recentChannels = [];
   Future<void> _loadRecent() async {
     // TODO: provide through notifier.
     List<Channel> recent = [];
@@ -238,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           _mainButtonBlock,
           if(_showBanner) _bannerBlock,
-          if(_recentChannels != null && _recentChannels.length > 0) _recentBlock,
+          if(_recentChannels.length > 0) _recentBlock,
           // _popularBlock,
         ]
       ),
