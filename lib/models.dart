@@ -4,9 +4,11 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:timezone/timezone.dart';
 
 import 'api_client.dart';
 import 'utils/pref_helper.dart';
+import 'utils/tz_helper.dart';
 
 
 String rPlural(int count, List<String> forms) {
@@ -491,5 +493,80 @@ class Packet {
     this.name = data['name'];
     this.priceLabel = data.containsKey('amount') ? data['amount'] : data['priceLabel'];
     this.isActive = data.containsKey('connected') ? data['connected'] : data['isActive'];
+  }
+}
+
+class News {
+  int id;
+  String title;
+  String text;
+  TZDateTime time;
+  bool read;
+  String data;
+  static const int maxNews = 20;
+
+  static ValueNotifier<List<News>> _list = ValueNotifier(null);
+  static ValueNotifier<List<News>> get listNotifier => _list;
+
+  News({this.id, this.title, this.text,
+    this.time, this.read: false, this.data}) {
+    if (this.id == null) this.id = this.hashCode;
+  }
+
+  static Future<List<News>> get list async {
+    if (_list.value == null) await _load();
+    return _list.value;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'text': text,
+      'time': time.toIso8601String(),
+      'read': read,
+      'data': data,
+    };
+  }
+
+  News.fromJson(Map<String, dynamic> data) {
+    this.id = data['id'];
+    this.title = data['title'];
+    this.text = data['text'];
+    this.time = TZHelper.parse(data['time']);
+    this.read = data['read'];
+    this.data = data['data'];
+  }
+
+  static Future<void> add(News item) async {
+    List<News> news = await list;
+    news.insert(0, item);
+    news.sort((n1, n2) => n2.time.compareTo(n1.time));
+    if(news.length > maxNews) news.removeLast();
+    await _save();
+  }
+
+  Future<void> setRead() async {
+    read = true;
+    await _save();
+  }
+
+  static Future<void> _load() async {
+    _list.value = await PrefHelper.loadJson(
+      PrefKeys.notifications,
+      defaultValue: <News>[],
+      restore: (data) => (data as List<dynamic>)
+          .map<News>((item) => News.fromJson(item))
+          .toList(),
+    );
+  }
+
+  static Future<void> _save() async {
+    List<News> news = await list;
+    await PrefHelper.saveJson(
+      PrefKeys.notifications,
+      news,
+    );
+    _list.value = List<News>.from(news);
   }
 }

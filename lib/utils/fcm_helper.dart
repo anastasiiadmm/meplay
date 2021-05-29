@@ -1,12 +1,13 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import '../api_client.dart';
+import '../models.dart';
 import 'local_notification_helper.dart';
 import 'pref_helper.dart';
 import 'deeplink_helper.dart';
+import 'tz_helper.dart';
 
 
 class FCMHelper {
@@ -59,6 +60,7 @@ class FCMHelper {
   // handles remote messages received in foreground
   Future<void> _receiveFg(RemoteMessage message) async {
     _log(message, type: 'REMOTE FOREGROUND');
+    _save(message);
 
     RemoteNotification notification = message.notification;
     if (notification != null) {
@@ -80,7 +82,7 @@ class FCMHelper {
   // should be top level function or static method according to the docs.
   static Future<void> _receiveBg(RemoteMessage message) async {
     _log(message, type: 'REMOTE BACKGROUND');
-
+    _save(message);
   }
 
   // log firebase messages
@@ -97,6 +99,7 @@ class FCMHelper {
     RemoteMessage message = await FirebaseMessaging.instance.getInitialMessage();
     if (message != null) {
       _log(message, type: 'REMOTE INITIAL');
+      _save(message);
       if(message.data != null) _openLink(message);
     }
   }
@@ -104,6 +107,19 @@ class FCMHelper {
   void _openLink(RemoteMessage message) {
     if(message.data.containsKey('link')) {
       DeeplinkHelper.instance.navigateTo(message.data['link'].toString());
+    }
+  }
+
+  static Future<void> _save(RemoteMessage message) async {
+    if(message.notification != null) {
+      News item = News(
+        id: message.hashCode,
+        title: message.notification.title,
+        text: message.notification.body,
+        time: TZHelper.makeAware(message.sentTime),
+        data: jsonEncode(message.data),
+      );
+      await News.add(item);
     }
   }
 
