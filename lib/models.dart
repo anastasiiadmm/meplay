@@ -38,6 +38,50 @@ class Channel {
   ChannelType _type;
   static List<Channel> _tvList;
   static List<Channel> _radioList;
+  static const maxRecent = 15;
+
+  static ValueNotifier<List<Channel>> _recent = ValueNotifier(null);
+  static ValueNotifier<List<Channel>> get recentNotifier => _recent;
+
+  static Future<List<Channel>> getRecent() async {
+    if (_recent.value == null) await loadRecent();
+    return _recent.value;
+  }
+
+  static Future<void> loadRecent() async {
+    List<Channel> tv = await tvChannels();
+    List<Channel> radio = await radioChannels();
+    _recent.value = await PrefHelper.loadJson(
+      PrefKeys.recent,
+      restore: (data) {
+        print(data);
+        return (data as List<dynamic>).map((item) {
+          item = (item as Map<String, dynamic>);
+          return (item['type'] == 'tv' ? tv : radio).firstWhere((channel) {
+            return channel.id == item['id'];
+          });
+        }).toList();
+      },
+      defaultValue: <Channel>[],
+    );
+  }
+
+  static Future<void> addRecent(Channel channel) async {
+    print('adding');
+    if(channel == null) return;
+    List<Channel> recent = await getRecent();
+    recent.removeWhere((item) => channel == item);
+    recent.insert(0, channel);
+    if(recent.length > maxRecent) recent.removeLast();
+    await PrefHelper.saveJson(
+      PrefKeys.recent,
+      recent.map((channel) => {
+        'type': channel.type == ChannelType.tv ? 'tv' : 'radio',
+        'id': channel.id,
+      }).toList(),
+    );
+    _recent.value = recent;
+  }
 
   static Future<List<Channel>> tvChannels() async {
     if(_tvList == null)
@@ -193,6 +237,18 @@ class Channel {
     if(user == null) return false;
     return user.hasFavorite(this);
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other))
+      return true;
+    if (other.runtimeType != runtimeType)
+      return false;
+    return other is Channel && this.type == other.type && this.id == other.id;
+  }
+
+  @override
+  int get hashCode => hashValues(id, type);
 }
 
 

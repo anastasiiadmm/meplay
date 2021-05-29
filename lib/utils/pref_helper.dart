@@ -17,6 +17,7 @@ abstract class PrefKeys {
   static const fcmToken = 'fcmToken';
 
   static const language = 'language';
+  static const recent = 'recent';
 }
 
 
