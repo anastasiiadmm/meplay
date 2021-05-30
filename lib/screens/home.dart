@@ -189,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget get _recentBlock {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
@@ -206,10 +206,13 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (BuildContext context) {
                 List<Channel> recent = RecentNotifier.of(context)
                     .recentChannels;
-                return recent == null ? Text(
-                  locale(context).homeRecentEmpty,
-                  style: AppFontsV2.textSecondary,
-                  textAlign: TextAlign.center,
+                return recent == null ? Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    locale(context).homeRecentEmpty,
+                    style: AppFontsV2.textSecondary,
+                    textAlign: TextAlign.center,
+                  ),
                 ) : ChannelCarousel(channels: recent);
               },
             ),
@@ -222,12 +225,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget get _popularBlock {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Text(
-            locale(context).homeTrending,
+            locale(context).homePopular,
             style: AppFontsV2.blockTitle,
           ),
         ),
@@ -236,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: FutureBuilder<List<Channel>>(
             future: Channel.getPopular(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if(snapshot.hasData) {
+              if(snapshot.hasData && snapshot.data.length > 0) {
                 int id = 0;
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -251,10 +254,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   }).toList(),
                 );
               } else {
-                return Text(
-                  "Популярные каналы недоступны", //locale(context).homePopularEmpty,
-                  style: AppFontsV2.textSecondary,
-                  textAlign: TextAlign.center,
+                return Padding(
+                  padding: EdgeInsets.only(right: 16),
+                  child: Text(
+                    locale(context).homePopularEmpty,
+                    style: AppFontsV2.textSecondary,
+                    textAlign: TextAlign.center,
+                  ),
                 );
               }
             }
@@ -268,6 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: 10),
