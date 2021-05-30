@@ -14,6 +14,7 @@ import '../widgets/banner_carousel.dart';
 import '../widgets/large_image_button.dart';
 import '../widgets/channel_carousel.dart';
 import '../widgets/future_block.dart';
+import '../widgets/channel_tile.dart';
 import '../inherited/news_count_notifier.dart';
 import '../inherited/recent_notifier.dart';
 
@@ -50,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Channel.loadRadio(),
     ]);
     Channel.loadRecent();
+    Channel.loadPopular();
     await TZHelper.init();
     _deeplinkHelper = DeeplinkHelper.instance;
     await _deeplinkHelper.checkInitialLink();
@@ -120,69 +122,63 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _mainButtonBlock {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(bottom: 1),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 1),
-                      child: LargeImageButton(
-                        image: AppImages.tv,
-                        text: locale(context).homeTv,
-                        onTap: _watchTV,
-                      ),
-                    ),
-                  ),
-                  Expanded(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(bottom: 1),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 1),
                     child: LargeImageButton(
-                      image: AppImages.radio,
-                      text: locale(context).homeRadio,
-                      onTap: _listenRadio,
+                      image: AppImages.tv,
+                      text: locale(context).homeTv,
+                      onTap: _watchTV,
                     ),
                   ),
-                ]
-            ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(right: 1),
+                ),
+                Expanded(
                   child: LargeImageButton(
-                    image: AppImages.favorites,
-                    text: locale(context).homeFavorites,
-                    onTap: _openFavorites,
+                    image: AppImages.radio,
+                    text: locale(context).homeRadio,
+                    onTap: _listenRadio,
                   ),
                 ),
-              ),
-              Expanded(
+              ]
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(right: 1),
                 child: LargeImageButton(
-                  image: AppImages.account,
-                  text: locale(context).homeProfile,
-                  onTap: _openProfile,
+                  image: AppImages.favorites,
+                  text: locale(context).homeFavorites,
+                  onTap: _openFavorites,
                 ),
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
+            Expanded(
+              child: LargeImageButton(
+                image: AppImages.account,
+                text: locale(context).homeProfile,
+                onTap: _openProfile,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
   Widget get _bannerBlock {
-    // баннер имеет 20px паддинг вокруг себя для показа тени
-    // поэтому здесь нет паддинга и нужно учитывать его наличие
-    // при подсчёте паддинга в других блоках.
     return FutureBlock<List<AppBanner>>(
       future: _loadBanners(),
-      builder: (banners) => BannerCarousel(
+      builder: (BuildContext context, banners) => BannerCarousel(
         banners: banners,
         onTap: _onBannerTap,
       ),
@@ -191,72 +187,111 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _recentBlock {
-    return Padding(
-      padding: _showBanner
-        ? EdgeInsets.symmetric(vertical: 10)
-        : EdgeInsets.fromLTRB(0, 20, 0, 10),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              locale(context).homeRecent,
-              style: AppFontsV2.blockTitle,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            locale(context).homeRecent,
+            style: AppFontsV2.blockTitle,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 16),
+          child: RecentNotifier(
+            notifier: Channel.recentNotifier,
+            child: Builder(
+              builder: (BuildContext context) {
+                List<Channel> recent = RecentNotifier.of(context)
+                    .recentChannels;
+                return recent == null ? Text(
+                  locale(context).homeRecentEmpty,
+                  style: AppFontsV2.textSecondary,
+                  textAlign: TextAlign.center,
+                ) : ChannelCarousel(channels: recent);
+              },
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: RecentNotifier(
-              notifier: Channel.recentNotifier,
-              child: Builder(
-                builder: (BuildContext context) {
-                  List<Channel> recent = RecentNotifier.of(context)
-                      .recentChannels;
-                  return recent == null ? Text(
-                    locale(context).homeRecentEmpty,
-                    style: AppFontsV2.textSecondary,
-                    textAlign: TextAlign.center,
-                  ) : ChannelCarousel(channels: recent);
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  // Widget get _popularBlock {
-  //
-  // }
+  Widget get _popularBlock {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            locale(context).homeTrending,
+            style: AppFontsV2.blockTitle,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(16, 16, 0, 16),
+          child: FutureBuilder<List<Channel>>(
+            future: Channel.getPopular(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if(snapshot.hasData) {
+                int id = 0;
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: snapshot.data.map<Widget>((channel) {
+                    Widget result = ChannelTile(channel: channel);
+                    if(id > 0) result = Padding(
+                      padding: EdgeInsets.only(top: 8),
+                      child: result,
+                    );
+                    id++;
+                    return result;
+                  }).toList(),
+                );
+              } else {
+                return Text(
+                  "Популярные каналы недоступны", //locale(context).homePopularEmpty,
+                  style: AppFontsV2.textSecondary,
+                  textAlign: TextAlign.center,
+                );
+              }
+            }
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget get _body {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _mainButtonBlock,
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: _mainButtonBlock,
+          ),
+          // баннер имеет 20px паддинг вокруг себя для показа тени
+          // поэтому здесь вокруг баннера нет паддинга,
+          // но его нужно учитывать при подсчёте паддинга
+          // в соседних блоках.
           if(_showBanner) _bannerBlock,
-          _recentBlock,
-          // _popularBlock,
+          Padding(
+            padding: _showBanner
+                ? EdgeInsets.symmetric(vertical: 10)
+                : EdgeInsets.fromLTRB(0, 20, 0, 10),
+            child: _recentBlock,
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 12),
+            child: _popularBlock,
+          ),
         ]
       ),
     );
   }
-
-  // Widget get _authNotifierExample {
-  //   return AuthNotifier(
-  //     child: Builder(
-  //       builder: (BuildContext context) {
-  //         User user = AuthNotifier.of(context).user;
-  //         return user == null ? null : null;
-  //       },
-  //     ),
-  //     notifier: User.userNotifier,
-  //   );
-  // }
 
   void _openNotifications() {
     Navigator.of(context).pushNamed(Routes.notifications);

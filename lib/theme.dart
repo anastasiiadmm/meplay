@@ -92,7 +92,7 @@ class AppColorsV2 {
   static const lightPurpleShadow = Color.fromRGBO(127, 88, 236, 1);
   static const decorativeGray = Color.fromRGBO(60, 58, 67, 1);
   static const navBg = Color.fromRGBO(60, 58, 67, 0.72);
-  static const modalOverlay = Color.fromRGBO(0, 0, 0, 0.7);
+  static const overlay = Color.fromRGBO(0, 0, 0, 0.7);
   static const appbarBorder = Color.fromRGBO(255, 255, 255, 0.2);
   static const iconBg = Color.fromRGBO(255, 255, 255, 1);  // white
   static const channelBg = Color.fromRGBO(255, 255, 255, 1);

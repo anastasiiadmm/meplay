@@ -40,6 +40,7 @@ class Channel {
   ChannelType _type;
   static List<Channel> _tvList;
   static List<Channel> _radioList;
+  static List<Channel> _popular;
   static const maxRecent = 15;
 
   static ValueNotifier<List<Channel>> _recent = ValueNotifier(null);
@@ -65,6 +66,23 @@ class Channel {
       },
       defaultValue: <Channel>[],
     );
+  }
+
+  static Future<List<Channel>> getPopular() async {
+    if(_popular == null) await loadPopular();
+    return _popular;
+  }
+
+  static Future<void> loadPopular() async {
+    const List<int> ids = [
+      266, 241, 237, 225, 226, 231, 267, 245, 235, 238
+    ];
+    List<Channel> channels = await tvChannels();
+    _popular = ids.map((id) {
+      return channels.firstWhere((channel) {
+        return channel.id == id;
+      });
+    }).toList();
   }
 
   static Future<void> addRecent(Channel channel) async {

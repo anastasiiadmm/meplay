@@ -59,7 +59,7 @@ class _RotaLoaderState extends State<RotaLoader>
 
 class FutureBlock<T> extends StatelessWidget {
   final Future<T> future;
-  final Widget Function(T data) builder;
+  final Widget Function(BuildContext context, T data) builder;
   final Widget loader;
   final Size size;
 
@@ -80,7 +80,7 @@ class FutureBlock<T> extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return snapshot.connectionState == ConnectionState.waiting
               ? loader
-              : builder(snapshot.data);
+              : builder(context, snapshot.data);
         },
       )
     );
