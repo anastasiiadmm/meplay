@@ -41,6 +41,7 @@ class MePlay extends StatelessWidget {
       locale: AppLocale.defaultChoice.value,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

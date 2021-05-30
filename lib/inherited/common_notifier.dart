@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 
-// Assume T in the class and T in the of context is the same when using it!
+// Assume T in the class and T in the of context are the same when using it!
 class CommonNotifier<T> extends InheritedNotifier<ValueNotifier<T>> {
   const CommonNotifier ({
     Key key,

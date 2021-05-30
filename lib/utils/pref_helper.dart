@@ -12,7 +12,7 @@ abstract class PrefKeys {
 
   static String ratio(int channelId) => 'ratio$channelId';
 
-  static const notifications = 'notifications';
+  static const news = 'news';
 
   static const fcmToken = 'fcmToken';
 

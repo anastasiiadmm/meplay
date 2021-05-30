@@ -56,7 +56,6 @@ class Channel {
     _recent.value = await PrefHelper.loadJson(
       PrefKeys.recent,
       restore: (data) {
-        print(data);
         return (data as List<dynamic>).map((item) {
           item = (item as Map<String, dynamic>);
           return (item['type'] == 'tv' ? tv : radio).firstWhere((channel) {
@@ -69,7 +68,6 @@ class Channel {
   }
 
   static Future<void> addRecent(Channel channel) async {
-    print('adding');
     if(channel == null) return;
     List<Channel> recent = await getRecent();
     List<Channel> newRecent = [channel];
@@ -503,10 +501,11 @@ class News {
   TZDateTime time;
   bool read;
   String data;
-  static const int maxNews = 20;
+  static const int maxNews = 99;
 
-  static ValueNotifier<List<News>> _list = ValueNotifier(null);
-  static ValueNotifier<List<News>> get listNotifier => _list;
+  static List<News> _list;
+  static ValueNotifier<int> _unreadCount = ValueNotifier(0);
+  static ValueNotifier<int> get unreadCountNotifier => _unreadCount;
 
   News({this.id, this.title, this.text,
     this.time, this.read: false, this.data}) {
@@ -514,8 +513,8 @@ class News {
   }
 
   static Future<List<News>> get list async {
-    if (_list.value == null) await _load();
-    return _list.value;
+    if (_list == null) await load();
+    return _list;
   }
 
   Map<String, dynamic> toJson() {
@@ -539,34 +538,37 @@ class News {
   }
 
   static Future<void> add(News item) async {
-    List<News> news = await list;
-    news.insert(0, item);
-    news.sort((n1, n2) => n2.time.compareTo(n1.time));
-    if(news.length > maxNews) news.removeLast();
+    _list.insert(0, item);
+    if(_list.length > maxNews) {
+      News last = _list.removeLast();
+      if(last.read) _unreadCount.value += 1;
+    } else {
+      _unreadCount.value += 1;
+    }
     await _save();
   }
 
   Future<void> setRead() async {
     read = true;
+    _unreadCount.value -= 1;
     await _save();
   }
 
-  static Future<void> _load() async {
-    _list.value = await PrefHelper.loadJson(
-      PrefKeys.notifications,
+  static Future<void> load() async {
+    _list = await PrefHelper.loadJson(
+      PrefKeys.news,
       defaultValue: <News>[],
       restore: (data) => (data as List<dynamic>)
           .map<News>((item) => News.fromJson(item))
           .toList(),
     );
+    _unreadCount.value = _list.where((item) => !item.read).length;
   }
 
   static Future<void> _save() async {
-    List<News> news = await list;
     await PrefHelper.saveJson(
-      PrefKeys.notifications,
-      news,
+      PrefKeys.news,
+      _list,
     );
-    _list.value = List<News>.from(news);
   }
 }

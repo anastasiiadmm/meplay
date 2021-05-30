@@ -14,7 +14,7 @@ import '../widgets/banner_carousel.dart';
 import '../widgets/large_image_button.dart';
 import '../widgets/channel_carousel.dart';
 import '../widgets/future_block.dart';
-import '../inherited/auth_notifier.dart';
+import '../inherited/news_count_notifier.dart';
 import '../inherited/recent_notifier.dart';
 
 
@@ -53,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await TZHelper.init();
     _deeplinkHelper = DeeplinkHelper.instance;
     await _deeplinkHelper.checkInitialLink();
+    await News.load();
     await LocalNotificationHelper.init();
     FCMHelper helper = await FCMHelper.initialize();
     await helper.checkInitialMessage();
@@ -261,54 +262,55 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(context).pushNamed(Routes.notifications);
   }
 
-  int get _notificationsCount {
-    // TODO: get real count depending on user notifier.
-    int count = 99;
-    if(count > 99) count = 99;
-    return count;
-  }
-
   Widget get _notificationsBtn {
     return SizedBox(
-        width: 48,
-        height: 48,
-        child: Material(
-          color: AppColorsV2.iconBg,
-          type: MaterialType.circle,
-          clipBehavior: Clip.hardEdge,
-          child: InkWell(
-            child: Stack(
-              children: [
-                Center(
-                  child: AppIconsV2.bell,
-                ),
-                if(_notificationsCount > 0) Positioned(
-                  top: 8,
-                  right: 7,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: AppColorsV2.purple,
+      width: 48,
+      height: 48,
+      child: Material(
+        color: AppColorsV2.iconBg,
+        type: MaterialType.circle,
+        clipBehavior: Clip.hardEdge,
+        child: InkWell(
+          onTap: _openNotifications,
+          child: UnreadNewsNotifier(
+            notifier: News.unreadCountNotifier,
+            child: Builder(
+              builder: (BuildContext context) {
+                int newsCount = UnreadNewsNotifier.of(context).count;
+                return Stack(
+                  children: [
+                    Center(
+                      child: AppIconsV2.bell,
                     ),
-                    child: SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: Center(
-                        child: Text(
-                          _notificationsCount.toString(),
-                          style: AppFontsV2.notificationCount,
-                          textAlign: TextAlign.center,
+                    if(newsCount > 0) Positioned(
+                      top: 8,
+                      right: 7,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: AppColorsV2.purple,
+                        ),
+                        child: SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: Center(
+                            child: Text(
+                              newsCount.toString(),
+                              style: AppFontsV2.notificationCount,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ],
+                  ],
+                );
+              },
             ),
-            onTap: _openNotifications,
           ),
         ),
-      );
+      ),
+    );
   }
 
   Widget get _appBar {
