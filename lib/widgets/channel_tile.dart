@@ -25,10 +25,13 @@ class _ChannelTileState extends State<ChannelTile> {
     return FutureBuilder(
       future: widget.channel.currentProgram,
       builder: (BuildContext context, AsyncSnapshot<Program> snapshot) {
-        return Text(
-          snapshot.data == null ? '' : snapshot.data.title,
-          style: AppFontsV2.itemTextSecondary,
-          maxLines: 2,
+        return Padding(
+          padding: EdgeInsets.only(top: 4),
+          child: Text(
+            snapshot.data == null ? '' : snapshot.data.title,
+            style: AppFontsV2.itemTextSecondary,
+            maxLines: 2,
+          ),
         );
       },
     );
@@ -64,14 +67,10 @@ class _ChannelTileState extends State<ChannelTile> {
                     padding: EdgeInsets.fromLTRB(0, 0, 16, 8),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         _title,
-                        Padding(
-                          padding: EdgeInsets.only(top: 4),
-                          child: _program,
-                        ),
+                        _program,
                       ],
                     ),
                   ),
