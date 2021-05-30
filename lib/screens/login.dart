@@ -234,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
 
   Widget get _lock {
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 54, 0, _waitingForSms ? 52 : 76),
+      padding: EdgeInsets.symmetric(vertical: 54),
       child: AppImages.lock,
     );
   }
@@ -281,13 +281,28 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
             fillColor: AppColorsV2.blockBg,
             filled: true,
             border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: _error == null
                   ? AppColorsV2.item : AppColorsV2.red),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: AppColorsV2.item),
               borderRadius: BorderRadius.circular(10),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: _error == null
                   ? AppColorsV2.itemFocus : AppColorsV2.red),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: AppColorsV2.red),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: AppColorsV2.red),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
@@ -373,7 +388,6 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
-          _lock,
           _label,
           _input,
           if(_error != null) _errorString,
@@ -383,6 +397,24 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
           _userAgreement,
         ],
       ),
+    );
+  }
+
+  Widget get _body {
+    return Stack(
+      children: [
+        Align(
+          alignment: Alignment.topCenter,
+          child: _lock,
+        ),
+        Padding(
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).size.height / 3
+                - (_waitingForSms ? 24 : 0),
+          ),
+          child: _form
+        ),
+      ],
     );
   }
   
@@ -395,12 +427,8 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
         resizeToAvoidBottomInset: false,
         appBar: _appBar,
         extendBodyBehindAppBar: true,
-        body: _form,
+        body: _body,
       ),
     );
   }
 }
-
-
-// TODO: on tap outside hide kb
-// display loading circle,
