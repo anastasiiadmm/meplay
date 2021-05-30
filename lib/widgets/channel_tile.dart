@@ -27,50 +27,60 @@ class _ChannelTileState extends State<ChannelTile> {
       builder: (BuildContext context, AsyncSnapshot<Program> snapshot) {
         return Text(
           snapshot.data == null ? '' : snapshot.data.title,
-          style: AppFonts.programName,
+          style: AppFontsV2.itemTextSecondary,
           maxLines: 2,
         );
       },
     );
   }
 
+  void _openChannel(BuildContext context, Channel channel) {
+    String typeString = channel.type == ChannelType.tv ? 'tv' : 'radio';
+    Navigator.of(context).pushNamed('/$typeString/${channel.id}');
+  }
+
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      child: Row(
-        // crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 16, 8),
-            child: ChannelLogo(channel: widget.channel),
-          ),
-          Expanded(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: AppColorsV2.decorativeGray),
-                )
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(right: 16),
-                child: Column(
-                  // mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _title,
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 4),
-                      child: _program,
+      preferredSize: Size(double.infinity, 91),
+      child: GestureDetector(
+        onTap: () => _openChannel(context, widget.channel),
+        child: Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 16, 8),
+              child: ChannelLogo(channel: widget.channel),
+            ),
+            Expanded(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: AppColorsV2.decorativeGray),
+                  )
+                ),
+                child: SizedBox(
+                  height: 91,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 16, 8),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _title,
+                        Padding(
+                          padding: EdgeInsets.only(top: 4),
+                          child: _program,
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-      preferredSize: Size(double.infinity, 91),
     ) ;
   }
 }
