@@ -60,7 +60,7 @@ class ApiClient {
 
   static Future<void> requestPassword(String phone) async {
     final url = '$BASE_API_URL/stalker_portal/meplay/pin?msisdn=$phone';
-    _wrapRequest<void>(
+    return _wrapRequest<void>(
       () => http.get(url),
       (response) {
         String status = jsonDecode(response.body)['status'];

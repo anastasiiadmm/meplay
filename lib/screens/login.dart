@@ -6,8 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:sms_autofill/sms_autofill.dart';
-import '../hexagon/hexagon_widget.dart';
-import '../hexagon/grid/hexagon_offset_grid.dart';
 import '../theme.dart';
 import '../models.dart';
 import '../api_client.dart';
@@ -15,49 +13,6 @@ import '../utils/fcm_helper.dart';
 
 
 const String appHash = 'rgYa0J5D1z4';
-
-
-class LoginHexBackground extends StatelessWidget {
-  final gridSize = HexGridSize(7, 5);
-  final lockTile = HexGridPoint(2, 2);
-
-  HexagonWidget _tileBuilder(HexGridPoint point) {
-    Color color;
-    Widget content;
-    if (point == lockTile) {
-      color = AppColors.gray5;
-      content = AppIcons.lockAuth;
-    } else {
-      color = AppColors.emptyTile;
-    }
-    return HexagonWidget.template(color: color, child: content);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRect(
-      child: OverflowBox(
-        maxWidth: double.infinity,
-        maxHeight: double.infinity,
-        child: Container(
-          margin: EdgeInsets.only(bottom: 60),
-          child: Center(
-            child: HexagonOffsetGrid.oddPointy(
-              columns: gridSize.cols,
-              rows: gridSize.rows,
-              symmetrical: true,
-              color: AppColors.transparent,
-              hexagonPadding: 8,
-              hexagonBorderRadius: 15,
-              hexagonWidth: 174,
-              buildHexagon: _tileBuilder,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 
 class LoginScreen extends StatefulWidget {
@@ -68,17 +23,16 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
   final _phoneMask = MaskTextInputFormatter(
-    mask: '+996 ### ######',
-    filter: { "#": RegExp(r'[0-9]') },
+    mask: '+996 --- ------',
+    filter: { "-": RegExp(r'[0-9]') },
   );
   final _codeMask = MaskTextInputFormatter(
-    mask: '# # # # # #',
-    filter: { '#': RegExp(r'[0-9]') },
+    mask: '******',
+    filter: { '*': RegExp(r'[0-9]') },
   );
   final _userAgreementTapDetector = TapGestureRecognizer();
   final _sendSmsTapDetector = TapGestureRecognizer();
   final _inputController = TextEditingController();
-  final _hexBackground = LoginHexBackground();
   bool _waitingForSms = false;
   String _phone;
   String  _phoneText;
@@ -416,7 +370,6 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
   @override
   Widget build(BuildContext context) {
     List<Widget> stackItems = [
-      _hexBackground,
       Align(
         alignment: Alignment.center,
         child: Padding(
