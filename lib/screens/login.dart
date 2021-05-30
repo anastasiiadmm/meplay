@@ -280,29 +280,14 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
             hintStyle: AppFontsV2.inputPlaceholder,
             fillColor: AppColorsV2.blockBg,
             filled: true,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: _error == null
                   ? AppColorsV2.item : AppColorsV2.red),
               borderRadius: BorderRadius.circular(10),
             ),
-            disabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColorsV2.item),
-              borderRadius: BorderRadius.circular(10),
-            ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: _error == null
                   ? AppColorsV2.itemFocus : AppColorsV2.red),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColorsV2.red),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColorsV2.red),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
