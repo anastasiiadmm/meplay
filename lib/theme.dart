@@ -286,7 +286,7 @@ class AppFontsV2 {
   static const inputPlaceholder = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.normal, fontSize: 18,
     height: 24/18, color: AppColorsV2.inputPlaceholder,);
-  static const inputAlert = TextStyle(fontFamily: 'Lato',
+  static const inputError = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 13,
     height: 15.6/13, color: AppColorsV2.red,);
   static const search = TextStyle(fontFamily: 'Lato',

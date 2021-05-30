@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:me_play/utils/settings.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../theme.dart';
@@ -16,23 +17,26 @@ const String appHash = 'rgYa0J5D1z4';
 
 
 class LoginScreen extends StatefulWidget {
+  static const loginHint = '+996 --- ------';
+  static const smsHint = '******';
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 
 class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
-  final _phoneMask = MaskTextInputFormatter(
-    mask: '+996 --- ------',
+  final MaskTextInputFormatter _phoneMask = MaskTextInputFormatter(
+    mask: LoginScreen.loginHint,
     filter: { "-": RegExp(r'[0-9]') },
   );
-  final _codeMask = MaskTextInputFormatter(
-    mask: '******',
+  final MaskTextInputFormatter _codeMask = MaskTextInputFormatter(
+    mask: LoginScreen.smsHint,
     filter: { '*': RegExp(r'[0-9]') },
   );
-  final _userAgreementTapDetector = TapGestureRecognizer();
-  final _sendSmsTapDetector = TapGestureRecognizer();
-  final _inputController = TextEditingController();
+  final TapGestureRecognizer _userAgreementTapDetector = TapGestureRecognizer();
+  final TapGestureRecognizer _sendSmsTapDetector = TapGestureRecognizer();
+  final TextEditingController _inputController = TextEditingController();
   bool _waitingForSms = false;
   String _phone;
   String  _phoneText;
@@ -40,8 +44,8 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
   Timer _smsTimer;
   int _time = -1;
   bool _allowContinue = false;
-  bool _loading = false;
   String _error;
+  bool _loading = false;
 
   @override
   void initState() {
@@ -208,154 +212,15 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
     _continue();
   }
 
-  Widget get _form {
-    List<Widget> formElements = [
-      Text(
-        _waitingForSms
-          ? 'Вам было отправлено смс сообщение с персональным кодом.'
-          : 'Введите номер телефона',
-        style: AppFonts.screenTitle,
-        textAlign: TextAlign.center,
-      ),
-      Padding(
-        child: Focus(
-          onFocusChange: (hasFocus) {
-            if(hasFocus) _restoreSystemOverlays();
-          },
-          child: TextFormField(
-            inputFormatters: [_waitingForSms ? _codeMask : _phoneMask],
-            keyboardType: TextInputType.phone,
-            style: AppFonts.loginInputText,
-            textAlign: TextAlign.center,
-            controller: _inputController,
-            onFieldSubmitted: _fieldSubmit,
-            onChanged: _inputChanged,
-            autocorrect: false,
-            autofocus: true,
-            textInputAction: TextInputAction.send,
-            autofillHints: [ _waitingForSms ? AutofillHints.oneTimeCode : AutofillHints.telephoneNumber ],
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(13),
-              hintText: _waitingForSms ? 'Введите код подтверждения' : '+996 --- ------',
-              hintStyle: AppFonts.loginInputHint,
-              fillColor: AppColors.white,
-              filled: true,
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              errorMaxLines: 1,
-            ),
-          ),
-        ),
-        padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
-      ),
-    ];
-    if (_error != null) {
-      formElements.add(
-        Container(
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
-            color: AppColors.transparentDark,
-          ),
-          child: Text(
-            _error,
-            style: AppFonts.loginError,
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.ellipsis,
-          )
-        ),
-      );
-    }
-    formElements.add(
-      SizedBox(
-        width: double.infinity,
-        child: FlatButton(
-          onPressed: _allowContinue ? _continue : null,
-          color: AppColors.megaPurple,
-          disabledColor: AppColors.lightPurple,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-            side: BorderSide.none,
-          ),
-          padding: EdgeInsets.fromLTRB(0, 14, 0, 14),
-          child: Text(
-            'Продолжить',
-            style: _allowContinue ? AppFonts.formBtn : AppFonts.formBtnDisabled,
-          ),
-        ),
-      ),
-    );
-    if (_waitingForSms) {
-      formElements.add(_timerString);
-    }
-    return Form(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: formElements,
-      ),
-    );
-  }
-
-  Widget get _timerString {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-      child: (_time < 0) ? RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          text: 'Повторно отправить сообщение',
-          recognizer: _sendSmsTapDetector,
-          style: AppFonts.smsTimerLink,
-        )
-      ) : Text (
-        'Повторная отправка сообщения через $_timeDisplay',
-        style: AppFonts.smsTimer,
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
   Widget get _appBar {
     return AppBar(
       backgroundColor: AppColors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
-      leadingWidth: double.infinity,
-      leading: FlatButton(
+      leading: IconButton(
         onPressed: _back,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(child: AppIcons.back, padding: EdgeInsets.fromLTRB(0, 0, 5, 0),),
-            Text('Назад', style: AppFonts.appBarAction,),
-          ],
-        ),
+        icon: AppIconsV2.chevronLeft,
       ),
-    );
-  }
-
-  Widget get _userAgreement {
-    return RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: "Нажимая на кнопку, Вы принимаете условия ",
-              style: AppFonts.userAgreement,
-            ),
-            TextSpan(
-              text: "Пользовательского соглашения",
-              style: AppFonts.userAgreementLink,
-              recognizer: _userAgreementTapDetector,
-            ),
-            TextSpan(
-              text: ".",
-              style: AppFonts.userAgreement,
-            ),
-          ],
-        )
     );
   }
 
@@ -367,44 +232,171 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
     return true;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> stackItems = [
-      Align(
-        alignment: Alignment.center,
-        child: Padding(
-          // 46 is a magic
-          padding: EdgeInsets.fromLTRB(15, _waitingForSms ? 46 : 30, 15, 0),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 375),
-            child: _form,
+  Widget get _lock {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 54, 0, _waitingForSms ? 52 : 76),
+      child: AppImages.lock,
+    );
+  }
+
+  Widget get _label {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 20),
+      child: Text(
+        _waitingForSms
+            ? locale(context).loginSms
+            : locale(context).loginLogin,
+        style: AppFontsV2.textPrimary,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget get _input {
+    return Form(
+      child: Focus(
+        onFocusChange: (hasFocus) { if(hasFocus) _restoreSystemOverlays(); },
+        child: TextFormField(
+          inputFormatters: [_waitingForSms ? _codeMask : _phoneMask],
+          keyboardType: TextInputType.phone,
+          style: AppFontsV2.input,
+          textAlign: TextAlign.center,
+          controller: _inputController,
+          onFieldSubmitted: _fieldSubmit,
+          onChanged: _inputChanged,
+          autocorrect: false,
+          autofocus: true,
+          textInputAction: TextInputAction.send,
+          autofillHints: [
+            _waitingForSms
+              ? AutofillHints.oneTimeCode
+              : AutofillHints.telephoneNumber,
+          ],
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+            hintText: _waitingForSms
+                ? LoginScreen.smsHint
+                : LoginScreen.loginHint,
+            hintStyle: AppFontsV2.inputPlaceholder,
+            fillColor: AppColorsV2.blockBg,
+            filled: true,
+            border: OutlineInputBorder(
+              borderSide: BorderSide(color: _error == null
+                  ? AppColorsV2.item : AppColorsV2.red),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: _error == null
+                  ? AppColorsV2.itemFocus : AppColorsV2.red),
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         ),
       ),
-    ];
-    if (!_waitingForSms) {
-      stackItems.add(Align(
-        alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(15, 0, 15, 20),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 375),
-            child: _userAgreement,
+    );
+  }
+
+  Widget get _errorString {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 3.2, 0, 3.2),
+      child: Text(
+        _error,
+        style: AppFontsV2.inputError,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget get _button {
+    return Padding(
+      padding: EdgeInsets.only(top: 10),
+      child: SizedBox(
+        width: double.infinity,
+        child: FlatButton(
+          onPressed: _allowContinue ? _continue : null,
+          color: AppColorsV2.purple,
+          disabledColor: AppColorsV2.purpleDisabled,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide.none,
+          ),
+          padding: EdgeInsets.fromLTRB(10, 14, 10, 18),
+          child: Text(
+            locale(context).loginContinue,
+            style: _allowContinue
+                ? AppFontsV2.largeButton
+                : AppFontsV2.largeButtonDisabled,
           ),
         ),
-      ));
-    }
+      ),
+    );
+  }
+
+  Widget get _timerString {
+    return Padding(
+      padding: EdgeInsets.only(top: 20),
+      child: (_time < 0) ? RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          text: locale(context).loginSmsResend,
+          recognizer: _sendSmsTapDetector,
+          style: AppFontsV2.smallText,
+        ),
+      ) : Text (
+        locale(context).loginSmsWait + ' ' + _timeDisplay,
+        style: AppFontsV2.smallTextMute,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget get _space {
+    return Expanded(child: Container());
+  }
+
+  Widget get _userAgreement {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 20, 0, 50),
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          text: locale(context).userAgreement,
+          style: AppFontsV2.link,
+          recognizer: _userAgreementTapDetector,
+        ),
+      ),
+    );
+  }
+
+  Widget get _form {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          _lock,
+          _label,
+          _input,
+          if(_error != null) _errorString,
+          _button,
+          if(_waitingForSms) _timerString,
+          _space,
+          _userAgreement,
+        ],
+      ),
+    );
+  }
+  
+  @override
+  Widget build(BuildContext context) {
     return WillPopScope(
+      onWillPop: _willPop,
       child: Scaffold(
-        backgroundColor: AppColors.megaPurple,
+        backgroundColor: AppColorsV2.darkBg,
         resizeToAvoidBottomInset: false,
         appBar: _appBar,
         extendBodyBehindAppBar: true,
-        body: Stack(
-          children: stackItems,
-        ),
+        body: _form,
       ),
-      onWillPop: _willPop
     );
   }
 }

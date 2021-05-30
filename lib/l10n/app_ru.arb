@@ -15,7 +15,7 @@
   "@loginLogin": {},
   "loginLoginError": "Некорректный номер телефона",
   "@loginLoginError": {},
-  "loginSms": "Введите код подтверждения из смс-сообщения",
+  "loginSms": "Введите код подтверждения\nиз смс-сообщения",
   "@loginSms": {},
   "loginSmsError": "Неверный код подтверждения",
   "@loginSmsError": {},
