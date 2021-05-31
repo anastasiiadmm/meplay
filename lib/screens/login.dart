@@ -100,6 +100,8 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
         Channel.loadTv(),
         Channel.loadRadio(),
       ]);
+      Channel.loadRecent();
+      Channel.loadPopular();
       FCMHelper.instance.sendToken();
       Navigator.of(context).pop<User>(user);
     } on ApiException catch(e) {

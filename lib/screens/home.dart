@@ -14,9 +14,10 @@ import '../widgets/banner_carousel.dart';
 import '../widgets/large_image_button.dart';
 import '../widgets/channel_carousel.dart';
 import '../widgets/future_block.dart';
-import '../widgets/channel_tile.dart';
+import '../widgets/channel_list.dart';
 import '../inherited/news_count_notifier.dart';
 import '../inherited/recent_notifier.dart';
+import '../inherited/popular_notifier.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -186,6 +187,17 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _emptyBlockText(String text) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Text(
+        text,
+        style: AppFontsV2.textSecondary,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
   Widget get _recentBlock {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -206,14 +218,9 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (BuildContext context) {
                 List<Channel> recent = RecentNotifier.of(context)
                     .recentChannels;
-                return recent == null ? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    locale(context).homeRecentEmpty,
-                    style: AppFontsV2.textSecondary,
-                    textAlign: TextAlign.center,
-                  ),
-                ) : ChannelCarousel(channels: recent);
+                return (recent != null || recent.length > 0)
+                    ? ChannelCarousel(channels: recent)
+                    : _emptyBlockText(locale(context).homeRecentEmpty);
               },
             ),
           ),
@@ -236,34 +243,17 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(16, 16, 0, 16),
-          child: FutureBuilder<List<Channel>>(
-            future: Channel.getPopular(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if(snapshot.hasData && snapshot.data.length > 0) {
-                int id = 0;
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: snapshot.data.map<Widget>((channel) {
-                    Widget result = ChannelTile(channel: channel);
-                    if(id > 0) result = Padding(
-                      padding: EdgeInsets.only(top: 8),
-                      child: result,
-                    );
-                    id++;
-                    return result;
-                  }).toList(),
-                );
-              } else {
-                return Padding(
-                  padding: EdgeInsets.only(right: 16),
-                  child: Text(
-                    locale(context).homePopularEmpty,
-                    style: AppFontsV2.textSecondary,
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              }
-            }
+          child: PopularNotifier(
+            notifier: Channel.popularNotifier,
+            child: Builder(
+              builder: (BuildContext context) {
+                List<Channel> channels = PopularNotifier.of(context)
+                    .popularChannels;
+                return (channels != null || channels.length > 0)
+                    ? ChannelList(channels: channels)
+                    : _emptyBlockText(locale(context).homePopularEmpty);
+              },
+            ),
           ),
         ),
       ],

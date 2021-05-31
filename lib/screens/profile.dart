@@ -49,6 +49,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Channel.loadTv(),
       Channel.loadRadio(),
     ]);
+    Channel.loadRecent();
+    Channel.loadPopular();
     Navigator.of(context).pop();
   }
 
