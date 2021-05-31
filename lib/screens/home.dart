@@ -14,7 +14,7 @@ import '../widgets/banner_carousel.dart';
 import '../widgets/large_image_button.dart';
 import '../widgets/channel_carousel.dart';
 import '../widgets/future_block.dart';
-import '../widgets/channel_list.dart';
+import '../widgets/channel_column.dart';
 import '../inherited/news_count_notifier.dart';
 import '../inherited/recent_notifier.dart';
 import '../inherited/popular_notifier.dart';
@@ -250,7 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 List<Channel> channels = PopularNotifier.of(context)
                     .popularChannels;
                 return (channels != null || channels.length > 0)
-                    ? ChannelList(channels: channels)
+                    ? ChannelColumn(channels: channels)
                     : _emptyBlockText(locale(context).homePopularEmpty);
               },
             ),
