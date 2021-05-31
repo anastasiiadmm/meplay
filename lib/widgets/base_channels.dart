@@ -45,6 +45,6 @@ abstract class BaseChannels extends StatelessWidget {
 
   List<Channel> get channelsToDisplay {
     if(filter == null) return channels;
-    return channels.where(filter);
+    return channels.where(filter).toList();
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models.dart';
 import 'channel_logo.dart';
-import 'channels_base.dart';
+import 'base_channels.dart';
 
 
 class ChannelCarousel extends BaseChannels {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models.dart';
 import 'channel_tile.dart';
-import 'channels_base.dart';
+import 'base_channels.dart';
 
 
 class ChannelColumn extends BaseChannels {
