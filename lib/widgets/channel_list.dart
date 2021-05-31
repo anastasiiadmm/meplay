@@ -11,8 +11,7 @@ class ChannelList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int id = 0;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return ListView(
       children: channels.map<Widget>((channel) {
         Widget result = ChannelTile(channel: channel);
         if(id > 0) result = Padding(
