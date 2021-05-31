@@ -6,7 +6,7 @@ import '../widgets/modals.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/pref_helper.dart';
-import '../widgets/channel_list_max.dart';
+import '../widgets/channel_list_old.dart';
 import 'player.dart';
 
 
