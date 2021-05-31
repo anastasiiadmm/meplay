@@ -218,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (BuildContext context) {
                 List<Channel> recent = RecentNotifier.of(context)
                     .recentChannels;
-                return (recent != null || recent.length > 0)
+                return (recent != null && recent.length > 0)
                     ? ChannelCarousel(channels: recent)
                     : _emptyBlockText(locale(context).homeRecentEmpty);
               },
@@ -249,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (BuildContext context) {
                 List<Channel> channels = PopularNotifier.of(context)
                     .popularChannels;
-                return (channels != null || channels.length > 0)
+                return (channels != null && channels.length > 0)
                     ? ChannelColumn(channels: channels)
                     : _emptyBlockText(locale(context).homePopularEmpty);
               },
