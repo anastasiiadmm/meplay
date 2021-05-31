@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:me_play/utils/settings.dart';
 import '../theme.dart';
 
 
@@ -34,28 +35,30 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      backgroundColor: AppColors.bottomBar,
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
+      backgroundColor: AppColorsV2.navBg,
       onTap: (int index) => _onNavTap(context, index),
       currentIndex: NavItems.hasIndex(showIndex) ? showIndex : 0,
+      selectedLabelStyle: AppFontsV2.tabbar,
+      unselectedLabelStyle: AppFontsV2.tabbar,
+      selectedItemColor: AppColorsV2.textSecondary,
+      unselectedItemColor: AppColorsV2.textSecondary,
       items: [
         BottomNavigationBarItem(
-          icon: AppIcons.home,
+          icon: AppIconsV2.home,
           activeIcon: NavItems.hasIndex(showIndex)
-              ? AppIcons.homeActive
-              : AppIcons.home,
-          label: 'Главная',
+              ? AppIconsV2.homeActive
+              : AppIconsV2.home,
+          label: locale(context).tabbarMain,
         ),
         BottomNavigationBarItem(
-          icon: AppIcons.star,
-          activeIcon: AppIcons.starActive,
-          label: 'Избранное',
+          icon: AppIconsV2.star,
+          activeIcon: AppIconsV2.starActive,
+          label: locale(context).tabbarFavorites,
         ),
         BottomNavigationBarItem(
-          icon: AppIcons.user,
-          activeIcon: AppIcons.userActive,
-          label: 'Профиль',
+          icon: AppIconsV2.user,
+          activeIcon: AppIconsV2.userActive,
+          label: locale(context).tabbarProfile,
         ),
       ],
     );
