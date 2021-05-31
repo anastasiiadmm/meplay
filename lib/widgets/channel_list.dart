@@ -17,19 +17,15 @@ class ChannelList extends BaseChannels {
 
   @override
   Widget build(BuildContext context) {
-    int id = 0;
     return ListView(
       children: channelsToDisplay.map<Widget>((channel) {
-        Widget result = ChannelTile(
-          channel: channel,
-          onOpen: openChannel,
+        return Padding(
+          padding: EdgeInsets.only(bottom: 8),
+          child: ChannelTile(
+            channel: channel,
+            onOpen: openChannel,
+          ),
         );
-        if(id > 0) result = Padding(
-          padding: EdgeInsets.only(top: 8),
-          child: result,
-        );
-        id++;
-        return result;
       }).toList(),
     );
   }

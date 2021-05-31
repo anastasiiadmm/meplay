@@ -6,8 +6,8 @@ import '../widgets/modals.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/pref_helper.dart';
-import '../widgets/channel_list_old.dart';
-import 'player.dart';
+import '../utils/settings.dart';
+import '../widgets/channel_list.dart';
 
 
 class TVChannelsScreen extends StatefulWidget {
@@ -17,16 +17,16 @@ class TVChannelsScreen extends StatefulWidget {
 
 
 class _TVChannelsScreenState extends State<TVChannelsScreen> {
-  List<Channel> _initialChannels = [];
   List<Channel> _channels = [];
+  bool Function(Channel channel) _filter;
   bool _search = false;
   final _searchController = TextEditingController();
-  ChannelListType _listType = ChannelListType.defaultType;
 
   @override
   void initState() {
     super.initState();
-    _loadListType();
+    // TODO:
+    // _loadListType();
     _loadChannels();
   }
 
@@ -37,22 +37,22 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   }
 
   Future<void> _loadChannels() async {
-    List<Channel> allChannels = await Channel.tvChannels();
-    allChannels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
+    List<Channel> channels = await Channel.tvChannels();
+    channels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
     setState(() {
-      _initialChannels = allChannels;
-      _channels = _initialChannels.toList();  // copy
+      _channels = channels;  // copy
     });
   }
 
-  Future<void> _loadListType() async {
-    ChannelListType listType = await PrefHelper.loadString(
-      PrefKeys.listType,
-      restore: ChannelListType.getByName,
-      defaultValue: ChannelListType.defaultType,
-    );
-    setState(() { _listType = listType; });
-  }
+  // TODO:
+  // Future<void> _loadListType() async {
+  //   ChannelListType listType = await PrefHelper.loadString(
+  //     PrefKeys.listType,
+  //     restore: ChannelListType.getByName,
+  //     defaultValue: ChannelListType.defaultType,
+  //   );
+  //   setState(() { _listType = listType; });
+  // }
 
   void _restoreSystemOverlays() {
     Timer(Duration(milliseconds: 1001), SystemChrome.restoreSystemUIOverlays);
@@ -60,66 +60,12 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
 
   Widget get _bottomBar => BottomNavBar();
 
-  // TODO: add star button into channel list items
-  // Future<void> _addFavorite(Channel channel) async {
-  //   User user = await User.getUser();
-  //   if(user != null) await user.addFavorite(channel);
-  // }
-  //
-  // Future<void> _removeFavorite(Channel channel) async {
-  //   User user = await User.getUser();
-  //   if(user != null) await user.removeFavorite(channel);
-  // }
-  //
-  // Future<void> _toggleFavorite(Channel channel) async {
-  //   User user = await User.getUser();
-  //   if (user != null) {
-  //     String message;
-  //     if (await user.hasFavorite(channel)) {
-  //       await _addFavorite(channel);
-  //       message = 'Канал "${channel.name}" удалён из избранного';
-  //     } else {
-  //       await _removeFavorite(channel);
-  //       message = 'Канал "${channel.name}" добавлен в избранное';
-  //     }
-  //     grayToast(context, message);
-  //   }
-  // }
-
-  Future<void> _openChannel(Channel channel) async {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => PlayerScreen(
-          channelId: channel.id,
-          channelType: ChannelType.tv,
-          getNextChannel: _nextChannel,
-          getPrevChannel: _prevChannel,
-        ),
-        settings: RouteSettings(name: '/tv/${channel.id}'),
-      ),
-    );
-  }
-
-  Channel _nextChannel(Channel channel) {
-    int index = _initialChannels.indexOf(channel);
-    if(index < _initialChannels.length - 1) {
-      return _initialChannels[index + 1];
-    }
-    return _initialChannels[0];
-  }
-
-  Channel _prevChannel(Channel channel) {
-    int index = _initialChannels.indexOf(channel);
-    if(index > 0) {
-      return _initialChannels[index - 1];
-    }
-    return _initialChannels[_initialChannels.length - 1];
-  }
-
-  Widget get _body => ChannelList(
-    channels: _channels,
-    openChannel: _openChannel,
-    listType: _listType,
+  Widget get _body => Padding(
+    padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+    child: ChannelList(
+      channels: _channels,
+      filter: _filter,
+    ),
   );
 
   void _openSearch() {
@@ -133,7 +79,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   void _clearSearch() {
     _searchController.value = TextEditingValue.empty;
     FocusScope.of(context).unfocus();
-    setState(() { _channels = _initialChannels; });
+    setState(() { _filter = null; });
   }
 
   void _toggleSearch() {
@@ -141,38 +87,37 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     else _openSearch();
   }
 
-  void _filterChannels(String value) {
-    List<Channel> channels = _initialChannels;
-    if (value.isNotEmpty) {
-      channels = channels.where((channel) {
-        return channel.name.toLowerCase().contains(
-          value.toLowerCase(),
-        );
-      }).toList();
+  void _setFilter(String text) {
+    if (text.isNotEmpty) {
+      setState(() {
+        _filter = (channel) => channel.name
+            .toLowerCase()
+            .contains(text.toLowerCase());
+      });
     }
-    setState(() { _channels = channels; });
   }
 
   void _searchSubmit() {
     FocusScope.of(context).unfocus();
-    _filterChannels(_searchController.text);
+    _setFilter(_searchController.text);
   }
 
-  void _selectListType() {
-    selectorModal(
-      title: Text('Вид списка каналов:', textAlign: TextAlign.center,),
-      context: context,
-      choices: ChannelListType.choices,
-      onSelect: (ChannelListType selected) {
-        setState(() { _listType = selected; });
-        PrefHelper.saveString(PrefKeys.listType, selected);
-      },
-    );
-  }
+  // TODO:
+  // void _selectListType() {
+  //   selectorModal(
+  //     title: Text('Вид списка каналов:', textAlign: TextAlign.center,),
+  //     context: context,
+  //     choices: ChannelListType.choices,
+  //     onSelect: (ChannelListType selected) {
+  //       setState(() { _listType = selected; });
+  //       PrefHelper.saveString(PrefKeys.listType, selected);
+  //     },
+  //   );
+  // }
 
   Widget get _appBar {
     return AppBar(
-      backgroundColor: AppColors.megaPurple,
+      backgroundColor: AppColorsV2.item,
       elevation: 0,
       automaticallyImplyLeading: false,
       leading: IconButton(
@@ -181,17 +126,18 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
       ),
       title: _search
           ? _searchInput()
-          : Text('ТВ Каналы', style: AppFonts.screenTitle),
+          : Text(locale(context).tvChannelsTitle, style: AppFonts.screenTitle),
       centerTitle: !_search,
       actions: [
         IconButton(
           onPressed: _toggleSearch,
           icon: AppIcons.search,
         ),
-        IconButton(
-          onPressed: _selectListType,
-          icon: AppIcons.listLight,
-        ),
+        // TODO:
+        // IconButton(
+        //   onPressed: _selectListType,
+        //   icon: AppIcons.listLight,
+        // ),
       ],
     );
   }
@@ -211,7 +157,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
               textAlign: TextAlign.center,
               textAlignVertical: TextAlignVertical.center,
               controller: _searchController,
-              onFieldSubmitted: _filterChannels,
+              onFieldSubmitted: _setFilter,
               textInputAction: TextInputAction.search,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 32),
@@ -250,7 +196,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   }
 
   void _back() {
-    if (_channels.length != _initialChannels.length) {
+    if (_filter != null) {
       _clearSearch();
     } else {
       Navigator.of(context).pop();
@@ -258,23 +204,19 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   }
 
   Future<bool> _willPop() async {
-    if (_channels.length != _initialChannels.length) {
+    if (_filter != null) {
       _clearSearch();
       return false;
     }
     return true;
   }
 
-  Color get _bodyBg => _listType == ChannelListType.hexagonal
-      ? AppColors.megaPurple
-      : AppColors.gray0;
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _willPop,
       child: Scaffold(
-        backgroundColor: _bodyBg,
+        backgroundColor: AppColorsV2.darkBg,
         extendBody: true,
         extendBodyBehindAppBar: true,
         appBar: _appBar,
