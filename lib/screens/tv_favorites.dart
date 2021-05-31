@@ -5,8 +5,9 @@ import '../widgets/modals.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/pref_helper.dart';
-import '../widgets/channel_list_old.dart';
+import '../widgets/channel_list.dart';
 import '../widgets/bottom_navbar.dart';
+import '../utils/settings.dart';
 import 'player.dart';
 
 
@@ -23,7 +24,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
   User _user;
   bool _search = false;
   final _searchController = TextEditingController();
-  ChannelListType _listType = ChannelListType.defaultType;
+  ChannelListType _listType = ChannelListType.defaultChoice;
 
   @override
   void initState() {
@@ -73,7 +74,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
     ChannelListType listType = await PrefHelper.loadString(
       PrefKeys.listType,
       restore: ChannelListType.getByName,
-      defaultValue: ChannelListType.defaultType,
+      defaultValue: ChannelListType.defaultChoice,
     );
     setState(() { _listType = listType; });
   }
@@ -85,17 +86,6 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
   Widget get _bottomBar {
     return BottomNavBar(showIndex: NavItems.favorites);
   }
-
-  // TODO: add star button into channel list items
-  // Future<void> _addFavorite(Channel channel) async {
-  //   User user = await User.getUser();
-  //   if(user != null) await user.addFavorite(channel);
-  // }
-  //
-  // Future<void> _removeFavorite(Channel channel) async {
-  //   User user = await User.getUser();
-  //   if(user != null) await user.removeFavorite(channel);
-  // }
 
   Future<void> _openChannel(Channel channel) async {
     Navigator.of(context).push(
@@ -129,8 +119,6 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
 
   Widget get _body => ChannelList(
     channels: _channels,
-    openChannel: _openChannel,
-    listType: _listType,
   );
 
   void _openSearch() {
@@ -183,7 +171,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
 
   Widget get _appBar {
     return AppBar(
-      backgroundColor: AppColors.megaPurple,
+      backgroundColor: AppColorsV2.item,
       elevation: 0,
       automaticallyImplyLeading: false,
       leading: IconButton(
@@ -192,7 +180,7 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
       ),
       title: _search
           ? _searchInput()
-          : Text('Избранное', style: AppFonts.screenTitle),
+          : Text(locale(context).favoritesTitle, style: AppFonts.screenTitle),
       centerTitle: !_search,
       actions: [
         IconButton(
@@ -276,16 +264,12 @@ class _TVFavoritesScreenState extends State<TVFavoritesScreen> {
     return true;
   }
 
-  Color get _bodyBg => _listType == ChannelListType.hexagonal
-      ? AppColors.megaPurple
-      : AppColors.gray0;
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _willPop,
       child: Scaffold(
-        backgroundColor: _bodyBg,
+        backgroundColor: AppColorsV2.darkBg,
         extendBody: true,
         extendBodyBehindAppBar: true,
         appBar: _appBar,
