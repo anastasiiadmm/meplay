@@ -6,8 +6,13 @@ import 'channel_logo.dart';
 
 class ChannelTile extends StatelessWidget {
   final Channel channel;
+  final void Function(BuildContext context, Channel channel) onOpen;
 
-  ChannelTile({Key key, @required this.channel}): super(key: key);
+  ChannelTile({
+    Key key,
+    @required this.channel,
+    this.onOpen,
+  }): super(key: key);
 
   Widget get _title {
     return Text(
@@ -32,49 +37,52 @@ class ChannelTile extends StatelessWidget {
     );
   }
 
-  void _openChannel(BuildContext context, Channel channel) {
-    String typeString = channel.type == ChannelType.tv ? 'tv' : 'radio';
-    Navigator.of(context).pushNamed('/$typeString/${channel.id}');
+  Widget get _texts {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: AppColorsV2.decorativeGray),
+        ),
+      ),
+      child: SizedBox(
+        height: 91,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0, 0, 16, 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _title,
+              _program,
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget content = Row(
+      children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(0, 0, 16, 8),
+          child: ChannelLogo(channel: channel),
+        ),
+        Expanded(
+          child: _texts,
+        ),
+      ],
+    );
+    if(onOpen != null) {
+      content = GestureDetector(
+        onTap: () => onOpen(context, channel),
+        child: content,
+      );
+    }
     return PreferredSize(
       preferredSize: Size(double.infinity, 91),
-      child: GestureDetector(
-        onTap: () => _openChannel(context, channel),
-        child: Row(
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 16, 8),
-              child: ChannelLogo(channel: channel),
-            ),
-            Expanded(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: AppColorsV2.decorativeGray),
-                  ),
-                ),
-                child: SizedBox(
-                  height: 91,
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 16, 8),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _title,
-                        _program,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      child: content,
     ) ;
   }
 }

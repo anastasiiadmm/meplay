@@ -147,6 +147,8 @@ class Channel {
 
   ChannelType get type => _type;
 
+  String get typeString => _type == ChannelType.tv ? 'tv' : 'radio';
+
   Channel({this.id, this.name, this.url, this.number, this.locked,
     this.logoUrl, ChannelType type: ChannelType.tv}): _type = type;
   
