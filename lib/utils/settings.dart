@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
-class ListType {
+class ChannelListType {
   final String name;
   final String value;
 
-  const ListType(this.name, this.value);
+  const ChannelListType(this.name, this.value);
+  
+  static const list = ChannelListType('Список', 'list');
+  static const grid = ChannelListType('Плитка', 'grid');
+  static const choices = [list, grid];
+  static const defaultChoice = list;
 
-  static const hexes = ListType('Шестиугольники', 'hexes');
-  static const list = ListType('Список', 'list');
-  static const blocks = ListType('Плитка', 'tiles');
-  static const choices = [hexes, list, blocks];
-  static const defaultChoice = hexes;
-
-  static ListType getByName(String name) {
-    for (ListType choice in choices) {
+  static ChannelListType getByName(String name) {
+    for (ChannelListType choice in choices) {
       if(choice.name == name) return choice;
     }
     return defaultChoice;

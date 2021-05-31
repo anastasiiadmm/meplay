@@ -13,7 +13,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   AppLocale _locale;
-  ListType _listType;
+  ChannelListType _listType;
 
   @override
   void initState() {
@@ -26,7 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     String listTypeName = await PrefHelper.loadString(PrefKeys.listType);
     setState(() {
       _locale = AppLocale.getByName(langName);
-      _listType = ListType.getByName(listTypeName);
+      _listType = ChannelListType.getByName(listTypeName);
     });
   }
 
@@ -39,7 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() { _locale = lang; });
   }
 
-  void _setListType(ListType type) {
+  void _setListType(ChannelListType type) {
     _savePref(type, PrefKeys.listType);
     setState(() { _listType = type; });
   }
@@ -83,7 +83,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _settingsTile(BuildContext context, int index) {
     int generalItemsCount = 1;
     int listTypeTitle = generalItemsCount;  // 0 + ...
-    int languageTitle = listTypeTitle + ListType.choices.length + 1;
+    int languageTitle = listTypeTitle + ChannelListType.choices.length + 1;
     if(index == 0) {
       return _listTile(
         title: Text('О программе', style: AppFonts.settingsItem),
@@ -97,7 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: EdgeInsets.fromLTRB(15, 20, 15, 11),
       );
     } else if (index > listTypeTitle && index < languageTitle) {
-      ListType type = ListType.choices[index - listTypeTitle - 1];
+      ChannelListType type = ChannelListType.choices[index - listTypeTitle - 1];
       return _listTile(
         title: Text(
           type.name,
@@ -136,7 +136,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return ListView.separated(
       itemBuilder: _settingsTile,
       separatorBuilder: (BuildContext context, int id) => Divider(height: 0,),
-      itemCount: AppLocale.choices.length + ListType.choices.length + 3,
+      itemCount: AppLocale.choices.length + ChannelListType.choices.length + 3,
     );
   }
 
