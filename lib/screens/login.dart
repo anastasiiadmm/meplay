@@ -274,6 +274,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
               ? AutofillHints.oneTimeCode
               : AutofillHints.telephoneNumber,
           ],
+          cursorColor: AppColorsV2.itemFocus,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
             hintText: _waitingForSms
