@@ -83,6 +83,9 @@ class AppColorsV2 {
   static const text = Color.fromRGBO(237, 238, 240, 1);
   static const textDisabled = Color.fromRGBO(175, 175, 177, 1);
 
+  // plain colors used in various places.
+  static const white = Color.fromRGBO(255, 255, 255, 1);
+
   // these colors are not present in the color map, but found in design.
   static const itemFocus = Color.fromRGBO(171, 165, 189, 1);
   static const darkShadow = Color.fromRGBO(0, 0, 0, 0.55);
