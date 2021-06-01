@@ -89,6 +89,8 @@
   "@settingsLogout": {},
   "tvChannelsTitle": "TV Каналы",
   "@tvChannelsTitle": {},
+  "radioChannelsTitle": "Радио",
+  "@radioChannelsTitle": {},
   "categories": "Категории:",
   "@categories": {},
   "categoryAll": "Все",

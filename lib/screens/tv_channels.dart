@@ -46,9 +46,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
 
   void _setFilter(String text) {
     setState(() {
-      _filter = (text == null || text.isEmpty)
-          ? null
-          : (channel) => channel.name
+      _filter = text.isEmpty ? null : (channel) => channel.name
           .toLowerCase()
           .contains(text.toLowerCase());
     });
