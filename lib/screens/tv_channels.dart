@@ -81,7 +81,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   }
 
   Widget get _body => Padding(
-    padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+    padding: EdgeInsets.fromLTRB(16, 16, 0, 0),
     child: ChannelList(
       channels: _channels,
       filter: _filter,
