@@ -23,7 +23,7 @@ class ChannelColumn extends BaseChannels {
       children: channelsToDisplay.map<Widget>((channel) {
         Widget result = ChannelTile(
           channel: channel,
-          onOpen: openChannel,
+          onTap: () => openChannel(context, channel),
         );
         if(id > 0) result = Padding(
           padding: EdgeInsets.only(top: 8),
