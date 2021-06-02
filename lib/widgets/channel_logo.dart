@@ -4,11 +4,28 @@ import '../models.dart';
 import '../theme.dart';
 
 
+class LogoSize {
+  final double size;
+  final double radius;
+  final double padding;
+  final double lockSize;
+
+  const LogoSize._(this.size, this.radius, this.padding, this.lockSize);
+
+  static const large = LogoSize._(82, 8, 8, 28);
+  static const small = LogoSize._(48, 5, 6, 24);
+}
+
+
 class ChannelLogo extends StatelessWidget {
   final Channel channel;
-  static const double size = 82;
+  final LogoSize size;
 
-  ChannelLogo({Key key, @required this.channel}): super(key: key);
+  ChannelLogo({
+    Key key,
+    @required this.channel,
+    this.size: LogoSize.large,
+  }): super(key: key);
 
   Widget get _logo {
     return FutureBuilder<File>(
@@ -17,7 +34,7 @@ class ChannelLogo extends StatelessWidget {
         return snapshot.hasData
             ? Image.file(snapshot.data)
             : Padding(
-          padding: EdgeInsets.all(5),
+          padding: EdgeInsets.all(size.padding / 1.5),
           child: AppIconsV2.logoPlaceholder,
         );
       },
@@ -28,14 +45,14 @@ class ChannelLogo extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
-          topRight: Radius.circular(8),
-          bottomLeft: Radius.circular(8),
+          topRight: Radius.circular(size.radius),
+          bottomLeft: Radius.circular(size.radius),
         ),
         color: AppColorsV2.overlay,
       ),
       child: SizedBox(
-        width: 28,
-        height: 28,
+        width: size.lockSize,
+        height: size.lockSize,
         child: Center(
           child: AppIconsV2.lock,
         ),
@@ -47,16 +64,16 @@ class ChannelLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(size.radius),
         color: AppColorsV2.channelBg,
       ),
       child: SizedBox(
-        width: size,
-        height: size,
+        width: size.size,
+        height: size.size,
         child: Stack(
           children: [
             Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(size.padding),
               child: Center(
                 child: _logo,
               ),

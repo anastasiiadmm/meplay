@@ -5,8 +5,6 @@ import 'base_channels.dart';
 
 
 class ChannelCarousel extends BaseChannels {
-  static const double height = ChannelLogo.size;
-
   ChannelCarousel({
     Key key,
     @required List<Channel> channels,
@@ -21,7 +19,7 @@ class ChannelCarousel extends BaseChannels {
   Widget build(BuildContext context) {
     List<Channel> display = channelsToDisplay;
     return SizedBox(
-      height: height,
+      height: LogoSize.large.size,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: channelsToDisplay.length,
