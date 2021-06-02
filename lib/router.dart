@@ -47,8 +47,8 @@ final Map<String, WidgetBuilder> routes = {
   Routes.settings: (BuildContext context) => SettingsScreen(),
   Routes.tv: (BuildContext context) => TVChannelsScreen(),
   Routes.radio: (BuildContext context) => RadioChannelsScreen(),
-  Routes.favorites: (BuildContext context) => TVFavoritesScreen(),
-  Routes.favTv: (BuildContext context) => TVFavoritesScreen(),
+  Routes.favorites: (BuildContext context) => FavoritesScreen(),
+  Routes.favTv: (BuildContext context) => FavoritesScreen(),
   Routes.favRadio: (BuildContext context) => RadioFavoritesScreen(),
 };
 
