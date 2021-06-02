@@ -55,7 +55,7 @@ class ChannelTile extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.only(top: 4),
           child: Text(
-            snapshot.data == null ? '' : snapshot.data.title,
+            snapshot.data == null ? '' : snapshot.data.timeTitle,
             style: AppFontsV2.itemTextSecondary,
             maxLines: 2,
           ),

@@ -324,6 +324,12 @@ class Program {
     };
   }
 
+  String get timeTitle {
+    String result = startTime;
+    if(result != '') result += ' ';
+    return result + title;
+  }
+
   String get startTime {
     return start == null ? '' 
         : '${start.hour}:${start.minute.toString().padLeft(2, '0')}';
