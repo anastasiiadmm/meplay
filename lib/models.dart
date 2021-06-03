@@ -42,6 +42,9 @@ class Channel {
   static List<Channel> _radioList;
   static const maxRecent = 15;
 
+  // TODO: DEBUG
+  static const useStub = true;
+
   static ValueNotifier<List<Channel>> _recent = ValueNotifier(null);
   static ValueNotifier<List<Channel>> get recentNotifier => _recent;
   static ValueNotifier<List<Channel>> _popular = ValueNotifier(null);
@@ -105,20 +108,57 @@ class Channel {
     _recent.value = newRecent;
   }
 
-  static Future<List<Channel>> tvChannels() async {
+  static List<Channel> get _stubChannels {
+    List<Channel> result = [];
+    for(int i = 1; i < 11; i++) {
+      result.add(Channel(
+        id: i,
+        name: 'Test $i',
+        number: i,
+        locked: i % 2 == 0,
+        url: 'https://127.0.0.$i',
+      ));
+    }
+    return result;
+  }
+
+  static List<Program> _stubProgram(int channelId) {
+    DateTime now = DateTime.now();
+    List<Program> result = [];
+    for(int i = -4; i < 6; i++) {
+      DateTime start = now.add(Duration(minutes: 30 * i - 15));
+      DateTime end = start.add(Duration(minutes: 30));
+      result.add(Program(
+        title: 'Test $i',
+        id: i * channelId,
+        channelId: channelId,
+        start: start,
+        end: end,
+      ));
+    }
+    return result;
+  }
+
+  static Future<List<Channel>> tvChannels({stub: Channel.useStub}) async {
+    if(stub) return _stubChannels;
     if(_tvList == null)
       _tvList = await loadChannels(ChannelType.tv);
     return _tvList;
   }
 
-  static Future<List<Channel>> radioChannels() async {
+  static Future<List<Channel>> radioChannels({stub: Channel.useStub}) async {
+    if(stub) return _stubChannels;
     if(_radioList == null)
       _radioList = await loadChannels(ChannelType.radio);
     return _radioList;
   }
 
-  static Future<Channel> getChannel(int id, ChannelType type) async {
-    List<Channel> channels = type == ChannelType.tv
+  static Future<Channel> getChannel(int id, ChannelType type, {
+    stub: Channel.useStub
+  }) async {
+    List<Channel> channels = stub
+        ? _stubChannels
+        : type == ChannelType.tv
         ? await tvChannels()
         : await radioChannels();
     return channels.firstWhere(
@@ -167,7 +207,8 @@ class Channel {
     return '$number. $name';
   }
 
-  Future<List<Program>> get program async {
+  Future<List<Program>> program({stub: Channel.useStub}) async {
+    if(stub) return _stubProgram(id);
     if(_type != ChannelType.tv) return null;
     if(_emptyProgram) await _loadProgram();
     if(_emptyProgram) {
@@ -180,7 +221,7 @@ class Channel {
 
   Future<Program> get currentProgram async {
     if(_type != ChannelType.tv) return null;
-    List<Program> fullProgram = await program;
+    List<Program> fullProgram = await program();
     if (fullProgram == null) return null;
     return fullProgram.first;
   }

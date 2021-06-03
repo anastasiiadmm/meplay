@@ -430,7 +430,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   if(widget.channelType == ChannelType.tv) FutureBuilder(
-                    future: _channel?.program ?? null,
+                    future: _channel?.program() ?? null,
                     builder: _program,
                   ),
                   if(_channel?.locked ?? false) _lockInfo,
