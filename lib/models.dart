@@ -129,8 +129,8 @@ class Channel {
       DateTime start = now.add(Duration(minutes: 30 * i - 15));
       DateTime end = start.add(Duration(minutes: 30));
       result.add(Program(
-        title: 'Test $i',
-        id: i * channelId,
+        title: 'Test ${(i + 5)}',
+        id: (i + 5) * channelId,
         channelId: channelId,
         start: start,
         end: end,
