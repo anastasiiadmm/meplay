@@ -5,7 +5,7 @@ import '../widgets/bottom_navbar.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/settings.dart';
-import '../widgets/channel_list.dart';
+import '../widgets/favorites_list.dart';
 
 
 class FavoritesScreen extends StatefulWidget {
@@ -100,7 +100,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 
-  Future<void> _delete(Channel channel) async {
+  Future<void> _onDelete(Channel channel) async {
     User user = await User.getUser();
     await user.removeFavorite(channel);
     setState(() {
@@ -110,10 +110,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   Widget get _body => Padding(
     padding: EdgeInsets.fromLTRB(16, 16, 0, 0),
-    child: ChannelList(
+    child: FavoritesList(
       channels: _channels,
       filter: _filter,
-      delete: (channel) => _delete(channel),
+      onDelete: _onDelete,
     ),
   );
 

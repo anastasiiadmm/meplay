@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import '../models.dart';
-import 'channel_tile.dart';
+import 'favorites_tile.dart';
 import 'base_channels.dart';
 
 
-class ChannelList extends BaseChannels {
-  ChannelList({
+class FavoritesList extends BaseChannels {
+  final void Function(Channel channel) onDelete;
+
+  FavoritesList({
     Key key,
     @required List<Channel> channels,
     bool Function(Channel channel) filter,
+    this.onDelete,
   }): super(
     key: key,
     channels: channels,
@@ -20,10 +23,11 @@ class ChannelList extends BaseChannels {
     return ListView(
       children: channelsToDisplay.map<Widget>((channel) {
         return Padding(
-          padding: EdgeInsets.only(bottom: 8),
-          child: ChannelTile(
+          padding: EdgeInsets.only(bottom: 12),
+          child: FavoritesTile(
             channel: channel,
             onTap: () => openChannel(context, channel),
+            onDelete: () => onDelete(channel),
           ),
         );
       }).toList(),

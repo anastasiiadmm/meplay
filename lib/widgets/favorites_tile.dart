@@ -4,21 +4,23 @@ import '../theme.dart';
 import 'channel_logo.dart';
 
 
-class ChannelTile extends StatelessWidget {
+class FavoritesTile extends StatelessWidget {
   final Channel channel;
   final void Function() onTap;
+  final void Function() onDelete;
 
-  ChannelTile({
+  FavoritesTile({
     Key key,
     @required this.channel,
     this.onTap,
+    this.onDelete,
   }): super(key: key);
 
   Widget get _logo {
     return Padding(
       padding: EdgeInsets.only(right: 16),
       child: ChannelLogo(
-        size: LogoSize.large,
+        size: LogoSize.small,
         channel: channel,
       ),
     );
@@ -55,13 +57,12 @@ class ChannelTile extends StatelessWidget {
         ),
       ),
       child: SizedBox(
-        height: 91,
+        height: 77,
         child: Padding(
-          padding: EdgeInsets.only(bottom: 8, right: 16),
+          padding: EdgeInsets.only(right: 50, bottom: 12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _title,
               _program,
@@ -69,6 +70,15 @@ class ChannelTile extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget get _delete {
+    return IconButton(
+      constraints: BoxConstraints(),
+      padding: EdgeInsets.zero,
+      icon: AppIconsV2.delete,
+      onPressed: onDelete,
     );
   }
 
@@ -83,20 +93,26 @@ class ChannelTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size(double.infinity, 91),
-      child: _wrapTap(
-        Padding(
-          padding: EdgeInsets.only(left: 16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _logo,
-              Expanded(
-                child: _texts,
-              ),
-            ],
+      preferredSize: Size(double.infinity, 77),
+      child: Stack(
+        children: [
+          _wrapTap(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _logo,
+                Expanded(
+                  child: _texts,
+                ),
+              ],
+            ),
           ),
-        ),
+          Positioned(
+            child: _delete,
+            top: 0,
+            right: 16,
+          ),
+        ],
       ),
     ) ;
   }
