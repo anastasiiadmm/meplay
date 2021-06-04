@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+import 'package:me_play/theme.dart';
+import '../models.dart';
+
+
+class CategoryCarousel extends StatelessWidget {
+  final List<Category> categories;
+  final void Function(Category category) onItemTap;
+  final int activeId;
+
+  CategoryCarousel({
+    Key key,
+    @required this.categories,
+    this.onItemTap,
+    this.activeId: 0,
+  }) : super(
+    key: key,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 34,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: categories.length + 1,
+        itemBuilder: (BuildContext context, int id) {
+          Category category = categories[id];
+          return Padding(
+            padding: id == 0
+                ? EdgeInsets.only(right: 12, left: 16)
+                : id == categories.length - 1
+                ? EdgeInsets.only(right: 16)
+                : EdgeInsets.only(right: 12),
+            child: GestureDetector(
+              onTap: () {
+                if(onItemTap != null) onItemTap(category);
+              },
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: id == activeId
+                      ? AppColorsV2.purple
+                      : AppColorsV2.decorativeGray,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: SizedBox(
+                  height: 34,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(10, 4, 6, 10),
+                    child: Text(
+                      category.localName(context),
+                      style: AppFontsV2.itemTitle,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

@@ -9,6 +9,7 @@ import 'package:timezone/timezone.dart';
 import 'api_client.dart';
 import 'utils/pref_helper.dart';
 import 'utils/tz_helper.dart';
+import 'utils/settings.dart';
 
 
 String rPlural(int count, List<String> forms) {
@@ -638,5 +639,26 @@ class News {
       PrefKeys.news,
       _list,
     );
+  }
+}
+
+
+class Category {
+  int id;
+  String name;
+
+  String localName(BuildContext context) {
+    final l = locale(context);
+    switch (id) {
+      case 0: return l.categoryAll;
+      case 1: return l.categoryChild;
+      case 2: return l.categoryDoc;
+      case 3: return l.categoryEntertainment;
+      case 4: return l.categoryMovie;
+      case 5: return l.categoryMusic;
+      case 6: return l.categoryNews;
+      case 7: return l.categorySport;
+      default: return name;
+    }
   }
 }
