@@ -4,13 +4,13 @@ import '../theme.dart';
 
 // TODO: add bottom line on design
 
-class AppAppbar extends StatelessWidget implements PreferredSizeWidget {
+class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String subtitle;
   final void Function() back;
   final List<Widget> actions;
 
-  AppAppbar({
+  AppToolBar({
     Key key,
     this.title,
     this.subtitle,

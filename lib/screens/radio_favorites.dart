@@ -103,8 +103,6 @@ class _RadioFavoritesScreenState extends State<RadioFavoritesScreen> {
         builder: (BuildContext context) => PlayerScreen(
           channelId: channel.id,
           channelType: ChannelType.radio,
-          getNextChannel: _nextChannel,
-          getPrevChannel: _prevChannel,
         ),
         settings: RouteSettings(name: '/radio/${channel.id}'),
       ),

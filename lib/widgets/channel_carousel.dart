@@ -1,36 +1,31 @@
 import 'package:flutter/material.dart';
 import '../models.dart';
 import 'channel_logo.dart';
-import 'base_channels.dart';
 
 
-class ChannelCarousel extends BaseChannels {
+class ChannelCarousel extends StatelessWidget {
+  final List<Channel> channels;
+
   ChannelCarousel({
     Key key,
-    @required List<Channel> channels,
-    bool Function(Channel channel) filter,
-  }) : super(
-    key: key,
-    channels: channels,
-    filter: filter,
-  );
+    @required this.channels,
+  }): super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<Channel> display = channelsToDisplay;
     return SizedBox(
       height: LogoSize.large.size,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: channelsToDisplay.length,
+        itemCount: channels.length,
         itemBuilder: (BuildContext context, int id) {
-          Channel channel = display[id];
+          Channel channel = channels[id];
           return Padding(
             padding: id == 0
                 ? EdgeInsets.symmetric(horizontal: 16)
                 : EdgeInsets.only(right: 16),
             child: GestureDetector(
-              onTap: () => openChannel(context, channel),
+              onTap: () => channel.open(context),
               child: ChannelLogo(channel: channel),
             ),
           );

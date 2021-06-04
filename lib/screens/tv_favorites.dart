@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:me_play/widgets/search_bar.dart';
+import '../widgets/app_toolbar.dart';
+import '../widgets/favorites_list.dart';
 import '../widgets/bottom_navbar.dart';
+import '../utils/settings.dart';
 import '../models.dart';
 import '../theme.dart';
-import '../utils/settings.dart';
-import '../widgets/favorites_list.dart';
 
 
 class FavoritesScreen extends StatefulWidget {
@@ -16,7 +16,6 @@ class FavoritesScreen extends StatefulWidget {
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
   List<Channel> _channels = [];
-  bool Function(Channel channel) _filter;
   User _user;
 
   @override
@@ -29,8 +28,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     await _getUser();
     if (_user == null) Navigator.of(context).pop();
     else {
-      // TODO:
-      //  _loadListType();
       _loadChannels();
     }
   }
@@ -54,49 +51,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     });
   }
 
-  // TODO:
-  // Future<void> _loadListType() async {
-  //   ChannelListType listType = await PrefHelper.loadString(
-  //     PrefKeys.listType,
-  //     restore: ChannelListType.getByName,
-  //     defaultValue: ChannelListType.defaultType,
-  //   );
-  //   setState(() { _listType = listType; });
-  // }
-
-  void _setFilter(String text) {
-    setState(() {
-      _filter = text.isEmpty ? null : (channel) => channel.name
-          .toLowerCase()
-          .contains(text.toLowerCase());
-    });
-  }
-
-  // TODO:
-  // void _selectListType() {
-  //   selectorModal(
-  //     title: Text('Вид списка каналов:', textAlign: TextAlign.center,),
-  //     context: context,
-  //     choices: ChannelListType.choices,
-  //     onSelect: (ChannelListType selected) {
-  //       setState(() { _listType = selected; });
-  //       PrefHelper.saveString(PrefKeys.listType, selected);
-  //     },
-  //   );
-  // }
-
   Widget get _appBar {
-    return SearchBar(
+    return AppToolBar(
       title: locale(context).favoritesTitle,
-      onSearchSubmit: _setFilter,
-      actions: [
-        // TODO:
-        // IconButton(
-        //   onPressed: _selectListType,
-        //   icon: AppIconsV2.burger,
-        //   constraints: BoxConstraints(),
-        // ),
-      ],
     );
   }
 
@@ -112,7 +69,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     padding: EdgeInsets.fromLTRB(16, 16, 0, 0),
     child: FavoritesList(
       channels: _channels,
-      filter: _filter,
       onDelete: _onDelete,
     ),
   );

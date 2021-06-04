@@ -7,6 +7,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:timezone/timezone.dart';
 
 import 'api_client.dart';
+import 'screens/player.dart';
 import 'utils/pref_helper.dart';
 import 'utils/tz_helper.dart';
 import 'utils/settings.dart';
@@ -144,6 +145,7 @@ class Channel {
     if(stub) return _stubChannels;
     if(_tvList == null)
       _tvList = await loadChannels(ChannelType.tv);
+      _tvList.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
     return _tvList;
   }
 
@@ -151,6 +153,7 @@ class Channel {
     if(stub) return _stubChannels;
     if(_radioList == null)
       _radioList = await loadChannels(ChannelType.radio);
+      _radioList.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
     return _radioList;
   }
 
@@ -315,6 +318,32 @@ class Channel {
 
   @override
   int get hashCode => hashValues(id, type);
+
+  Future<void> open(BuildContext context, {List<Channel> channels}) async {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => PlayerScreen(
+          channelId: id,
+          channelType: type,
+          channels: channels
+              ?? (this.type == ChannelType.tv ? _tvList : _radioList),
+        ),
+        settings: RouteSettings(name: '/$typeString/$id'),
+      ),
+    );
+  }
+
+  Channel next(List<Channel> fromList) {
+    int index = fromList.indexOf(this);
+    if(index < fromList.length - 1) return fromList[index + 1];
+    return fromList[0];
+  }
+
+  Channel prev(List<Channel> fromList) {
+    int index = fromList.indexOf(this);
+    if(index > 0) return fromList[index - 1];
+    return fromList[fromList.length - 1];
+  }
 }
 
 

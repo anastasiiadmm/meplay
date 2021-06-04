@@ -18,15 +18,13 @@ import '../widgets/modals.dart';
 class PlayerScreen extends StatefulWidget {
   final int channelId;
   final ChannelType channelType;
-  final Channel Function(Channel) getNextChannel;
-  final Channel Function(Channel) getPrevChannel;
+  final List<Channel> channels;
 
   PlayerScreen({
     Key key,
     @required this.channelId,
     this.channelType: ChannelType.tv,
-    this.getNextChannel,
-    this.getPrevChannel,
+    this.channels,
   }) : super(key: key);
 
   @override
@@ -159,23 +157,23 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     return HLSPlayer(
       key: _playerKey,
       channel: _channel,
-      toPrevChannel: _toPrevChannel,
-      toNextChannel: _toNextChannel,
+      toPrevChannel: _toPrev,
+      toNextChannel: _toNext,
       pipMode: _pipMode,
     );
   }
 
-  void _toPrevChannel() {
+  void _toPrev() {
     setState(() {
-      _channel = widget.getPrevChannel(_channel);
+      _channel = _channel.next(widget.channels);
       _playerKey = GlobalKey();
     });
     _loadFavorite();
   }
 
-  void _toNextChannel() {
+  void _toNext() {
     setState(() {
-      _channel = widget.getNextChannel(_channel);
+      _channel = _channel.prev(widget.channels);
       _playerKey = GlobalKey();
     });
     _loadFavorite();

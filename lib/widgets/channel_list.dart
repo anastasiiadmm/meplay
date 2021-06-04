@@ -1,29 +1,32 @@
 import 'package:flutter/material.dart';
 import '../models.dart';
 import 'channel_tile.dart';
-import 'base_channels.dart';
 
 
-class ChannelList extends BaseChannels {
+class ChannelList extends StatelessWidget {
+  final List<Channel> channels;
+  final bool Function(Channel channel) filter;
+
   ChannelList({
     Key key,
-    @required List<Channel> channels,
-    bool Function(Channel channel) filter,
-  }): super(
-    key: key,
-    channels: channels,
-    filter: filter,
-  );
+    @required this.channels,
+    this.filter,
+  }): super(key: key);
+
+  List<Channel> get _filterChannels {
+    if(filter == null) return channels;
+    return channels.where(filter).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: channelsToDisplay.map<Widget>((channel) {
+      children: _filterChannels.map<Widget>((channel) {
         return Padding(
           padding: EdgeInsets.only(bottom: 8),
           child: ChannelTile(
             channel: channel,
-            onTap: () => openChannel(context, channel),
+            onTap: () => channel.open(context),
           ),
         );
       }).toList(),

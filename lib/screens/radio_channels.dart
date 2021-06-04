@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:me_play/widgets/search_bar.dart';
+import 'package:me_play/widgets/app_searchbar.dart';
 import '../widgets/bottom_navbar.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -66,7 +66,7 @@ class _RadioChannelsScreenState extends State<RadioChannelsScreen> {
   // }
 
   Widget get _appBar {
-    return SearchBar(
+    return AppSearchBar(
       title: locale(context).radioChannelsTitle,
       onSearchSubmit: _setFilter,
       actions: [

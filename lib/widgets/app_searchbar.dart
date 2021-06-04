@@ -3,18 +3,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme.dart';
-import 'app_appbar.dart';
+import 'app_toolbar.dart';
 import '../utils/settings.dart';
 
 
 // TODO: add bottom line on design
 
-class SearchBar extends StatefulWidget implements PreferredSizeWidget {
+class AppSearchBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final void Function(String text) onSearchSubmit;
   final List<Widget> actions;
 
-  SearchBar({
+  AppSearchBar({
     Key key,
     this.title,
     this.onSearchSubmit,
@@ -22,13 +22,13 @@ class SearchBar extends StatefulWidget implements PreferredSizeWidget {
   }): super(key: key);
 
   @override
-  _SearchBarState createState() => _SearchBarState();
+  _AppSearchBarState createState() => _AppSearchBarState();
 
   @override
   Size get preferredSize => Size(double.infinity, 44);
 }
 
-class _SearchBarState extends State<SearchBar> {
+class _AppSearchBarState extends State<AppSearchBar> {
   TextEditingController _controller;
   bool _search = false;
 
@@ -163,7 +163,7 @@ class _SearchBarState extends State<SearchBar> {
         ),
         titleSpacing: 0,
       ),
-    ) : AppAppbar(
+    ) : AppToolBar(
       title: widget.title,
       actions: _actions,
     );
