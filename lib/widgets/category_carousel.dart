@@ -4,8 +4,8 @@ import '../models.dart';
 
 
 class CategoryCarousel extends StatelessWidget {
-  final List<Category> categories;
-  final void Function(Category category) onItemTap;
+  final List<Genre> categories;
+  final void Function(Genre genre) onItemTap;
   final int activeId;
 
   CategoryCarousel({
@@ -23,9 +23,9 @@ class CategoryCarousel extends StatelessWidget {
       height: 34,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: categories.length + 1,
+        itemCount: categories.length,
         itemBuilder: (BuildContext context, int id) {
-          Category category = categories[id];
+          Genre genre = categories[id];
           return Padding(
             padding: id == 0
                 ? EdgeInsets.only(right: 12, left: 16)
@@ -34,11 +34,11 @@ class CategoryCarousel extends StatelessWidget {
                 : EdgeInsets.only(right: 12),
             child: GestureDetector(
               onTap: () {
-                if(onItemTap != null) onItemTap(category);
+                if(onItemTap != null) onItemTap(genre);
               },
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: id == activeId
+                  color: genre.id == activeId
                       ? AppColorsV2.purple
                       : AppColorsV2.decorativeGray,
                   borderRadius: BorderRadius.circular(4),
@@ -48,7 +48,7 @@ class CategoryCarousel extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(10, 4, 6, 10),
                     child: Text(
-                      category.localName(context),
+                      genre.localName(context),
                       style: AppFontsV2.itemTitle,
                     ),
                   ),

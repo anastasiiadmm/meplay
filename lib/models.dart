@@ -35,6 +35,7 @@ class Channel {
   String name;
   String url;
   int number;
+  int genreId;
   bool locked;
   String logoUrl;
   List<Program> _program;
@@ -45,7 +46,7 @@ class Channel {
   static const maxRecent = 15;
 
   // TODO: DEBUG
-  static const useStub = true;
+  static const useStub = false;
 
   static ValueNotifier<List<Channel>> _recent = ValueNotifier(null);
   static ValueNotifier<List<Channel>> get recentNotifier => _recent;
@@ -119,6 +120,7 @@ class Channel {
         number: i,
         locked: i % 2 == 0,
         url: 'https://127.0.0.$i',
+        genreId: 1 + i % 7,
       ));
     }
     return result;
@@ -193,8 +195,9 @@ class Channel {
 
   String get typeString => _type == ChannelType.tv ? 'tv' : 'radio';
 
-  Channel({this.id, this.name, this.url, this.number, this.locked,
-    this.logoUrl, ChannelType type: ChannelType.tv}): _type = type;
+  Channel({this.id, this.name, this.url, this.number,
+    this.genreId, this.locked, this.logoUrl,
+    ChannelType type: ChannelType.tv}): _type = type;
   
   Channel.fromJson(Map<String, dynamic> data, {
     ChannelType type: ChannelType.tv,
@@ -203,6 +206,7 @@ class Channel {
     this.name = data['name'];
     this.url = data['url'];
     this.number = data['number'];
+    this.genreId = data.containsKey('genre') ? data['genre']['id'] : null;
     this.locked = data['locked'];
     this.logoUrl = data.containsKey('logo') ? data['logo'] : null;
   }
@@ -343,6 +347,10 @@ class Channel {
     int index = fromList.indexOf(this);
     if(index > 0) return fromList[index - 1];
     return fromList[fromList.length - 1];
+  }
+
+  Genre get category {
+    return Genre.genres.firstWhere((genre) => genreId == genre.id);
   }
 }
 
@@ -672,21 +680,35 @@ class News {
 }
 
 
-class Category {
+class Genre {
   int id;
   String name;
+  bool censored;
+
+  Genre({this.id, this.name, this.censored: false});
+
+  static List<Genre> genres = [
+    Genre(id: 0, name: 'Все'),
+    Genre(id: 3, name: 'Детские'),
+    Genre(id: 5, name: 'Документальные'),
+    Genre(id: 4, name: 'Кино'),
+    Genre(id: 7, name: 'Музыка'),
+    Genre(id: 1, name: 'Новости'),
+    Genre(id: 2, name: 'Развлекательные'),
+    Genre(id: 6, name: 'Спортивные'),
+  ];
 
   String localName(BuildContext context) {
     final l = locale(context);
     switch (id) {
       case 0: return l.categoryAll;
-      case 1: return l.categoryChild;
-      case 2: return l.categoryDoc;
-      case 3: return l.categoryEntertainment;
+      case 1: return l.categoryNews;
+      case 2: return l.categoryEntertainment;
+      case 3: return l.categoryChild;
       case 4: return l.categoryMovie;
-      case 5: return l.categoryMusic;
-      case 6: return l.categoryNews;
-      case 7: return l.categorySport;
+      case 5: return l.categoryDoc;
+      case 6: return l.categorySport;
+      case 7: return l.categoryMusic;
       default: return name;
     }
   }
