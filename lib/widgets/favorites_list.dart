@@ -15,16 +15,21 @@ class FavoritesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int id = 0;
     return ListView(
       children: channels.map<Widget>((channel) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: 12),
+        Widget tile = Padding(
+          padding: id == 0
+              ? EdgeInsets.symmetric(vertical: 12)
+              : EdgeInsets.only(bottom: 12),
           child: FavoritesTile(
             channel: channel,
             onTap: () => channel.open(context),
             onDelete: () => onDelete(channel),
           ),
         );
+        id++;
+        return tile;
       }).toList(),
     );
   }
