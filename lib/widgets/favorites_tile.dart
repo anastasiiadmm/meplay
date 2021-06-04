@@ -28,7 +28,7 @@ class FavoritesTile extends StatelessWidget {
 
   Widget get _title {
     return Text(
-      channel.title,
+      channel.name,
       style: AppFontsV2.itemTitle,
     );
   }

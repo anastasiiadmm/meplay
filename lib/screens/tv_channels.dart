@@ -30,10 +30,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
 
   Future<void> _loadChannels() async {
     List<Channel> channels = await Channel.tvChannels();
-    channels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
-    setState(() {
-      _channels = channels;  // copy
-    });
+    setState(() { _channels = channels; });
   }
 
   // TODO:

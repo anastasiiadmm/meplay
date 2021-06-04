@@ -20,6 +20,7 @@ class ChannelColumn extends StatelessWidget {
         Widget result = ChannelTile(
           channel: channel,
           onTap: () => channel.open(context),
+          showNumber: false,
         );
         if(id > 0) result = Padding(
           padding: EdgeInsets.only(top: 8),

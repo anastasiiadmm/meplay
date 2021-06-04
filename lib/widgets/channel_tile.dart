@@ -7,11 +7,13 @@ import 'channel_logo.dart';
 class ChannelTile extends StatelessWidget {
   final Channel channel;
   final void Function() onTap;
+  final bool showNumber;
 
   ChannelTile({
     Key key,
     @required this.channel,
     this.onTap,
+    this.showNumber: true,
   }): super(key: key);
 
   Widget get _logo {
@@ -26,7 +28,7 @@ class ChannelTile extends StatelessWidget {
 
   Widget get _title {
     return Text(
-      channel.title,
+      showNumber ? channel.title : channel.name,
       style: AppFontsV2.itemTitle,
     );
   }
