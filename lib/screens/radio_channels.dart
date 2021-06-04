@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:me_play/widgets/app_searchbar.dart';
-import '../widgets/bottom_navbar.dart';
 import '../models.dart';
 import '../theme.dart';
+import '../widgets/app_toolbar.dart';
+import '../widgets/radio_list.dart';
+import '../widgets/bottom_navbar.dart';
 import '../utils/settings.dart';
-import '../widgets/channel_list.dart';
 
 
 class RadioChannelsScreen extends StatefulWidget {
@@ -16,76 +16,26 @@ class RadioChannelsScreen extends StatefulWidget {
 
 class _RadioChannelsScreenState extends State<RadioChannelsScreen> {
   List<Channel> _channels = [];
-  bool Function(Channel channel) _filter;
 
   @override
   void initState() {
     super.initState();
-    // TODO:
-    // _loadListType();
     _loadChannels();
   }
 
   Future<void> _loadChannels() async {
     List<Channel> channels = await Channel.radioChannels();
-    channels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
-    setState(() {
-      _channels = channels;  // copy
-    });
+    setState(() { _channels = channels; });
   }
-
-  // TODO:
-  // Future<void> _loadListType() async {
-  //   ChannelListType listType = await PrefHelper.loadString(
-  //     PrefKeys.listType,
-  //     restore: ChannelListType.getByName,
-  //     defaultValue: ChannelListType.defaultType,
-  //   );
-  //   setState(() { _listType = listType; });
-  // }
-
-  void _setFilter(String text) {
-    setState(() {
-      _filter = text.isEmpty ? null : (channel) => channel.name
-          .toLowerCase()
-          .contains(text.toLowerCase());
-    });
-  }
-
-  // TODO:
-  // void _selectListType() {
-  //   selectorModal(
-  //     title: Text('Вид списка каналов:', textAlign: TextAlign.center,),
-  //     context: context,
-  //     choices: ChannelListType.choices,
-  //     onSelect: (ChannelListType selected) {
-  //       setState(() { _listType = selected; });
-  //       PrefHelper.saveString(PrefKeys.listType, selected);
-  //     },
-  //   );
-  // }
 
   Widget get _appBar {
-    return AppSearchBar(
+    return AppToolBar(
       title: locale(context).radioChannelsTitle,
-      onSearchSubmit: _setFilter,
-      actions: [
-        // TODO:
-        // IconButton(
-        //   onPressed: _selectListType,
-        //   icon: AppIconsV2.burger,
-        //   constraints: BoxConstraints(),
-        // ),
-      ],
     );
   }
 
-  Widget get _body => Padding(
-    padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-    child: ChannelList(
-      channels: _channels,
-      filter: _filter,
-    ),
+  Widget get _body => RadioList(
+    channels: _channels,
   );
 
   Widget get _bottomBar => BottomNavBar();

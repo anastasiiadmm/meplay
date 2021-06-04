@@ -44,6 +44,7 @@ class Channel {
   static List<Channel> _tvList;
   static List<Channel> _radioList;
   static const maxRecent = 15;
+  static const radioRegex = r"(.+?) ([0-9]+(\.[0-9]+)? FM)";
 
   // TODO: DEBUG
   static const useStub = false;
@@ -351,6 +352,16 @@ class Channel {
 
   Genre get category {
     return Genre.genres.firstWhere((genre) => genreId == genre.id);
+  }
+
+  String get radioName {
+    RegExpMatch result = RegExp(radioRegex).firstMatch(name);
+    return result == null ? name : result.group(1);
+  }
+
+  String get radioFM {
+    RegExpMatch result = RegExp(radioRegex).firstMatch(name);
+    return result == null ? '' : result.group(2);
   }
 }
 
