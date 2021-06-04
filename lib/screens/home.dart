@@ -242,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.fromLTRB(16, 16, 0, 16),
+          padding: EdgeInsets.symmetric(vertical: 16),
           child: PopularNotifier(
             notifier: Channel.popularNotifier,
             child: Builder(
