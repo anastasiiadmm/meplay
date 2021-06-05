@@ -5,12 +5,14 @@ class Circle extends StatelessWidget {
   final Color color;
   final double radius;
   final Widget child;
+  final EdgeInsetsGeometry padding;
 
   Circle({
     Key key,
     this.color: Colors.transparent,
     this.radius: 0,
     this.child,
+    this.padding: EdgeInsets.zero,
   }): assert(radius >= 0),
         super(key: key);
 
@@ -20,6 +22,7 @@ class Circle extends StatelessWidget {
     this.radius: 0,
   }): assert(radius >= 0),
         child = null,
+        padding = EdgeInsets.zero,
         super(key: key);
 
   @override
@@ -32,7 +35,10 @@ class Circle extends StatelessWidget {
       child: SizedBox(
         width: radius * 2,
         height: radius * 2,
-        child: child,
+        child: Padding(
+          padding: padding,
+          child: child,
+        ),
       ),
     );
   }
