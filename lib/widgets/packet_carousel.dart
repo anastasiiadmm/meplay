@@ -129,19 +129,19 @@ class _PacketCarouselState extends State<PacketCarousel> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Ink(
-                      color: packet.isActive
-                          ? AppColorsV2.red
-                          : AppColorsV2.green,
-                      child: InkWell(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: packet.isActive
+                            ? AppColorsV2.red
+                            : AppColorsV2.green,
+                      ),
+                      child: GestureDetector(
                         onTap: packet.isActive
-                            ? () => widget.connect(packet)
-                            : () => widget.disconnect(packet),
+                            ? () => widget.disconnect(packet)
+                            : () => widget.connect(packet),
                         child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 16,
-                          ),
+                          padding: EdgeInsets.fromLTRB(16, 6, 16, 10),
                           child: Text(
                             packet.isActive ? l.packetDisable : l.packetEnable,
                             style: AppFontsV2.smallButton,
@@ -158,7 +158,9 @@ class _PacketCarouselState extends State<PacketCarousel> {
               right: 12,
               child: Circle(
                 radius: 20,
+                padding: EdgeInsets.all(8),
                 child: AppIconsV2.check,
+                color: AppColorsV2.white,
               ),
             ),
           ],
@@ -178,8 +180,9 @@ class _PacketCarouselState extends State<PacketCarousel> {
       options: CarouselOptions(
         viewportFraction: 1,
         height: PacketCarousel.totalHeight,
-        autoPlay: true,
+        autoPlay: false,
         onPageChanged: _pageChanged,
+        disableCenter: true,
       ),
     );
   }
