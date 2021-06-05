@@ -38,11 +38,11 @@ class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           Text(
             this.title,
-            style: AppFonts.screenTitle,
+            style: AppFontsV2.screenTitle,
           ),
           if(subtitle != null) Text(
             this.subtitle,
-            style: AppFonts.screenSubTitle,
+            style: AppFontsV2.itemTextSecondary,
           ),
         ],
       ),
