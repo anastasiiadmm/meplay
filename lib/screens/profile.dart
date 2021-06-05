@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import '../widgets/modals.dart' as modals;
+import 'package:me_play/widgets/future_block.dart';
+import 'package:me_play/widgets/packet_carousel.dart';
+import '../utils/settings.dart';
+import '../widgets/app_toolbar.dart';
+import '../widgets/modals.dart';
 import '../widgets/bottom_navbar.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -18,73 +22,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _initAsync();
   }
 
-  Future<void> _initAsync() async {
+  Future<List<Packet>> _loadData() async {
     await _loadUser();
     if (_user == null) await _login();
     if (_user == null) Navigator.of(context).pop();
-    else _loadPackets();
+    return _loadPackets();
   }
 
   Future<void> _loadUser() async {
     User user = await User.getUser();
-    setState(() { _user = user; });
+    _user = user;
   }
 
   Future<void> _login() async {
     User user = await Navigator.of(context).pushNamed<User>('/login');
-    setState(() { _user = user; });
+    _user = user;
   }
 
-  Future<void> _loadPackets() async {
+  Future<List<Packet>> _loadPackets() async {
     List<Packet> packets = await _user.getPackets();
-    setState(() { _packets = packets; });
+    _packets = packets;
+    return packets;
   }
 
-  Future<void> _logout() async {
-    await User.clearUser();
-    await Future.wait([
-      Channel.loadTv(),
-      Channel.loadRadio(),
-    ]);
-    Channel.loadRecent();
-    Channel.loadPopular();
-    Navigator.of(context).pop();
-  }
+  // TODO: move to settings
+  // Future<void> _logout() async {
+  //   await User.clearUser();
+  //   await Future.wait([
+  //     Channel.loadTv(),
+  //     Channel.loadRadio(),
+  //   ]);
+  //   Channel.loadRecent();
+  //   Channel.loadPopular();
+  //   Navigator.of(context).pop();
+  // }
 
-  void _logoutDialog() {
-    modals.oldConfirmModal(
-      context: context,
-      title: Text('Выход'),
-      content: Text('Вы уверены, что хотите выйти?'),
-      action: _logout,
-    );
-  }
+  // TODO: move to settings
+  // void _logoutDialog() {
+  //   modals.oldConfirmModal(
+  //     context: context,
+  //     title: Text('Выход'),
+  //     content: Text('Вы уверены, что хотите выйти?'),
+  //     action: _logout,
+  //   );
+  // }
 
-  String get _activePacketNames {
-    if (_packets == null) {
-      return 'Информация о пакетах недоступна';
-    }
-    final activePackets = _packets.where((packet) => packet.isActive);
-    if (activePackets.length == 0) {
-      return "Нет активных пакетов";
-    }
-    return activePackets.map((packet) => packet.name).join(', ');
-  }
-
-  void _changePassword() {
-    modals.inDevelopment(context, title: 'Смена пароля');
-  }
-
-  Future<bool> _addPacket(Packet packet) async {
+  Future<bool> _connect(Packet packet) async {
     // Костыль, должно быть сделано на бэкенде.
     const exclusivePackets = [5, 6, 7];
     if (exclusivePackets.contains(packet.id)) {
       for (Packet p in _packets) {
         if (p.isActive && exclusivePackets.contains(p.id)) {
-          await _removePacket(p);
+          await _disconnect(p);
         }
       }
     }
@@ -96,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return true;
   }
 
-  Future<bool> _removePacket(Packet packet) async {
+  Future<bool> _disconnect(Packet packet) async {
     List<Packet> packets = await _user.removePacket(packet);
     if (packets == null) return false;
     setState(() {
@@ -105,197 +96,101 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return true;
   }
   
-  void _addPacketDialog(Packet packet) {
-    final title = Text('Подключить пакет', textAlign: TextAlign.center,);
-    final text = RichText(
-      textAlign: TextAlign.center,
-      text: TextSpan(
-        style: AppFonts.packetPrice,
-        children: [
-          TextSpan(text: 'Вы уверены, что хотите подключить пакет ',),
-          TextSpan(text: packet.name.toUpperCase(), style: AppFonts.packetName),
-          TextSpan(text: ' за\n',),
-          TextSpan(text: packet.priceLabel, style: AppFonts.packetName,),
-          TextSpan(text: '?',),
-        ],
-      ),
-    );
-    final error = Text(
-      'Не удалось подключить пакет. Проверьте подключение к интернету и баланс, и попробуйте ещё раз.',
-       textAlign: TextAlign.center
-    );
-    modals.asyncConfirmModal(
+  void _connectDialog(Packet packet) {
+    AppLocalizations l = locale(context);
+    showDialog(
       context: context,
-      title: title,
-      content: text,
-      error: error,
-      action: () => _addPacket(packet),
+      builder: (BuildContext context) => ConfirmDialog(
+        action: () async => await _connect(packet),
+        title: packet.name,
+        text: '${l.packetConnect}\n${packet.name}?',
+        error: '${l.packetConnectError} ${packet.name}. ${l.tryLater}',
+      ),
     );
   }
   
-  void _removePacketDialog(Packet packet) {
-    final title = Text('Отключить пакет', textAlign: TextAlign.center,);
-    final text = RichText(
-      textAlign: TextAlign.center,
-      text: TextSpan(
-        style: AppFonts.packetPrice,
-        children: [
-          TextSpan(text: 'Вы уверены, что хотите отключить пакет ',),
-          TextSpan(text: packet.name.toUpperCase(), style: AppFonts.packetName),
-          TextSpan(text: ' за\n',),
-          TextSpan(text: packet.priceLabel, style: AppFonts.packetName),
-          TextSpan(text: '?',),
-        ],
-      ),
-    );
-    final error = Text(
-      'Не удалось отключить пакет. Проверьте подключение к интернету, и попробуйте ещё раз.',
-      textAlign: TextAlign.center,
-    );
-    modals.asyncConfirmModal(
+  void _disconnectDialog(Packet packet) {
+    AppLocalizations l = locale(context);
+    showDialog(
       context: context,
-      title: title,
-      content: text,
-      error: error,
-      action: () => _removePacket(packet),
-    );
-  }
-  
-  Widget _buildPacketTile(Packet packet) {
-    return GestureDetector (
-      onTap: packet.isActive
-          ? () { _removePacketDialog(packet); }
-          : () { _addPacketDialog(packet); },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: packet.isActive
-              ? AppColors.gray0
-              : AppColors.transparentLight,
-        ),
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15,),
-        margin: EdgeInsets.only(bottom: 10),
-        child: Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(right: 5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(text: TextSpan(children: [
-                      TextSpan(
-                          text: packet.name.toUpperCase(),
-                          style: AppFonts.packetName
-                      ),
-                      TextSpan(
-                          text: " (${packet.channelDisplay})",
-                          style: AppFonts.channelCount
-                      ),
-                    ])),
-                    Text(
-                      packet.priceLabel,
-                      style: AppFonts.packetPrice,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            packet.isActive ? AppIcons.checkHex : AppIcons.plus,
-          ],
-        ),
+      builder: (BuildContext context) => ConfirmDialog(
+        action: () async => await _connect(packet),
+        title: packet.name,
+        text: '${l.packetDisconnect}\n${packet.name}?',
+        error: '${l.packetDisconnectError} ${packet.name}. ${l.tryLater}',
       ),
     );
-  }
-
-  List<Widget> get _packetTiles {
-    if (_packets == null) {
-      return [
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            color: AppColors.gray0,
-          ),
-          padding: EdgeInsets.symmetric(vertical: 15),
-          child: Center(
-            child: Animations.modalProgressIndicator,
-          ),
-        ),
-      ];
-    }
-    return _packets.map((item) {
-      final Packet packet = item;
-      return _buildPacketTile(packet);
-    }).toList();
   }
 
   Widget get _body {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.gray0,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15,),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                AppIcons.profile,
-                Text(_user == null ? 'Профиль' : '+' + _user.username, style: AppFonts.profileName,),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                  child: Text('ПОДКЛЮЧЕННЫЕ\nПАКЕТЫ', style: AppFonts.activePacketsTitle, textAlign: TextAlign.center,),
-                ),
-                Text(_activePacketNames, style: AppFonts.activePacketList),
-                Padding(
-                  padding: EdgeInsets.only(top: 15),
-                  child: Row(
-                    children: [
-                      TextButton(
-                        onPressed: _changePassword,
-                        child: Text('Сменить пароль', style: AppFonts.profileAction,),
-                      ),
-                      Expanded(child: Container()),
-                      TextButton(
-                        onPressed: _logoutDialog,
-                        child: Text('Выход', style: AppFonts.profileAction,),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 30),
-            child: Text('Пакеты', style: AppFonts.packetListTitle,)
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _packetTiles,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return FutureBlock<List<Packet>>(
+      future: _loadData(),
+      builder: (BuildContext context, packets) {
+        return PacketCarousel(
+          packets: packets,
+          connect: _connectDialog,
+          disconnect: _disconnectDialog,
+        );
+      },
     );
-  }
 
-  void _back() {
-    Navigator.of(context).pop();
-  }
 
-  void _showNotifications() {
-    Navigator.pushNamed(context, '/profile/notifications');
+      // child: Column(
+      //   crossAxisAlignment: CrossAxisAlignment.stretch,
+      //   children: [
+      //     Container(
+      //       decoration: BoxDecoration(
+      //         color: AppColors.gray0,
+      //         borderRadius: BorderRadius.circular(15),
+      //       ),
+      //       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15,),
+      //       child: Column(
+      //         crossAxisAlignment: CrossAxisAlignment.center,
+      //         children: [
+      //           AppIcons.profile,
+      //           Text(_user == null ? 'Профиль' : '+' + _user.username, style: AppFonts.profileName,),
+      //           Padding(
+      //             padding: EdgeInsets.symmetric(vertical: 5),
+      //             child: Text('ПОДКЛЮЧЕННЫЕ\nПАКЕТЫ', style: AppFonts.activePacketsTitle, textAlign: TextAlign.center,),
+      //           ),
+      //           Text(_activePacketNames, style: AppFonts.activePacketList),
+      //           Padding(
+      //             padding: EdgeInsets.only(top: 15),
+      //             child: Row(
+      //               children: [
+      //                 TextButton(
+      //                   onPressed: _changePassword,
+      //                   child: Text('Сменить пароль', style: AppFonts.profileAction,),
+      //                 ),
+      //                 Expanded(child: Container()),
+      //                 TextButton(
+      //                   onPressed: _logoutDialog,
+      //                   child: Text('Выход', style: AppFonts.profileAction,),
+      //                 ),
+      //               ],
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //     Padding(
+      //       padding: EdgeInsets.only(top: 30),
+      //       child: Text('Пакеты', style: AppFonts.packetListTitle,)
+      //     ),
+      //     Expanded(
+      //       child: Padding(
+      //         padding: EdgeInsets.only(top: 10),
+      //         child: SingleChildScrollView(
+      //           child: Column(
+      //             crossAxisAlignment: CrossAxisAlignment.stretch,
+      //             children: _packetTiles,
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //   ],
+      // ),
+    // );
   }
 
   void _openSettings() {
@@ -303,45 +198,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget get _appBar {
-    return AppBar(
-      backgroundColor: AppColors.megaPurple,
-      elevation: 0,
-      automaticallyImplyLeading: false,
-      leading: IconButton(
-        onPressed: _back,
-        icon: AppIcons.back,
-      ),
+    // TODO: refactor whole AppToolBar to show subtitle properly.
+    AppLocalizations l = locale(context);
+    return AppToolBar(
+      title: _user == null ? l.profileTitle : '+${_user.username}',
+      subtitle: l.profileTitle,
       actions: [
         IconButton(
-          onPressed: _showNotifications,
-          icon: AppIcons.notificationsBell,
-        ),
-        IconButton(
-          icon: AppIcons.cog,
+          icon: AppIconsV2.cog,
           onPressed: _openSettings,
         ),
       ],
-      title: _appBarTitle,
-      centerTitle: true,
     );
   }
 
-  Widget get _appBarTitle => _user == null ? Text(
-    'Личный кабинет',
-    style: AppFonts.screenTitle,
-    textAlign: TextAlign.center,
-  ) : Column(
-    children: [
-      Text(_user.username, style: AppFonts.screenTitle),
-      Text('Личный кабинет', style: AppFonts.screenSubTitle),
-    ],
+  Widget get _bottomNavBar => BottomNavBar(
+    showIndex: NavItems.profile,
   );
-
-  Widget get _bottomNavBar => BottomNavBar(showIndex: NavItems.profile);
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.megaPurple,
+      backgroundColor: AppColorsV2.darkBg,
       appBar: _appBar,
       body: _body,
       bottomNavigationBar: _bottomNavBar,
