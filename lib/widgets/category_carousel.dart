@@ -46,7 +46,7 @@ class CategoryCarousel extends StatelessWidget {
                 child: SizedBox(
                   height: 34,
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(10, 4, 6, 10),
+                    padding: EdgeInsets.fromLTRB(10, 4, 10, 6),
                     child: Text(
                       genre.localName(context),
                       style: AppFontsV2.itemTitle,
