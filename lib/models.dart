@@ -598,7 +598,7 @@ class Packet {
   String get channelDisplay {
     return '$channelCount ' + rPlural(
       channelCount,
-      ['КАНАЛ', 'КАНАЛА', 'КАНАЛОВ'],
+      ['канал', 'канала', 'каналов'],
     );
   }
 

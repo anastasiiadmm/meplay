@@ -129,6 +129,8 @@
   "@cancel": {},
   "confirm": "Подключить",
   "@confirm": {},
+  "packet": "Пакет",
+  "@packet": {},
   "favoritesTitle": "Избранное",
   "@favoritesTitle": {},
   "favoritesTv": "ТВ Каналы",
