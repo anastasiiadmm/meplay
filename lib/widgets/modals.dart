@@ -46,7 +46,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
   }
 
   Widget get _title => Text(
-    widget.title ?? 'Подтвердите действие',
+    widget.title ?? locale(context).defaultModalTitle,
     style: AppFontsV2.modalTitle,
     textAlign: TextAlign.center,
   );
@@ -66,7 +66,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
   );
 
   Widget get _error => Text(
-    widget.error ?? 'Не удалось выполнить действие.',
+    widget.error ?? locale(context).defaultModalError,
     style: AppFontsV2.modalText,
     textAlign: TextAlign.center,
   );

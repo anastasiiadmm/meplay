@@ -79,6 +79,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         },
         title: l.favoritesDeleteTitle,
         text: '${l.favoritesDeleteText1} ${channel.name} ${l.favoritesDeleteText2}',
+        error: '${l.favoritesErrorText1} ${channel.name} ${l.favoritesErrorText2}',
       ),
     );
   }
