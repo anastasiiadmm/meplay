@@ -3,15 +3,24 @@ import 'package:flutter/material.dart';
 
 class Circle extends StatelessWidget {
   final Color color;
-  final double diameter;
+  final double radius;
   final Widget child;
 
   Circle({
     Key key,
     this.color: Colors.transparent,
-    this.diameter: 1,
+    this.radius: 0,
     this.child,
-  }): super(key: key);
+  }): assert(radius >= 0),
+        super(key: key);
+
+  Circle.dot({
+    Key key,
+    this.color: Colors.transparent,
+    this.radius: 0,
+  }): assert(radius >= 0),
+        child = null,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,23 +30,10 @@ class Circle extends StatelessWidget {
         color: color,
       ),
       child: SizedBox(
-        width: diameter,
-        height: diameter,
+        width: radius * 2,
+        height: radius * 2,
         child: child,
       ),
     );
   }
-}
-
-
-class Dot extends Circle {
-  Dot({
-    Key key,
-    Color color: Colors.transparent,
-    double diameter: 1,
-  }): super(
-    key: key,
-    color: color,
-    diameter: diameter,
-  );
 }

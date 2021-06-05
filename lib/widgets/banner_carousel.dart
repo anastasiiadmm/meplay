@@ -46,16 +46,16 @@ class _BannerCarouselState extends State<BannerCarousel> {
   Widget _dot(id) {
     Widget dot;
     if (id == _activeId) {
-      dot = Dot(
+      dot = Circle.dot(
         color: AppColorsV2.purple,
-        diameter: 8,
+        radius: 4,
       );
     } else {
       dot = GestureDetector(
         onTap: () => _switchTo(id),
-        child: Dot(
+        child: Circle.dot(
           color: AppColorsV2.decorativeGray,
-          diameter: 8,
+          radius: 4,
         ),
       );
     }
