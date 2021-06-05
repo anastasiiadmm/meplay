@@ -55,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _logoutDialog() {
-    modals.confirmModal(
+    modals.oldConfirmModal(
       context: context,
       title: Text('Выход'),
       content: Text('Вы уверены, что хотите выйти?'),

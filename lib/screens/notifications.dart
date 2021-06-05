@@ -50,7 +50,7 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
   Widget get _bottomBar => BottomNavBar();
 
   void _cancelModal(PendingNotificationRequest request) {
-    confirmModal(
+    oldConfirmModal(
       context: context,
       title: Text("Вы уверены что хотите удалить это уведомление?"),
       action: () => _cancel(request),

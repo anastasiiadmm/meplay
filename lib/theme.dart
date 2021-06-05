@@ -99,6 +99,7 @@ class AppColorsV2 {
   static const appbarBorder = Color.fromRGBO(255, 255, 255, 0.2);
   static const iconBg = Color.fromRGBO(255, 255, 255, 1);  // white
   static const channelBg = Color.fromRGBO(255, 255, 255, 1);
+  static const modalBorder = Color.fromRGBO(29, 27, 29, 1);
 
   // these are for text in different parts of the design.
   static const textPrimary = Color.fromRGBO(255, 255, 255, 1);  // white

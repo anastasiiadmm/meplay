@@ -8,6 +8,7 @@ import '../widgets/bottom_navbar.dart';
 import '../utils/settings.dart';
 import '../models.dart';
 import '../theme.dart';
+import '../widgets/modals.dart';
 
 
 class FavoritesScreen extends StatefulWidget {
@@ -67,14 +68,28 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 
-  Future<void> _deleteTv(Channel channel) async {
-    await _user.removeFavorite(channel);
-    setState(() { _tv.remove(channel); });
+  void _onDelete(Channel channel) async {
+    AppLocalizations l = locale(context);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => ConfirmDialog(
+        action: () async {
+          await _deleteChannel(channel);
+          return false;
+        },
+        title: l.favoritesDeleteTitle,
+        text: '${l.favoritesDeleteText1} ${channel.name} ${l.favoritesDeleteText2}',
+      ),
+    );
   }
 
-  Future<void> _deleteRadio(Channel channel) async {
+  Future<void> _deleteChannel(Channel channel) async {
     await _user.removeFavorite(channel);
-    setState(() { _radio.remove(channel); });
+    if(channel.type == ChannelType.tv) {
+      setState(() { _tv.remove(channel); });
+    } else {
+      setState(() { _radio.remove(channel); });
+    }
   }
 
   Widget get _body => Padding(
@@ -84,11 +99,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       rightLabel: locale(context).favoritesRadio,
       leftTab: FavoritesList(
         channels: _tv,
-        onDelete: _deleteTv,
+        onDelete: _onDelete,
       ),
       rightTab: RadioFavoritesList(
         channels: _radio,
-        onDelete: _deleteRadio,
+        onDelete: _onDelete,
       ),
     ),
   );

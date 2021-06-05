@@ -140,5 +140,7 @@
   "favoritesDeleteText1": "Вы хотите удалить",
   "@favoritesDeleteText1": {},
   "favoritesDeleteText2": "из Избранного?",
-  "@favoritesDeleteText2": {}
+  "@favoritesDeleteText2": {},
+  "close": "Закрыть",
+  "@close": {}
 }

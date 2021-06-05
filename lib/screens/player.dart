@@ -264,7 +264,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void _scheduleProgramNotification(Program program) {
-    confirmModal(
+    oldConfirmModal(
       context: context,
       title: Text('Напомнить вам о передаче "${program.title}"?',),
       action: () {

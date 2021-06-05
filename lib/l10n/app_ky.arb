@@ -73,5 +73,6 @@
   "favoritesRadio": "Радио",
   "favoritesDeleteTitle": "Избранное",
   "favoritesDeleteText1": "Вы хотите удалить",
-  "favoritesDeleteText2": "из Избранного?"
+  "favoritesDeleteText2": "из Избранного?",
+  "close": "Закрыть"
 }
