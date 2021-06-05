@@ -1,55 +1,40 @@
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../theme.dart';
-import 'channel_logo.dart';
 
 
-class FavoritesTile extends StatelessWidget {
+class RadioFavoritesTile extends StatelessWidget {
   final Channel channel;
   final void Function() onTap;
   final void Function() onDelete;
 
-  FavoritesTile({
+  RadioFavoritesTile({
     Key key,
     @required this.channel,
     this.onTap,
     this.onDelete,
   }): super(key: key);
 
-  Widget get _logo {
-    return Padding(
-      padding: EdgeInsets.only(right: 16),
-      child: ChannelLogo(
-        size: LogoSize.small,
-        channel: channel,
-      ),
-    );
-  }
-
   Widget get _title {
     return Text(
-      channel.name,
+      channel.radioName,
+      maxLines: 1,
       style: AppFontsV2.itemTitle,
     );
   }
 
-  Widget get _program {
-    return FutureBuilder<Program>(
-      future: channel.currentProgram,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return Padding(
-          padding: EdgeInsets.only(top: 4),
-          child: Text(
-            snapshot.data == null ? '' : snapshot.data.timeTitle,
-            style: AppFontsV2.itemTextSecondary,
-            maxLines: 2,
-          ),
-        );
-      },
+  Widget get _text {
+    return Padding(
+      padding: EdgeInsets.only(top: 4),
+      child: Text(
+        channel.radioFM,
+        style: AppFontsV2.itemTextSecondary,
+        maxLines: 1,
+      ),
     );
   }
 
-  Widget get _texts {
+  Widget get _content {
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
@@ -57,15 +42,16 @@ class FavoritesTile extends StatelessWidget {
         ),
       ),
       child: SizedBox(
-        height: 77,
+        height: 59,
         child: Padding(
-          padding: EdgeInsets.only(right: 50, bottom: 12),
+          padding: EdgeInsets.only(bottom: 12, right: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _title,
-              _program,
+              _text,
             ],
           ),
         ),
@@ -93,21 +79,13 @@ class FavoritesTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size(double.infinity, 77),
+      preferredSize: Size(double.infinity, 59),
       child: Stack(
         children: [
           _wrapTap(
             Padding(
               padding: EdgeInsets.only(left: 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _logo,
-                  Expanded(
-                    child: _texts,
-                  ),
-                ],
-              ),
+              child: _content,
             ),
           ),
           Positioned(
@@ -117,6 +95,6 @@ class FavoritesTile extends StatelessWidget {
           ),
         ],
       ),
-    ) ;
+    );
   }
 }

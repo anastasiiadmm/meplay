@@ -5,9 +5,8 @@ import 'screens/profile.dart';
 import 'screens/notifications.dart';
 import 'screens/settings.dart';
 import 'screens/tv_channels.dart';
-import 'screens/tv_favorites.dart';
 import 'screens/radio_channels.dart';
-import 'screens/radio_favorites.dart';
+import 'screens/favorites.dart';
 import 'screens/player.dart';
 import 'models.dart';
 
@@ -22,14 +21,14 @@ abstract class Routes {
   static const tv = '/tv';
   static const radio = '/radio';
   static const favorites = '/favorites';
-  static const favTv = '/fav/tv';
-  static const favRadio = '/fav/radio';
+  // static const favTv = '/fav/tv';        // не используется
+  // static const favRadio = '/fav/radio';  // не используется
   static const login = '/login';
   static const tvChannel = '/tv/';  // match this with String.startsWith
   static const radioChannel = '/radio/';  // match this with String.startsWith
 
   static const ROUTES = [home, profile, settings, notifications, alerts,
-    news, tv, radio, favorites, favTv, favRadio, login];
+    news, tv, radio, favorites, login];
   static const MATCH_ROUTES = [tvChannel, radioChannel];
   static bool allowed(String route) {
     return ROUTES.contains(route)
@@ -48,8 +47,6 @@ final Map<String, WidgetBuilder> routes = {
   Routes.tv: (BuildContext context) => TVChannelsScreen(),
   Routes.radio: (BuildContext context) => RadioChannelsScreen(),
   Routes.favorites: (BuildContext context) => FavoritesScreen(),
-  Routes.favTv: (BuildContext context) => FavoritesScreen(),
-  Routes.favRadio: (BuildContext context) => RadioFavoritesScreen(),
 };
 
 

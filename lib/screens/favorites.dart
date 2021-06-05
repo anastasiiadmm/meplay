@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../widgets/app_toolbar.dart';
+import '../widgets/tab_switch.dart';
 import '../widgets/favorites_list.dart';
+import '../widgets/radio_favorites_list.dart';
 import '../widgets/bottom_navbar.dart';
 import '../utils/settings.dart';
 import '../models.dart';
@@ -15,7 +17,8 @@ class FavoritesScreen extends StatefulWidget {
 
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  List<Channel> _channels = [];
+  List<Channel> _tv = [];
+  List<Channel> _radio = [];
   User _user;
 
   @override
@@ -28,7 +31,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     await _getUser();
     if (_user == null) Navigator.of(context).pop();
     else {
-      _loadChannels();
+      _loadTv();
+      _loadRadio();
     }
   }
 
@@ -39,16 +43,22 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     }
   }
 
-  Future<void> _loadChannels() async {
+  Future<void> _loadTv() async {
     List<Channel> channels = await Channel.tvChannels();
     List<int> favIds = await _user.tvFavorites();
     List<Channel> favChannels = channels.where((channel) {
       return favIds.contains(channel.id);
     }).toList();
-    favChannels.sort((ch1, ch2) => ch1.number.compareTo(ch2.number));
-    setState(() {
-      _channels = favChannels;  // copy
-    });
+    setState(() { _tv = favChannels; });
+  }
+
+  Future<void> _loadRadio() async {
+    List<Channel> allChannels = await Channel.radioChannels();
+    List<int> favIds = await _user.radioFavorites();
+    List<Channel> favChannels = allChannels.where((channel) {
+      return favIds.contains(channel.id);
+    }).toList();
+    setState(() { _radio = favChannels; });
   }
 
   Widget get _appBar {
@@ -57,19 +67,29 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 
-  Future<void> _onDelete(Channel channel) async {
-    User user = await User.getUser();
-    await user.removeFavorite(channel);
-    setState(() {
-      _channels.remove(channel);
-    });
+  Future<void> _deleteTv(Channel channel) async {
+    await _user.removeFavorite(channel);
+    setState(() { _tv.remove(channel); });
+  }
+
+  Future<void> _deleteRadio(Channel channel) async {
+    await _user.removeFavorite(channel);
+    setState(() { _radio.remove(channel); });
   }
 
   Widget get _body => Padding(
-    padding: EdgeInsets.fromLTRB(16, 16, 0, 0),
-    child: FavoritesList(
-      channels: _channels,
-      onDelete: _onDelete,
+    padding: EdgeInsets.only(top: 20),
+    child: TabSwitch(
+      leftLabel: locale(context).favoritesTv,
+      rightLabel: locale(context).favoritesRadio,
+      leftTab: FavoritesList(
+        channels: _tv,
+        onDelete: _deleteTv,
+      ),
+      rightTab: RadioFavoritesList(
+        channels: _radio,
+        onDelete: _deleteRadio,
+      ),
     ),
   );
 
@@ -80,7 +100,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     return Scaffold(
       backgroundColor: AppColorsV2.darkBg,
       extendBody: true,
-      extendBodyBehindAppBar: true,
       appBar: _appBar,
       body: _body,
       bottomNavigationBar: _bottomBar,
