@@ -56,26 +56,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   // TODO: move to settings
-  // Future<void> _logout() async {
-  //   await User.clearUser();
-  //   await Future.wait([
-  //     Channel.loadTv(),
-  //     Channel.loadRadio(),
-  //   ]);
-  //   Channel.loadRecent();
-  //   Channel.loadPopular();
-  //   Navigator.of(context).pop();
-  // }
+  Future<bool> _logout() async {
+    await User.clearUser();
+    await Future.wait([
+      Channel.loadTv(),
+      Channel.loadRadio(),
+    ]);
+    await Future.wait([
+      Channel.loadRecent(),
+      Channel.loadPopular(),
+    ]);
+    Navigator.of(context).pop();
+    return true;
+  }
 
   // TODO: move to settings
-  // void _logoutDialog() {
-  //   modals.oldConfirmModal(
-  //     context: context,
-  //     title: Text('Выход'),
-  //     content: Text('Вы уверены, что хотите выйти?'),
-  //     action: _logout,
-  //   );
-  // }
+  void _logoutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => ConfirmDialog(
+        title: "Выход",
+        text: 'Вы уверены, что хотите выйти?',
+        action: _logout,
+      ),
+    );
+  }
 
   Future<bool> _connect(Packet packet) async {
     // Костыль, должно быть сделано на бэкенде.
@@ -216,10 +221,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
       title: _user == null ? l.profileTitle : '+${_user.username}',
       subtitle: l.profileTitle,
       actions: [
+        // IconButton(
+        //   icon: AppIconsV2.cog,
+        //   onPressed: _openSettings,
+        // ),
+        // TODO: move to settings.
         IconButton(
-          icon: AppIconsV2.cog,
-          onPressed: _openSettings,
-        ),
+          icon: Icon(
+            Icons.logout,
+            size: 28,
+            color: AppColorsV2.searchText,
+          ),
+          onPressed: _logoutDialog,
+          constraints: BoxConstraints(),
+          padding: EdgeInsets.all(12),
+        )
       ],
     );
   }
