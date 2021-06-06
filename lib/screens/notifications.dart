@@ -12,8 +12,6 @@ import '../utils/local_notification_helper.dart';
 import '../utils/settings.dart';
 
 
-// TODO: possible list update when news received on this screen.
-
 class NotificationListScreen extends StatefulWidget {
   @override
   _NotificationListScreenState createState() => _NotificationListScreenState();
