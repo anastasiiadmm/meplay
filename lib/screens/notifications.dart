@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../utils/local_notification_helper.dart';
+import '../widgets/app_toolbar.dart';
+import '../widgets/tab_switch.dart';
+import '../widgets/news_list.dart';
+import '../widgets/notification_list.dart';
 import '../widgets/bottom_navbar.dart';
-import '../theme.dart';
 import '../widgets/modals.dart';
+import '../models.dart';
+import '../theme.dart';
+import '../utils/local_notification_helper.dart';
+import '../utils/settings.dart';
 
 
 class NotificationListScreen extends StatefulWidget {
@@ -13,47 +19,42 @@ class NotificationListScreen extends StatefulWidget {
 
 class _NotificationListScreenState extends State<NotificationListScreen> {
   List<PendingNotificationRequest> _notifications = [];
+  List<News> _news = [];
 
   @override
   void initState() {
     super.initState();
-    _getNotifications();
+    _loadNotifications();
+    _loadNews();
   }
 
-  Future<void> _getNotifications() async {
+  Future<void> _loadNotifications() async {
     List<PendingNotificationRequest> notifications =
       await LocalNotificationHelper.instance.list();
     if(notifications == null) notifications = [];
-    setState(() {
-      _notifications = notifications;
-    });
+    setState(() { _notifications = notifications; });
   }
 
-  void _back() {
-    Navigator.of(context).pop();
+  Future<void> _loadNews() async {
+    List<News> news = await News.list;
+    setState(() { _news = news; });
   }
 
   Widget get _appBar {
-    return AppBar(
-      backgroundColor: AppColors.megaPurple,
-      elevation: 0,
-      automaticallyImplyLeading: false,
-      centerTitle: true,
-      leading: IconButton(
-        onPressed: _back,
-        icon: AppIcons.back,
-      ),
-      title: Text('Уведомления', style: AppFonts.screenTitle),
+    return AppToolBar(
+      title: locale(context).notifications,
     );
   }
 
   Widget get _bottomBar => BottomNavBar();
 
-  void _cancelModal(PendingNotificationRequest request) {
-    oldConfirmModal(
+  void _cancelDialog(PendingNotificationRequest request) {
+    showDialog(
       context: context,
-      title: Text("Вы уверены что хотите удалить это уведомление?"),
-      action: () => _cancel(request),
+      builder: (BuildContext context) => ConfirmDialog(
+        title: "Вы уверены что хотите удалить это уведомление?",
+        action: () => _cancel(request),
+      )
     );
   }
 
@@ -64,37 +65,33 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
     });
   }
 
-  Widget _tileBuilder(BuildContext context, int index) {
-    PendingNotificationRequest request = _notifications[index];
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-      title: Text(
-        request.title,
-        style: AppFonts.channelName,
-      ),
-      subtitle: Text(
-        request.body,
-        style: AppFonts.programName,
-      ),
-      trailing: IconButton(
-      icon: AppIcons.trashRed,
-      onPressed: () => _cancelModal(request),
-    ),
-    );
+  void _openNews(News newsItem) {
+    setState(() {
+      newsItem.read();
+    });
+    // TODO: open static page here.
   }
 
-  Widget get _body => ListView.separated(
-    itemBuilder: _tileBuilder,
-    separatorBuilder: (BuildContext context, int id) => Divider(height: 0,),
-    itemCount: _notifications.length,
+  Widget get _body => Padding(
+    padding: EdgeInsets.only(top: 20),
+    child: TabSwitch(
+      leftLabel: locale(context).news,
+      rightLabel: locale(context).notifications,
+      leftTab: NewsList(
+        news: _news,
+        onOpen: _openNews,
+      ),
+      rightTab:  NotificationList(
+        notifications: _notifications,
+        onDelete: _cancelDialog,
+      ),
+    ),
   );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
-      extendBody: true,
-      extendBodyBehindAppBar: true,
+      backgroundColor: AppColorsV2.darkBg,
       appBar: _appBar,
       body: _body,
       bottomNavigationBar: _bottomBar,

@@ -420,15 +420,21 @@ class Program {
     return result + title;
   }
 
-  String get startTime {
-    return start == null ? '' 
-        : '${start.hour}:${start.minute.toString().padLeft(2, '0')}';
-  }
+  String get startDate => start == null ? ''
+      : '${start.day.toString().padLeft(2, '0')}.${start.month.toString().padLeft(2, '0')}.${start.year}';
 
-  String get endTime {
-    return end == null ? ''
-        : '${end.hour}:${end.minute.toString().padLeft(2, '0')}';
-  }
+  String get startTime => start == null ? '' 
+      : '${start.hour}:${start.minute.toString().padLeft(2, '0')}';
+
+  String get startDateTime => '$startDate $startTime'.trim();
+
+  String get endDate => end == null ? ''
+      : '${end.day.toString().padLeft(2, '0')}.${end.month.toString().padLeft(2, '0')}.${end.year}';
+
+  String get endTime => end == null ? ''
+      : '${end.hour}:${end.minute.toString().padLeft(2, '0')}';
+
+  String get endDateTime => '$endDate $endTime'.trim();
 }
 
 
@@ -616,7 +622,7 @@ class News {
   String title;
   String text;
   TZDateTime time;
-  bool read;
+  bool isRead;
   String data;
   static const int maxNews = 99;
 
@@ -625,7 +631,7 @@ class News {
   static ValueNotifier<int> get unreadCountNotifier => _unreadCount;
 
   News({this.id, this.title, this.text,
-    this.time, this.read: false, this.data}) {
+    this.time, this.isRead: false, this.data}) {
     if (this.id == null) this.id = this.hashCode;
   }
 
@@ -640,7 +646,7 @@ class News {
       'title': title,
       'text': text,
       'time': time.toIso8601String(),
-      'read': read,
+      'read': isRead,
       'data': data,
     };
   }
@@ -650,7 +656,7 @@ class News {
     this.title = data['title'];
     this.text = data['text'];
     this.time = TZHelper.parse(data['time']);
-    this.read = data['read'];
+    this.isRead = data['read'];
     this.data = data['data'];
   }
 
@@ -658,17 +664,17 @@ class News {
     _list.insert(0, item);
     if(_list.length > maxNews) {
       News last = _list.removeLast();
-      if(last.read) _unreadCount.value += 1;
+      if(last.isRead) _unreadCount.value += 1;
     } else {
       _unreadCount.value += 1;
     }
     await _save();
   }
 
-  Future<void> setRead() async {
-    read = true;
+  void read() {
+    isRead = true;
     _unreadCount.value -= 1;
-    await _save();
+    _save();
   }
 
   static Future<void> load() async {
@@ -679,7 +685,7 @@ class News {
           .map<News>((item) => News.fromJson(item))
           .toList(),
     );
-    _unreadCount.value = _list.where((item) => !item.read).length;
+    _unreadCount.value = _list.where((item) => !item.isRead).length;
   }
 
   static Future<void> _save() async {

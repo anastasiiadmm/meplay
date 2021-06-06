@@ -269,12 +269,14 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       title: Text('Напомнить вам о передаче "${program.title}"?',),
       action: () {
         LocalNotificationHelper.instance.schedule(
-          'Передача "${program.title}" начнётся в ${program.startTime}!',
-          'На канале "${_channel.title}"',
+          '${program.title}',
+          'На канале ${_channel.name} в ${program.startTime}!',
           program.start.subtract(Duration(minutes: 5)),
           data: {
-            'programId': program.id,
+            'program': program.title,
             'channelId': _channel.id,
+            'channelName': _channel.name,
+            'startTime': program.startDateTime,
             'link': (_channel.type == ChannelType.tv ? '/tv/' : '/radio/')
                 + _channel.id.toString(),
           },
