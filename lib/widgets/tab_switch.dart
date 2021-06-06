@@ -45,8 +45,8 @@ class _TabSwitchState extends State<TabSwitch> {
   void _switchTo(int id) {
     _controller.animateToPage(
       id,
-      duration: Duration(milliseconds: 200),
-      curve: Curves.easeInOutSine,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
     );
     setState(() { _active = id; });
   }
@@ -108,11 +108,16 @@ class _TabSwitchState extends State<TabSwitch> {
     );
   }
 
+  void _pageChanged(int id) {
+    setState(() { _active = id; });
+  }
+
   Widget get _tabs {
     return Padding(
       padding: EdgeInsets.only(top: 20),
       child: PageView(
         controller: _controller,
+        onPageChanged: _pageChanged,
         children: [
           widget.leftTab,
           widget.rightTab,
