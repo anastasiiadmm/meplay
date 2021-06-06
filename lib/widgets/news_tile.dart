@@ -15,7 +15,7 @@ class NewsTile extends StatelessWidget {
 
   Widget get _title {
     return Text(
-      newsItem.title,
+      '${newsItem.title} ${newsItem.text}',
       maxLines: 2,
       style: newsItem.isRead
           ? AppFontsV2.textPrimaryMute
