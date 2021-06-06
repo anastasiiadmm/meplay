@@ -49,20 +49,29 @@ class NotificationTile extends StatelessWidget {
     return Text(
       _data['startTime'],
       style: AppFontsV2.itemTitle,
+      maxLines: 1,
     );
   }
 
   Widget get _title {
-    return Text(
-      _data['channelName'],
-      style: AppFontsV2.itemTextSecondary,
+    return Padding(
+      padding: EdgeInsets.only(top: 4),
+      child: Text(
+        _data['channelName'],
+        style: AppFontsV2.itemTextSecondary,
+        maxLines: 1,
+      ),
     );
   }
 
   Widget get _program {
-    return Text(
-      _data['_program'],
-      style: AppFontsV2.itemTitle,
+    return Padding(
+      padding: EdgeInsets.only(top: 4),
+      child: Text(
+        _data['program'],
+        style: AppFontsV2.itemTextSecondary,
+        maxLines: 2,
+      ),
     );
   }
 

@@ -58,11 +58,12 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
     );
   }
 
-  Future<void> _cancel(PendingNotificationRequest request) async {
+  Future<bool> _cancel(PendingNotificationRequest request) async {
     await LocalNotificationHelper.instance.cancel(request.id);
     setState(() {
       _notifications.remove(request);
     });
+    return true;
   }
 
   void _openNews(News newsItem) {
