@@ -10,6 +10,8 @@ class PacketCarousel extends StatefulWidget {
   final List<Packet> packets;
   final void Function(Packet packet) connect;
   final void Function(Packet packet) disconnect;
+  final int activeId;
+  final void Function(int id) onChange;
 
   static const double bannerHeight = 164;
   static const double topShadowPadding = 20;
@@ -23,6 +25,8 @@ class PacketCarousel extends StatefulWidget {
     @required this.packets,
     this.connect,
     this.disconnect,
+    this.activeId: 0,
+    this.onChange
   }): assert(packets.length > 0),
         super(key: key);
 
@@ -32,17 +36,22 @@ class PacketCarousel extends StatefulWidget {
 
 
 class _PacketCarouselState extends State<PacketCarousel> {
-  int _activeId = 0;
+  int _activeId;
   CarouselController _controller = CarouselController();
+
+  @override
+  void initState() {
+    super.initState();
+    _activeId = widget.activeId;
+  }
 
   void _switchTo(int id) {
     _controller.animateToPage(id);
   }
 
   void _pageChanged(int id, CarouselPageChangedReason reason) {
-    setState(() {
-      _activeId = id;
-    });
+    if(widget.onChange != null) widget.onChange(id); 
+    setState(() { _activeId = id; });
   }
 
   Widget _dot(id) {
@@ -183,6 +192,7 @@ class _PacketCarouselState extends State<PacketCarousel> {
         autoPlay: false,
         onPageChanged: _pageChanged,
         disableCenter: true,
+        initialPage: _activeId,
       ),
     );
   }

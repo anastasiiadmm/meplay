@@ -37,7 +37,7 @@
   "@homeProfile": {},
   "homeRecent": "Вы смотрели:",
   "@homeRecent": {},
-  "homeRecentEmpty": "Нет недавно просмотренных каналов.",
+  "homeRecentEmpty": "Нет недавно просмотренных каналов",
   "@homeRecentEmpty": {},
   "homePopular": "Популярные телеканалы:",
   "@homePopular": {},
@@ -160,5 +160,7 @@
   "defaultModalError": "Не удалось выполнить действие.",
   "@defaultModalError": {},
   "tryLater": "Попробуйте позже.",
-  "@tryLater": {}
+  "@tryLater": {},
+  "packetChannelsEmpty": "Список каналов недоступен",
+  "@packetChannelsEmpty": {}
 }

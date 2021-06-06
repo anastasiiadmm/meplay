@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:me_play/widgets/future_block.dart';
 import 'package:me_play/widgets/packet_carousel.dart';
+import 'package:me_play/widgets/rotation_loader.dart';
 import '../utils/settings.dart';
 import '../widgets/app_toolbar.dart';
 import '../widgets/modals.dart';
@@ -16,35 +16,43 @@ class ProfileScreen extends StatefulWidget {
 
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  List<Packet> _packets;
   User _user;
-  
+  List<Packet> _packets;
+  List<Channel> _channels;
+  int _activePacketId = 0;
+
   @override
   void initState() {
     super.initState();
+    _initAsync();
   }
 
-  Future<List<Packet>> _loadData() async {
+  Future<void> _initAsync() async {
     await _loadUser();
     if (_user == null) await _login();
     if (_user == null) Navigator.of(context).pop();
-    return _loadPackets();
+    _loadPackets();
+    _loadChannels();
   }
 
   Future<void> _loadUser() async {
     User user = await User.getUser();
-    _user = user;
+    setState(() { _user = user; });
   }
 
   Future<void> _login() async {
     User user = await Navigator.of(context).pushNamed<User>('/login');
-    _user = user;
+    setState(() { _user = user; });
   }
 
-  Future<List<Packet>> _loadPackets() async {
+  Future<void> _loadPackets() async {
     List<Packet> packets = await _user.getPackets();
-    _packets = packets;
-    return packets;
+    setState(() { _packets = packets; });
+  }
+
+  Future<void> _loadChannels() async {
+    List<Channel> channels = await Channel.tvChannels();
+    setState(() { _channels = channels; });
   }
 
   // TODO: move to settings
@@ -122,79 +130,83 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void _carouselChange(int id) {
+    setState(() { _activePacketId = id; });
+  }
+
+  int get _maxChannels {
+    Packet packet = _packets[_activePacketId];
+    switch(packet.id) {
+      case 5: return 50;
+      case 6: return 80;
+      case 7: return _channels.length;
+      default: return 0;
+    }
+  }
+  
+  Widget get _channelList {
+    AppLocalizations l = locale(context);
+
+    List<Widget> children = [
+      Padding(
+        padding: EdgeInsets.only(bottom: 16),
+        child: Text(
+          l.profileChannelList,
+          style: AppFontsV2.blockTitle,
+        ),
+      ),
+    ];
+    
+    int maxChannels = _maxChannels;
+    if(maxChannels > 0) {
+      for(int i = 0; i < maxChannels; i++) {
+        children.add(Text(
+          _channels[i].title,
+          style: AppFontsV2.midText,
+        ));
+      }
+    } else {
+      children.add(Text(
+        l.packetChannelsEmpty,
+        style: AppFontsV2.textSecondary,
+        textAlign: TextAlign.center,
+      ));
+    }
+    
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16, 10, 16, 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: children,
+        ),
+      ),
+    );
+  }
+
   Widget get _body {
-    return FutureBlock<List<Packet>>(
-      future: _loadData(),
-      builder: (BuildContext context, packets) {
-        return PacketCarousel(
-          packets: packets,
+    return _packets == null ? Center(
+      child: RotationLoader(),
+    ) : Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        PacketCarousel(
+          packets: _packets,
           connect: _connectDialog,
           disconnect: _disconnectDialog,
-        );
-      },
+          activeId: _activePacketId,
+          onChange: _carouselChange,
+        ),
+        Expanded(
+          child: _channelList,
+        ),
+      ],
     );
-
-
-      // child: Column(
-      //   crossAxisAlignment: CrossAxisAlignment.stretch,
-      //   children: [
-      //     Container(
-      //       decoration: BoxDecoration(
-      //         color: AppColors.gray0,
-      //         borderRadius: BorderRadius.circular(15),
-      //       ),
-      //       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15,),
-      //       child: Column(
-      //         crossAxisAlignment: CrossAxisAlignment.center,
-      //         children: [
-      //           AppIcons.profile,
-      //           Text(_user == null ? 'Профиль' : '+' + _user.username, style: AppFonts.profileName,),
-      //           Padding(
-      //             padding: EdgeInsets.symmetric(vertical: 5),
-      //             child: Text('ПОДКЛЮЧЕННЫЕ\nПАКЕТЫ', style: AppFonts.activePacketsTitle, textAlign: TextAlign.center,),
-      //           ),
-      //           Text(_activePacketNames, style: AppFonts.activePacketList),
-      //           Padding(
-      //             padding: EdgeInsets.only(top: 15),
-      //             child: Row(
-      //               children: [
-      //                 TextButton(
-      //                   onPressed: _changePassword,
-      //                   child: Text('Сменить пароль', style: AppFonts.profileAction,),
-      //                 ),
-      //                 Expanded(child: Container()),
-      //                 TextButton(
-      //                   onPressed: _logoutDialog,
-      //                   child: Text('Выход', style: AppFonts.profileAction,),
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //         ],
-      //       ),
-      //     ),
-      //     Padding(
-      //       padding: EdgeInsets.only(top: 30),
-      //       child: Text('Пакеты', style: AppFonts.packetListTitle,)
-      //     ),
-      //     Expanded(
-      //       child: Padding(
-      //         padding: EdgeInsets.only(top: 10),
-      //         child: SingleChildScrollView(
-      //           child: Column(
-      //             crossAxisAlignment: CrossAxisAlignment.stretch,
-      //             children: _packetTiles,
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //   ],
-      // ),
-    // );
   }
 
   void _openSettings() {
-    Navigator.pushNamed(context, '/profile/settings');
+    Navigator.pushNamed(context, '/settings');
   }
 
   Widget get _appBar {
