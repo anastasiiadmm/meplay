@@ -264,7 +264,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       context: context,
       builder: (BuildContext context) => ConfirmDialog(
         title: l.remindModalTitle,
-        text: '${l.remindModalText} "${program.title}" ${program.startDateTime} ?',
+        text: '${l.remindModalText} "${program.title}" ${program.startDateTime}?',
         action: () => _scheduleNotification(program),
       ),
     );
@@ -288,14 +288,11 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         if(snapshot.connectionState == ConnectionState.waiting) {
           return _textBlock("Программа загружается...");
         } else if(snapshot.hasData) {
-          return Padding(
-            padding: EdgeInsets.only(top: 6),
-            child: ProgramList(
-              program: snapshot.data,
-              action: _channel.locked
-                  ? null
-                  : _scheduleNotificationDialog,
-            ),
+          return ProgramList(
+            program: snapshot.data,
+            action: _channel.locked
+                ? null
+                : _scheduleNotificationDialog,
           );
         } else {
           return _textBlock('Программа недоступна');
@@ -310,7 +307,9 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _player,
-        if(_channel != null) _program,
+        if(_channel != null) Expanded(
+          child: _program,
+        ),
       ],
     );
   }

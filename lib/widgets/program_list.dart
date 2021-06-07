@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'circle.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -36,9 +37,12 @@ class ProgramList extends StatelessWidget {
   }
 
   Widget _title(String text, TextStyle font) {
-    return Text(
-      text,
-      style: font,
+    return Padding(
+      padding: EdgeInsets.only(left: 6),
+      child: Text(
+        text,
+        style: font,
+      ),
     );
   }
 
@@ -49,6 +53,8 @@ class ProgramList extends StatelessWidget {
         icon: AppIconsV2.more,
         onPressed: () => action(program),
         constraints: BoxConstraints(),
+        padding: EdgeInsets.zero,
+        iconSize: 20,
       ),
     );
   }
@@ -57,15 +63,21 @@ class ProgramList extends StatelessWidget {
     TextStyle font = id > 1 ? AppFontsV2.program
         : id < 1 ? AppFontsV2.programMute
         : AppFontsV2.programLive;
-    return Row(
-      children: [
-        id == 1 ? _dot : SizedBox(width: 10),
-        _time(program.startTime, font),
-        Expanded(
-          child: _title(program.title, font),
-        ),
-        action == null ? SizedBox(width: 36) : _action(program),
-      ],
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          id == 1 ? _dot : SizedBox(width: 10),
+          _time(program.startTime, font),
+          Expanded(
+            child: _title(program.title, font),
+          ),
+          action == null || id < 2
+              ? SizedBox(width: 36)
+              : _action(program),
+        ],
+      ),
     );
   }
 
@@ -74,7 +86,7 @@ class ProgramList extends StatelessWidget {
     int id = 0;
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.fromLTRB(16, 10, 16, 0),
+        padding: EdgeInsets.fromLTRB(16, 16, 16, 6),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,

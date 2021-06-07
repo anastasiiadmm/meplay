@@ -225,7 +225,12 @@ class Channel {
       if(_emptyProgram) return null;
       _saveProgram();
     }
-    return _program.where((p) => p.end.isAfter(DateTime.now())).toList();
+    DateTime now = DateTime.now();
+    return _program.where((p) {
+      return p.end.isAfter(now);
+    }).toList()..insert(0, _program.lastWhere((p) {
+      return p.end.isBefore(now);
+    }, orElse: () => null));
   }
 
   Future<Program> get currentProgram async {
