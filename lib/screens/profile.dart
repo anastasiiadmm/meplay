@@ -113,6 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     AppLocalizations l = locale(context);
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) => ConfirmDialog(
         action: () async => await _connect(packet),
         title: packet.name,
@@ -126,6 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     AppLocalizations l = locale(context);
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) => ConfirmDialog(
         action: () async => await _connect(packet),
         title: packet.name,
