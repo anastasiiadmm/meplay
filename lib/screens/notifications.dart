@@ -77,7 +77,7 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
     padding: EdgeInsets.only(top: 20),
     child: TabSwitch(
       leftLabel: locale(context).news,
-      rightLabel: locale(context).notifications,
+      rightLabel: locale(context).reminders,
       leftTab: NewsList(
         news: _news,
         onOpen: _openNews,
