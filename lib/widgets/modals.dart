@@ -17,6 +17,7 @@ class ConfirmDialog extends StatefulWidget {
   final String cancel;
   final String close;
   final Future<bool> Function() action;
+  final bool autoPop;
 
   ConfirmDialog({
     Key key,
@@ -28,6 +29,7 @@ class ConfirmDialog extends StatefulWidget {
     this.cancel,
     this.close,
     @required this.action,
+    this.autoPop: true,
   }): super(key: key);
 
   @override
@@ -84,7 +86,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
     }
     if(mounted) {
       if(result) {
-        _close();
+        if(widget.autoPop) _close();
       } else {
         setState(() {
           _loading = false;

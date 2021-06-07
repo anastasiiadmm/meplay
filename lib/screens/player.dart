@@ -95,12 +95,15 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         text: l.channelLockedText,
         ok: l.confirm,
         cancel: l.cancel,
-        error: '',
+        autoPop: false,
         action: () async {
-          NavigatorState nav = Navigator.of(context);
-          nav.popUntil((route) => route.isFirst);
-          await nav.pushNamed(Routes.profile);
-          return false;
+          await Navigator.of(context).pushNamedAndRemoveUntil(
+            Routes.profile,
+            (route) {
+              return route.isFirst;
+            },
+          );
+          return true;
         }
       ),
     );
