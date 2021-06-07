@@ -212,16 +212,13 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     }
   }
 
-  Widget get _favButton {
-    if (_favorite) return IconButton(
-      icon: AppIcons.favRemove,
-      onPressed: _removeFavorite,
-    );
-    return IconButton(
-      icon: AppIcons.favAdd,
-      onPressed: _addFavorite,
-    );
-  }
+  Widget get _favButton => IconButton(
+    icon: _favorite ? AppIconsV2.starActive : AppIconsV2.star,
+    padding: EdgeInsets.all(8),
+    iconSize: 28,
+    constraints: BoxConstraints(),
+    onPressed: _favorite ? _removeFavorite : _addFavorite,
+  );
 
   Widget get _appBar {
     return AppToolBar(
