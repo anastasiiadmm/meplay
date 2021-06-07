@@ -7,6 +7,7 @@ import 'package:screen/screen.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:expandable/expandable.dart';
 import 'package:device_info/device_info.dart';
+import '../router.dart';
 import '../widgets/app_toolbar.dart';
 import '../widgets/player.dart';
 import '../widgets/program_list.dart';
@@ -82,6 +83,27 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       widget.channelType,
     );
     setState(() { _channel = channel; });
+    if(_channel.locked) _showLockedDialog();
+  }
+
+  void _showLockedDialog() {
+    AppLocalizations l = locale(context);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => ConfirmDialog(
+        title: l.channelLockedTitle,
+        text: l.channelLockedText,
+        ok: l.confirm,
+        cancel: l.cancel,
+        error: '',
+        action: () async {
+          NavigatorState nav = Navigator.of(context);
+          nav.popUntil((route) => route.isFirst);
+          await nav.pushNamed(Routes.profile);
+          return false;
+        }
+      ),
+    );
   }
 
   Future<void> _initPlatformState() async {

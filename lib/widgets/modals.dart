@@ -82,13 +82,15 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
       print(e);
       result = false;
     }
-    if(result) {
-      _close();
-    } else {
-      setState(() {
-        _loading = false;
-        _failed = true;
-      });
+    if(mounted) {
+      if(result) {
+        _close();
+      } else {
+        setState(() {
+          _loading = false;
+          _failed = true;
+        });
+      }
     }
   }
 
