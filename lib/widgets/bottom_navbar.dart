@@ -51,8 +51,8 @@ class BottomNavBar extends StatelessWidget {
           label: locale(context).tabbarMain,
         ),
         BottomNavigationBarItem(
-          icon: AppIconsV2.star,
-          activeIcon: AppIconsV2.starActive,
+          icon: AppIconsV2.heart,
+          activeIcon: AppIconsV2.heartActive,
           label: locale(context).tabbarFavorites,
         ),
         BottomNavigationBarItem(
