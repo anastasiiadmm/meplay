@@ -453,7 +453,9 @@ class _HLSPlayerState extends State<HLSPlayer> {
                         },
                       ),
                       IconButton(
-                        icon: AppIcons.settings,
+                        icon: AppIconsV2.cogSmall,
+                        iconSize: 24,
+                        constraints: BoxConstraints(),
                         onPressed: _showSettings,
                         padding: EdgeInsets.zero,
                       ),
@@ -623,6 +625,31 @@ class _HLSPlayerState extends State<HLSPlayer> {
     );
   }
 
+  Widget get _loaderBlock {
+    Widget content;
+    if(widget.channel != null && widget.channel.locked) {
+      content = DecoratedBox(
+        decoration: BoxDecoration(
+          color: AppColorsV2.blockBg,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: SizedBox(
+          width: 64,
+          height: 64,
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: AppIconsV2.lockBig,
+          ),
+        ),
+      );
+    } else {
+      content = Animations.progressIndicator;
+    }
+    return Center(
+      child: content,
+    );
+  }
+
   Widget get _adaptivePlayer {
     return GestureDetector(
       onTap: _toggleControls,
@@ -635,9 +662,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
           color: AppColors.black,
           child: Stack(
             children: <Widget>[
-              _controller == null ? Center(
-                child: Animations.progressIndicator,
-              ) : VideoPlayer(
+              _controller == null ? _loaderBlock : VideoPlayer(
                 _controller,
               ),
               _controls,
