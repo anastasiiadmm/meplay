@@ -2,17 +2,20 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:me_play/utils/settings.dart';
 import 'package:screen/screen.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:expandable/expandable.dart';
 import 'package:device_info/device_info.dart';
+import '../widgets/app_toolbar.dart';
+import '../widgets/player.dart';
+import '../widgets/program_list.dart';
+import '../widgets/bottom_navbar.dart';
+import '../widgets/modals.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/orientation_helper.dart';
 import '../utils/local_notification_helper.dart';
-import '../widgets/player.dart';
-import '../widgets/bottom_navbar.dart';
-import '../widgets/modals.dart';
 
 
 class PlayerScreen extends StatefulWidget {
@@ -193,20 +196,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     });
   }
 
-  void _back() {
-    Navigator.of(context).pop();
-  }
-
-  void _login() {
-    Navigator.of(context).popUntil((route) => route.isFirst);
-    Navigator.of(context).pushNamed('/login');
-  }
-
-  void _profile() {
-    Navigator.of(context).popUntil((route) => route.isFirst);
-    Navigator.of(context).pushNamed('/profile');
-  }
-
   Future<void> _addFavorite() async {
     User user = await User.getUser();
     if(user != null) {
@@ -224,10 +213,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   Widget get _favButton {
-    if (_user == null) return IconButton(
-      icon: AppIcons.favAdd,
-      onPressed: _login,
-    );
     if (_favorite) return IconButton(
       icon: AppIcons.favRemove,
       onPressed: _removeFavorite,
@@ -239,18 +224,10 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   Widget get _appBar {
-    return AppBar(
-      backgroundColor: AppColors.megaPurple,
-      elevation: 0,
-      automaticallyImplyLeading: false,
-      leading: IconButton(
-        onPressed: _back,
-        icon: AppIcons.back,
-      ),
-      title: Text(_channel?.title ?? '', style: AppFonts.screenTitle),
-      centerTitle: true,
+    return AppToolBar(
+      title: _channel?.title ?? '',
       actions: [
-        _favButton,
+        if(_user != null) _favButton,
       ],
     );
   }
@@ -263,156 +240,67 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     });
   }
 
-  void _scheduleProgramNotification(Program program) {
-    oldConfirmModal(
+  Future<bool> _scheduleNotification(Program program) async {
+    await LocalNotificationHelper.instance.schedule(
+      '${program.title}',
+      // TODO: translate
+      'На канале ${_channel.name} в ${program.startTime}!',
+      program.start.subtract(Duration(minutes: 5)),
+      data: {
+        'program': program.title,
+        'channelId': _channel.id,
+        'channelName': _channel.name,
+        'startTime': program.startDateTime,
+        'link': (_channel.type == ChannelType.tv ? '/tv/' : '/radio/')
+            + _channel.id.toString(),
+      },
+    );
+    return true;
+  }
+
+  void _scheduleNotificationDialog(Program program) {
+    AppLocalizations l = locale(context);
+    showDialog(
       context: context,
-      title: Text('Напомнить вам о передаче "${program.title}"?',),
-      action: () {
-        LocalNotificationHelper.instance.schedule(
-          '${program.title}',
-          'На канале ${_channel.name} в ${program.startTime}!',
-          program.start.subtract(Duration(minutes: 5)),
-          data: {
-            'program': program.title,
-            'channelId': _channel.id,
-            'channelName': _channel.name,
-            'startTime': program.startDateTime,
-            'link': (_channel.type == ChannelType.tv ? '/tv/' : '/radio/')
-                + _channel.id.toString(),
-          },
-        );
-      }
-    );
-  }
-
-  Widget get _expandBtn {
-    return AnimatedAlign(
-      child: ExpandableButton (
-        child: _expandProgram
-            ? AppIcons.hideProgram
-            : AppIcons.showProgram,
+      builder: (BuildContext context) => ConfirmDialog(
+        title: l.remindModalTitle,
+        text: '${l.remindModalText} "${program.title}" ${program.startDateTime} ?',
+        action: () => _scheduleNotification(program),
       ),
-      alignment: _expandProgram
-          ? Alignment.bottomRight
-          : Alignment.topRight,
-      duration: Duration(milliseconds: 100),
     );
   }
 
-  Widget _program(BuildContext context, AsyncSnapshot<List<Program>> snapshot) {
-    final program = snapshot.data;
-    return Container(
-      padding: EdgeInsets.only(top: 20),
-      child: program == null ? Text(
-        snapshot.connectionState == ConnectionState.waiting
-            ? 'Загружаю программу ...'
-            : 'Программа для этого канала недоступна',
-        style: AppFonts.currentProgramTitle,
+  Widget _textBlock(String text) {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Text(
+        text,
+        style: AppFontsV2.textSecondary,
         textAlign: TextAlign.center,
-      ) : ExpandableNotifier(
-        controller: _expandableController,
-        child: Stack(
-          children: [
-            Expandable(
-              collapsed: _programTile(program.first, first: true),
-              expanded: Column(
-                children: program.map((item) => _programTile(
-                  item,
-                  first: item == program.first,
-                )).toList(),
-              ),
-            ),
-            _expandBtn,
-          ],
-        ),
       ),
     );
   }
 
-  Widget _programTile(Program program, {bool first: false}) {
-    List<Widget> programText = [
-      Text(
-        program.title,
-        style: first ? AppFonts.currentProgramTitle : AppFonts.programTitle,
-      ),
-    ];
-    if(first) {
-      programText.add(
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 2, 5, 0),
-              child: AppIcons.pinkDot,
+  Widget get _program {
+    return FutureBuilder<List<Program>>(
+      future: _channel.program(),
+      builder: (BuildContext context, snapshot) {
+        if(snapshot.connectionState == ConnectionState.waiting) {
+          return _textBlock("Программа загружается...");
+        } else if(snapshot.hasData) {
+          return Padding(
+            padding: EdgeInsets.only(top: 6),
+            child: ProgramList(
+              program: snapshot.data,
+              action: _channel.locked
+                  ? null
+                  : _scheduleNotificationDialog,
             ),
-            Text(
-              'Сейчас в эфире',
-              style: AppFonts.nowOnAir,
-            ),
-          ],
-        ),
-      );
-    }
-    return GestureDetector(
-      onLongPress: () => _scheduleProgramNotification(program),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0, first ? 0 : 5, 50, 0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 50,
-              padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-              child: Text(
-                program.startTime,
-                style: first ? AppFonts.currentProgramTime : AppFonts.programTime,
-                textAlign: TextAlign.right,
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: programText,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget get _lockInfo {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.lockBg,
-        borderRadius: BorderRadius.circular(13),
-      ),
-      margin: EdgeInsets.fromLTRB(12, 15, 12, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AppIcons.lockChannelLarge,
-          Text(
-            _user == null
-                ? 'Канал недоступен.\nДля разблокировки канала\nНеобходимо войти.'
-                : "Канал недоступен.\nДля разблокировки канала\nПодключите один из пакетов.",
-            style: AppFonts.lockText,
-            textAlign: TextAlign.center,
-          ),
-          TextButton(
-            onPressed: _user == null ? _login : _profile,
-            child: Text(
-              _user == null ? "ВОЙТИ" : "НАСТРОЙКИ",
-              style: AppFonts.lockLogin,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
-      ),
+          );
+        } else {
+          return _textBlock('Программа недоступна');
+        }
+      },
     );
   }
 
@@ -422,23 +310,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _player,
-        Expanded (
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if(widget.channelType == ChannelType.tv) FutureBuilder(
-                    future: _channel?.program() ?? null,
-                    builder: _program,
-                  ),
-                  if(_channel?.locked ?? false) _lockInfo,
-                ],
-              ),
-            ),
-          ),
-        ),
+        if(_channel != null) _program,
       ],
     );
   }
@@ -447,7 +319,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   Widget build(BuildContext context) {
     if (_pipMode) return _player;
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColorsV2.darkBg,
       appBar: _fullscreen ? null : _appBar,
       body: _body,
       bottomNavigationBar: _fullscreen ? null : _bottomBar,
