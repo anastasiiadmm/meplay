@@ -195,7 +195,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   void _toPrev() {
     setState(() {
-      _channel = _channel.next(widget.channels);
+      _channel = _channel.prev(widget.channels);
       _playerKey = GlobalKey();
     });
     _loadFavorite();
@@ -203,7 +203,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   void _toNext() {
     setState(() {
-      _channel = _channel.prev(widget.channels);
+      _channel = _channel.next(widget.channels);
       _playerKey = GlobalKey();
     });
     _loadFavorite();
