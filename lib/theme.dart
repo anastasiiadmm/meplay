@@ -378,6 +378,14 @@ class AppFontsV2 {
   static const notificationCount = TextStyle(fontFamily: 'Lato',
     fontSize: 10, fontWeight: FontWeight.w700,
     height: 12/10, color: AppColorsV2.textPrimary,);
+
+  // player
+  static const fullscreenProgram = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 16,
+    height: 24/16, color: AppColorsV2.textSecondary,);
+  static const playerLive = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w400, fontSize: 10,
+    height: 14/10, color: AppColorsV2.textPrimary,);
 }
 
 

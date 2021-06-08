@@ -237,7 +237,8 @@ class Channel {
     if(_type != ChannelType.tv) return null;
     List<Program> fullProgram = await program();
     if (fullProgram == null) return null;
-    return fullProgram.first;
+    // [0] is last ended program, which may be null
+    return fullProgram[1];
   }
 
   Future<File> get logo async {

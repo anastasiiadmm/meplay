@@ -12,6 +12,7 @@ import '../widgets/modals.dart';
 import 'package:flutter_video_cast/flutter_video_cast.dart';
 
 import 'app_icon_button.dart';
+import 'circle.dart';
 
 
 class VideoAR {
@@ -267,6 +268,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   Widget get _scrollBar {
+    // TODO: redesign
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: _controller == null ? null : VideoProgressIndicator(
@@ -430,36 +432,89 @@ class _HLSPlayerState extends State<HLSPlayer> {
     );
   }
 
+  Widget get _fullscreenTitle {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: _fullscreen ? [
+        Text(
+          widget.channel.title,
+          style: AppFontsV2.screenTitle,
+          maxLines: 1,
+        ),
+        FutureBuilder<Program>(
+          future: widget.channel.currentProgram,
+          builder: (BuildContext context, snapshot) {
+            return Text(
+              snapshot.hasData ? snapshot.data.title : '',
+              style: AppFontsV2.fullscreenProgram,
+              maxLines: 1,
+            );
+          },
+        ),
+      ] : [],
+    );
+  }
+
+  Widget get _chromeCastButton {
+    return ChromeCastButton(
+      size: 24,
+      color: AppColorsV2.iconColor,
+      onButtonCreated: (controller) {
+        setState(() => _castController = controller);
+        _castController?.addSessionListener();
+      },
+      onSessionStarted: () {
+        _castController?.loadMedia(widget.channel.url);
+      },
+    );
+  }
+
+  Widget get _liveButton {
+    return GestureDetector(
+      onTap: _goLive,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(1),
+            child: Circle.dot(
+              radius: 4,
+              color: AppColorsV2.red,
+            ),
+          ),
+          Padding(
+              padding: EdgeInsets.only(left: 5),
+              child: Text(
+                'LIVE',
+                style: AppFontsV2.playerLive,  // TODO: check size
+              )
+          )
+        ]
+      ),
+    );
+  }
+
   Widget get _playerControls {
     return IgnorePointer(
       ignoring: !_controlsVisible,
       child: _animation(
         visible: _controlsVisible,
-        child: Column(
-          children: <Widget>[
-            Padding (
-              padding: _fullscreen
-                  ? EdgeInsets.fromLTRB(20, 15, 20, 0)
-                  : EdgeInsets.fromLTRB(15, 10, 15, 0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+        child: Padding (
+          padding: _fullscreen
+              ? EdgeInsets.symmetric(vertical: 10, horizontal: 16)
+              : EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          child: Column(
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
-                    child: Container(
-                      child: _fullscreen ? Text(
-                        widget.channel.title,
-                        style: AppFonts.screenTitle,
-                      ) : null,
-                    ),
+                    child: _fullscreenTitle,
                   ),
-                  ChromeCastButton(
-                    onButtonCreated: (controller) {
-                      setState(() => _castController = controller);
-                      _castController?.addSessionListener();
-                    },
-                    onSessionStarted: () {
-                      _castController?.loadMedia(widget.channel.url);
-                    },
+                  Padding(
+                    padding: EdgeInsets.only(right: 24),
+                    child: _chromeCastButton,
                   ),
                   AppIconButton(
                     icon: AppIconsV2.cogSmall,
@@ -468,62 +523,65 @@ class _HLSPlayerState extends State<HLSPlayer> {
                   ),
                 ],
               ),
-            ),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  AppIconButton(
-                    icon: AppIconsV2.prev,
-                    iconSize: 24,
-                    onPressed: widget.toPrevChannel,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 32),
-                    child: _controller == null ? SizedBox(
-                      width: 48,
-                    ) : AppIconButton(
-                      icon: _controller.value.isPlaying
-                          ? AppIconsV2.pause
-                          : AppIconsV2.play,
-                      iconSize: 48,
-                      onPressed: _togglePlay,
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    AppIconButton(
+                      icon: AppIconsV2.prev,
+                      iconSize: 24,
+                      onPressed: widget.toPrevChannel,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 32),
+                      child: _controller == null ? SizedBox(
+                        width: 48,
+                      ) : AppIconButton(
+                        icon: _controller.value.isPlaying
+                            ? AppIconsV2.pause
+                            : AppIconsV2.play,
+                        iconSize: 48,
+                        onPressed: _togglePlay,
+                      ),
+                    ),
+                    AppIconButton(
+                      icon: AppIconsV2.next,
+                      iconSize: 24,
+                      onPressed: widget.toNextChannel,
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 5),
+                          child: _liveButton,
+                        ),
+                        _scrollBar,
+                      ]
                     ),
                   ),
-                  AppIconButton(
-                    icon: AppIconsV2.next,
-                    iconSize: 24,
-                    onPressed: widget.toNextChannel,
+                  Padding(
+                    padding: EdgeInsets.only(left: 24),
+                    child: AppIconButton(
+                      icon: _fullscreen
+                          ? AppIcons.smallScreen
+                          : AppIcons.fullScreen,
+                      onPressed: _toggleFullScreen,
+                    ),
                   ),
                 ],
               ),
-            ),
-            Padding (
-              padding: _fullscreen
-                  ? EdgeInsets.fromLTRB(20, 0, 20, 15)
-                  : EdgeInsets.fromLTRB(15, 0, 15, 10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  // Text(_timeDisplay, style: AppFonts.videoTimer,),
-                  TextButton(
-                    onPressed: _goLive,
-                    child: Text('LIVE', style: AppFonts.screenTitle),
-                  ),
-                  Expanded(
-                    child: _scrollBar,
-                  ),
-                  AppIconButton(
-                    icon: _fullscreen
-                        ? AppIcons.smallScreen
-                        : AppIcons.fullScreen,
-                    onPressed: _toggleFullScreen,
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
