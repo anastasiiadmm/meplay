@@ -268,11 +268,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   Widget get _scrollBar {
-    return _controller == null ? Container(
-      padding: EdgeInsets.only(bottom: 3),
-      color: AppColorsV2.iconColor,
-      height: 2,
-    ) : SizedBox(
+    return SizedBox(
       height: 5,
       child: VideoProgressIndicator(
         _controller,
@@ -488,7 +484,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(5, 1, 0, 2),
+            padding: EdgeInsets.fromLTRB(5, 2, 0, 2),
             child: Text(
               'LIVE',
               style: AppFontsV2.playerLive,
@@ -561,7 +557,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   Expanded(
-                    child: Column(
+                    child: _controller == null ? Container() : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [

@@ -385,7 +385,7 @@ class AppFontsV2 {
     height: 24/16, color: AppColorsV2.textSecondary,);
   static const playerLive = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 10,
-    height: 11/10, color: AppColorsV2.textPrimary,);
+    height: 10/10, color: AppColorsV2.textPrimary,);
 }
 
 
