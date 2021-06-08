@@ -268,18 +268,22 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   Widget get _scrollBar {
-    // TODO: redesign
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: _controller == null ? null : VideoProgressIndicator(
+    return _controller == null ? Container(
+      padding: EdgeInsets.only(bottom: 3),
+      color: AppColorsV2.iconColor,
+      height: 2,
+    ) : SizedBox(
+      height: 5,
+      child: VideoProgressIndicator(
         _controller,
         allowScrubbing: true,
         hiddenDuration: scrollBuffer,
         colors: VideoProgressColors(
-          backgroundColor: AppColors.transparentGray,
-          playedColor: AppColors.gray5,
-          bufferedColor: AppColors.gray40,
+          backgroundColor: AppColorsV2.iconColor,
+          playedColor: AppColorsV2.white,
+          bufferedColor: AppColorsV2.iconColor,
         ),
+        padding: EdgeInsets.only(bottom: 3),
       ),
     );
   }
@@ -484,11 +488,11 @@ class _HLSPlayerState extends State<HLSPlayer> {
             ),
           ),
           Padding(
-              padding: EdgeInsets.only(left: 5),
-              child: Text(
-                'LIVE',
-                style: AppFontsV2.playerLive,  // TODO: check size
-              )
+            padding: EdgeInsets.fromLTRB(5, 1, 0, 2),
+            child: Text(
+              'LIVE',
+              style: AppFontsV2.playerLive,
+            ),
           )
         ]
       ),
@@ -561,11 +565,11 @@ class _HLSPlayerState extends State<HLSPlayer> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        _liveButton,
                         Padding(
-                          padding: EdgeInsets.only(bottom: 5),
-                          child: _liveButton,
+                          padding: EdgeInsets.only(top: 5),
+                          child: _scrollBar,
                         ),
-                        _scrollBar,
                       ]
                     ),
                   ),
