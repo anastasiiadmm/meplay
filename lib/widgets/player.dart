@@ -331,6 +331,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   void _onPanStart(DragStartDetails details) {
+    _hideControls();
     _panStartPoint = details.localPosition;
   }
 
