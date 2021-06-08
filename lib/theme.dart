@@ -100,6 +100,7 @@ class AppColorsV2 {
   static const iconBg = Color.fromRGBO(255, 255, 255, 1);  // white
   static const channelBg = Color.fromRGBO(255, 255, 255, 1);
   static const modalBorder = Color.fromRGBO(29, 27, 29, 1);
+  static const iconColor = Color.fromRGBO(234, 234, 228, 1);  // gray 10%;
 
   // these are for text in different parts of the design.
   static const textPrimary = Color.fromRGBO(255, 255, 255, 1);  // white
@@ -448,8 +449,8 @@ class AppIconsV2 {
   static final lock = SvgPicture.asset('assets/icons/new/lock.svg', width: 20, height: 20,);
   static final lockBig = SvgPicture.asset('assets/icons/new/lock_big.svg', width: 48, height: 48,);
   static final next = SvgPicture.asset('assets/icons/new/next.svg', width: 24, height: 24,);
-  static final pause = SvgPicture.asset('assets/icons/new/pause.svg', width: 48, height: 48,);
   static final play = SvgPicture.asset('assets/icons/new/play.svg', width: 48, height: 48,);
+  static final pause = SvgPicture.asset('assets/icons/new/pause.svg', width: 48, height: 48,);
   static final prev = SvgPicture.asset('assets/icons/new/prev.svg', width: 24, height: 24,);
   static final search = SvgPicture.asset('assets/icons/new/search.svg', width: 28, height: 28,);
   static final searchInput = SvgPicture.asset('assets/icons/new/search_input.svg', width: 16, height: 16,);

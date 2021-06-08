@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:me_play/utils/pref_helper.dart';
+import 'package:me_play/widgets/rotation_loader.dart';
 import 'package:screen/screen.dart';
 import '../utils/hls_video_cache.dart';
 import '../video_player_fork/video_player.dart';
@@ -9,6 +10,8 @@ import '../theme.dart';
 import '../utils/orientation_helper.dart';
 import '../widgets/modals.dart';
 import 'package:flutter_video_cast/flutter_video_cast.dart';
+
+import 'app_icon_button.dart';
 
 
 class VideoAR {
@@ -209,10 +212,6 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   void _showSettings() {
-    // explore this
-    // showMenu({
-    //
-    // });
     selectorModal<VideoAR>(
       context: context,
       title: Text(
@@ -221,9 +220,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
       ),
       choices: VideoAR.choices,
       onSelect: (VideoAR value) {
-        setState(() {
-          _ratio = value;
-        });
+        setState(() { _ratio = value; });
         _saveRatio();
       },
     );
@@ -232,30 +229,30 @@ class _HLSPlayerState extends State<HLSPlayer> {
   void _togglePlay() {
     if (_controller != null) {
       if (_controller.value.isPlaying) {
-        setState(() {
-          _controller.pause();
-        });
+        setState(() { _controller.pause(); });
       } else {
-        setState(() {
-          _controller.play();
-        });
+        setState(() { _controller.play(); });
       }
     }
   }
 
   void _showControls() {
     _controlsTimer?.cancel();
-    setState(() {
-      _controlsVisible = true;
-    });
+    setState(() { _controlsVisible = true; });
     _controlsTimer = Timer(widget.controlsTimeout, _hideControls);
   }
 
   void _hideControls() {
     _controlsTimer?.cancel();
-    setState(() {
-      _controlsVisible = false;
-    });
+    setState(() { _controlsVisible = false; });
+  }
+
+  void _togglePipControls() {
+    if (_controlsVisible) {
+      _hideControls();
+    } else {
+      _showControls();
+    }
   }
 
   void _toggleControls() {
@@ -374,300 +371,297 @@ class _HLSPlayerState extends State<HLSPlayer> {
   
   void _showBrightness() {
     _brightnessTimer?.cancel();
-    setState(() {
-      _brightnessVisible = true;
-    });
+    setState(() { _brightnessVisible = true; });
     _brightnessTimer = Timer(widget.settingsTimeout, _hideBrightness);
   }
 
   void _showVolume() {
     _volumeTimer?.cancel();
-    setState(() {
-      _volumeVisible = true;
-    });
+    setState(() { _volumeVisible = true; });
     _volumeTimer = Timer(widget.settingsTimeout, _hideVolume);
   }
 
   void _hideBrightness() {
     _brightnessTimer?.cancel();
-    setState(() {
-      _brightnessVisible = false;
-    });
+    setState(() { _brightnessVisible = false; });
   }
 
   void _hideVolume() {
     _volumeTimer?.cancel();
-    setState(() {
-      _volumeVisible = false;
-    });
+    setState(() { _volumeVisible = false; });
   }
 
-  // TODO
-  // Widget get _backdrop {
-  //   return AnimatedOpacity(
-  //     opacity: _controlsVisible ? 1.0 : 0,
-  //     duration: controlsAnimationDuration,
-  //     child: Container(
-  //       decoration: BoxDecoration(gradient: AppColors.gradientTop),
-  //       child: Container(
-  //         decoration: BoxDecoration(gradient: AppColors.gradientBottom),
-  //       ),
-  //     ),
-  //   );
-  // }
-  
+  Widget _backdrop({Widget child}) {
+    return DecoratedBox(
+      decoration: BoxDecoration(gradient: AppColors.gradientTop),
+      child: DecoratedBox(
+        decoration: BoxDecoration(gradient: AppColors.gradientBottom),
+        child: child,
+      ),
+    );
+  }
+
+  Widget _animation({Widget child, bool visible}) {
+    return AnimatedOpacity(
+      opacity: visible ? 1.0 : 0,
+      duration: controlsAnimationDuration,
+      child: child,
+    );
+  }
+
   Widget get _controls {
-    return AbsorbPointer(
-      absorbing: !_controlsVisible,
-      child: AnimatedOpacity(
-        opacity: _controlsVisible ? 1.0 : 0,
-        duration: controlsAnimationDuration,
-        child: Container(
-          decoration: BoxDecoration(gradient: AppColors.gradientTop),
-          child: Container(
-            decoration: BoxDecoration(gradient: AppColors.gradientBottom),
-            child: Column(
-              children: <Widget>[
-                Padding (
-                  padding: _fullscreen
-                      ? EdgeInsets.fromLTRB(20, 15, 20, 0)
-                      : EdgeInsets.fromLTRB(15, 10, 15, 0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          child: _fullscreen ? Text(
-                            widget.channel.title,
-                            style: AppFonts.screenTitle,
-                          ) : null,
-                        ),
-                      ),
-                      ChromeCastButton(
-                        onButtonCreated: (controller) {
-                          setState(() => _castController = controller);
-                          _castController?.addSessionListener();
-                        },
-                        onSessionStarted: () {
-                          _castController?.loadMedia(widget.channel.url);
-                        },
-                      ),
-                      IconButton(
-                        icon: AppIconsV2.cogSmall,
-                        iconSize: 24,
-                        constraints: BoxConstraints(),
-                        onPressed: _showSettings,
-                        padding: EdgeInsets.zero,
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: AppIcons.skipPrev,
-                        onPressed: widget.toPrevChannel,
-                        padding: EdgeInsets.zero,
-                      ),
-                      Container(
-                        width: 56,
-                        margin: EdgeInsets.all(30),
-                        child: _controller == null ? null : IconButton(
-                          icon: _controller != null && _controller.value.isPlaying
-                              ? AppIcons.pause
-                              : AppIcons.play,
-                          onPressed: _togglePlay,
-                          padding: EdgeInsets.zero,
-                        ),
-                      ),
-                      IconButton(
-                        icon: AppIcons.skipNext,
-                        onPressed: widget.toNextChannel,
-                        padding: EdgeInsets.zero,
-                      ),
-                    ],
-                  ),
-                ),
-                Padding (
-                  padding: _fullscreen
-                      ? EdgeInsets.fromLTRB(20, 0, 20, 15)
-                      : EdgeInsets.fromLTRB(15, 0, 15, 10),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      // Text(_timeDisplay, style: AppFonts.videoTimer,),
-                      TextButton(
-                        onPressed: _goLive,
-                        child: Text('LIVE', style: AppFonts.screenTitle),
-                      ),
-                      Expanded(
-                        child: _scrollBar,
-                      ),
-                      IconButton(
-                        icon: _fullscreen ? AppIcons.smallScreen : AppIcons.fullScreen,
-                        onPressed: _toggleFullScreen,
-                        padding: EdgeInsets.zero,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+    return GestureDetector(
+      onTap: _toggleControls,
+      onPanStart: _onPanStart,
+      onPanUpdate: _onPanUpdate,
+      onPanEnd: _onPanEnd,
+      child: _animation(
+        visible: _controlsVisible || _settingsVisible,
+        child: _backdrop(
+          child: Stack(
+            children: [
+              _playerControls,
+              _settingControls,
+            ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget get _playerControls {
+    return IgnorePointer(
+      ignoring: !_controlsVisible,
+      child: _animation(
+        visible: _controlsVisible,
+        child: Column(
+          children: <Widget>[
+            Padding (
+              padding: _fullscreen
+                  ? EdgeInsets.fromLTRB(20, 15, 20, 0)
+                  : EdgeInsets.fromLTRB(15, 10, 15, 0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      child: _fullscreen ? Text(
+                        widget.channel.title,
+                        style: AppFonts.screenTitle,
+                      ) : null,
+                    ),
+                  ),
+                  ChromeCastButton(
+                    onButtonCreated: (controller) {
+                      setState(() => _castController = controller);
+                      _castController?.addSessionListener();
+                    },
+                    onSessionStarted: () {
+                      _castController?.loadMedia(widget.channel.url);
+                    },
+                  ),
+                  AppIconButton(
+                    icon: AppIconsV2.cogSmall,
+                    iconSize: 24,
+                    onPressed: _showSettings,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  AppIconButton(
+                    icon: AppIconsV2.prev,
+                    iconSize: 24,
+                    onPressed: widget.toPrevChannel,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 32),
+                    child: _controller == null ? SizedBox(
+                      width: 48,
+                    ) : AppIconButton(
+                      icon: _controller.value.isPlaying
+                          ? AppIconsV2.pause
+                          : AppIconsV2.play,
+                      iconSize: 48,
+                      onPressed: _togglePlay,
+                    ),
+                  ),
+                  AppIconButton(
+                    icon: AppIconsV2.next,
+                    iconSize: 24,
+                    onPressed: widget.toNextChannel,
+                  ),
+                ],
+              ),
+            ),
+            Padding (
+              padding: _fullscreen
+                  ? EdgeInsets.fromLTRB(20, 0, 20, 15)
+                  : EdgeInsets.fromLTRB(15, 0, 15, 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  // Text(_timeDisplay, style: AppFonts.videoTimer,),
+                  TextButton(
+                    onPressed: _goLive,
+                    child: Text('LIVE', style: AppFonts.screenTitle),
+                  ),
+                  Expanded(
+                    child: _scrollBar,
+                  ),
+                  AppIconButton(
+                    icon: _fullscreen
+                        ? AppIcons.smallScreen
+                        : AppIcons.fullScreen,
+                    onPressed: _toggleFullScreen,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget _settingControlBlock(IconData icon, String value, bool visible) {
-    return AnimatedOpacity(
-      opacity: _settingsVisible ? 1.0 : 0,
-      duration: controlsAnimationDuration,
-      child: GestureDetector(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: 5),
-              child: Icon(icon, color: AppColors.gray0, size: 24,),
-            ),
-            Text(value, style: AppFonts.videoSettingValues,),
-          ],
-        ),
+    return _animation(
+      visible: visible,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: 5),
+            child: Icon(icon, color: AppColorsV2.iconColor, size: 24,),
+          ),
+          Text(value, style: AppFontsV2.midText,),
+        ],
       ),
     );
   }
 
   IconData get _volumeIcon {
-    if(_volume == null || _volume == 0) {
-      return Icons.volume_mute;
-    }
-    if (_volume > 0.5) {
-      return Icons.volume_up;
-    }
+    if(_volume == null || _volume == 0) return Icons.volume_mute;
+    if(_volume > 0.5) return Icons.volume_up;
     return Icons.volume_down;
   }
 
   IconData get _brightnessIcon {
-    if(_brightness == null || _brightness == 0) {
-      return Icons.brightness_low;
-    }
-    if (_brightness > 0.5) {
-      return Icons.brightness_high;
-    }
+    if(_brightness == null || _brightness == 0) return Icons.brightness_low;
+    if(_brightness > 0.5) return Icons.brightness_high;
     return Icons.brightness_medium;
   }
 
   Widget get _settingControls {
     return IgnorePointer(
-      child: AnimatedOpacity(
-        opacity: _settingsVisible ? 1.0 : 0,
-        duration: controlsAnimationDuration,
-        child: Container(
-          decoration: BoxDecoration(gradient: AppColors.gradientTop),
-          child: Container(
-            decoration: BoxDecoration(gradient: AppColors.gradientBottom),
-            child: Row (
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: _settingControlBlock(
-                    _volumeIcon,
-                    _settingDisplay(_volume),
-                    _volumeVisible,
-                  ),
-                ),
-                Expanded(
-                  child: _settingControlBlock(
-                    _brightnessIcon,
-                    _settingDisplay(_brightness),
-                    _brightnessVisible,
-                  ),
-                )
-              ],
+      ignoring: !_settingsVisible,
+      child: Row (
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: _settingControlBlock(
+              _volumeIcon,
+              _settingDisplay(_volume),
+              _volumeVisible,
             ),
           ),
-        ),
+          Expanded(
+            child: _settingControlBlock(
+              _brightnessIcon,
+              _settingDisplay(_brightness),
+              _brightnessVisible,
+            ),
+          )
+        ],
       ),
-      ignoring: !_settingsVisible,
     );
   }
 
-  Widget get _fullscreenPlayer {
-    return GestureDetector(
-      onTap: _toggleControls,
-      onPanStart: _onPanStart,
-      onPanUpdate: _onPanUpdate,
-      onPanEnd: _onPanEnd,
-      child: Material(
-        color: AppColors.black,
-        child: Stack(
-          children: [
-            Center (
-              child: _controller == null
-                  ? Animations.progressIndicator
-                  : AspectRatio(
-                aspectRatio: _ratio.value,
-                child: VideoPlayer(
-                  _controller,
-                ),
-              ),
-            ),
-            _controls,
-            _settingControls,
-          ],
+  Widget get _lock {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: AppColorsV2.blockBg,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: SizedBox(
+        width: 64,
+        height: 64,
+        child: Padding(
+          padding: EdgeInsets.all(8),
+          child: AppIconsV2.lockBig,
         ),
       ),
     );
   }
 
   Widget get _loaderBlock {
-    Widget content;
-    if(widget.channel != null && widget.channel.locked) {
-      content = DecoratedBox(
-        decoration: BoxDecoration(
-          color: AppColorsV2.blockBg,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: SizedBox(
-          width: 64,
-          height: 64,
-          child: Padding(
-            padding: EdgeInsets.all(8),
-            child: AppIconsV2.lockBig,
-          ),
-        ),
-      );
-    } else {
-      content = Animations.progressIndicator;
-    }
     return Center(
-      child: content,
+      child: widget.channel?.locked == true ? _lock : SizedBox(
+        width: 36,
+        height: 36,
+        child: RotationLoader(),
+      ),
+    );
+  }
+
+  Widget get _fullscreenPlayer {
+    return Material(
+      color: AppColors.black,
+      child: Stack(
+        children: [
+          Center(
+            child: AspectRatio(
+              aspectRatio: _ratio.value,
+              child: _controller == null
+                  ? _loaderBlock
+                  : VideoPlayer(_controller),
+            ),
+          ),
+          _controls,
+        ],
+      ),
     );
   }
 
   Widget get _adaptivePlayer {
+    return AspectRatio(
+      aspectRatio: _ratio.value,
+      child: Material(
+        color: AppColors.black,
+        child: Stack(
+          children: [
+            _controller == null 
+                ? _loaderBlock
+                : VideoPlayer(_controller),
+            _controls,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget get _pipControls {
     return GestureDetector(
-      onTap: _toggleControls,
-      onPanStart: _onPanStart,
-      onPanUpdate: _onPanUpdate,
-      onPanEnd: _onPanEnd,
-      child: AspectRatio(
-        aspectRatio: _ratio.value,
-        child: Material(
-          color: AppColors.black,
-          child: Stack(
-            children: <Widget>[
-              _controller == null ? _loaderBlock : VideoPlayer(
-                _controller,
+      onTap: _togglePipControls,
+      child: _animation(
+        visible: _controlsVisible,
+        child: _backdrop(
+          child: IgnorePointer(
+            ignoring: !_controlsVisible,
+            child: Center(
+              child: _controller == null ? null : AppIconButton(
+                icon: _controller.value.isPlaying
+                    ? AppIconsV2.pause
+                    : AppIconsV2.play,
+                onPressed: _togglePlay,
               ),
-              _controls,
-              _settingControls,
-            ],
+            ),
           ),
         ),
       ),
@@ -679,10 +673,13 @@ class _HLSPlayerState extends State<HLSPlayer> {
       aspectRatio: _ratio.value,
       child: Material(
         color: AppColors.black,
-        child: _controller == null ? Center(
-          child: Animations.progressIndicator,
-        ) : VideoPlayer(
-          _controller,
+        child: Stack(
+          children: _controller == null ? [
+            _loaderBlock
+          ] : [
+            VideoPlayer(_controller),
+            _pipControls,
+          ],
         ),
       ),
     );
