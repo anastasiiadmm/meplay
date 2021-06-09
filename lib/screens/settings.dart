@@ -69,6 +69,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) => ConfirmDialog(
+        // TODO: translate
         title: "Выход",
         text: 'Вы уверены, что хотите выйти?',
         action: _logout,
