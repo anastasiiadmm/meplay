@@ -22,6 +22,9 @@ class ChannelListType {
     }
     return defaultChoice;
   }
+
+  @override
+  String toString() => name;
 }
 
 
@@ -43,6 +46,9 @@ class AppLocale {
     }
     return defaultChoice;
   }
+
+  @override
+  String toString() => name;
 }
 
 

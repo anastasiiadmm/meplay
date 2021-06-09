@@ -3,8 +3,9 @@ import 'package:me_play/widgets/packet_carousel.dart';
 import 'package:me_play/widgets/rotation_loader.dart';
 import '../utils/settings.dart';
 import '../widgets/app_toolbar.dart';
-import '../widgets/modals.dart';
+import '../widgets/app_icon_button.dart';
 import '../widgets/bottom_navbar.dart';
+import '../widgets/modals.dart';
 import '../models.dart';
 import '../theme.dart';
 
@@ -53,33 +54,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadChannels() async {
     List<Channel> channels = await Channel.tvChannels();
     setState(() { _channels = channels; });
-  }
-
-  // TODO: move to settings
-  Future<bool> _logout() async {
-    await User.clearUser();
-    await Future.wait([
-      Channel.loadTv(),
-      Channel.loadRadio(),
-    ]);
-    await Future.wait([
-      Channel.loadRecent(),
-      Channel.loadPopular(),
-    ]);
-    Navigator.of(context).pop();
-    return true;
-  }
-
-  // TODO: move to settings
-  void _logoutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => ConfirmDialog(
-        title: "Выход",
-        text: 'Вы уверены, что хотите выйти?',
-        action: _logout,
-      ),
-    );
   }
 
   Future<bool> _connect(Packet packet) async {
@@ -261,27 +235,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget get _appBar {
-    // TODO: refactor whole AppToolBar to show subtitle properly.
+    // TODO: refactor AppToolBar to show subtitle properly.
     AppLocalizations l = locale(context);
     return AppToolBar(
       title: _user == null ? l.profileTitle : '+${_user.username}',
       subtitle: l.profileTitle,
       actions: [
-        // IconButton(
-        //   icon: AppIconsV2.cog,
-        //   onPressed: _openSettings,
-        // ),
-        // TODO: move to settings.
-        IconButton(
-          icon: Icon(
-            Icons.logout,
-            size: 28,
-            color: AppColorsV2.searchText,
+        Padding(
+          padding: EdgeInsets.only(right: 3),
+          child: AppIconButton(
+            icon: AppIconsV2.cog,
+            onPressed: _openSettings,
+            padding: EdgeInsets.all(8),
           ),
-          onPressed: _logoutDialog,
-          constraints: BoxConstraints(),
-          padding: EdgeInsets.all(12),
-        )
+        ),
       ],
     );
   }

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import '../widgets/app_toolbar.dart';
 import '../widgets/bottom_navbar.dart';
+import '../widgets/modals.dart';
 import '../utils/pref_helper.dart';
 import '../utils/settings.dart';
 import '../theme.dart';
+import '../models.dart';
 
 
 class SettingsScreen extends StatefulWidget {
@@ -44,8 +47,52 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() { _listType = type; });
   }
 
-  void _openAbout() {
+  // TODO:
+  // void _openAbout() {
+  // }
 
+  Future<bool> _logout() async {
+    await User.clearUser();
+    await Future.wait([
+      Channel.loadTv(),
+      Channel.loadRadio(),
+    ]);
+    await Future.wait([
+      Channel.loadRecent(),
+      Channel.loadPopular(),
+    ]);
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    return true;
+  }
+
+  void _logoutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => ConfirmDialog(
+        title: "Выход",
+        text: 'Вы уверены, что хотите выйти?',
+        action: _logout,
+        autoPop: false,
+      ),
+    );
+  }
+
+  Widget get _logoutButton {
+    return InkWell(
+      onTap: _logoutDialog,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColorsV2.item,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        padding: EdgeInsets.fromLTRB(16, 6, 16, 10),
+        child: Text(
+          locale(context).settingsLogout,
+          style: AppFontsV2.smallButton,
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
   }
 
   Widget _listTile({
@@ -67,6 +114,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             if(leading != null) leading,
             Expanded(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if(title != null) title,
                   if(subtitle != null) subtitle,
@@ -81,53 +130,58 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _settingsTile(BuildContext context, int index) {
-    int generalItemsCount = 1;
-    int listTypeTitle = generalItemsCount;  // 0 + ...
-    int languageTitle = listTypeTitle + ChannelListType.choices.length + 1;
-    if(index == 0) {
+    int generalItemsCount = 0; // TODO: 1
+    int languageTitle = generalItemsCount;  // 0 + ...
+    int listTypeTitle = languageTitle + AppLocale.choices.length + 1;
+    int exitTile = listTypeTitle + ChannelListType.choices.length + 1;
+    AppLocalizations l = locale(context);
+    // TODO:
+    // if(index == 0) {
+    //   return _listTile(
+    //     title: Text('О программе', style: AppFonts.settingsItem),
+    //     padding: EdgeInsets.fromLTRB(15, 11, 15, 11),
+    //     color: AppColors.settingsItem,
+    //     onTap: _openAbout,
+    //   );
+    // } else
+    if (index == languageTitle) {
       return _listTile(
-        title: Text('О программе', style: AppFonts.settingsItem),
-        padding: EdgeInsets.fromLTRB(15, 11, 15, 11),
-        color: AppColors.settingsItem,
-        onTap: _openAbout,
+        title: Text(l.settingsLanguage, style: AppFontsV2.settingsTitle),
+        padding: EdgeInsets.fromLTRB(16, 13, 16, 3),
       );
-    } else if (index == listTypeTitle) {
-      return _listTile(
-        title: Text('ВИД СПИСКА КАНАЛОВ', style: AppFonts.settingsTitle),
-        padding: EdgeInsets.fromLTRB(15, 20, 15, 11),
-      );
-    } else if (index > listTypeTitle && index < languageTitle) {
-      ChannelListType type = ChannelListType.choices[index - listTypeTitle - 1];
-      return _listTile(
-        title: Text(
-          type.name,
-          style: type == _listType
-              ? AppFonts.settingsSelected
-              : AppFonts.settingsItem,
-        ),
-        padding: EdgeInsets.fromLTRB(15, 11, 15, 11),
-        trailing: type == _listType ? AppIcons.check : null,
-        onTap: () => _setListType(type),
-        color: AppColors.settingsItem,
-      );
-    } else if (index == languageTitle) {
-      return _listTile(
-        title: Text('ЯЗЫК', style: AppFonts.settingsTitle),
-        padding: EdgeInsets.fromLTRB(15, 20, 15, 11),
-      );
-    } else {
+    } else if (index > languageTitle && index < listTypeTitle) {
       AppLocale lang = AppLocale.choices[index - languageTitle - 1];
       return _listTile(
         title: Text(
           lang.name,
-          style: lang == _locale
-              ? AppFonts.settingsSelected
-              : AppFonts.settingsItem,
+          style: AppFontsV2.textPrimary,
         ),
-        padding: EdgeInsets.fromLTRB(15, 11, 15, 11),
-        trailing: lang == _locale ? AppIcons.check : null,
+        padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
+        trailing: lang == _locale ? AppIconsV2.check : null,
         onTap: () => _setLanguage(lang),
-        color: AppColors.settingsItem,
+        color: AppColorsV2.blockBg,
+      );
+    } else if (index == listTypeTitle) {
+      return _listTile(
+        title: Text(l.channelListView, style: AppFontsV2.settingsTitle),
+        padding: EdgeInsets.fromLTRB(16, 13, 16, 3),
+      );
+    } else if (index == exitTile) {
+      return Padding(
+        padding: EdgeInsets.fromLTRB(16, 30, 16, 16),
+        child: _logoutButton,
+      );
+    } else {
+      ChannelListType type = ChannelListType.choices[index - listTypeTitle - 1];
+      return _listTile(
+        title: Text(
+          type.name,
+          style: AppFontsV2.textPrimary,
+        ),
+        padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
+        trailing: type == _listType ? AppIconsV2.check : null,
+        onTap: () => _setListType(type),
+        color: AppColorsV2.blockBg,
       );
     }
   }
@@ -135,26 +189,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget get _body {
     return ListView.separated(
       itemBuilder: _settingsTile,
-      separatorBuilder: (BuildContext context, int id) => Divider(height: 0,),
+      separatorBuilder: (BuildContext context, int id) => SizedBox(height: 1,),
       itemCount: AppLocale.choices.length + ChannelListType.choices.length + 3,
     );
   }
 
-  void _back() {
-    Navigator.of(context).pop();
-  }
-
   Widget get _appBar {
-    return AppBar(
-      backgroundColor: AppColors.megaPurple,
-      elevation: 0,
-      automaticallyImplyLeading: false,
-      leading: IconButton(
-        onPressed: _back,
-        icon: AppIcons.back,
-      ),
-      title: Text('Настройки', style: AppFonts.screenTitle),
-      centerTitle: true,
+    return AppToolBar(
+      title: locale(context).settingsTitle,
     );
   }
 
@@ -162,7 +204,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColorsV2.darkBg,
       appBar: _appBar,
       body: _body,
       bottomNavigationBar: _bottomNavBar,
