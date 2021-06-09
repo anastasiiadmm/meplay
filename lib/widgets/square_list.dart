@@ -30,6 +30,7 @@ class SquareList extends StatelessWidget {
           channel.title,
           textAlign: TextAlign.center,
           style: AppFontsV2.placeholderText,
+          maxLines: 3,
         );
       },
     );
