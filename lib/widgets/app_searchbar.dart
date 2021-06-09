@@ -155,9 +155,10 @@ class _AppSearchBarState extends State<AppSearchBar> {
         automaticallyImplyLeading: false,
         leadingWidth: 50,
         toolbarHeight: widget.preferredSize.height,
-        leading: IconButton(
+        leading: AppIconButton(
           onPressed: _back,
           icon: AppIconsV2.arrowLeft,
+          padding: EdgeInsets.all(8),
         ),
         title: Padding(
           child: _input,

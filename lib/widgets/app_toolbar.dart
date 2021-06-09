@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'app_icon_button.dart';
 import '../theme.dart';
 
 
@@ -28,10 +29,11 @@ class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: AppColorsV2.item,
       elevation: 0,
       automaticallyImplyLeading: false,
-      leading: IconButton(
+      leadingWidth: 50,
+      leading: AppIconButton(
         onPressed: () => back == null ? Navigator.of(context).pop() : back(),
         icon: AppIconsV2.chevronLeft,
-        constraints: BoxConstraints(),
+        padding: EdgeInsets.all(8),
       ),
       title: Column(
         mainAxisSize: MainAxisSize.min,
