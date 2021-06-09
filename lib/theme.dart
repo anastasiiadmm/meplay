@@ -83,9 +83,6 @@ class AppColorsV2 {
   static const text = Color.fromRGBO(237, 238, 240, 1);
   static const textDisabled = Color.fromRGBO(175, 175, 177, 1);
 
-  // plain colors used in various places.
-  static const white = Color.fromRGBO(255, 255, 255, 1);
-
   // these colors are not present in the color map, but found in design.
   static const itemFocus = Color.fromRGBO(171, 165, 189, 1);
   static const darkShadow = Color.fromRGBO(0, 0, 0, 0.55);
@@ -113,6 +110,10 @@ class AppColorsV2 {
   static const inputPlaceholder = Color.fromRGBO(126, 126, 118, 1);  // gray 50%
   static const searchText = Color.fromRGBO(234, 234, 228, 1);  // gray 10%
   static const searchPlaceholder = Color.fromRGBO(191, 191, 182, 1);  // gray 30%
+
+  // various colors.
+  static const white = Color.fromRGBO(255, 255, 255, 1);
+  static const placeholderBg = Color.fromRGBO(255, 255, 255, 0.6);
 }
 
 
@@ -380,7 +381,11 @@ class AppFontsV2 {
     height: 12/10, color: AppColorsV2.textPrimary,);
   static const placeholderText = TextStyle(fontFamily: 'Lato',
     fontSize: 14, fontWeight: FontWeight.w400,
-    height: 20/14, color: AppColorsV2.inputPlaceholder,
+    height: 20/14, color: AppColorsV2.item,
+  );
+  static const placeholderTextLarge = TextStyle(fontFamily: 'Lato',
+    fontSize: 16, fontWeight: FontWeight.w400,
+    height: 24/16, color: AppColorsV2.item,
   );
 
   // player

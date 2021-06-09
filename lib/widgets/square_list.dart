@@ -20,18 +20,35 @@ class SquareList extends StatelessWidget {
     return channels.where(filter).toList();
   }
 
+  Widget _placeholder(Channel channel) {
+    return Stack(
+      children: [
+        Padding(
+          padding: EdgeInsets.all(10),
+          child: AppIconsV2.logoPlaceholder,
+        ),
+        ColoredBox(
+          color: Color.fromRGBO(255, 255, 255, 0.6),
+          child: Center(
+            child: Text(
+              channel.title,
+              textAlign: TextAlign.center,
+              style: AppFontsV2.placeholderTextLarge,
+              maxLines: 3,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+  
   Widget _logo(Channel channel) {
     return FutureBuilder<File>(
       future: channel.logo,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return snapshot.hasData ? Image.file(
-          snapshot.data,
-        ) : Text(
-          channel.title,
-          textAlign: TextAlign.center,
-          style: AppFontsV2.placeholderText,
-          maxLines: 3,
-        );
+        return snapshot.hasData
+            ? Image.file(snapshot.data)
+            : _placeholder(channel);
       },
     );
   }

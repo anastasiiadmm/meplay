@@ -30,14 +30,24 @@ class ChannelLogo extends StatelessWidget {
   }): super(key: key);
 
   Widget get _placeholder {
-    return textPlaceholder ? Text(
-      channel.title,
-      textAlign: TextAlign.center,
-      style: AppFontsV2.placeholderText,
-      maxLines: 3,
-    ) : Padding(
-      padding: EdgeInsets.all(size.padding / 1.5),
-      child: AppIconsV2.logoPlaceholder,
+    return Stack(
+      children: [
+        Padding(
+          padding: EdgeInsets.all(size.padding / 1.5),
+          child: AppIconsV2.logoPlaceholder,
+        ),
+        if(textPlaceholder) ColoredBox(
+          color: Color.fromRGBO(255, 255, 255, 0.6),
+          child: Center(
+            child: Text(
+              channel.title,
+              textAlign: TextAlign.center,
+              style: AppFontsV2.placeholderText,
+              maxLines: 3,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -45,7 +55,9 @@ class ChannelLogo extends StatelessWidget {
     return FutureBuilder<File>(
       future: channel.logo,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return snapshot.hasData ? Image.file(snapshot.data) : _placeholder;
+        return snapshot.hasData
+            ? Image.file(snapshot.data)
+            : _placeholder;
       },
     );
   }
