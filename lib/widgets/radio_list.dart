@@ -13,10 +13,11 @@ class RadioList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int id = 0;
-    return ListView(
-      children: channels.map<Widget>((channel) {
-        Widget tile = Padding(
+    return ListView.builder(
+      itemCount: channels.length,
+      itemBuilder: (BuildContext context, int id) {
+        Channel channel = channels[id];
+        return Padding(
           padding: id == 0
               ? EdgeInsets.symmetric(vertical: 12)
               : EdgeInsets.only(bottom: 12),
@@ -25,9 +26,7 @@ class RadioList extends StatelessWidget {
             onTap: () => channel.open(context),
           ),
         );
-        id++;
-        return tile;
-      }).toList(),
+      },
     );
   }
 }

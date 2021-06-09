@@ -15,10 +15,11 @@ class NewsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int id = 0;
-    return ListView(
-      children: news.map<Widget>((newsItem) {
-        Widget tile = Padding(
+    return ListView.builder(
+      itemCount: news.length,
+      itemBuilder: (BuildContext context, int id) {
+        News newsItem = news[id];
+        return Padding(
           padding: id == 0
               ? EdgeInsets.symmetric(vertical: 12)
               : EdgeInsets.only(bottom: 12),
@@ -27,9 +28,7 @@ class NewsList extends StatelessWidget {
             onTap: () => onOpen(newsItem),
           ),
         );
-        id++;
-        return tile;
-      }).toList(),
+      },
     );
   }
 }

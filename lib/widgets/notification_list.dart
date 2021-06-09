@@ -15,10 +15,11 @@ class NotificationList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int id = 0;
-    return ListView(
-      children: notifications.map<Widget>((notification) {
-        Widget tile = Padding(
+    return ListView.builder(
+      itemCount: notifications.length,
+      itemBuilder: (BuildContext context, int id) {
+        PendingNotificationRequest notification = notifications[id];
+        return Padding(
           padding: id == 0
               ? EdgeInsets.symmetric(vertical: 12)
               : EdgeInsets.only(bottom: 12),
@@ -28,9 +29,7 @@ class NotificationList extends StatelessWidget {
             onDelete: () => onDelete(notification),
           ),
         );
-        id++;
-        return tile;
-      }).toList(),
+      },
     );
   }
 }

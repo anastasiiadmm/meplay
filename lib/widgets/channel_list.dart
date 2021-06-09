@@ -20,10 +20,12 @@ class ChannelList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int id = 0;
-    return ListView(
-      children: _filterChannels.map<Widget>((channel) {
-        Widget tile = Padding(
+    List<Channel> channels = _filterChannels;
+    return ListView.builder(
+      itemCount: channels.length,
+      itemBuilder: (BuildContext context, int id) {
+        Channel channel = channels[id];
+        return Padding(
           padding: id == 0
               ? EdgeInsets.symmetric(vertical: 8)
               : EdgeInsets.only(bottom: 8),
@@ -32,9 +34,7 @@ class ChannelList extends StatelessWidget {
             onTap: () => channel.open(context),
           ),
         );
-        id++;
-        return tile;
-      }).toList(),
+      },
     );
   }
 }
