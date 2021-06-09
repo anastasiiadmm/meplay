@@ -30,7 +30,7 @@ class VideoAR {
   static const r1610 = VideoAR('16:10', 16/10);
   static const r219 = VideoAR('21:9', 64/27);
   static const choices = [r43, r169, r1610, r219];
-  static const defaultRatio = r43;
+  static const defaultRatio = r169;
 
   static VideoAR getByValue(double value) {
     for (VideoAR choice in choices) {
