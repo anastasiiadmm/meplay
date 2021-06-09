@@ -26,7 +26,10 @@ class ChannelCarousel extends StatelessWidget {
                 : EdgeInsets.only(right: 16),
             child: GestureDetector(
               onTap: () => channel.open(context),
-              child: ChannelLogo(channel: channel),
+              child: ChannelLogo(
+                channel: channel,
+                textPlaceholder: true,
+              ),
             ),
           );
         },

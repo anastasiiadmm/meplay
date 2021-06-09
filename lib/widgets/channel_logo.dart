@@ -20,23 +20,32 @@ class LogoSize {
 class ChannelLogo extends StatelessWidget {
   final Channel channel;
   final LogoSize size;
+  final bool textPlaceholder;
 
   ChannelLogo({
     Key key,
     @required this.channel,
     this.size: LogoSize.large,
+    this.textPlaceholder: false,
   }): super(key: key);
+
+  Widget get _placeholder {
+    return textPlaceholder ? Text(
+      channel.title,
+      textAlign: TextAlign.center,
+      style: AppFontsV2.placeholderText,
+      maxLines: 3,
+    ) : Padding(
+      padding: EdgeInsets.all(size.padding / 1.5),
+      child: AppIconsV2.logoPlaceholder,
+    );
+  }
 
   Widget get _logo {
     return FutureBuilder<File>(
       future: channel.logo,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return snapshot.hasData
-            ? Image.file(snapshot.data)
-            : Padding(
-          padding: EdgeInsets.all(size.padding / 1.5),
-          child: AppIconsV2.logoPlaceholder,
-        );
+        return snapshot.hasData ? Image.file(snapshot.data) : _placeholder;
       },
     );
   }
