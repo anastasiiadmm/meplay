@@ -21,8 +21,6 @@ abstract class Routes {
   static const tv = '/tv';
   static const radio = '/radio';
   static const favorites = '/favorites';
-  // static const favTv = '/fav/tv';        // не используется
-  // static const favRadio = '/fav/radio';  // не используется
   static const login = '/login';
   static const tvChannel = '/tv/';  // match this with String.startsWith
   static const radioChannel = '/radio/';  // match this with String.startsWith
