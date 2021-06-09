@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/settings.dart';
+import '../utils/pref_helper.dart';
 import '../widgets/app_searchbar.dart';
 import '../widgets/category_carousel.dart';
 import '../widgets/channel_list.dart';
+import '../widgets/square_list.dart';
 import '../widgets/bottom_navbar.dart';
 
 
@@ -19,12 +21,12 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   List<Channel> _channels = [];
   String _searchText;
   Genre _category;
+  ChannelListType _listType;
 
   @override
   void initState() {
     super.initState();
-    // TODO:
-    // _loadListType();
+    _loadListType();
     _loadChannels();
   }
 
@@ -33,15 +35,14 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     setState(() { _channels = channels; });
   }
 
-  // TODO:
-  // Future<void> _loadListType() async {
-  //   ChannelListType listType = await PrefHelper.loadString(
-  //     PrefKeys.listType,
-  //     restore: ChannelListType.getByName,
-  //     defaultValue: ChannelListType.defaultType,
-  //   );
-  //   setState(() { _listType = listType; });
-  // }
+  Future<void> _loadListType() async {
+    ChannelListType listType = await PrefHelper.loadString(
+      PrefKeys.listType,
+      restore: ChannelListType.getByName,
+      defaultValue: ChannelListType.defaultChoice,
+    );
+    setState(() { _listType = listType; });
+  }
 
   void _setSearchText(String text) {
     setState(() { _searchText = text.isEmpty ? null : text; });
@@ -62,7 +63,6 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     };
   }
 
-  // TODO:
   // void _selectListType() {
   //   selectorModal(
   //     title: Text('Вид списка каналов:', textAlign: TextAlign.center,),
@@ -122,17 +122,24 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     ),
   );
 
-  Widget get _body => Padding(
-    padding: EdgeInsets.only(top: 20),
-    child: Column(
-      children: [
-        _categoryBlock,
-        Expanded(
-          child: _channelList,
-        ),
-      ],
-    ),
+  Widget get _squareList => SquareList(
+    channels: _channels,
+    filter: _filter,
   );
+
+  Widget get _body {
+    return _listType == ChannelListType.list ? Padding(
+      padding: EdgeInsets.only(top: 20),
+      child: Column(
+        children: [
+          _categoryBlock,
+          Expanded(
+            child: _channelList,
+          ),
+        ],
+      ),
+    ) : _squareList;
+  }
 
   Widget get _bottomBar => BottomNavBar();
 
