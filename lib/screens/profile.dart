@@ -150,6 +150,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
       default: return 0;
     }
   }
+
+  List<String> get _channelTitles {
+    Packet packet = _packets[_activePacketId];
+    switch(packet.id) {
+      case 8: return [
+        '2. Баластан (ОТРК)',
+        '32. Карусель',
+        '64. Gulli-girl',
+        '72. Nickelodeon',
+        '73. Nick Jr.',
+        '88. Мульт',
+        '98. NickToons',
+        '103. Tiji (Россия)',
+        '114. Малыш',
+        '129. В гостях у сказки...',
+        '130. Dorama',
+        '137. Мама',
+      ];
+      case 21: return [
+        '6. Спорт (КТРК)',
+        '8. QSport',
+        '9. QSport Арена',
+        '45. Авто 24',
+        '97. КХЛ ТВ',
+        '101. Евроспорт 1',
+        '102. Евроспорт 2',
+        '110. Мир увлечений',
+        '112. M1-Global TV',
+        '113. Бокс ТВ',
+        '153. Fightbox',
+        '154. Авто Плюс',
+      ];
+      default: return null;
+    }
+  }
   
   Widget get _channelList {
     AppLocalizations l = locale(context);
@@ -173,11 +208,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
       }
     } else {
-      children.add(Text(
+      List<String> titles = _channelTitles;
+      if(titles == null) children.add(Text(
         l.packetChannelsEmpty,
         style: AppFontsV2.textSecondary,
         textAlign: TextAlign.center,
       ));
+      else {
+        for(int i = 0; i < _channelTitles.length; i++) {
+          children.add(Text(
+            _channelTitles[i],
+            style: AppFontsV2.midText,
+          ));
+        }
+      }
     }
     
     return SingleChildScrollView(
