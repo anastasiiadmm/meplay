@@ -194,16 +194,20 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void _toPrev() {
+    Channel channel = _channel.prev(widget.channels);
+    if(channel == _channel) return;
     setState(() {
-      _channel = _channel.prev(widget.channels);
+      _channel = channel;
       _playerKey = GlobalKey();
     });
     _loadFavorite();
   }
 
   void _toNext() {
+    Channel channel = _channel.next(widget.channels);
+    if(channel == _channel) return;
     setState(() {
-      _channel = _channel.next(widget.channels);
+      _channel = channel;
       _playerKey = GlobalKey();
     });
     _loadFavorite();

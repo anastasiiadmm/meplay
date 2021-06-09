@@ -344,13 +344,15 @@ class Channel {
     );
   }
 
-  Channel next(List<Channel> fromList) {
+  Channel next([List<Channel> fromList]) {
+    fromList ??= type == ChannelType.tv ? _tvList : _radioList;
     int index = fromList.indexOf(this);
     if(index < fromList.length - 1) return fromList[index + 1];
     return fromList[0];
   }
 
-  Channel prev(List<Channel> fromList) {
+  Channel prev([List<Channel> fromList]) {
+    fromList ??= type == ChannelType.tv ? _tvList : _radioList;
     int index = fromList.indexOf(this);
     if(index > 0) return fromList[index - 1];
     return fromList[fromList.length - 1];
@@ -699,6 +701,11 @@ class News {
       PrefKeys.news,
       _list,
     );
+  }
+
+  Map<String, dynamic> parseData() {
+    if(data == null) return null;
+    return jsonDecode(data);
   }
 }
 

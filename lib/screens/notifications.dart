@@ -71,6 +71,10 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
       newsItem.read();
     });
     // TODO: open static page here.
+    Map<String, dynamic> data = newsItem.parseData();
+    if(data != null && data.containsKey('link')) {
+      Navigator.of(context).pushNamed(data['link']);
+    }
   }
 
   Widget get _body => Padding(
