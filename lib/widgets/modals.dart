@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import '../utils/settings.dart';
+import '../utils/orientation_helper.dart';
 import '../theme.dart';
 import 'rotation_loader.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'app_icon_button.dart';
+import 'circle.dart';
 
 
 class ConfirmDialog extends StatefulWidget {
-  // TODO: possible autoclose with success / error text.
-  // TODO: prevent barrier dismissable when loading
-
   final String title;
   final String text;
   final String error;
+
+  // TODO: possible display of success text instead of autopop after success.
   final String success;
+
   final String ok;
   final String cancel;
   final String close;
@@ -74,9 +76,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
   );
 
   Future<void> _action() async {
-    setState(() {
-      _loading = true;
-    });
+    setState(() { _loading = true; });
     bool result;
     try {
       result = await widget.action();
@@ -178,7 +178,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
     return Dialog(
       child: _content,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16)
+        borderRadius: BorderRadius.circular(16),
       ),
       clipBehavior: Clip.hardEdge,
       backgroundColor: AppColorsV2.blockBg,
@@ -187,210 +187,110 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
 }
 
 
-// show confirm dialog with two buttons
-// for sync action.
-void oldConfirmModal({
-  @required BuildContext context,
-  Widget title,
-  Widget content,
-  String confirmLabel: 'Да',
-  String cancelLabel: 'Нет',
-  @required void Function() action,
-}) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) => AlertDialog(
-      title: title,
-      content: content,
-      actions: [
-        TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text(cancelLabel)
-        ),
-        TextButton(
-            onPressed: () {
-              action();
-              Navigator.of(context).pop();
-            },
-            child: Text(confirmLabel)
-        )
-      ],
-    ),
-  );
-}
+class SelectorModal<T> extends StatelessWidget {
+  final String title;
+  final List<T> choices;
+  final String Function(T item) itemTitle;
+  final T selected;
+  final void Function(T item) onSelect;
 
+  SelectorModal({
+    Key key,
+    @required this.title,
+    @required this.choices,
+    @required this.itemTitle,
+    this.selected,
+    this.onSelect,
+  }): super(key: key);
 
-// show dialog with info and single close button.
-void infoModal({
-  @required BuildContext context,
-  Widget title,
-  Widget content,
-  String closeLabel: 'Закрыть',
-}) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) => AlertDialog(
-      title: title,
-      content: content,
-      actions: [
-        TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text(closeLabel)
-        )
-      ],
-    ),
-  );
-}
-
-
-// Show confirm dialog for async actions.
-// action should resolve to boolean value indicating success.
-// on error shows error and close button
-// on success just closes.
-void asyncConfirmModal({
-  @required BuildContext context,
-  Widget title,
-  Widget content,
-  Widget error,
-  String confirmLabel: 'Да',
-  String cancelLabel: 'Нет',
-  String closeLabel: 'Закрыть',
-  @required Future<bool> Function() action,
-}) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      bool _loading = false;
-      bool _failed = false;
-      return StatefulBuilder(
-        builder: (BuildContext context, setState) => AlertDialog(
-          title: title,
-          content: _loading ? Container(
-            child: Animations.modalProgressIndicator,
-            alignment: Alignment.center,
-            height: 40,
-            margin: EdgeInsets.only(top: 20,),
-          ) : (_failed ? error : content),
-          actions: _failed ? [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(closeLabel),
-            ),
-          ] : [
-            TextButton(
-              onPressed: _loading ? null : () async {
-                setState(() {
-                  _loading = true;
-                });
-                if (await action()) {
-                  Navigator.of(context).pop();
-                } else {
-                  setState(() {
-                    _loading = false;
-                    _failed = true;
-                  });
-                }
-              },
-              child: Text('Да'),
-            ),
-            TextButton(
-              onPressed: _loading ? null : () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Нет'),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
-
-
-// Dialog with a ListView in it to select from provided choices
-void selectorModal<T>({
-  @required BuildContext context,
-  Widget title,
-  List<T> choices,
-  @required void Function(T) onSelect,
-}) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) => SimpleDialog(
-      titlePadding: EdgeInsets.zero,
-      contentPadding: EdgeInsets.zero,
-      title: title == null ? null : Container(
+  @override
+  Widget build(BuildContext context) {
+    bool fullscreen = OrientationHelper.isFullscreen(context);
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      clipBehavior: Clip.hardEdge,
+      backgroundColor: AppColorsV2.blockBg,
+      child: DecoratedBox(
         decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: AppColors.gray15,)
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: Stack(
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: fullscreen ? 75 : 49,
+                    ),
+                    child: Text(
+                      title,
+                      style: AppFontsV2.screenTitle,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 3),
+                    child:SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: choices.map<Widget>((item) => GestureDetector(
+                          onTap: () {
+                            onSelect(item);
+                            Navigator.of(context).pop();
+                          },
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: AppColorsV2.decorativeGray,
+                                ),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 7,
+                                horizontal: 20,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      itemTitle(item),
+                                      style: AppFontsV2.textSecondary,
+                                    ),
+                                  ),
+                                  if(item == selected) AppIconsV2.check,
+                                ],
+                              )
+                            ),
+                          ),
+                        )).toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                top: 0,
+                right: fullscreen ? 42 : 16,
+                child: Circle(
+                  color: AppColors.white,
+                  radius: 14,
+                  child: AppIconButton(
+                    icon: AppIconsV2.close,
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ),
+              )
+            ],
           ),
         ),
-        padding: EdgeInsets.all(16),
-        child: title,
       ),
-      children: choices.map<Widget>((choice) {
-        final Widget option = SimpleDialogOption(
-          onPressed: () {
-            onSelect(choice);
-            Navigator.of(context).pop();
-          },
-          child: Text(choice.toString()),
-          padding: EdgeInsets.all(16),
-        );
-        if (choice == choices.last) return option;
-        return DecoratedBox(
-          child: option,
-          decoration: BoxDecoration(
-            border: Border(
-                bottom: BorderSide(color: AppColors.gray15,)
-            ),
-          ),
-        );
-      }).toList(),
-    ),
-  );
-}
-
-
-// common toast with some setup available.
-void toast(BuildContext context, Widget content, Color color) {
-  FToast fToast = FToast();
-  fToast.init(context);
-  fToast.showToast(
-    toastDuration: Duration(seconds: 3),
-    gravity: ToastGravity.BOTTOM,
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25.0),
-        color: color,
-      ),
-      child: content,
-    ),
-  );
-}
-
-
-// toast with transparent gray background and white text
-void grayToast(BuildContext context, String text) {
-  toast(
-    context,
-    Text(text, textAlign: TextAlign.center, style: AppFonts.toastText,),
-    AppColors.toastBg,
-  );
-}
-
-
-void inDevelopment(BuildContext context, {String title: 'Эта страница'}) {
-  infoModal(
-    context: context,
-    title: Text(title),
-    content: Text('Находится в разработке.'),
-  );
+    );
+  }
 }
