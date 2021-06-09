@@ -134,14 +134,15 @@ class _AppSearchBarState extends State<AppSearchBar> {
   }
 
   List<Widget> get _actions {
-    return (widget.actions ?? <Widget>[])..insert(
-      0,
-      IconButton(
+    List<Widget> actions = [
+      AppIconButton(
         onPressed: _toggleSearch,
         icon: AppIconsV2.search,
-        constraints: BoxConstraints(),
+        padding: EdgeInsets.all(5),
       ),
-    );
+    ];
+    if(widget.actions != null) actions.addAll(widget.actions);
+    return actions;
   }
 
   @override
@@ -163,6 +164,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
           padding: EdgeInsets.only(right: 15),
         ),
         titleSpacing: 0,
+        actions: [Container()],
       ),
     ) : AppToolBar(
       title: widget.title,

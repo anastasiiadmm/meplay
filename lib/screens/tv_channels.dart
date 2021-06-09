@@ -5,6 +5,7 @@ import '../theme.dart';
 import '../utils/settings.dart';
 import '../utils/pref_helper.dart';
 import '../widgets/app_searchbar.dart';
+import '../widgets/app_icon_button.dart';
 import '../widgets/category_carousel.dart';
 import '../widgets/channel_list.dart';
 import '../widgets/square_list.dart';
@@ -22,6 +23,8 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   String _searchText;
   Genre _category;
   ChannelListType _listType;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -80,12 +83,14 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
       title: locale(context).tvChannelsTitle,
       onSearchSubmit: _setSearchText,
       actions: [
-        // TODO:
-        // IconButton(
-        //   onPressed: _selectListType,
-        //   icon: AppIconsV2.burger,
-        //   constraints: BoxConstraints(),
-        // ),
+        Padding(
+          padding: EdgeInsets.only(right: 6, left: 1),
+          child: AppIconButton(
+            onPressed: _openDrawer,
+            icon: AppIconsV2.burger,
+            padding: EdgeInsets.all(5),
+          ),
+        ),
       ],
     );
   }
@@ -143,14 +148,41 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
 
   Widget get _bottomBar => BottomNavBar();
 
+  void _openDrawer() {
+    _scaffoldKey.currentState.openEndDrawer();
+  }
+
+  void _closeDrawer() {
+    Navigator.of(context).pop();
+  }
+
+  Widget get _drawer {
+    return Drawer(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text('This is the Drawer'),
+            ElevatedButton(
+              onPressed: _closeDrawer,
+              child: const Text('Close Drawer'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: AppColorsV2.darkBg,
       extendBody: true,
       appBar: _appBar,
       body: _body,
       bottomNavigationBar: _bottomBar,
+      endDrawer: _drawer,
     );
   }
 }
