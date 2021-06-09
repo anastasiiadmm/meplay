@@ -1,18 +1,18 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:me_play/utils/pref_helper.dart';
-import 'package:me_play/widgets/rotation_loader.dart';
 import 'package:screen/screen.dart';
-import '../utils/hls_video_cache.dart';
-import '../video_player_fork/video_player.dart';
-import '../models.dart';
-import '../theme.dart';
-import '../utils/orientation_helper.dart';
-import '../widgets/modals.dart';
 import 'package:flutter_video_cast/flutter_video_cast.dart';
-
+import '../video_player_fork/video_player.dart';
+import '../utils/hls_video_cache.dart';
+import '../utils/pref_helper.dart';
+import '../utils/settings.dart';
+import '../utils/orientation_helper.dart';
+import 'rotation_loader.dart';
 import 'app_icon_button.dart';
 import 'circle.dart';
+import 'modals.dart';
+import '../models.dart';
+import '../theme.dart';
 
 
 class VideoAR {
@@ -207,23 +207,22 @@ class _HLSPlayerState extends State<HLSPlayer> {
     setState(() { _ratio = ratio; });
   }
 
-  void _saveRatio() {
+  void _setRatio(VideoAR ratio) {
+    setState(() { _ratio = ratio; });
     String prefKey = PrefKeys.ratio(widget.channel.id);
     PrefHelper.saveString(prefKey, _ratio);
   }
 
   void _showSettings() {
-    selectorModal<VideoAR>(
+    showDialog(
       context: context,
-      title: Text(
-        'Стороны видео',
-        textAlign: TextAlign.center,
+      builder: (BuildContext context) => SelectorModal<VideoAR>(
+        title: locale(context).videoAspects,
+        choices: VideoAR.choices,
+        onSelect: _setRatio,
+        itemTitle: (ratio) => ratio.name,
+        selected: _ratio,
       ),
-      choices: VideoAR.choices,
-      onSelect: (VideoAR value) {
-        setState(() { _ratio = value; });
-        _saveRatio();
-      },
     );
   }
 
