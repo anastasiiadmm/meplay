@@ -297,7 +297,7 @@ class AppFontsV2 {
     height: 15.6/13, color: AppColorsV2.red,);
   static const search = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 15,
-    height: 24/15, color: AppColorsV2.searchText,);
+    height: 20/15, color: AppColorsV2.searchText,);
   static const searchPlaceholder = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 15,
     height: 24/15, color: AppColorsV2.searchPlaceholder,);

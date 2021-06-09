@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme.dart';
+import 'app_icon_button.dart';
 import 'app_toolbar.dart';
 import '../utils/settings.dart';
 
@@ -96,9 +97,10 @@ class _AppSearchBarState extends State<AppSearchBar> {
               onFieldSubmitted: widget.onSearchSubmit,
               cursorColor: AppColorsV2.white,
               textInputAction: TextInputAction.search,
+              cursorHeight: 21,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.symmetric(
-                  vertical: 4,
+                  vertical: 6,
                   horizontal: 32,
                 ),
                 hintText: locale(context).searchText,
@@ -120,11 +122,10 @@ class _AppSearchBarState extends State<AppSearchBar> {
           ),
           Align(
             alignment: Alignment.centerRight,
-            child: IconButton(
+            child: AppIconButton(
               icon: AppIconsV2.clear,
               onPressed: _clearSearch,
               padding: EdgeInsets.all(8),
-              constraints: BoxConstraints(),
             ),
           ),
         ],
