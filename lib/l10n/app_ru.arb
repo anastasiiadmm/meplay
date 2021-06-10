@@ -83,9 +83,9 @@
   "@settingsLanguage": {},
   "settingsCategories": "КАТЕГОРИИ",
   "@settingsCategories": {},
-  "channelListView": "РЕЖИМ ОТОБРАЖЕНИЯ КАНАЛОВ",
-  "@channelListView": {
-    "description": "\"ВИД СПИСКА КАНАЛОВ\" было бы лучше."
+  "channelListType": "ВИД СПИСКА КАНАЛОВ",
+  "@channelListType": {
+    "description": "В дизайне - \"РЕЖИМ ОТОБРАЖЕНИЯ КАНАЛОВ\", но \"ВИД СПИСКА КАНАЛОВ\" лучше."
   },
   "listViewList": "Список",
   "@listViewList": {},
@@ -93,6 +93,10 @@
   "@listViewTiles": {},
   "settingsLogout": "Выйти из аккаунта",
   "@settingsLogout": {},
+  "exit": "Выход",
+  "@exit": {},
+  "exitConfirm": "Вы уверены, что хотите выйти?",
+  "@exitConfirm": {},
   "tvChannelsTitle": "TV Каналы",
   "@tvChannelsTitle": {},
   "radioChannelsTitle": "Радио",

@@ -41,13 +41,15 @@
   "settingsAbout": "О программе",
   "settingsLanguage": "ЯЗЫК",
   "settingsCategories": "КАТЕГОРИИ",
-  "channelListView": "РЕЖИМ ОТОБРАЖЕНИЯ КАНАЛОВ",
-  "@channelListView": {
-    "description": "\"ВИД СПИСКА КАНАЛОВ\" было бы лучше."
+  "channelListType": "ВИД СПИСКА КАНАЛОВ",
+  "@channelListType": {
+    "description": "В дизайне - \"РЕЖИМ ОТОБРАЖЕНИЯ КАНАЛОВ\", но \"ВИД СПИСКА КАНАЛОВ\" лучше."
   },
   "listViewList": "Список",
   "listViewTiles": "Плитка",
   "settingsLogout": "Выйти из аккаунта",
+  "exit": "Выход",
+  "exitConfirm": "Вы уверены, что хотите выйти?",
   "tvChannelsTitle": "TV Каналы",
   "radioChannelsTitle": "Радио",
   "categories": "Категории:",
