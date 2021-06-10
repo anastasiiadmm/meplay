@@ -395,9 +395,9 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   Widget _backdrop({Widget child}) {
     return DecoratedBox(
-      decoration: BoxDecoration(gradient: AppColors.gradientTop),
+      decoration: BoxDecoration(gradient: AppColorsV2.gradientTop),
       child: DecoratedBox(
-        decoration: BoxDecoration(gradient: AppColors.gradientBottom),
+        decoration: BoxDecoration(gradient: AppColorsV2.gradientBottom),
         child: child,
       ),
     );
@@ -572,8 +572,8 @@ class _HLSPlayerState extends State<HLSPlayer> {
                     padding: EdgeInsets.only(left: 24),
                     child: AppIconButton(
                       icon: _fullscreen
-                          ? AppIcons.smallScreen
-                          : AppIcons.fullScreen,
+                          ? AppIconsV2.smallScreen
+                          : AppIconsV2.fullScreen,
                       onPressed: _toggleFullScreen,
                     ),
                   ),
@@ -670,7 +670,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   Widget get _fullscreenPlayer {
     return Material(
-      color: AppColors.black,
+      color: AppColorsV2.black,
       child: Stack(
         children: [
           Center(
@@ -691,7 +691,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
     return AspectRatio(
       aspectRatio: _ratio.value,
       child: Material(
-        color: AppColors.black,
+        color: AppColorsV2.black,
         child: Stack(
           children: [
             _controller == null 
@@ -730,7 +730,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
     return AspectRatio(
       aspectRatio: _ratio.value,
       child: Material(
-        color: AppColors.black,
+        color: AppColorsV2.black,
         child: Stack(
           children: _controller == null ? [
             _loaderBlock

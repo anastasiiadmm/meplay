@@ -279,7 +279,7 @@ class SelectorModal<T> extends StatelessWidget {
                 top: 0,
                 right: fullscreen ? 42 : 16,
                 child: Circle(
-                  color: AppColors.white,
+                  color: AppColorsV2.white,
                   radius: 14,
                   child: AppIconButton(
                     icon: AppIconsV2.close,

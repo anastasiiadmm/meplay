@@ -17,8 +17,6 @@ abstract class Routes {
   static const profile = '/profile';
   static const settings = '/settings';
   static const notifications = '/notifications';
-  static const alerts = '/alerts';
-  static const news = '/news';
   static const tv = '/tv';
   static const radio = '/radio';
   static const favorites = '/favorites';
@@ -27,8 +25,8 @@ abstract class Routes {
   static const radioChannel = '/radio/';  // match this with String.startsWith
   static const intro = '/intro';
 
-  static const ROUTES = [home, profile, settings, notifications, alerts,
-    news, tv, radio, favorites, login, intro];
+  static const ROUTES = [home, profile, settings, notifications,
+    tv, radio, favorites, login, intro];
   static const MATCH_ROUTES = [tvChannel, radioChannel];
   static bool allowed(String route) {
     return ROUTES.contains(route)
@@ -42,7 +40,6 @@ final Map<String, WidgetBuilder> routes = {
   Routes.home: (BuildContext context) => HomeScreen(),
   Routes.profile: (BuildContext context) => ProfileScreen(),
   Routes.notifications: (BuildContext context) => NotificationListScreen(),
-  Routes.alerts: (BuildContext context) => NotificationListScreen(),
   Routes.settings: (BuildContext context) => SettingsScreen(),
   Routes.tv: (BuildContext context) => TVChannelsScreen(),
   Routes.radio: (BuildContext context) => RadioChannelsScreen(),

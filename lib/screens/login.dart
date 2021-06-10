@@ -216,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
 
   Widget get _appBar {
     return AppBar(
-      backgroundColor: AppColors.transparent,
+      backgroundColor: AppColorsV2.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
       leading: IconButton(
