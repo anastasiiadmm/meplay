@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -9,6 +10,7 @@ import '../widgets/app_icon_button.dart';
 import '../widgets/category_carousel.dart';
 import '../widgets/channel_list.dart';
 import '../widgets/square_list.dart';
+import '../widgets/settings_widgets.dart';
 import '../widgets/bottom_navbar.dart';
 
 
@@ -66,17 +68,10 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     };
   }
 
-  // void _selectListType() {
-  //   selectorModal(
-  //     title: Text('Вид списка каналов:', textAlign: TextAlign.center,),
-  //     context: context,
-  //     choices: ChannelListType.choices,
-  //     onSelect: (ChannelListType selected) {
-  //       setState(() { _listType = selected; });
-  //       PrefHelper.saveString(PrefKeys.listType, selected);
-  //     },
-  //   );
-  // }
+  void _setListType(ChannelListType type) {
+    setState(() { _listType = type; });
+    PrefHelper.saveString(PrefKeys.listType, type);
+  }
 
   Widget get _appBar {
     return AppSearchBar(
@@ -152,20 +147,28 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     _scaffoldKey.currentState.openEndDrawer();
   }
 
-  void _closeDrawer() {
-    Navigator.of(context).pop();
-  }
-
   Widget get _drawer {
+    AppLocalizations l = locale(context);
     return Drawer(
-      child: Center(
+      child: ColoredBox(
+        color: AppColorsV2.darkBg,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            const Text('This is the Drawer'),
-            ElevatedButton(
-              onPressed: _closeDrawer,
-              child: const Text('Close Drawer'),
+            SettingsBlock<Genre>(
+              title: l.categories,
+              items: Genre.genres,
+              getText: (item) => item.name,
+              onTap: _setCategory,
+              isActive: (item) => _category == null
+                  ? item.id == 0 : item == _category
+            ),
+            SettingsBlock<ChannelListType>(
+              title: l.channelListType,
+              items: ChannelListType.choices,
+              getText: (item) => item.name,
+              onTap: _setListType,
+              isActive: (item) => item == _listType,
             ),
           ],
         ),
