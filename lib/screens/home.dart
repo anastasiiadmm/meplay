@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:me_play/utils/pref_helper.dart';
 import '../utils/fcm_helper.dart';
 import '../utils/local_notification_helper.dart';
 import '../utils/tz_helper.dart';
@@ -33,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isSplashShowing = true;  // if splash animates from hidden to visible or back
   DeeplinkHelper _deeplinkHelper;
   bool _showBanner = false;  // while banner is not real - hide it.
+  bool _firstLaunch = false;
 
   void initState() {
     super.initState();
@@ -53,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ]);
     Channel.loadRecent();
     Channel.loadPopular();
+    await _loadFirstLaunch();
     await TZHelper.init();
     _deeplinkHelper = DeeplinkHelper.instance;
     await _deeplinkHelper.checkInitialLink();
@@ -81,6 +84,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return _banners;
   }
 
+  Future<void> _loadFirstLaunch() async {
+    String firstLaunch = await PrefHelper.loadString(PrefKeys.firstLaunch);
+    if(firstLaunch == null) {
+      _firstLaunch = true;
+      await PrefHelper.saveString(PrefKeys.firstLaunch, 'true');
+    }
+  }
+
   void _doneLoading() {
     if(_asyncInitDone && _splashAnimationDone) {
       setState(() { _isSplashShowing = false; });
@@ -92,8 +103,14 @@ class _HomeScreenState extends State<HomeScreen> {
     _doneLoading();
   }
 
+  Future<void> _showIntro() async {
+    await Navigator.of(context).pushNamed('/intro');
+    _watchTV();
+  }
+
   void _splashHide() {
-    if(!_deeplinkHelper.navigated) _watchTV();
+    if(_firstLaunch) _showIntro();
+    else if(!_deeplinkHelper.navigated) _watchTV();
     Timer(Duration(milliseconds: 300), () {
       setState(() { _loading = false; });
     });

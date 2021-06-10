@@ -8,6 +8,7 @@ import 'screens/tv_channels.dart';
 import 'screens/radio_channels.dart';
 import 'screens/favorites.dart';
 import 'screens/player.dart';
+import 'screens/intro.dart';
 import 'models.dart';
 
 
@@ -24,9 +25,10 @@ abstract class Routes {
   static const login = '/login';
   static const tvChannel = '/tv/';  // match this with String.startsWith
   static const radioChannel = '/radio/';  // match this with String.startsWith
+  static const intro = '/intro';
 
   static const ROUTES = [home, profile, settings, notifications, alerts,
-    news, tv, radio, favorites, login];
+    news, tv, radio, favorites, login, intro];
   static const MATCH_ROUTES = [tvChannel, radioChannel];
   static bool allowed(String route) {
     return ROUTES.contains(route)
@@ -45,6 +47,7 @@ final Map<String, WidgetBuilder> routes = {
   Routes.tv: (BuildContext context) => TVChannelsScreen(),
   Routes.radio: (BuildContext context) => RadioChannelsScreen(),
   Routes.favorites: (BuildContext context) => FavoritesScreen(),
+  Routes.intro: (BuildContext context) => IntroScreen(),
 };
 
 

@@ -86,21 +86,32 @@ class _IntroScreenState extends State<IntroScreen> {
   Widget _page({String title, String text, String asset}) {
     return GestureDetector(
       onTap: _next,
-      child: SizedBox(
-        height: double.infinity,  // TODO:
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16,),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(asset),
-            Text(
-              title,
-              style: AppFontsV2.introTitle,
-              textAlign: TextAlign.center,
+            SizedBox(
+              height: 225,
+              child: Center(
+                child: Image.asset(asset),
+              ),
             ),
-            if(text != null) Text(
-              text,
-              style: AppFontsV2.textPrimary,
-              textAlign: TextAlign.center,
+            Padding(
+              padding: EdgeInsets.only(top: 25),
+              child: Text(
+                title,
+                style: AppFontsV2.introTitle,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            if(text != null) Padding(
+              padding: EdgeInsets.only(top: 20),
+              child: Text(
+                text,
+                style: AppFontsV2.textSecondary,
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),
@@ -109,39 +120,27 @@ class _IntroScreenState extends State<IntroScreen> {
   }
 
   Widget get _carousel {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CarouselSlider(
-          carouselController: _controller,
-          // TODO:
-          items: [
-            _page(
-              title: '1',
-              text: "wtf",
-              asset: "/some/path",
-            ),
-            _page(
-              title: '2',
-              text: "fts",
-              asset: "/other/path",
-            ),
-          ],
-          options: CarouselOptions(
-            viewportFraction: 1,
-            // height: ?,
-            // aspectRatio: ?
-            onPageChanged: _pageChanged,
-          ),
+    AppLocalizations l = locale(context);
+    return CarouselSlider(
+      carouselController: _controller,
+      items: [
+        _page(
+          title: l.introTvTitle,
+          text: l.introTvText,
+          asset: 'assets/images/intro_1.png',
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 20),
-          child: _dots,
-        )
+        _page(
+          title: l.introRemindTitle,
+          text: l.introRemindText,
+          asset: 'assets/images/intro_2.png',
+        ),
       ],
+      options: CarouselOptions(
+        viewportFraction: 1,
+        aspectRatio: 0.5,
+        onPageChanged: _pageChanged,
+      ),
     );
-
-    // _dots ?
   }
 
   Widget get _skipButton {
@@ -150,25 +149,31 @@ class _IntroScreenState extends State<IntroScreen> {
       child: Text(
         locale(context).introSkip,
         style: AppFontsV2.textSecondaryMute,
+        textAlign: TextAlign.center,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(top: 75),
-            child: _carousel,
-          ),
+    return Material(
+      color: AppColorsV2.darkBg,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 50),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: _carousel,
+            ),
+            _dots,
+            Padding(
+              padding: EdgeInsets.only(top: 20),
+              child: _skipButton,
+            ),
+          ],
         ),
-        Padding(
-          padding: EdgeInsets.only(bottom: 75),
-          child: _skipButton,
-        ),
-      ],
+      ),
     );
   }
 }
