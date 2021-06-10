@@ -16,7 +16,7 @@ class LargeImageButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColorsV2.decorativeGray,
+      color: AppColors.decorativeGray,
       child: InkWell(
         onTap: onTap,
         child: Padding(
@@ -29,7 +29,7 @@ class LargeImageButton extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: 5),
                 child: image,
               ),
-              Text(text, style: AppFontsV2.itemTitle,)
+              Text(text, style: AppFonts.itemTitle,)
             ],
           ),
         ),

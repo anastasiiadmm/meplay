@@ -26,13 +26,13 @@ class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       toolbarHeight: preferredSize.height,
-      backgroundColor: AppColorsV2.item,
+      backgroundColor: AppColors.item,
       elevation: 0,
       automaticallyImplyLeading: false,
       leadingWidth: 50,
       leading: AppIconButton(
         onPressed: () => back == null ? Navigator.of(context).pop() : back(),
-        icon: AppIconsV2.chevronLeft,
+        icon: AppIcons.chevronLeft,
         padding: EdgeInsets.all(8),
       ),
       title: Column(
@@ -40,11 +40,11 @@ class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           Text(
             this.title,
-            style: AppFontsV2.screenTitle,
+            style: AppFonts.screenTitle,
           ),
           if(subtitle != null) Text(
             this.subtitle,
-            style: AppFontsV2.itemTextSecondary,
+            style: AppFonts.itemTextSecondary,
           ),
         ],
       ),

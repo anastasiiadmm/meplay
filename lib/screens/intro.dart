@@ -51,14 +51,14 @@ class _IntroScreenState extends State<IntroScreen> {
     Widget dot;
     if (id == _activeId) {
       dot = Circle.dot(
-        color: AppColorsV2.purple,
+        color: AppColors.purple,
         radius: 4,
       );
     } else {
       dot = GestureDetector(
         onTap: () => _switchTo(id),
         child: Circle.dot(
-          color: AppColorsV2.decorativeGray,
+          color: AppColors.decorativeGray,
           radius: 4,
         ),
       );
@@ -101,7 +101,7 @@ class _IntroScreenState extends State<IntroScreen> {
               padding: EdgeInsets.only(top: 25),
               child: Text(
                 title,
-                style: AppFontsV2.introTitle,
+                style: AppFonts.introTitle,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -109,7 +109,7 @@ class _IntroScreenState extends State<IntroScreen> {
               padding: EdgeInsets.only(top: 20),
               child: Text(
                 text,
-                style: AppFontsV2.textSecondary,
+                style: AppFonts.textSecondary,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -148,7 +148,7 @@ class _IntroScreenState extends State<IntroScreen> {
       onTap: _skip,
       child: Text(
         locale(context).introSkip,
-        style: AppFontsV2.textSecondaryMute,
+        style: AppFonts.textSecondaryMute,
         textAlign: TextAlign.center,
       ),
     );
@@ -157,7 +157,7 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColorsV2.darkBg,
+      color: AppColors.darkBg,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 50),
         child: Column(

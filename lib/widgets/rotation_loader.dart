@@ -51,7 +51,7 @@ class _RotationLoaderState extends State<RotationLoader>
           child: child,
         );
       },
-      child: AppIconsV2.loader,
+      child: AppIcons.loader,
     );
   }
 }

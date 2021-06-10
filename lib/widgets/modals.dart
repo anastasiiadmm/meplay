@@ -51,13 +51,13 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
 
   Widget get _title => Text(
     widget.title ?? locale(context).defaultModalTitle,
-    style: AppFontsV2.modalTitle,
+    style: AppFonts.modalTitle,
     textAlign: TextAlign.center,
   );
 
   Widget get _text => Text(
     widget.text ?? '',
-    style: AppFontsV2.modalText,
+    style: AppFonts.modalText,
     textAlign: TextAlign.center,
   );
 
@@ -71,7 +71,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
 
   Widget get _error => Text(
     widget.error ?? locale(context).defaultModalError,
-    style: AppFontsV2.modalText,
+    style: AppFonts.modalText,
     textAlign: TextAlign.center,
   );
 
@@ -102,8 +102,8 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
 
   Widget _modalButton(String text, {
     void Function() action,
-    Color color: AppColorsV2.blockBg,
-    TextStyle textStyle: AppFontsV2.modalButtonPrimary,
+    Color color: AppColors.blockBg,
+    TextStyle textStyle: AppFonts.modalButtonPrimary,
   }) => Ink(
     color: color,
     height: 44,
@@ -128,13 +128,13 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
   Widget get _okButton => _modalButton(
     widget.ok ?? locale(context).yes,
     action: _loading ? null : _action,
-    color: AppColorsV2.purple,
+    color: AppColors.purple,
   );
 
   Widget get _cancelButton => _modalButton(
     widget.cancel ?? locale(context).no,
     action: _loading ? null : _close,
-    textStyle: AppFontsV2.modalButtonSecondary,
+    textStyle: AppFonts.modalButtonSecondary,
   );
 
   Widget get _content => Column(
@@ -151,7 +151,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
       DecoratedBox(
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: AppColorsV2.modalBorder),
+            top: BorderSide(color: AppColors.modalBorder),
           ),
         ),
         child: Row(
@@ -163,7 +163,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
               width: 1,
               height: 44,
               child: ColoredBox(
-                color: AppColorsV2.modalBorder,
+                color: AppColors.modalBorder,
               ),
             ),
             Expanded(child: _okButton),
@@ -181,7 +181,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
         borderRadius: BorderRadius.circular(16),
       ),
       clipBehavior: Clip.hardEdge,
-      backgroundColor: AppColorsV2.blockBg,
+      backgroundColor: AppColors.blockBg,
     );
   }
 }
@@ -211,7 +211,7 @@ class SelectorModal<T> extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       clipBehavior: Clip.hardEdge,
-      backgroundColor: AppColorsV2.blockBg,
+      backgroundColor: AppColors.blockBg,
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
@@ -229,7 +229,7 @@ class SelectorModal<T> extends StatelessWidget {
                     ),
                     child: Text(
                       title,
-                      style: AppFontsV2.screenTitle,
+                      style: AppFonts.screenTitle,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -247,7 +247,7 @@ class SelectorModal<T> extends StatelessWidget {
                             decoration: BoxDecoration(
                               border: Border(
                                 bottom: BorderSide(
-                                  color: AppColorsV2.decorativeGray,
+                                  color: AppColors.decorativeGray,
                                 ),
                               ),
                             ),
@@ -261,10 +261,10 @@ class SelectorModal<T> extends StatelessWidget {
                                   Expanded(
                                     child: Text(
                                       itemTitle(item),
-                                      style: AppFontsV2.textSecondary,
+                                      style: AppFonts.textSecondary,
                                     ),
                                   ),
-                                  if(item == selected) AppIconsV2.check,
+                                  if(item == selected) AppIcons.check,
                                 ],
                               )
                             ),
@@ -279,10 +279,10 @@ class SelectorModal<T> extends StatelessWidget {
                 top: 0,
                 right: fullscreen ? 42 : 16,
                 child: Circle(
-                  color: AppColorsV2.white,
+                  color: AppColors.white,
                   radius: 14,
                   child: AppIconButton(
-                    icon: AppIconsV2.close,
+                    icon: AppIcons.close,
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),

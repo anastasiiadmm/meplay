@@ -274,9 +274,9 @@ class _HLSPlayerState extends State<HLSPlayer> {
         allowScrubbing: true,
         hiddenDuration: scrollBuffer,
         colors: VideoProgressColors(
-          backgroundColor: AppColorsV2.iconColor,
-          playedColor: AppColorsV2.white,
-          bufferedColor: AppColorsV2.iconColor,
+          backgroundColor: AppColors.iconColor,
+          playedColor: AppColors.white,
+          bufferedColor: AppColors.iconColor,
         ),
         padding: EdgeInsets.only(bottom: 3),
       ),
@@ -395,9 +395,9 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   Widget _backdrop({Widget child}) {
     return DecoratedBox(
-      decoration: BoxDecoration(gradient: AppColorsV2.gradientTop),
+      decoration: BoxDecoration(gradient: AppColors.gradientTop),
       child: DecoratedBox(
-        decoration: BoxDecoration(gradient: AppColorsV2.gradientBottom),
+        decoration: BoxDecoration(gradient: AppColors.gradientBottom),
         child: child,
       ),
     );
@@ -438,7 +438,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
       children: _fullscreen ? [
         Text(
           widget.channel.title,
-          style: AppFontsV2.screenTitle,
+          style: AppFonts.screenTitle,
           maxLines: 1,
         ),
         FutureBuilder<Program>(
@@ -446,7 +446,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
           builder: (BuildContext context, snapshot) {
             return Text(
               snapshot.hasData ? snapshot.data.title : '',
-              style: AppFontsV2.fullscreenProgram,
+              style: AppFonts.fullscreenProgram,
               maxLines: 1,
             );
           },
@@ -458,7 +458,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Widget get _chromeCastButton {
     return ChromeCastButton(
       size: 24,
-      color: AppColorsV2.iconColor,
+      color: AppColors.iconColor,
       onButtonCreated: (controller) {
         setState(() => _castController = controller);
         _castController?.addSessionListener();
@@ -479,14 +479,14 @@ class _HLSPlayerState extends State<HLSPlayer> {
             padding: EdgeInsets.all(1),
             child: Circle.dot(
               radius: 4,
-              color: AppColorsV2.red,
+              color: AppColors.red,
             ),
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(5, 2, 0, 2),
             child: Text(
               'LIVE',
-              style: AppFontsV2.playerLive,
+              style: AppFonts.playerLive,
             ),
           )
         ]
@@ -516,7 +516,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
                     child: _chromeCastButton,
                   ),
                   AppIconButton(
-                    icon: AppIconsV2.cogSmall,
+                    icon: AppIcons.cogSmall,
                     iconSize: 24,
                     onPressed: _showSettings,
                   ),
@@ -528,7 +528,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     AppIconButton(
-                      icon: AppIconsV2.prev,
+                      icon: AppIcons.prev,
                       iconSize: 24,
                       onPressed: widget.toPrevChannel,
                     ),
@@ -538,14 +538,14 @@ class _HLSPlayerState extends State<HLSPlayer> {
                         width: 48,
                       ) : AppIconButton(
                         icon: _controller.value.isPlaying
-                            ? AppIconsV2.pause
-                            : AppIconsV2.play,
+                            ? AppIcons.pause
+                            : AppIcons.play,
                         iconSize: 48,
                         onPressed: _togglePlay,
                       ),
                     ),
                     AppIconButton(
-                      icon: AppIconsV2.next,
+                      icon: AppIcons.next,
                       iconSize: 24,
                       onPressed: widget.toNextChannel,
                     ),
@@ -572,8 +572,8 @@ class _HLSPlayerState extends State<HLSPlayer> {
                     padding: EdgeInsets.only(left: 24),
                     child: AppIconButton(
                       icon: _fullscreen
-                          ? AppIconsV2.smallScreen
-                          : AppIconsV2.fullScreen,
+                          ? AppIcons.smallScreen
+                          : AppIcons.fullScreen,
                       onPressed: _toggleFullScreen,
                     ),
                   ),
@@ -596,9 +596,9 @@ class _HLSPlayerState extends State<HLSPlayer> {
         children: [
           Padding(
             padding: EdgeInsets.only(bottom: 5),
-            child: Icon(icon, color: AppColorsV2.iconColor, size: 24,),
+            child: Icon(icon, color: AppColors.iconColor, size: 24,),
           ),
-          Text(value, style: AppFontsV2.midText,),
+          Text(value, style: AppFonts.midText,),
         ],
       ),
     );
@@ -644,7 +644,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Widget get _lock {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColorsV2.blockBg,
+        color: AppColors.blockBg,
         borderRadius: BorderRadius.circular(8),
       ),
       child: SizedBox(
@@ -652,7 +652,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
         height: 64,
         child: Padding(
           padding: EdgeInsets.all(8),
-          child: AppIconsV2.lockBig,
+          child: AppIcons.lockBig,
         ),
       ),
     );
@@ -670,7 +670,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   Widget get _fullscreenPlayer {
     return Material(
-      color: AppColorsV2.black,
+      color: AppColors.black,
       child: Stack(
         children: [
           Center(
@@ -691,7 +691,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
     return AspectRatio(
       aspectRatio: _ratio.value,
       child: Material(
-        color: AppColorsV2.black,
+        color: AppColors.black,
         child: Stack(
           children: [
             _controller == null 
@@ -715,8 +715,8 @@ class _HLSPlayerState extends State<HLSPlayer> {
             child: Center(
               child: _controller == null ? null : AppIconButton(
                 icon: _controller.value.isPlaying
-                    ? AppIconsV2.pause
-                    : AppIconsV2.play,
+                    ? AppIcons.pause
+                    : AppIcons.play,
                 onPressed: _togglePlay,
               ),
             ),
@@ -730,7 +730,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
     return AspectRatio(
       aspectRatio: _ratio.value,
       child: Material(
-        color: AppColorsV2.black,
+        color: AppColors.black,
         child: Stack(
           children: _controller == null ? [
             _loaderBlock

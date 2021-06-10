@@ -84,13 +84,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
       onTap: _logoutDialog,
       child: Container(
         decoration: BoxDecoration(
-          color: AppColorsV2.item,
+          color: AppColors.item,
           borderRadius: BorderRadius.circular(5),
         ),
         padding: EdgeInsets.fromLTRB(16, 6, 16, 10),
         child: Text(
           locale(context).settingsLogout,
-          style: AppFontsV2.smallButton,
+          style: AppFonts.smallButton,
           textAlign: TextAlign.center,
         ),
       ),
@@ -145,7 +145,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColorsV2.darkBg,
+      backgroundColor: AppColors.darkBg,
       appBar: _appBar,
       body: _body,
       bottomNavigationBar: _bottomNavBar,

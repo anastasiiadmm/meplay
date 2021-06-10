@@ -39,8 +39,8 @@ class CategoryCarousel extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: genre.id == activeId
-                      ? AppColorsV2.purple
-                      : AppColorsV2.decorativeGray,
+                      ? AppColors.purple
+                      : AppColors.decorativeGray,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: SizedBox(
@@ -49,7 +49,7 @@ class CategoryCarousel extends StatelessWidget {
                     padding: EdgeInsets.fromLTRB(10, 4, 10, 6),
                     child: Text(
                       genre.localName(context),
-                      style: AppFontsV2.itemTitle,
+                      style: AppFonts.itemTitle,
                     ),
                   ),
                 ),

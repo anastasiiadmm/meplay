@@ -48,7 +48,7 @@ class NotificationTile extends StatelessWidget {
   Widget get _time {
     return Text(
       _data['startTime'],
-      style: AppFontsV2.itemTitle,
+      style: AppFonts.itemTitle,
       maxLines: 1,
     );
   }
@@ -58,7 +58,7 @@ class NotificationTile extends StatelessWidget {
       padding: EdgeInsets.only(top: 4),
       child: Text(
         _data['channelName'],
-        style: AppFontsV2.itemTextSecondary,
+        style: AppFonts.itemTextSecondary,
         maxLines: 1,
       ),
     );
@@ -69,7 +69,7 @@ class NotificationTile extends StatelessWidget {
       padding: EdgeInsets.only(top: 4),
       child: Text(
         _data['program'],
-        style: AppFontsV2.itemTextSecondary,
+        style: AppFonts.itemTextSecondary,
         maxLines: 2,
       ),
     );
@@ -79,7 +79,7 @@ class NotificationTile extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: AppColorsV2.decorativeGray),
+          bottom: BorderSide(color: AppColors.decorativeGray),
         ),
       ),
       child: SizedBox(
@@ -104,7 +104,7 @@ class NotificationTile extends StatelessWidget {
     return IconButton(
       constraints: BoxConstraints(),
       padding: EdgeInsets.zero,
-      icon: AppIconsV2.delete,
+      icon: AppIcons.delete,
       onPressed: onDelete,
     );
   }

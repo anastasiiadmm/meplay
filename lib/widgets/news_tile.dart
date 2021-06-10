@@ -18,8 +18,8 @@ class NewsTile extends StatelessWidget {
       '${newsItem.title} ${newsItem.text}',
       maxLines: 2,
       style: newsItem.isRead
-          ? AppFontsV2.textPrimaryMute
-          : AppFontsV2.textPrimary,
+          ? AppFonts.textPrimaryMute
+          : AppFonts.textPrimary,
     );
   }
 
@@ -27,7 +27,7 @@ class NewsTile extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: AppColorsV2.decorativeGray),
+          bottom: BorderSide(color: AppColors.decorativeGray),
         ),
       ),
       child: SizedBox(

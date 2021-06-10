@@ -19,7 +19,7 @@ class RadioFavoritesTile extends StatelessWidget {
     return Text(
       channel.radioName,
       maxLines: 1,
-      style: AppFontsV2.itemTitle,
+      style: AppFonts.itemTitle,
     );
   }
 
@@ -28,7 +28,7 @@ class RadioFavoritesTile extends StatelessWidget {
       padding: EdgeInsets.only(top: 4),
       child: Text(
         channel.radioFM,
-        style: AppFontsV2.itemTextSecondary,
+        style: AppFonts.itemTextSecondary,
         maxLines: 1,
       ),
     );
@@ -38,7 +38,7 @@ class RadioFavoritesTile extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: AppColorsV2.decorativeGray),
+          bottom: BorderSide(color: AppColors.decorativeGray),
         ),
       ),
       child: SizedBox(
@@ -63,7 +63,7 @@ class RadioFavoritesTile extends StatelessWidget {
     return IconButton(
       constraints: BoxConstraints(),
       padding: EdgeInsets.zero,
-      icon: AppIconsV2.delete,
+      icon: AppIcons.delete,
       onPressed: onDelete,
     );
   }

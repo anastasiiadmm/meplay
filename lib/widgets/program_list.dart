@@ -20,7 +20,7 @@ class ProgramList extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(1, 6, 1, 1),
       child: Circle.dot(
         radius: 4,
-        color: AppColorsV2.red,
+        color: AppColors.red,
       ),
     );
   }
@@ -50,7 +50,7 @@ class ProgramList extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(left: 16),
       child: IconButton(
-        icon: AppIconsV2.more,
+        icon: AppIcons.more,
         onPressed: () => action(program),
         constraints: BoxConstraints(),
         padding: EdgeInsets.zero,
@@ -60,9 +60,9 @@ class ProgramList extends StatelessWidget {
   }
 
   Widget _programTile(Program program, int id) {
-    TextStyle font = id > 1 ? AppFontsV2.program
-        : id < 1 ? AppFontsV2.programMute
-        : AppFontsV2.programLive;
+    TextStyle font = id > 1 ? AppFonts.program
+        : id < 1 ? AppFonts.programMute
+        : AppFonts.programLive;
     return Padding(
       padding: EdgeInsets.only(bottom: 10),
       child: Row(

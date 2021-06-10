@@ -168,7 +168,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: EdgeInsets.only(bottom: 16),
         child: Text(
           l.profileChannelList,
-          style: AppFontsV2.blockTitle,
+          style: AppFonts.blockTitle,
         ),
       ),
     ];
@@ -178,21 +178,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
       for(int i = 0; i < maxChannels; i++) {
         children.add(Text(
           _channels[i].title,
-          style: AppFontsV2.midText,
+          style: AppFonts.midText,
         ));
       }
     } else {
       List<String> titles = _channelTitles;
       if(titles == null) children.add(Text(
         l.packetChannelsEmpty,
-        style: AppFontsV2.textSecondary,
+        style: AppFonts.textSecondary,
         textAlign: TextAlign.center,
       ));
       else {
         for(int i = 0; i < _channelTitles.length; i++) {
           children.add(Text(
             _channelTitles[i],
-            style: AppFontsV2.midText,
+            style: AppFonts.midText,
           ));
         }
       }
@@ -244,7 +244,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Padding(
           padding: EdgeInsets.only(right: 3),
           child: AppIconButton(
-            icon: AppIconsV2.cog,
+            icon: AppIcons.cog,
             onPressed: _openSettings,
             padding: EdgeInsets.all(8),
           ),
@@ -259,7 +259,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColorsV2.darkBg,
+      backgroundColor: AppColors.darkBg,
       appBar: _appBar,
       body: _body,
       bottomNavigationBar: _bottomNavBar,

@@ -244,7 +244,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   Widget get _favButton => IconButton(
-    icon: _favorite ? AppIconsV2.starActive : AppIconsV2.star,
+    icon: _favorite ? AppIcons.starActive : AppIcons.star,
     padding: EdgeInsets.all(8),
     iconSize: 28,
     constraints: BoxConstraints(),
@@ -303,7 +303,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       padding: EdgeInsets.all(16),
       child: Text(
         text,
-        style: AppFontsV2.textSecondary,
+        style: AppFonts.textSecondary,
         textAlign: TextAlign.center,
       ),
     );
@@ -346,7 +346,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   Widget build(BuildContext context) {
     if (_pipMode) return _player;
     return Scaffold(
-      backgroundColor: AppColorsV2.darkBg,
+      backgroundColor: AppColors.darkBg,
       appBar: _fullscreen ? null : _appBar,
       body: _body,
       bottomNavigationBar: _fullscreen ? null : _bottomBar,

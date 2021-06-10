@@ -25,7 +25,7 @@ class SquareList extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.all(10),
-          child: AppIconsV2.logoPlaceholder,
+          child: AppIcons.logoPlaceholder,
         ),
         ColoredBox(
           color: Color.fromRGBO(255, 255, 255, 0.6),
@@ -33,7 +33,7 @@ class SquareList extends StatelessWidget {
             child: Text(
               channel.title,
               textAlign: TextAlign.center,
-              style: AppFontsV2.placeholderTextLarge,
+              style: AppFonts.placeholderTextLarge,
               maxLines: 3,
             ),
           ),
@@ -59,13 +59,13 @@ class SquareList extends StatelessWidget {
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(8),
         ),
-        color: AppColorsV2.overlay,
+        color: AppColors.overlay,
       ),
       child: SizedBox(
         width: 28,
         height: 28,
         child: Center(
-          child: AppIconsV2.lock,
+          child: AppIcons.lock,
         ),
       ),
     );
@@ -75,7 +75,7 @@ class SquareList extends StatelessWidget {
     return AspectRatio(
       aspectRatio: 1,
       child: Material(
-        color: AppColorsV2.white,
+        color: AppColors.white,
         child: InkWell(
           onTap: () => channel.open(context),
           child: Stack(

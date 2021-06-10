@@ -81,7 +81,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
           padding: EdgeInsets.only(right: 6, left: 1),
           child: AppIconButton(
             onPressed: _openDrawer,
-            icon: AppIconsV2.burger,
+            icon: AppIcons.burger,
             padding: EdgeInsets.all(5),
           ),
         ),
@@ -98,7 +98,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             locale(context).categories,
-            style: AppFontsV2.blockTitle,
+            style: AppFonts.blockTitle,
           ),
         ),
         Padding(
@@ -150,7 +150,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     AppLocalizations l = locale(context);
     return Drawer(
       child: ColoredBox(
-        color: AppColorsV2.decorativeGray,
+        color: AppColors.decorativeGray,
         child: SingleChildScrollView (
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -181,7 +181,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: AppColorsV2.darkBg,
+      backgroundColor: AppColors.darkBg,
       extendBody: true,
       appBar: _appBar,
       body: _body,

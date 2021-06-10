@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 
-class AppColorsV2 {
+class AppColors {
   // Will replace AppColors once all re-design is done.
   // these colors are present in the color map.
   static const purple = Color.fromRGBO(127, 88, 236, 1);
@@ -55,166 +55,166 @@ class AppColorsV2 {
   static const gradientTop = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [transparentBlack, AppColorsV2.transparent],
+    colors: [transparentBlack, AppColors.transparent],
   );
   static const gradientBottom = LinearGradient(
     begin: Alignment.bottomCenter,
     end: Alignment.topCenter,
-    colors: [transparentBlack, AppColorsV2.transparent],
+    colors: [transparentBlack, AppColors.transparent],
   );
 }
 
 
-class AppFontsV2 {
+class AppFonts {
   // large (common) text
   static const textPrimary = TextStyle(fontFamily: 'Lato',
     fontSize: 18, fontWeight: FontWeight.normal,
-    height: 24/18, color: AppColorsV2.textPrimary,);
+    height: 24/18, color: AppColors.textPrimary,);
   static const textPrimaryMute = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 18,
-    height: 24/18, color: AppColorsV2.textPrimaryMute,);
+    height: 24/18, color: AppColors.textPrimaryMute,);
   static const textSecondary = TextStyle(fontFamily: 'Lato',
     fontSize: 18, fontWeight: FontWeight.normal,
-    height: 24/18, color: AppColorsV2.textSecondary,);
+    height: 24/18, color: AppColors.textSecondary,);
   static const textSecondaryMute = TextStyle(fontFamily: 'Lato',
     fontSize: 18, fontWeight: FontWeight.normal,
-    height: 24/18, color: AppColorsV2.textSecondaryMute,);
+    height: 24/18, color: AppColors.textSecondaryMute,);
 
   // medium-sized text
   static const midText = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 15,
-    height: 24/15, color: AppColorsV2.textSecondary,);
+    height: 24/15, color: AppColors.textSecondary,);
 
   // small text
   static const smallText = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 13,
-    height: 15.6/13, color: AppColorsV2.textPrimary,);
+    height: 15.6/13, color: AppColors.textPrimary,);
   static const smallTextMute = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 13,
-    height: 15.6/13, color: AppColorsV2.textSecondaryMute,);
+    height: 15.6/13, color: AppColors.textSecondaryMute,);
 
   // logo
   static const largeLogo = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w900, fontSize: 50,
-    height: 50/50, color: AppColorsV2.textPrimary,);
+    height: 50/50, color: AppColors.textPrimary,);
   static const smallLogo = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w900, fontSize: 28,
-    height: 28/28, color: AppColorsV2.textPrimary,);
+    height: 28/28, color: AppColors.textPrimary,);
 
   // input-related
   static const input = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.normal, fontSize: 18,
-    height: 24/18, color: AppColorsV2.inputText,);
+    height: 24/18, color: AppColors.inputText,);
   static const inputPlaceholder = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.normal, fontSize: 18,
-    height: 24/18, color: AppColorsV2.inputPlaceholder,);
+    height: 24/18, color: AppColors.inputPlaceholder,);
   static const inputError = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 13,
-    height: 15.6/13, color: AppColorsV2.red,);
+    height: 15.6/13, color: AppColors.red,);
   static const search = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 15,
-    height: 20/15, color: AppColorsV2.searchText,);
+    height: 20/15, color: AppColors.searchText,);
   static const searchPlaceholder = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 15,
-    height: 24/15, color: AppColorsV2.searchPlaceholder,);
+    height: 24/15, color: AppColors.searchPlaceholder,);
 
   // buttons
   static const largeButton = TextStyle(fontFamily: 'Lato',
     fontSize: 18, fontWeight: FontWeight.w700,
-    height: 24/18, color: AppColorsV2.text,);
+    height: 24/18, color: AppColors.text,);
   static const largeButtonDisabled = TextStyle(fontFamily: 'Lato',
     fontSize: 18, fontWeight: FontWeight.w700,
-    height: 24/18, color: AppColorsV2.textDisabled,);
+    height: 24/18, color: AppColors.textDisabled,);
   static const smallButton = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w700, fontSize: 16,
-    height: 24/16, color: AppColorsV2.textPrimary,);
+    height: 24/16, color: AppColors.textPrimary,);
 
   // items and blocks
   static const blockTitle = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w800, fontSize: 18,
-    height: 24/18, color: AppColorsV2.textPrimary,);
+    height: 24/18, color: AppColors.textPrimary,);
   static const itemTitle = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w500, fontSize: 18,
-    height: 24/18, color: AppColorsV2.textPrimary,);
+    height: 24/18, color: AppColors.textPrimary,);
   static const itemTextPrimary = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 15,
-    height: 18/15, color: AppColorsV2.textPrimary,);
+    height: 18/15, color: AppColors.textPrimary,);
   static const itemTextSecondary = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 15,
-    height: 18/15, color: AppColorsV2.textSecondary,);
+    height: 18/15, color: AppColors.textSecondary,);
 
   // other titles
   static const settingsTitle = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 15,
-    height: 24/15, color: AppColorsV2.textSecondaryMute,);
+    height: 24/15, color: AppColors.textSecondaryMute,);
   static const screenTitle = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w700, fontSize: 20,
-    height: 28/20, color: AppColorsV2.textPrimary,);
+    height: 28/20, color: AppColors.textPrimary,);
   static const introTitle = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w900, fontSize: 32,
-    height: 40/32, color: AppColorsV2.textPrimary,);
+    height: 40/32, color: AppColors.textPrimary,);
 
   // modals
   static const modalTitle = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w700, fontSize: 18,
-    height: 24/18, color: AppColorsV2.textPrimary,);
+    height: 24/18, color: AppColors.textPrimary,);
   static const modalText = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 13,
-    height: 15.6/13, color: AppColorsV2.textSecondary,);
+    height: 15.6/13, color: AppColors.textSecondary,);
   static const modalButtonPrimary = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w500, fontSize: 18,
-    height: 24/18, color: AppColorsV2.textPrimary,);
+    height: 24/18, color: AppColors.textPrimary,);
   static const modalButtonSecondary = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 18,
-    height: 24/18, color: AppColorsV2.textPrimary,);
+    height: 24/18, color: AppColors.textPrimary,);
 
   // channel program
   static const program = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 16,
-    height: 20/16, color: AppColorsV2.textSecondary,);
+    height: 20/16, color: AppColors.textSecondary,);
   static const programLive = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w500, fontSize: 16,
-    height: 20/16, color: AppColorsV2.textSecondary,);
+    height: 20/16, color: AppColors.textSecondary,);
   static const programMute = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 16,
-    height: 20/16, color: AppColorsV2.textSecondaryMute,);
+    height: 20/16, color: AppColors.textSecondaryMute,);
 
   // other texts
   static const tabSwitch = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 13,
-    height: 18/13, color: AppColorsV2.textPrimaryMute,);
+    height: 18/13, color: AppColors.textPrimaryMute,);
   static const tabSwitchActive = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w700, fontSize: 13,
-    height: 18/13, color: AppColorsV2.purple,);
+    height: 18/13, color: AppColors.purple,);
   static const tabbar = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w500, fontSize: 11,
-    height: 13/11, color: AppColorsV2.textSecondary,);
+    height: 13/11, color: AppColors.textSecondary,);
   static const link = TextStyle(fontFamily: 'Lato',
     fontSize: 18, fontWeight: FontWeight.w400,
-    height: 24/18, color: AppColorsV2.purple,);
+    height: 24/18, color: AppColors.purple,);
   static const notificationCount = TextStyle(fontFamily: 'Lato',
     fontSize: 10, fontWeight: FontWeight.w700,
-    height: 12/10, color: AppColorsV2.textPrimary,);
+    height: 12/10, color: AppColors.textPrimary,);
   static const placeholderText = TextStyle(fontFamily: 'Lato',
     fontSize: 14, fontWeight: FontWeight.w400,
-    height: 20/14, color: AppColorsV2.item,
+    height: 20/14, color: AppColors.item,
   );
   static const placeholderTextLarge = TextStyle(fontFamily: 'Lato',
     fontSize: 16, fontWeight: FontWeight.w400,
-    height: 24/16, color: AppColorsV2.item,
+    height: 24/16, color: AppColors.item,
   );
 
   // player
   static const fullscreenProgram = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 16,
-    height: 24/16, color: AppColorsV2.textSecondary,);
+    height: 24/16, color: AppColors.textSecondary,);
   static const playerLive = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 10,
-    height: 10/10, color: AppColorsV2.textPrimary,);
+    height: 10/10, color: AppColors.textPrimary,);
 }
 
 
-class AppIconsV2 {
+class AppIcons {
   static final arrowLeft = SvgPicture.asset('assets/icons/new/arrow_left.svg', width: 28, height: 28,);
   static final bell = SvgPicture.asset('assets/icons/new/bell.svg', width: 28, height: 28,);
   static final burger = SvgPicture.asset('assets/icons/new/burger.svg', width: 28, height: 28,);

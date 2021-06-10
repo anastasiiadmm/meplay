@@ -58,14 +58,14 @@ class _PacketCarouselState extends State<PacketCarousel> {
     Widget dot;
     if (id == _activeId) {
       dot = Circle.dot(
-        color: AppColorsV2.purple,
+        color: AppColors.purple,
         radius: 4,
       );
     } else {
       dot = GestureDetector(
         onTap: () => _switchTo(id),
         child: Circle.dot(
-          color: AppColorsV2.decorativeGray,
+          color: AppColors.decorativeGray,
           radius: 4,
         ),
       );
@@ -101,10 +101,10 @@ class _PacketCarouselState extends State<PacketCarousel> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: AppColorsV2.decorativeGray,
+          color: AppColors.decorativeGray,
           boxShadow: [
             BoxShadow(
-              color: AppColorsV2.darkShadow,
+              color: AppColors.darkShadow,
               offset: Offset(0, 10),
               blurRadius: 35,
             ),
@@ -120,20 +120,20 @@ class _PacketCarouselState extends State<PacketCarousel> {
                 children: [
                   Text(
                     '${l.packet} ${packet.name}',
-                    style: AppFontsV2.blockTitle,
+                    style: AppFonts.blockTitle,
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 4),
                     child: Text(
                       packet.priceLabel,
-                      style: AppFontsV2.itemTextPrimary,
+                      style: AppFonts.itemTextPrimary,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 4),
                     child: Text(
                       packet.channelDisplay,
-                      style: AppFontsV2.itemTextSecondary,
+                      style: AppFonts.itemTextSecondary,
                     ),
                   ),
                   Padding(
@@ -142,8 +142,8 @@ class _PacketCarouselState extends State<PacketCarousel> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
                         color: packet.isActive
-                            ? AppColorsV2.red
-                            : AppColorsV2.green,
+                            ? AppColors.red
+                            : AppColors.green,
                       ),
                       child: GestureDetector(
                         onTap: packet.isActive
@@ -153,7 +153,7 @@ class _PacketCarouselState extends State<PacketCarousel> {
                           padding: EdgeInsets.fromLTRB(16, 6, 16, 10),
                           child: Text(
                             packet.isActive ? l.packetDisable : l.packetEnable,
-                            style: AppFontsV2.smallButton,
+                            style: AppFonts.smallButton,
                           ),
                         ),
                       ),
@@ -168,8 +168,8 @@ class _PacketCarouselState extends State<PacketCarousel> {
               child: Circle(
                 radius: 20,
                 padding: EdgeInsets.all(8),
-                child: AppIconsV2.check,
-                color: AppColorsV2.white,
+                child: AppIcons.check,
+                color: AppColors.white,
               ),
             ),
           ],

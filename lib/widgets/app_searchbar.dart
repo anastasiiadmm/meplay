@@ -92,10 +92,10 @@ class _AppSearchBarState extends State<AppSearchBar> {
             },
             child: TextFormField(
               keyboardType: TextInputType.text,
-              style: AppFontsV2.search,
+              style: AppFonts.search,
               controller: _controller,
               onFieldSubmitted: widget.onSearchSubmit,
-              cursorColor: AppColorsV2.white,
+              cursorColor: AppColors.white,
               textInputAction: TextInputAction.search,
               cursorHeight: 21,
               decoration: InputDecoration(
@@ -104,8 +104,8 @@ class _AppSearchBarState extends State<AppSearchBar> {
                   horizontal: 32,
                 ),
                 hintText: locale(context).searchText,
-                hintStyle: AppFontsV2.searchPlaceholder,
-                fillColor: AppColorsV2.blockBg,
+                hintStyle: AppFonts.searchPlaceholder,
+                fillColor: AppColors.blockBg,
                 isDense: true,
                 filled: true,
                 border: OutlineInputBorder(
@@ -118,12 +118,12 @@ class _AppSearchBarState extends State<AppSearchBar> {
           Positioned(
             top: 8,
             left: 8,
-            child: AppIconsV2.searchInput,
+            child: AppIcons.searchInput,
           ),
           Align(
             alignment: Alignment.centerRight,
             child: AppIconButton(
-              icon: AppIconsV2.clear,
+              icon: AppIcons.clear,
               onPressed: _clearSearch,
               padding: EdgeInsets.all(8),
             ),
@@ -137,7 +137,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
     List<Widget> actions = [
       AppIconButton(
         onPressed: _toggleSearch,
-        icon: AppIconsV2.search,
+        icon: AppIcons.search,
         padding: EdgeInsets.all(5),
       ),
     ];
@@ -150,14 +150,14 @@ class _AppSearchBarState extends State<AppSearchBar> {
     return _search ? WillPopScope(
       onWillPop: _willPop,
       child: AppBar(
-        backgroundColor: AppColorsV2.item,
+        backgroundColor: AppColors.item,
         elevation: 0,
         automaticallyImplyLeading: false,
         leadingWidth: 50,
         toolbarHeight: widget.preferredSize.height,
         leading: AppIconButton(
           onPressed: _back,
-          icon: AppIconsV2.arrowLeft,
+          icon: AppIcons.arrowLeft,
           padding: EdgeInsets.all(8),
         ),
         title: Padding(

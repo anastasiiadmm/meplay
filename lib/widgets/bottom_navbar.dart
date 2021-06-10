@@ -35,29 +35,29 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      backgroundColor: AppColorsV2.navBg,
+      backgroundColor: AppColors.navBg,
       onTap: (int index) => _onNavTap(context, index),
       currentIndex: NavItems.hasIndex(showIndex) ? showIndex : 0,
-      selectedLabelStyle: AppFontsV2.tabbar,
-      unselectedLabelStyle: AppFontsV2.tabbar,
-      selectedItemColor: AppColorsV2.textSecondary,
-      unselectedItemColor: AppColorsV2.textSecondary,
+      selectedLabelStyle: AppFonts.tabbar,
+      unselectedLabelStyle: AppFonts.tabbar,
+      selectedItemColor: AppColors.textSecondary,
+      unselectedItemColor: AppColors.textSecondary,
       items: [
         BottomNavigationBarItem(
-          icon: AppIconsV2.home,
+          icon: AppIcons.home,
           activeIcon: NavItems.hasIndex(showIndex)
-              ? AppIconsV2.homeActive
-              : AppIconsV2.home,
+              ? AppIcons.homeActive
+              : AppIcons.home,
           label: locale(context).tabbarMain,
         ),
         BottomNavigationBarItem(
-          icon: AppIconsV2.heart,
-          activeIcon: AppIconsV2.heartActive,
+          icon: AppIcons.heart,
+          activeIcon: AppIcons.heartActive,
           label: locale(context).tabbarFavorites,
         ),
         BottomNavigationBarItem(
-          icon: AppIconsV2.user,
-          activeIcon: AppIconsV2.userActive,
+          icon: AppIcons.user,
+          activeIcon: AppIcons.userActive,
           label: locale(context).tabbarProfile,
         ),
       ],

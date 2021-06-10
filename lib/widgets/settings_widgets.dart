@@ -15,7 +15,7 @@ class SettingsTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 14, 16, 4),
-      child: Text(text, style: AppFontsV2.settingsTitle),
+      child: Text(text, style: AppFonts.settingsTitle),
     );
   }
 }
@@ -44,7 +44,7 @@ class SettingsTile extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return Material(
-      color: AppColorsV2.blockBg,
+      color: AppColors.blockBg,
       child: _wrapTap(
         Padding(
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -53,12 +53,12 @@ class SettingsTile extends StatelessWidget {
               Expanded(
                 child: Text(
                   text,
-                  style: AppFontsV2.textPrimary,
+                  style: AppFonts.textPrimary,
                 ),
               ),
               if(active) Padding(
                 padding: EdgeInsets.only(left: 10),
-                child: AppIconsV2.check,
+                child: AppIcons.check,
               ),
             ],
           ),

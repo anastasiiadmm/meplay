@@ -43,7 +43,7 @@ class _RadioChannelsScreenState extends State<RadioChannelsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColorsV2.darkBg,
+      backgroundColor: AppColors.darkBg,
       extendBody: true,
       extendBodyBehindAppBar: true,
       appBar: _appBar,

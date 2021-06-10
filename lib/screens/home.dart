@@ -209,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Text(
         text,
-        style: AppFontsV2.textSecondary,
+        style: AppFonts.textSecondary,
         textAlign: TextAlign.center,
       ),
     );
@@ -224,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             locale(context).homeRecent,
-            style: AppFontsV2.blockTitle,
+            style: AppFonts.blockTitle,
           ),
         ),
         Padding(
@@ -255,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             locale(context).homePopular,
-            style: AppFontsV2.blockTitle,
+            style: AppFonts.blockTitle,
           ),
         ),
         Padding(
@@ -316,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
       width: 48,
       height: 48,
       child: Material(
-        color: AppColorsV2.iconBg,
+        color: AppColors.iconBg,
         type: MaterialType.circle,
         clipBehavior: Clip.hardEdge,
         child: InkWell(
@@ -329,7 +329,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Stack(
                   children: [
                     Center(
-                      child: AppIconsV2.bell,
+                      child: AppIcons.bell,
                     ),
                     if(newsCount > 0) Positioned(
                       top: 8,
@@ -337,7 +337,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          color: AppColorsV2.purple,
+                          color: AppColors.purple,
                         ),
                         child: SizedBox(
                           width: 16,
@@ -345,7 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Center(
                             child: Text(
                               newsCount.toString(),
-                              style: AppFontsV2.notificationCount,
+                              style: AppFonts.notificationCount,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -385,7 +385,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onHide: _splashHide,
       isVisible: _isSplashShowing,
     ) : Scaffold(
-      backgroundColor: AppColorsV2.darkBg,
+      backgroundColor: AppColors.darkBg,
       appBar: _appBar,
       body: _body,
       bottomNavigationBar: null,

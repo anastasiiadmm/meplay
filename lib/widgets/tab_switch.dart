@@ -63,15 +63,15 @@ class _TabSwitchState extends State<TabSwitch> {
             topRight: Radius.circular(4),
             bottomRight: Radius.circular(4),
           ),
-          color: _active == id ? AppColorsV2.text : AppColorsV2.item,
+          color: _active == id ? AppColors.text : AppColors.item,
         ),
         child: Padding(
           padding: EdgeInsets.fromLTRB(5, 4, 5, 6),
           child: Text(
             text ?? '',
             style: _active == id
-                ? AppFontsV2.tabSwitchActive
-                : AppFontsV2.tabSwitch,
+                ? AppFonts.tabSwitchActive
+                : AppFonts.tabSwitch,
             textAlign: TextAlign.center,
             maxLines: 1,
           ),
@@ -94,7 +94,7 @@ class _TabSwitchState extends State<TabSwitch> {
           SizedBox(
             width: 1,
             child: ColoredBox(
-              color: AppColorsV2.blockBg,
+              color: AppColors.blockBg,
             ),
           ),
           Expanded(

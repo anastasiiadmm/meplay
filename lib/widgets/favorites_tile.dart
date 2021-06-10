@@ -29,7 +29,7 @@ class FavoritesTile extends StatelessWidget {
   Widget get _title {
     return Text(
       channel.name,
-      style: AppFontsV2.itemTitle,
+      style: AppFonts.itemTitle,
     );
   }
 
@@ -41,7 +41,7 @@ class FavoritesTile extends StatelessWidget {
           padding: EdgeInsets.only(top: 4),
           child: Text(
             snapshot.data == null ? '' : snapshot.data.timeTitle,
-            style: AppFontsV2.itemTextSecondary,
+            style: AppFonts.itemTextSecondary,
             maxLines: 2,
           ),
         );
@@ -53,7 +53,7 @@ class FavoritesTile extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: AppColorsV2.decorativeGray),
+          bottom: BorderSide(color: AppColors.decorativeGray),
         ),
       ),
       child: SizedBox(
@@ -77,7 +77,7 @@ class FavoritesTile extends StatelessWidget {
     return IconButton(
       constraints: BoxConstraints(),
       padding: EdgeInsets.zero,
-      icon: AppIconsV2.delete,
+      icon: AppIcons.delete,
       onPressed: onDelete,
     );
   }

@@ -96,7 +96,7 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColorsV2.darkBg,
+      backgroundColor: AppColors.darkBg,
       appBar: _appBar,
       body: _body,
       bottomNavigationBar: _bottomBar,

@@ -216,12 +216,12 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
 
   Widget get _appBar {
     return AppBar(
-      backgroundColor: AppColorsV2.transparent,
+      backgroundColor: AppColors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
       leading: IconButton(
         onPressed: _back,
-        icon: AppIconsV2.chevronLeft,
+        icon: AppIcons.chevronLeft,
       ),
     );
   }
@@ -248,7 +248,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
         _waitingForSms
             ? locale(context).loginSms
             : locale(context).loginLogin,
-        style: AppFontsV2.textPrimary,
+        style: AppFonts.textPrimary,
         textAlign: TextAlign.center,
       ),
     );
@@ -261,7 +261,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
         child: TextFormField(
           inputFormatters: [_waitingForSms ? _codeMask : _phoneMask],
           keyboardType: TextInputType.phone,
-          style: AppFontsV2.input,
+          style: AppFonts.input,
           textAlign: TextAlign.center,
           controller: _inputController,
           onFieldSubmitted: _fieldSubmit,
@@ -274,23 +274,23 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
               ? AutofillHints.oneTimeCode
               : AutofillHints.telephoneNumber,
           ],
-          cursorColor: AppColorsV2.itemFocus,
+          cursorColor: AppColors.itemFocus,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
             hintText: _waitingForSms
                 ? LoginScreen.smsHint
                 : LoginScreen.loginHint,
-            hintStyle: AppFontsV2.inputPlaceholder,
-            fillColor: AppColorsV2.blockBg,
+            hintStyle: AppFonts.inputPlaceholder,
+            fillColor: AppColors.blockBg,
             filled: true,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: _error == null
-                  ? AppColorsV2.item : AppColorsV2.red),
+                  ? AppColors.item : AppColors.red),
               borderRadius: BorderRadius.circular(10),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: _error == null
-                  ? AppColorsV2.itemFocus : AppColorsV2.red),
+                  ? AppColors.itemFocus : AppColors.red),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
@@ -304,7 +304,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
       padding: EdgeInsets.fromLTRB(0, 3.2, 0, 3.2),
       child: Text(
         _error,
-        style: AppFontsV2.inputError,
+        style: AppFonts.inputError,
         textAlign: TextAlign.center,
       ),
     );
@@ -317,8 +317,8 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
         width: double.infinity,
         child: FlatButton(
           onPressed: _allowContinue ? _continue : null,
-          color: AppColorsV2.purple,
-          disabledColor: AppColorsV2.purpleDisabled,
+          color: AppColors.purple,
+          disabledColor: AppColors.purpleDisabled,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
             side: BorderSide.none,
@@ -327,8 +327,8 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
           child: Text(
             locale(context).loginContinue,
             style: _allowContinue
-                ? AppFontsV2.largeButton
-                : AppFontsV2.largeButtonDisabled,
+                ? AppFonts.largeButton
+                : AppFonts.largeButtonDisabled,
           ),
         ),
       ),
@@ -343,11 +343,11 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
         text: TextSpan(
           text: locale(context).loginSmsResend,
           recognizer: _sendSmsTapDetector,
-          style: AppFontsV2.smallText,
+          style: AppFonts.smallText,
         ),
       ) : Text (
         locale(context).loginSmsWait + ' ' + _timeDisplay,
-        style: AppFontsV2.smallTextMute,
+        style: AppFonts.smallTextMute,
         textAlign: TextAlign.center,
       ),
     );
@@ -364,7 +364,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
         textAlign: TextAlign.center,
         text: TextSpan(
           text: locale(context).userAgreement,
-          style: AppFontsV2.link,
+          style: AppFonts.link,
           recognizer: _userAgreementTapDetector,
         ),
       ),
@@ -411,7 +411,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
     return WillPopScope(
       onWillPop: _willPop,
       child: Scaffold(
-        backgroundColor: AppColorsV2.darkBg,
+        backgroundColor: AppColors.darkBg,
         resizeToAvoidBottomInset: false,
         appBar: _appBar,
         extendBodyBehindAppBar: true,

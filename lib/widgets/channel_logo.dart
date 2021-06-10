@@ -34,7 +34,7 @@ class ChannelLogo extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.all(size.padding / 1.5),
-          child: AppIconsV2.logoPlaceholder,
+          child: AppIcons.logoPlaceholder,
         ),
         if(textPlaceholder) ColoredBox(
           color: Color.fromRGBO(255, 255, 255, 0.6),
@@ -42,7 +42,7 @@ class ChannelLogo extends StatelessWidget {
             child: Text(
               channel.title,
               textAlign: TextAlign.center,
-              style: AppFontsV2.placeholderText,
+              style: AppFonts.placeholderText,
               maxLines: 3,
             ),
           ),
@@ -69,13 +69,13 @@ class ChannelLogo extends StatelessWidget {
           topRight: Radius.circular(size.radius),
           bottomLeft: Radius.circular(size.radius),
         ),
-        color: AppColorsV2.overlay,
+        color: AppColors.overlay,
       ),
       child: SizedBox(
         width: size.lockSize,
         height: size.lockSize,
         child: Center(
-          child: AppIconsV2.lock,
+          child: AppIcons.lock,
         ),
       ),
     );
@@ -86,7 +86,7 @@ class ChannelLogo extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(size.radius),
-        color: AppColorsV2.channelBg,
+        color: AppColors.channelBg,
       ),
       child: SizedBox(
         width: size.size,
