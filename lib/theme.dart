@@ -215,39 +215,39 @@ class AppFonts {
 
 
 class AppIcons {
-  static final arrowLeft = SvgPicture.asset('assets/icons/new/arrow_left.svg', width: 28, height: 28,);
-  static final bell = SvgPicture.asset('assets/icons/new/bell.svg', width: 28, height: 28,);
-  static final burger = SvgPicture.asset('assets/icons/new/burger.svg', width: 28, height: 28,);
-  static final check = SvgPicture.asset('assets/icons/new/check.svg', width: 24, height: 24,);
-  static final chevronLeft = SvgPicture.asset('assets/icons/new/chevron_left.svg', width: 28, height: 28,);
-  static final chromecast = SvgPicture.asset('assets/icons/new/chromecast.svg', width: 24, height: 24,);
-  static final clear = SvgPicture.asset('assets/icons/new/clear.svg', width: 16, height: 16,);
-  static final clearBig = SvgPicture.asset('assets/icons/new/clear_big.svg', width: 24, height: 24,);
-  static final close = SvgPicture.asset('assets/icons/new/close.svg', width: 18, height: 18,);
-  static final cog = SvgPicture.asset('assets/icons/new/cog.svg', width: 28, height: 28,);
-  static final cogSmall = SvgPicture.asset('assets/icons/new/cog_small.svg', width: 24, height: 24,);
-  static final delete = SvgPicture.asset('assets/icons/new/delete.svg', width: 24, height: 24,);
-  static final fullScreen = SvgPicture.asset('assets/icons/new/full_screen.svg', width: 24, height: 24,);
-  static final heart = SvgPicture.asset('assets/icons/new/heart.svg', width: 28, height: 28,);
-  static final heartActive = SvgPicture.asset('assets/icons/new/heart_active.svg', width: 28, height: 28,);
-  static final home = SvgPicture.asset('assets/icons/new/home.svg', width: 28, height: 28,);
-  static final homeActive = SvgPicture.asset('assets/icons/new/home_active.svg', width: 28, height: 28,);
-  static final loader = SvgPicture.asset('assets/icons/new/loader.svg', width: 28, height: 28,);
-  static final lock = SvgPicture.asset('assets/icons/new/lock.svg', width: 20, height: 20,);
-  static final lockBig = SvgPicture.asset('assets/icons/new/lock_big.svg', width: 48, height: 48,);
-  static final next = SvgPicture.asset('assets/icons/new/next.svg', width: 24, height: 24,);
-  static final play = SvgPicture.asset('assets/icons/new/play.svg', width: 48, height: 48,);
-  static final pause = SvgPicture.asset('assets/icons/new/pause.svg', width: 48, height: 48,);
-  static final prev = SvgPicture.asset('assets/icons/new/prev.svg', width: 24, height: 24,);
-  static final search = SvgPicture.asset('assets/icons/new/search.svg', width: 28, height: 28,);
-  static final searchInput = SvgPicture.asset('assets/icons/new/search_input.svg', width: 16, height: 16,);
-  static final smallScreen = SvgPicture.asset('assets/icons/new/small_screen.svg', width: 24, height: 24,);
-  static final star = SvgPicture.asset('assets/icons/new/star.svg', width: 28, height: 28,);
-  static final starActive = SvgPicture.asset('assets/icons/new/star_active.svg', width: 28, height: 28,);
-  static final user = SvgPicture.asset('assets/icons/new/user.svg', width: 28, height: 28,);
-  static final userActive = SvgPicture.asset('assets/icons/new/user_active.svg', width: 28, height: 28,);
-  static final more = SvgPicture.asset('assets/icons/new/more.svg', width: 20, height: 20,);
-  static final logoPlaceholder = SvgPicture.asset('assets/icons/new/logo_placeholder.svg', width: 106, height: 122,);
+  static final arrowLeft = SvgPicture.asset('assets/icons/arrow_left.svg', width: 28, height: 28,);
+  static final bell = SvgPicture.asset('assets/icons/bell.svg', width: 28, height: 28,);
+  static final burger = SvgPicture.asset('assets/icons/burger.svg', width: 28, height: 28,);
+  static final check = SvgPicture.asset('assets/icons/check.svg', width: 24, height: 24,);
+  static final chevronLeft = SvgPicture.asset('assets/icons/chevron_left.svg', width: 28, height: 28,);
+  static final chromecast = SvgPicture.asset('assets/icons/chromecast.svg', width: 24, height: 24,);
+  static final clear = SvgPicture.asset('assets/icons/clear.svg', width: 16, height: 16,);
+  static final clearBig = SvgPicture.asset('assets/icons/clear_big.svg', width: 24, height: 24,);
+  static final close = SvgPicture.asset('assets/icons/close.svg', width: 18, height: 18,);
+  static final cog = SvgPicture.asset('assets/icons/cog.svg', width: 28, height: 28,);
+  static final cogSmall = SvgPicture.asset('assets/icons/cog_small.svg', width: 24, height: 24,);
+  static final delete = SvgPicture.asset('assets/icons/delete.svg', width: 24, height: 24,);
+  static final fullScreen = SvgPicture.asset('assets/icons/full_screen.svg', width: 24, height: 24,);
+  static final heart = SvgPicture.asset('assets/icons/heart.svg', width: 28, height: 28,);
+  static final heartActive = SvgPicture.asset('assets/icons/heart_active.svg', width: 28, height: 28,);
+  static final home = SvgPicture.asset('assets/icons/home.svg', width: 28, height: 28,);
+  static final homeActive = SvgPicture.asset('assets/icons/home_active.svg', width: 28, height: 28,);
+  static final loader = SvgPicture.asset('assets/icons/loader.svg', width: 28, height: 28,);
+  static final lock = SvgPicture.asset('assets/icons/lock.svg', width: 20, height: 20,);
+  static final lockBig = SvgPicture.asset('assets/icons/lock_big.svg', width: 48, height: 48,);
+  static final next = SvgPicture.asset('assets/icons/next.svg', width: 24, height: 24,);
+  static final play = SvgPicture.asset('assets/icons/play.svg', width: 48, height: 48,);
+  static final pause = SvgPicture.asset('assets/icons/pause.svg', width: 48, height: 48,);
+  static final prev = SvgPicture.asset('assets/icons/prev.svg', width: 24, height: 24,);
+  static final search = SvgPicture.asset('assets/icons/search.svg', width: 28, height: 28,);
+  static final searchInput = SvgPicture.asset('assets/icons/search_input.svg', width: 16, height: 16,);
+  static final smallScreen = SvgPicture.asset('assets/icons/small_screen.svg', width: 24, height: 24,);
+  static final star = SvgPicture.asset('assets/icons/star.svg', width: 28, height: 28,);
+  static final starActive = SvgPicture.asset('assets/icons/star_active.svg', width: 28, height: 28,);
+  static final user = SvgPicture.asset('assets/icons/user.svg', width: 28, height: 28,);
+  static final userActive = SvgPicture.asset('assets/icons/user_active.svg', width: 28, height: 28,);
+  static final more = SvgPicture.asset('assets/icons/more.svg', width: 20, height: 20,);
+  static final logoPlaceholder = SvgPicture.asset('assets/icons/logo_placeholder.svg', width: 106, height: 122,);
 }
 
 
