@@ -98,7 +98,7 @@ class SquareList extends StatelessWidget {
     );
   }
   
-  Widget _row(int id, int itemCount, BuildContext context) {
+  Widget _row(int id, List<Channel> channels, BuildContext context) {
     int itemId = id * 3;
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -108,13 +108,13 @@ class SquareList extends StatelessWidget {
         ),
         SizedBox(width: 1,),
         Expanded(
-          child: (itemId) < itemCount - 1
+          child: (itemId) < channels.length - 1
               ? _tile(channels[id * 3 + 1], context)
               : Container(),
         ),
         SizedBox(width: 1,),
         Expanded(
-          child: (itemId) < itemCount - 2
+          child: (itemId) < channels.length - 2
               ? _tile(channels[id * 3 + 2], context)
               : Container(),
         ),
@@ -129,10 +129,9 @@ class SquareList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Channel> channels = _filterChannels;
-    
     return ListView.separated(
       itemCount: _rowCount(channels.length),
-      itemBuilder: (context, int id) =>  _row(id, channels.length, context),
+      itemBuilder: (context, int id) =>  _row(id, channels, context),
       separatorBuilder: (context, int id) => SizedBox(height: 1,),
     );
   }
