@@ -82,7 +82,6 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/
-    - assets/icons/
     - assets/icons/new/
     - assets/images/
     - assets/images/2.0x/
@@ -111,20 +110,6 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   fonts:
-    - family: SF Pro Text
-      fonts:
-        - asset: assets/fonts/SFProText-Regular.ttf
-        - asset: assets/fonts/SFProText-Semibold.ttf
-          weight: 600
-        - asset: assets/fonts/SFProText-Bold.ttf
-          weight: 700
-    - family: SF Pro Display
-      fonts:
-        - asset: assets/fonts/SFProDisplay-Regular.ttf
-        - asset: assets/fonts/SFProDisplay-Semibold.ttf
-          weight: 600
-        - asset: assets/fonts/SFProDisplay-Bold.ttf
-          weight: 700
     - family: Lato
       fonts:
         - asset: assets/fonts/Lato-Regular.ttf
