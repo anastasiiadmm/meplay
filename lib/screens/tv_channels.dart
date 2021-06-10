@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -151,26 +150,28 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
     AppLocalizations l = locale(context);
     return Drawer(
       child: ColoredBox(
-        color: AppColorsV2.darkBg,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            SettingsBlock<Genre>(
-              title: l.categories,
-              items: Genre.genres,
-              getText: (item) => item.name,
-              onTap: _setCategory,
-              isActive: (item) => _category == null
-                  ? item.id == 0 : item == _category
-            ),
-            SettingsBlock<ChannelListType>(
-              title: l.channelListType,
-              items: ChannelListType.choices,
-              getText: (item) => item.name,
-              onTap: _setListType,
-              isActive: (item) => item == _listType,
-            ),
-          ],
+        color: AppColorsV2.decorativeGray,
+        child: SingleChildScrollView (
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              SettingsBlock<Genre>(
+                title: l.settingsCategories,
+                items: Genre.genres,
+                getText: (item) => item.name,
+                onTap: _setCategory,
+                isActive: (item) => _category == null
+                    ? item.id == 0 : item == _category
+              ),
+              SettingsBlock<ChannelListType>(
+                title: l.channelListType,
+                items: ChannelListType.choices,
+                getText: (item) => item.name,
+                onTap: _setListType,
+                isActive: (item) => item == _listType,
+              ),
+            ],
+          ),
         ),
       ),
     );
