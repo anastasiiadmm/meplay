@@ -75,7 +75,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       builder: (BuildContext context) => ConfirmDialog(
         action: () async {
           await _deleteChannel(channel);
-          return false;
+          return true;
         },
         title: l.favoritesDeleteTitle,
         text: '${l.favoritesDeleteText1} ${channel.name} ${l.favoritesDeleteText2}',
