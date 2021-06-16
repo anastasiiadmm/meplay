@@ -182,6 +182,17 @@ class Channel {
     _radioList = await loadChannels(ChannelType.radio);
   }
 
+  static Future<void> fullReload() async {
+    await Future.wait([
+      Channel.loadTv(),
+      Channel.loadRadio(),
+    ]);
+    await Future.wait([
+      Channel.loadRecent(),
+      Channel.loadPopular(),
+    ]);
+  }
+
   static Future<List<Channel>> loadChannels(ChannelType type) async {
     try {
       User user = await User.getUser();

@@ -54,14 +54,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<bool> _logout() async {
     await User.clearUser();
-    await Future.wait([
-      Channel.loadTv(),
-      Channel.loadRadio(),
-    ]);
-    await Future.wait([
-      Channel.loadRecent(),
-      Channel.loadPopular(),
-    ]);
+    await Channel.fullReload();
     Navigator.of(context).popUntil((route) => route.isFirst);
     return true;
   }

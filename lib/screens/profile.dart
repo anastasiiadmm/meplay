@@ -62,11 +62,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (exclusivePackets.contains(packet.id)) {
       for (Packet p in _packets) {
         if (p.isActive && exclusivePackets.contains(p.id)) {
-          await _disconnect(p);
+          await _disconnect(p, reload: false);
         }
       }
     }
     List<Packet> packets = await _user.addPacket(packet);
+    await Channel.fullReload();
     if (packets == null) return false;
     setState(() {
       _packets = packets;
@@ -74,8 +75,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return true;
   }
 
-  Future<bool> _disconnect(Packet packet) async {
+  Future<bool> _disconnect(Packet packet, {reload: true}) async {
     List<Packet> packets = await _user.removePacket(packet);
+    if(reload) await Channel.fullReload();
     if (packets == null) return false;
     setState(() {
       _packets = packets;
