@@ -105,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) => ConfirmDialog(
-        action: () async => await _connect(packet),
+        action: () async => await _disconnect(packet),
         title: packet.name,
         text: '${l.packetDisconnect}\n${packet.name}?',
         error: '${l.packetDisconnectError} ${packet.name}. ${l.tryLater}',
