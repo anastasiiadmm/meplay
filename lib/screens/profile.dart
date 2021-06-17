@@ -21,6 +21,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<Packet> _packets;
   List<Channel> _channels;
   int _activePacketId = 0;
+  static const _exclusivePackets = [5, 6, 7];
+  static const _premiumActiveId = 2;
 
   @override
   void initState() {
@@ -46,9 +48,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() { _user = user; });
   }
 
+  bool _isExclusive(Packet packet) => _exclusivePackets.contains(packet.id);
+
   Future<void> _loadPackets() async {
     List<Packet> packets = await _user.getPackets();
-    setState(() { _packets = packets; });
+    int activeId = 0;
+    for(Packet p in packets) {
+      if(p.isActive && _isExclusive(p)) break;
+      activeId += 1;
+    }
+    if(activeId == packets.length) activeId = _premiumActiveId;
+    setState(() {
+      _packets = packets;
+      _activePacketId = activeId;
+    });
   }
 
   Future<void> _loadChannels() async {
@@ -58,10 +71,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<bool> _connect(Packet packet) async {
     // Костыль, должно быть сделано на бэкенде.
-    const exclusivePackets = [5, 6, 7];
-    if (exclusivePackets.contains(packet.id)) {
+    if (_isExclusive(packet)) {
       for (Packet p in _packets) {
-        if (p.isActive && exclusivePackets.contains(p.id)) {
+        if(p.isActive && _isExclusive(p)) {
           await _disconnect(p, reload: false);
         }
       }
@@ -237,7 +249,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget get _appBar {
-    // TODO: refactor AppToolBar to show subtitle properly.
     AppLocalizations l = locale(context);
     return AppToolBar(
       title: _user == null ? l.profileTitle : '+${_user.username}',
