@@ -31,7 +31,7 @@ class MePlay extends StatelessWidget {
     // and no SystemOverlayStyle, as it's ignored by hidden overlays.
 
     return MaterialApp(
-      title: 'Me Play',
+      title: 'MePlay',
       theme: ThemeData(fontFamily: 'SF Pro Text'),
       routes: routes,
       initialRoute: Routes.home,

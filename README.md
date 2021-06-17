@@ -1,4 +1,4 @@
-# Me Play
+# MePlay
 
 TV and radio translation on the phone.
 
