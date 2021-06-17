@@ -32,7 +32,7 @@ class MePlay extends StatelessWidget {
 
     return MaterialApp(
       title: 'MePlay',
-      theme: ThemeData(fontFamily: 'SF Pro Text'),
+      theme: ThemeData(fontFamily: 'Lato'),
       routes: routes,
       initialRoute: Routes.home,
       onGenerateRoute: router,
