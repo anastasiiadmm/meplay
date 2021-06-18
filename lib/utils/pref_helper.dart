@@ -20,6 +20,8 @@ abstract class PrefKeys {
   static const recent = 'recent';
 
   static const firstLaunch = 'firstLaunch';
+
+  static const volume = 'volume';
 }
 
 

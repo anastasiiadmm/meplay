@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:me_play/utils/settings.dart';
 import 'package:screen/screen.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:expandable/expandable.dart';
@@ -17,6 +16,8 @@ import '../models.dart';
 import '../theme.dart';
 import '../utils/orientation_helper.dart';
 import '../utils/local_notification_helper.dart';
+import '../utils/settings.dart';
+import '../utils/pref_helper.dart';
 
 
 class PlayerScreen extends StatefulWidget {
@@ -46,6 +47,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   int _androidSdkLevel = 0;
   bool _pipMode = false;
   bool _favorite = false;
+  double _volume;
   static const platform = const MethodChannel('PIP_CHANNEL');
 
   @override
@@ -63,6 +65,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     print(widget.channelId);
     _initBrightness();
     _initPlatformState();
+    await _loadVolume();
     await Future.wait([
       _loadUser(),
       _loadChannel(),
@@ -190,7 +193,21 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       toPrevChannel: _toPrev,
       toNextChannel: _toNext,
       pipMode: _pipMode,
+      initialVolume: _volume,
+      onVolumeChange: _setVolume,
     );
+  }
+
+  Future<void> _loadVolume() async {
+    _volume = await PrefHelper.loadString(
+      PrefKeys.volume,
+      restore: (value) => double.tryParse(value),
+    );
+  }
+
+  void _setVolume(double volume) {
+    _volume = volume;
+    PrefHelper.saveString(PrefKeys.volume, '$volume');
   }
 
   void _toPrev() {

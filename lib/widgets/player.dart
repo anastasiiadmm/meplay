@@ -82,6 +82,8 @@ class HLSPlayer extends StatefulWidget {
   final Duration controlsTimeout;
   final Duration settingsTimeout;
   final bool pipMode;
+  final double initialVolume;
+  final void Function(double volume) onVolumeChange;
 
   @override
   HLSPlayer({
@@ -93,6 +95,8 @@ class HLSPlayer extends StatefulWidget {
     this.controlsTimeout: const Duration(seconds: 5),
     this.settingsTimeout: const Duration(seconds: 3),
     this.pipMode: false,
+    this.initialVolume,
+    this.onVolumeChange,
   }): super(key: key);
 
   @override
@@ -185,11 +189,17 @@ class _HLSPlayerState extends State<HLSPlayer> {
       } else {
         setState(() {
           _controller = controller;
-          _volume = _controller.value.volume;
-          // may be used to get default aspect ratio for video,
-          // but it may be quite "wild", so we are using our own.
-          // VideoAR.getByValue(controller.value.aspectRatio);
         });
+        if(widget.initialVolume == null) {
+          setState(() {
+            _volume = _controller.value.volume;
+          });
+        } else {
+          setState(() {
+            _volume = widget.initialVolume;
+          });
+          controller.setVolume(_volume);
+        }
         controller.play();
         _goLive();
       }
@@ -315,6 +325,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
       double volume = _volume - delta / swipeFactor;
       volume = volume.clamp(0.0, 1.0);
       _controller.setVolume(volume);
+      if(widget.onVolumeChange != null) widget.onVolumeChange(volume);
       setState(() {
         _volume = volume;
       });
