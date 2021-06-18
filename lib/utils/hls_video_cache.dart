@@ -36,17 +36,20 @@ class M3UPlaylist {
   double _bufferedDuration = 0;
   double _totalDuration = 0;
   bool _disposed = false;
+  int _maxLoad;
+  static const defaultMaxLoad = 5;
 
   M3UPlaylist(this.url, {
     bool cached: true,
     ChunkLoadMode waitMode: ChunkLoadMode.waitAll,
     Map<String, String> headers,
-  })
-      : assert(url != null),
+    int maxLoad,
+  }): assert(url != null),
         assert(cached != null),
         assert(waitMode != null),
         _cached = cached,
-        _waitMode = waitMode {
+        _waitMode = waitMode,
+        _maxLoad = maxLoad ?? defaultMaxLoad {
     if(headers != null) _headers.addAll(headers);
   }
 
@@ -154,21 +157,20 @@ class M3UPlaylist {
     final format = lines.removeAt(0);
     assert(format == M3UHeaders.format, 'Invalid playlist format');
 
-    double duration = 0;
+    double duration = M3UChunk.defaultDuration;
     int id = 0;
 
     for(String line in lines) {
+      if(id == _maxLoad) break;
       line = line.trim();
-      if (line == '') {
-        continue;
-      }
+      if (line == '') continue;
       if (line.startsWith('#')) {
         var parts = line.split(':');
         if (parts[0] == M3UHeaders.extInf) {
           parts = parts[1].split(',');
-          duration = double.tryParse(parts[0]);
+          duration = double.tryParse(parts[0]) ?? M3UChunk.defaultDuration;
         } else {
-          headers[parts[0]] = parts[1];
+          _headers[parts[0]] = parts[1];
         }
       } else {
         var chunk = M3UChunk(
@@ -184,7 +186,7 @@ class M3UPlaylist {
 
   void addChunk(M3UChunk chunk) {
     if(chunk.id > _lastChunkId) {
-      chunks.add(chunk);
+      _chunks.add(chunk);
       _lastChunkId = chunk.id;
       _totalDuration += chunk.duration;
     }
@@ -198,8 +200,8 @@ class M3UPlaylist {
 
   String get hlsString {
     List<String> lines = [M3UHeaders.format];
-    headers.forEach((key, value) => lines.add('$key:$value'));
-    chunks.where((chunk) => chunk.file != null)
+    _headers.forEach((key, value) => lines.add('$key:$value'));
+    _chunks.where((chunk) => chunk.file != null)
         .forEach((chunk) => lines.add(chunk.hlsString));
     return lines.join('\n');
   }
@@ -238,6 +240,8 @@ class M3UChunk {
   final int id;
   File _file;
   bool _disposed = false;
+  static const defaultDuration = 10.0;
+  static const intDefaultDuration = 10;
 
   M3UChunk(this.url, this.id, this.duration);
 
@@ -276,14 +280,20 @@ class HLSVideoCache {
   Timer _playlistCheckTimer;
   bool _disposed = false;
 
-  static const Duration playlistCheckTimeout = Duration(seconds: 10);
+  static final Duration playlistCheckTimeout = Duration(
+      seconds: M3UChunk.intDefaultDuration,
+  );
 
-  HLSVideoCache(url):
-    assert (url != null),
-    _playlist = M3UPlaylist(url, headers: {
-      M3UHeaders.version: '4',
-      M3UHeaders.playlistType: M3UHeaders.playlistTypeEvent,
-    });
+  HLSVideoCache(url, {int maxInitialLoad}):
+    assert(url != null),
+    _playlist = M3UPlaylist(
+      url,
+      maxLoad: maxInitialLoad,
+      headers: {
+        M3UHeaders.version: '4',
+        M3UHeaders.playlistType: M3UHeaders.playlistTypeEvent,
+      },
+    );
 
   String get path => _playlist.path;
   File get file => _playlist.file;

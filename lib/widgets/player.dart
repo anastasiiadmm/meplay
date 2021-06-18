@@ -65,15 +65,13 @@ const int swipeFactor = 200;
 // Time required to show or hide controls.
 const controlsAnimationDuration = Duration(milliseconds: 200);
 
-// Hidden live buffer where "Go Live" button jumps.
-// Twice the length of the video fragment.
-const liveBuffer = Duration(seconds: 20);
+// Hidden live buffer where "Live" button jumps.
+// at least one chunk duration is recommended.
+const liveBuffer = Duration(seconds: M3UChunk.intDefaultDuration);
 
 // Invisible scrollbar part where user can not seek manually.
-// Equals to the liveBuffer + extra 10 seconds (video fragment duration)
-// to hide buffered part on the scrollbar,
-// when a new video fragment was added to the buffer.
-const scrollBuffer = Duration(seconds: 30);
+// should be equal to live buffer size + one chunk duration.
+const scrollBuffer = Duration(seconds: M3UChunk.intDefaultDuration * 2);
 
 
 class HLSPlayer extends StatefulWidget {
@@ -175,7 +173,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   Future<void> _loadChannel() async {
-    _cache = HLSVideoCache(widget.channel.url);
+    _cache = HLSVideoCache(widget.channel.url, maxInitialLoad: 3);
     await _cache.load();
     if(!mounted) _cache.clear();
     else {
@@ -274,9 +272,9 @@ class _HLSPlayerState extends State<HLSPlayer> {
         allowScrubbing: true,
         hiddenDuration: scrollBuffer,
         colors: VideoProgressColors(
-          backgroundColor: AppColors.iconColor,
+          backgroundColor: AppColors.item,
           playedColor: AppColors.white,
-          bufferedColor: AppColors.iconColor,
+          bufferedColor: AppColors.itemFocus,
         ),
         padding: EdgeInsets.only(bottom: 3),
       ),
