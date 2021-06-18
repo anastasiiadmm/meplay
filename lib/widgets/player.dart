@@ -198,7 +198,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
           setState(() {
             _volume = widget.initialVolume;
           });
-          controller.setVolume(_volume);
+          controller.setVolume(widget.initialVolume);
         }
         controller.play();
         _goLive();

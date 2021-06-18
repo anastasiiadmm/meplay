@@ -86,7 +86,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       widget.channelType,
     );
     setState(() { _channel = channel; });
-    if(_channel.locked) _showLockedDialog();
+    if(channel.locked) _showLockedDialog();
   }
 
   void _showLockedDialog() {
@@ -218,6 +218,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       _playerKey = GlobalKey();
     });
     _loadFavorite();
+    if(channel.locked) _showLockedDialog();
   }
 
   void _toNext() {
@@ -228,6 +229,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       _playerKey = GlobalKey();
     });
     _loadFavorite();
+    if(channel.locked) _showLockedDialog();
   }
 
   void _enterPipMode() {
