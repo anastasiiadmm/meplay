@@ -22,7 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<Channel> _channels;
   int _activePacketId = 0;
   static const _exclusivePackets = [5, 6, 7];
-  static const _premiumActiveId = 2;
+  static const _premiumId = 2;
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if(p.isActive && _isExclusive(p)) break;
       activeId += 1;
     }
-    if(activeId == packets.length) activeId = _premiumActiveId;
+    if(activeId > packets.length - 1) activeId = _premiumId;
     setState(() {
       _packets = packets;
       _activePacketId = activeId;
