@@ -66,12 +66,14 @@ const int swipeFactor = 200;
 const controlsAnimationDuration = Duration(milliseconds: 200);
 
 // Hidden live buffer where "Live" button jumps.
-// at least one chunk duration is recommended.
-const liveBuffer = Duration(seconds: M3UChunk.intDefaultDuration);
+// at least one chunk duration is recommended,
+// but not greater then total chunks loaded.
+const liveBuffer = Duration(seconds: M3UChunk.intDefaultDuration * 2);
 
 // Invisible scrollbar part where user can not seek manually.
-// should be equal to live buffer size + one chunk duration.
-const scrollBuffer = Duration(seconds: M3UChunk.intDefaultDuration * 2);
+// should be equal to live buffer size + one chunk duration,
+// but not greater then total chunks loaded.
+const scrollBuffer = Duration(seconds: M3UChunk.intDefaultDuration * 3);
 
 
 class HLSPlayer extends StatefulWidget {
