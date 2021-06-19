@@ -22,6 +22,8 @@ abstract class PrefKeys {
   static const firstLaunch = 'firstLaunch';
 
   static const volume = 'volume';
+
+  static const bufferSize = 'bufferSize';
 }
 
 

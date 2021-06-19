@@ -28,6 +28,32 @@ class ChannelListType {
 }
 
 
+class VideoBufferSize {
+  final String name;
+  final int value;
+
+  const VideoBufferSize(this.name, this.value);
+
+  static const b10s = VideoBufferSize('10 сек', 10);
+  static const b20s = VideoBufferSize('20 сек', 20);
+  static const b30s = VideoBufferSize('30 сек', 30);
+  static const b40s = VideoBufferSize('40 сек', 40);
+  static const b50s = VideoBufferSize('50 сек', 50);
+  static const choices = [b10s, b20s, b30s, b40s, b50s];
+  static const defaultChoice = b20s;
+
+  static VideoBufferSize getByName(String name) {
+    for (VideoBufferSize choice in choices) {
+      if(choice.name == name) return choice;
+    }
+    return defaultChoice;
+  }
+
+  @override
+  String toString() => name;
+}
+
+
 class AppLocale {
   final String name;
   final Locale value;

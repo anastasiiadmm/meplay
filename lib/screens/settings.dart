@@ -18,6 +18,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   AppLocale _locale;
   ChannelListType _listType;
+  VideoBufferSize _bufferSize;
 
   @override
   void initState() {
@@ -28,9 +29,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _loadPrefs() async {
     String langName = await PrefHelper.loadString(PrefKeys.language);
     String listTypeName = await PrefHelper.loadString(PrefKeys.listType);
+    String bufferSizeName = await PrefHelper.loadString(PrefKeys.bufferSize);
     setState(() {
       _locale = AppLocale.getByName(langName);
       _listType = ChannelListType.getByName(listTypeName);
+      _bufferSize = VideoBufferSize.getByName(bufferSizeName);
     });
   }
 
@@ -46,6 +49,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _setListType(ChannelListType type) {
     _savePref(type, PrefKeys.listType);
     setState(() { _listType = type; });
+  }
+
+  void _setBufferSize(VideoBufferSize size) {
+    _savePref(size, PrefKeys.bufferSize);
+    setState(() { _bufferSize = size; });
   }
 
   // TODO:
@@ -118,6 +126,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             getText: (item) => item.name,
             onTap: _setListType,
             isActive: (item) => item == _listType,
+          ),
+          SettingsBlock<VideoBufferSize>(
+            title: l.bufferSize,
+            items: VideoBufferSize.choices,
+            getText: (item) => item.name,
+            onTap: _setBufferSize,
+            isActive: (item) => item == _bufferSize,
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(16, 30, 16, 16),

@@ -87,6 +87,8 @@
   "@channelListType": {
     "description": "В дизайне - \"РЕЖИМ ОТОБРАЖЕНИЯ КАНАЛОВ\", но \"ВИД СПИСКА КАНАЛОВ\" лучше."
   },
+  "bufferSize": "РАЗМЕР БУФЕРА ВИДЕО",
+  "@bufferSize": {},
   "listViewList": "Список",
   "@listViewList": {},
   "listViewTiles": "Плитка",

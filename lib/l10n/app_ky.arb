@@ -45,6 +45,7 @@
   "@channelListType": {
     "description": "В дизайне - \"РЕЖИМ ОТОБРАЖЕНИЯ КАНАЛОВ\", но \"ВИД СПИСКА КАНАЛОВ\" лучше."
   },
+  "bufferSize": "РАЗМЕР БУФЕРА ВИДЕО",
   "listViewList": "Список",
   "listViewTiles": "Плитка",
   "settingsLogout": "Выйти из аккаунта",
