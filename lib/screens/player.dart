@@ -48,6 +48,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   bool _pipMode = false;
   bool _favorite = false;
   double _volume;
+  VideoBufferSize _bufferSize;
   static const platform = const MethodChannel('PIP_CHANNEL');
 
   @override
@@ -63,9 +64,12 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   Future<void> _initAsync() async {
     print(widget.channelId);
-    _initBrightness();
-    _initPlatformState();
-    await _loadVolume();
+    await Future.wait([
+      _initBrightness(),
+      _initPlatformState(),
+      _loadVolume(),
+      _loadBufferSize(),
+    ]);
     await Future.wait([
       _loadUser(),
       _loadChannel(),
@@ -195,6 +199,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       pipMode: _pipMode,
       initialVolume: _volume,
       onVolumeChange: _setVolume,
+      bufferSize: _bufferSize.value,
     );
   }
 
@@ -202,6 +207,13 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     _volume = await PrefHelper.loadString(
       PrefKeys.volume,
       restore: (value) => double.tryParse(value),
+    );
+  }
+
+  Future<void> _loadBufferSize() async {
+    _bufferSize = await PrefHelper.loadString(
+      PrefKeys.bufferSize,
+      restore: (value) => VideoBufferSize.getByName(value),
     );
   }
 
