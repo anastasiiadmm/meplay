@@ -73,11 +73,10 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     await Future.wait([
       _loadUser(),
       _loadChannel(),
-    ]).then((_) {
-      _loadFavorite();
-      _addRecent();
-      _enablePip();
-    });
+    ]);
+    _loadFavorite();
+    _addRecent();
+    _enablePip();
   }
 
   void _addRecent() {
@@ -141,6 +140,20 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     }
   }
 
+  Future<void> _loadVolume() async {
+    _volume = await PrefHelper.loadString(
+      PrefKeys.volume,
+      restore: (value) => double.tryParse(value),
+    );
+  }
+
+  Future<void> _loadBufferSize() async {
+    _bufferSize = await PrefHelper.loadString(
+      PrefKeys.bufferSize,
+      restore: (value) => VideoBufferSize.getByName(value),
+    );
+  }
+
   Future<void> _initBrightness() async {
     _initialBrightness = await Screen.brightness;
   }
@@ -199,21 +212,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       pipMode: _pipMode,
       initialVolume: _volume,
       onVolumeChange: _setVolume,
-      bufferSize: _bufferSize.value,
-    );
-  }
-
-  Future<void> _loadVolume() async {
-    _volume = await PrefHelper.loadString(
-      PrefKeys.volume,
-      restore: (value) => double.tryParse(value),
-    );
-  }
-
-  Future<void> _loadBufferSize() async {
-    _bufferSize = await PrefHelper.loadString(
-      PrefKeys.bufferSize,
-      restore: (value) => VideoBufferSize.getByName(value),
+      bufferSize: _bufferSize,
     );
   }
 

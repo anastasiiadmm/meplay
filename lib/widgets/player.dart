@@ -73,7 +73,7 @@ const liveBuffer = Duration(seconds: M3UChunk.intDefaultDuration);
 // Invisible scrollbar part where user can not seek manually.
 // should be equal to live buffer size + one chunk duration,
 // but not greater then total chunks loaded.
-const scrollBuffer = Duration(seconds: M3UChunk.intDefaultDuration);
+const scrollBuffer = Duration(seconds: M3UChunk.intDefaultDuration * 2);
 
 
 class HLSPlayer extends StatefulWidget {
@@ -86,7 +86,7 @@ class HLSPlayer extends StatefulWidget {
   final bool pipMode;
   final double initialVolume;
   final void Function(double volume) onVolumeChange;
-  final int bufferSize;
+  final VideoBufferSize bufferSize;
 
   @override
   HLSPlayer({
@@ -100,8 +100,9 @@ class HLSPlayer extends StatefulWidget {
     this.pipMode: false,
     this.initialVolume,
     this.onVolumeChange,
-    this.bufferSize: 3,
-  }): super(key: key);
+    VideoBufferSize bufferSize,
+  }): this.bufferSize = bufferSize ?? VideoBufferSize.defaultChoice,
+        super(key: key);
 
   @override
   _HLSPlayerState createState() => _HLSPlayerState();
@@ -183,7 +184,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Future<void> _loadChannel() async {
     _cache = HLSVideoCache(
       widget.channel.url,
-      maxInitialLoad: widget.bufferSize ~/ M3UChunk.intDefaultDuration,
+      maxInitialLoad: widget.bufferSize.value ~/ M3UChunk.intDefaultDuration,
     );
     await _cache.load();
     if(!mounted) _cache.clear();

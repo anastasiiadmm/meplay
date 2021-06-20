@@ -281,7 +281,7 @@ class HLSVideoCache {
   bool _disposed = false;
 
   static final Duration playlistCheckTimeout = Duration(
-      seconds: M3UChunk.intDefaultDuration ~/ 3,
+    seconds: M3UChunk.intDefaultDuration,
   );
 
   HLSVideoCache(url, {int maxInitialLoad}):
@@ -304,10 +304,13 @@ class HLSVideoCache {
     if(_disposed) return;
     await _playlist.load();
     if(_disposed) _playlist.dispose();
-    else _playlistCheckTimer = Timer.periodic(
-      playlistCheckTimeout,
-      (Timer timer) {_updatePlaylist();},
-    );
+    else {
+      _updatePlaylist();
+      _playlistCheckTimer = Timer.periodic(
+        playlistCheckTimeout,
+        (Timer timer) { _updatePlaylist(); },
+      );
+    }
     if(_disposed) _dispose();
   }
 
