@@ -281,7 +281,7 @@ class HLSVideoCache {
   bool _disposed = false;
 
   static final Duration playlistCheckTimeout = Duration(
-      seconds: M3UChunk.intDefaultDuration,
+      seconds: M3UChunk.intDefaultDuration ~/ 3,
   );
 
   HLSVideoCache(url, {int maxInitialLoad}):
