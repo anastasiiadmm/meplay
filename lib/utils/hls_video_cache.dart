@@ -303,18 +303,17 @@ class HLSVideoCache {
   Future<void> load() async {
     if(_disposed) return;
     await _playlist.load();
-    if(_disposed) _playlist.dispose();
-    else {
-      _updatePlaylist();
-      _playlistCheckTimer = Timer.periodic(
-        playlistCheckTimeout,
-        (Timer timer) { _updatePlaylist(); },
-      );
-    }
+    if(_disposed) _dispose();
+    _updatePlaylist();
+    _playlistCheckTimer = Timer.periodic(
+      playlistCheckTimeout,
+      (Timer timer) { _updatePlaylist(); },
+    );
     if(_disposed) _dispose();
   }
 
   Future<void> _updatePlaylist() async {
+    if(_disposed) return;
     M3UPlaylist playlist = M3UPlaylist(url, cached: false,);
     await playlist.load();
     await _playlist.merge(playlist);
