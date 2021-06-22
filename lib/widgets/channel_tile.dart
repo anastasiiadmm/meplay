@@ -49,28 +49,62 @@ class ChannelTile extends StatelessWidget {
     );
   }
 
-  Widget get _texts {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: AppColors.decorativeGray),
-        ),
-      ),
-      child: SizedBox(
-        height: 91,
-        child: Padding(
-          padding: EdgeInsets.only(bottom: 8, right: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
+
+
+  Widget get _separator {
+    return FutureBuilder<Program>(
+      future: channel.currentProgram,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        Widget result = SizedBox(
+          height: 1,
+          width: double.infinity,
+          child: ColoredBox(color: AppColors.decorativeGray),
+        );
+        if(snapshot.hasData) {
+          Program program = snapshot.data;
+          int length = program.end.difference(program.start).inMilliseconds;
+          int left = program.end.difference(DateTime.now()).inMilliseconds;
+          double factor = left / length;
+          result = Stack(
             children: [
-              _title,
-              _program,
+              result,
+              SizedBox(
+                height: 1,
+                child: FractionallySizedBox(
+                  widthFactor: factor,
+                  child: ColoredBox(color: AppColors.purple),
+                ),
+              ),
             ],
+          );
+        }
+        return result;
+      },
+    );
+  }
+
+  Widget get _texts {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(
+          height: 90,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 8, right: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _title,
+                _program,
+              ],
+            ),
           ),
         ),
-      ),
+        _separator,
+      ],
     );
   }
 
