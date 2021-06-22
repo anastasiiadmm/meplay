@@ -49,8 +49,6 @@ class ChannelTile extends StatelessWidget {
     );
   }
 
-
-
   Widget get _separator {
     return FutureBuilder<Program>(
       future: channel.currentProgram,
