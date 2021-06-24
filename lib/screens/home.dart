@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await News.load();
     await LocalNotificationHelper.init();
     FCMHelper helper = await FCMHelper.initialize();
-    await helper.checkInitialMessage();
+    if(helper != null) await helper.checkInitialMessage();
     _asyncInitDone = true;
     _doneLoading();
   }

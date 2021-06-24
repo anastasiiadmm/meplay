@@ -21,6 +21,7 @@ class FCMHelper {
   static Future<FCMHelper> initialize() async {
     _instance = FCMHelper._();
     await _instance._initFirebase();
+    if(_instance == null) return null;
     await _instance._initToken();
     return _instance;
   }
@@ -28,7 +29,15 @@ class FCMHelper {
   String get fcmToken => _fcmToken;
 
   Future<void> _initFirebase() async {
-    await Firebase.initializeApp();
+    try {
+      await Firebase.initializeApp();
+    }
+    catch(e) {
+      print('Firebase was not initialized!');
+      print(e);
+      _instance = null;
+      return;
+    }
     FirebaseMessaging.onMessage.listen(_receiveFg);
     FirebaseMessaging.onBackgroundMessage(_receiveBg);
     FirebaseMessaging.onMessageOpenedApp.listen(_open);

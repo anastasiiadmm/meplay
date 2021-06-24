@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
       User user = await ApiClient.auth(_phone, _code);
       await User.setUser(user);
       await Channel.fullReload();
-      FCMHelper.instance.sendToken();
+      FCMHelper.instance?.sendToken();
       Navigator.of(context).pop<User>(user);
     } on ApiException catch(e) {
       setState(() {
