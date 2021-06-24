@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,6 +14,10 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		FA94BC9B26835BC000541E09 /* FacebookShare in Frameworks */ = {isa = PBXBuildFile; productRef = FA94BC9A26835BC000541E09 /* FacebookShare */; };
+		FA94BC9D26835BC000541E09 /* FacebookCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA94BC9C26835BC000541E09 /* FacebookCore */; };
+		FA94BC9F26835BC000541E09 /* FacebookGamingServices in Frameworks */ = {isa = PBXBuildFile; productRef = FA94BC9E26835BC000541E09 /* FacebookGamingServices */; };
+		FA94BCA126835BC000541E09 /* FacebookLogin in Frameworks */ = {isa = PBXBuildFile; productRef = FA94BCA026835BC000541E09 /* FacebookLogin */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -54,7 +58,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA94BCA126835BC000541E09 /* FacebookLogin in Frameworks */,
+				FA94BC9B26835BC000541E09 /* FacebookShare in Frameworks */,
+				FA94BC9D26835BC000541E09 /* FacebookCore in Frameworks */,
 				65C42D23B18CCBABD43197F8 /* Pods_Runner.framework in Frameworks */,
+				FA94BC9F26835BC000541E09 /* FacebookGamingServices in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,6 +154,12 @@
 			dependencies = (
 			);
 			name = Runner;
+			packageProductDependencies = (
+				FA94BC9A26835BC000541E09 /* FacebookShare */,
+				FA94BC9C26835BC000541E09 /* FacebookCore */,
+				FA94BC9E26835BC000541E09 /* FacebookGamingServices */,
+				FA94BCA026835BC000541E09 /* FacebookLogin */,
+			);
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
@@ -174,6 +188,9 @@
 				Base,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
+			packageReferences = (
+				FA94BC9926835BC000541E09 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */,
+			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -588,6 +605,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FA94BC9926835BC000541E09 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/facebook/facebook-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FA94BC9A26835BC000541E09 /* FacebookShare */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA94BC9926835BC000541E09 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
+			productName = FacebookShare;
+		};
+		FA94BC9C26835BC000541E09 /* FacebookCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA94BC9926835BC000541E09 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
+			productName = FacebookCore;
+		};
+		FA94BC9E26835BC000541E09 /* FacebookGamingServices */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA94BC9926835BC000541E09 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
+			productName = FacebookGamingServices;
+		};
+		FA94BCA026835BC000541E09 /* FacebookLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA94BC9926835BC000541E09 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
+			productName = FacebookLogin;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
 }

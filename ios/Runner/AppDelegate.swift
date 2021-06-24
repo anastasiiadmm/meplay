@@ -19,7 +19,7 @@ let YMApiKey = ""
   ) -> Bool {
     if #available(iOS 13.0, *) { } else {
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        let mainViewController = ViewController()
+        let mainViewController = UIViewController()
         let mainNavigationController = UINavigationController(rootViewController: mainViewController)
         self.window!.rootViewController = mainNavigationController
         self.window!.makeKeyAndVisible()
@@ -32,8 +32,8 @@ let YMApiKey = ""
     GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
     GCKLogger.sharedInstance().delegate = self
 
-    let configuration = YMMYandexMetricaConfiguration.init(apiKey: YMApiKey)
-    YMMYandexMetrica.activate(with: configuration!)
+//    let configuration = YMMYandexMetricaConfiguration.init(apiKey: YMApiKey)
+//    YMMYandexMetrica.activate(with: configuration!)
 
     ApplicationDelegate.shared.application(
         application,
