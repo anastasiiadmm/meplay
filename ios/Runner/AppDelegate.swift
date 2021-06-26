@@ -3,6 +3,7 @@ import Flutter
 import GoogleCast
 //import YandexMobileMetrica
 //import FBSDKCoreKit
+import Firebase
 
 
 let YMApiKey = ""
@@ -13,6 +14,8 @@ let YMApiKey = ""
   // flutter_video_cast
   let kReceiverAppID = kGCKDefaultMediaReceiverApplicationID
   let kDebugLoggingEnabled = true
+
+  var window: UIWindow?
 
   override func application(
     _ application: UIApplication,
@@ -30,7 +33,7 @@ let YMApiKey = ""
     // flutter default
     GeneratedPluginRegistrant.register(with: self)
     
-    // flutter_vido_cast
+    // flutter_video_cast
     let criteria = GCKDiscoveryCriteria(applicationID: kReceiverAppID)
     let options = GCKCastOptions(discoveryCriteria: criteria)
     GCKCastContext.setSharedInstanceWith(options)
@@ -46,6 +49,9 @@ let YMApiKey = ""
 //        application,
 //        didFinishLaunchingWithOptions: launchOptions
 //    )
+
+    // Firebase
+    FirebaseApp.configure()
 
     // iOS default
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)

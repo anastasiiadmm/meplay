@@ -41,3 +41,5 @@ post_install do |installer|
 end
 
 pod 'YandexMobileMetrica', '3.17.0'
+pod 'Firebase/Analytics'
+pod 'Firebase/Messaging'
