@@ -140,8 +140,9 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Padding(
           padding: EdgeInsets.only(bottom: 1),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
                   child: Padding(
@@ -160,29 +161,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: _listenRadio,
                   ),
                 ),
-              ]
+              ],
+            ),
           ),
         ),
-        Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(right: 1),
-                child: LargeImageButton(
-                  image: AppImages.favorites,
-                  text: locale(context).homeFavorites,
-                  onTap: _openFavorites,
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: 1),
+                  child: LargeImageButton(
+                    image: AppImages.favorites,
+                    text: locale(context).homeFavorites,
+                    onTap: _openFavorites,
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-              child: LargeImageButton(
-                image: AppImages.account,
-                text: locale(context).homeProfile,
-                onTap: _openProfile,
+              Expanded(
+                child: LargeImageButton(
+                  image: AppImages.account,
+                  text: locale(context).homeProfile,
+                  onTap: _openProfile,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
