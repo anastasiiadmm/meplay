@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../widgets/circle.dart';
@@ -159,7 +161,7 @@ class _IntroScreenState extends State<IntroScreen> {
     return Material(
       color: AppColors.darkBg,
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 50),
+        padding: EdgeInsets.symmetric(vertical: Platform.isIOS ? 20 : 50),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
