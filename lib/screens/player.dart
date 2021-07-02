@@ -182,12 +182,20 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   void _enablePip() {
     if(_channel?.locked == false) {
-      platform.invokeMethod('enablePip');
+      try {
+        platform.invokeMethod('enablePip');
+      } on MissingPluginException catch(e) {
+        print(e);
+      }
     }
   }
 
   void _disablePip() {
-    platform.invokeMethod('disablePip');
+    try {
+      platform.invokeMethod('disablePip');
+    } on MissingPluginException catch(e) {
+      print(e);
+    }
   }
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
