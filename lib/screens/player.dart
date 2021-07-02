@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:screen/screen.dart';
 import 'package:wakelock/wakelock.dart';
-import 'package:expandable/expandable.dart';
 import 'package:device_info/device_info.dart';
 import '../router.dart';
 import '../widgets/app_toolbar.dart';
@@ -18,7 +17,6 @@ import '../utils/orientation_helper.dart';
 import '../utils/local_notification_helper.dart';
 import '../utils/settings.dart';
 import '../utils/pref_helper.dart';
-
 
 class PlayerScreen extends StatefulWidget {
   final int channelId;
@@ -36,12 +34,10 @@ class PlayerScreen extends StatefulWidget {
   _PlayerScreenState createState() => _PlayerScreenState();
 }
 
-
-class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver {
+class _PlayerScreenState extends State<PlayerScreen>
+    with WidgetsBindingObserver {
   User _user;
-  bool _expandProgram = false;
   Channel _channel;
-  ExpandableController _expandableController;
   Key _playerKey = GlobalKey();
   double _initialBrightness;
   int _androidSdkLevel = 0;
@@ -57,8 +53,6 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     OrientationHelper.allowAll();
     Wakelock.enable();
     _initAsync();
-    _expandableController = ExpandableController(initialExpanded: _expandProgram);
-    _expandableController.addListener(_toggleProgram);
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -80,7 +74,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void _addRecent() {
-    if(_channel.type == ChannelType.tv) Channel.addRecent(_channel);
+    if (_channel.type == ChannelType.tv) Channel.addRecent(_channel);
   }
 
   Future<void> _loadChannel() async {
@@ -88,8 +82,10 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       widget.channelId,
       widget.channelType,
     );
-    setState(() { _channel = channel; });
-    if(channel.locked) _showLockedDialog();
+    setState(() {
+      _channel = channel;
+    });
+    if (channel.locked) _showLockedDialog();
   }
 
   void _showLockedDialog() {
@@ -110,7 +106,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
             },
           );
           return true;
-        }
+        },
       ),
     );
   }
@@ -130,13 +126,18 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   Future<void> _loadUser() async {
     User user = await User.getUser();
-    if (user != null) setState(() { _user = user; });
+    if (user != null)
+      setState(() {
+        _user = user;
+      });
   }
 
   Future<void> _loadFavorite() async {
     if (_user != null && _channel != null) {
       bool favorite = await _user.hasFavorite(_channel);
-      setState(() { _favorite = favorite; });
+      setState(() {
+        _favorite = favorite;
+      });
     }
   }
 
@@ -171,38 +172,30 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     _disablePip();
     OrientationHelper.forcePortrait();
     WidgetsBinding.instance.removeObserver(this);
-    _expandableController.removeListener(_toggleProgram);
-    _expandableController.dispose();
     super.dispose();
   }
 
-  @override void didChangeMetrics() {
+  @override
+  void didChangeMetrics() {
     Wakelock.enable();
   }
 
   void _enablePip() {
-    if(_channel?.locked == false) {
-      try {
-        platform.invokeMethod('enablePip');
-      } on MissingPluginException catch(e) {
-        print(e);
-      }
+    if (_channel?.locked == false && !Platform.isIOS) {
+      platform.invokeMethod('enablePip');
     }
   }
 
   void _disablePip() {
-    try {
+    if (!Platform.isIOS) {
       platform.invokeMethod('disablePip');
-    } on MissingPluginException catch(e) {
-      print(e);
     }
   }
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive) {
       _enterPipMode();
-    }
-    else if (state == AppLifecycleState.resumed) {
+    } else if (state == AppLifecycleState.resumed) {
       _exitPipMode();
     }
   }
@@ -231,28 +224,28 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   void _toPrev() {
     Channel channel = _channel.prev(widget.channels);
-    if(channel == _channel) return;
+    if (channel == _channel) return;
     setState(() {
       _channel = channel;
       _playerKey = GlobalKey();
     });
     _loadFavorite();
-    if(channel.locked) _showLockedDialog();
+    if (channel.locked) _showLockedDialog();
   }
 
   void _toNext() {
     Channel channel = _channel.next(widget.channels);
-    if(channel == _channel) return;
+    if (channel == _channel) return;
     setState(() {
       _channel = channel;
       _playerKey = GlobalKey();
     });
     _loadFavorite();
-    if(channel.locked) _showLockedDialog();
+    if (channel.locked) _showLockedDialog();
   }
 
   void _enterPipMode() {
-    if(_androidSdkLevel != null && _androidSdkLevel > 25) {
+    if (_androidSdkLevel != null && _androidSdkLevel > 25) {
       setState(() {
         _pipMode = true;
       });
@@ -267,44 +260,42 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   Future<void> _addFavorite() async {
     User user = await User.getUser();
-    if(user != null) {
+    if (user != null) {
       await user.addFavorite(_channel);
-      setState(() { _favorite = true; });
+      setState(() {
+        _favorite = true;
+      });
     }
   }
 
   Future<void> _removeFavorite() async {
     User user = await User.getUser();
-    if(user != null) {
+    if (user != null) {
       await user.removeFavorite(_channel);
-      setState(() { _favorite = false; });
+      setState(() {
+        _favorite = false;
+      });
     }
   }
 
   Widget get _favButton => IconButton(
-    icon: _favorite ? AppIcons.starActive : AppIcons.star,
-    padding: EdgeInsets.all(8),
-    iconSize: 28,
-    constraints: BoxConstraints(),
-    onPressed: _favorite ? _removeFavorite : _addFavorite,
-  );
+        icon: _favorite ? AppIcons.starActive : AppIcons.star,
+        padding: EdgeInsets.all(8),
+        iconSize: 28,
+        constraints: BoxConstraints(),
+        onPressed: _favorite ? _removeFavorite : _addFavorite,
+      );
 
   Widget get _appBar {
     return AppToolBar(
       title: _channel?.title ?? '',
       actions: [
-        if(_user != null) _favButton,
+        if (_user != null) _favButton,
       ],
     );
   }
 
   Widget get _bottomBar => BottomNavBar();
-
-  void _toggleProgram() {
-    setState(() {
-      _expandProgram = !_expandProgram;
-    });
-  }
 
   Future<bool> _scheduleNotification(Program program) async {
     await LocalNotificationHelper.instance.schedule(
@@ -317,8 +308,8 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         'channelId': _channel.id,
         'channelName': _channel.name,
         'startTime': program.startDateTime,
-        'link': (_channel.type == ChannelType.tv ? '/tv/' : '/radio/')
-            + _channel.id.toString(),
+        'link': (_channel.type == ChannelType.tv ? '/tv/' : '/radio/') +
+            _channel.id.toString(),
       },
     );
     return true;
@@ -330,7 +321,8 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       context: context,
       builder: (BuildContext context) => ConfirmDialog(
         title: l.remindModalTitle,
-        text: '${l.remindModalText} "${program.title}" ${program.startDateTime}?',
+        text:
+            '${l.remindModalText} "${program.title}" ${program.startDateTime}?',
         action: () => _scheduleNotification(program),
       ),
     );
@@ -351,14 +343,12 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     return FutureBuilder<List<Program>>(
       future: _channel.program(),
       builder: (BuildContext context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return _textBlock("Программа загружается...");
-        } else if(snapshot.hasData) {
+        } else if (snapshot.hasData) {
           return ProgramList(
             program: snapshot.data,
-            action: _channel.locked
-                ? null
-                : _scheduleNotificationDialog,
+            action: _channel.locked ? null : _scheduleNotificationDialog,
           );
         } else {
           return _textBlock('Программа недоступна');
@@ -368,14 +358,15 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   Widget get _body {
-    if(_fullscreen || _pipMode) return _player;
+    if (_fullscreen || _pipMode) return _player;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _player,
-        if(_channel != null) Expanded(
-          child: _program,
-        ),
+        if (_channel != null)
+          Expanded(
+            child: _program,
+          ),
       ],
     );
   }

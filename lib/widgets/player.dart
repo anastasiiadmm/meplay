@@ -15,7 +15,6 @@ import 'modals.dart';
 import '../models.dart';
 import '../theme.dart';
 
-
 class VideoAR {
   final String name;
   final double value;
@@ -26,16 +25,16 @@ class VideoAR {
     return name;
   }
 
-  static const r43 = VideoAR('4:3', 4/3);
-  static const r169 = VideoAR('16:9', 16/9);
-  static const r1610 = VideoAR('16:10', 16/10);
-  static const r219 = VideoAR('21:9', 64/27);
+  static const r43 = VideoAR('4:3', 4 / 3);
+  static const r169 = VideoAR('16:9', 16 / 9);
+  static const r1610 = VideoAR('16:10', 16 / 10);
+  static const r219 = VideoAR('21:9', 64 / 27);
   static const choices = [r43, r169, r1610, r219];
   static const defaultRatio = r169;
 
   static VideoAR getByValue(double value) {
     for (VideoAR choice in choices) {
-      if((choice.value - value).abs() <= 0.05) {
+      if ((choice.value - value).abs() <= 0.05) {
         return choice;
       }
     }
@@ -44,19 +43,17 @@ class VideoAR {
 
   static VideoAR getByName(String name) {
     for (VideoAR choice in choices) {
-      if(choice.name == name) return choice;
+      if (choice.name == name) return choice;
     }
     return defaultRatio;
   }
 }
-
 
 enum SwipeAction {
   channel,
   brightness,
   volume,
 }
-
 
 // Converts swipe pixels to settings values.
 // 200 means 200px long swipe needed to fully turn setting on or off.
@@ -75,7 +72,6 @@ const liveBuffer = Duration(seconds: M3UChunk.intDefaultDuration);
 // should be equal to live buffer size + one chunk duration,
 // but not greater then total chunks loaded.
 const scrollBuffer = Duration(seconds: M3UChunk.intDefaultDuration * 2);
-
 
 class HLSPlayer extends StatefulWidget {
   final Channel channel;
@@ -102,13 +98,12 @@ class HLSPlayer extends StatefulWidget {
     this.initialVolume,
     this.onVolumeChange,
     VideoBufferSize bufferSize,
-  }): this.bufferSize = bufferSize ?? VideoBufferSize.defaultChoice,
+  })  : this.bufferSize = bufferSize ?? VideoBufferSize.defaultChoice,
         super(key: key);
 
   @override
   _HLSPlayerState createState() => _HLSPlayerState();
 }
-
 
 class _HLSPlayerState extends State<HLSPlayer> {
   VideoPlayerController _controller;
@@ -131,8 +126,8 @@ class _HLSPlayerState extends State<HLSPlayer> {
     print('INIT PLAYER ${this.hashCode}');
     super.initState();
     _initBrightness();
-    if(widget.channel != null) {
-      if(!widget.channel.locked) _loadChannel();
+    if (widget.channel != null) {
+      if (!widget.channel.locked) _loadChannel();
       _loadRatio();
     }
   }
@@ -140,13 +135,13 @@ class _HLSPlayerState extends State<HLSPlayer> {
   @override
   void didUpdateWidget(oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(mounted && oldWidget.channel != widget.channel) _reload();
+    if (mounted && oldWidget.channel != widget.channel) _reload();
   }
 
   Future<void> _reload() async {
     await _disposeVideo();
-    if(widget.channel != null) {
-      if(!widget.channel.locked) _loadChannel();
+    if (widget.channel != null) {
+      if (!widget.channel.locked) _loadChannel();
       _loadRatio();
     }
   }
@@ -185,10 +180,11 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Future<void> _loadChannel() async {
     VideoPlayerController controller;
 
-    if(Platform.isIOS) {
+    if (Platform.isIOS) {
+      print(widget.channel.url);
       controller = VideoPlayerController.network(widget.channel.url);
       await controller.initialize();
-      if(!mounted) {
+      if (!mounted) {
         await controller.dispose();
         return;
       }
@@ -200,7 +196,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
       await _cache.load();
       controller = VideoPlayerController.cache(_cache);
       await controller.initialize();
-      if(!mounted) {
+      if (!mounted) {
         await controller.dispose();
         _cache.clear();
         return;
@@ -208,8 +204,8 @@ class _HLSPlayerState extends State<HLSPlayer> {
     }
 
     double volume;
-    if(widget.initialVolume == null) {
-      volume = _controller.value.volume;
+    if (widget.initialVolume == null) {
+      volume = controller.value.volume;
     } else {
       volume = widget.initialVolume;
       controller.setVolume(widget.initialVolume);
@@ -222,18 +218,22 @@ class _HLSPlayerState extends State<HLSPlayer> {
     controller.play();
     _goLive();
   }
-  
+
   Future<void> _loadRatio() async {
     VideoAR ratio = await PrefHelper.loadString(
       PrefKeys.ratio(widget.channel.id),
       restore: VideoAR.getByName,
       defaultValue: VideoAR.defaultRatio,
     );
-    setState(() { _ratio = ratio; });
+    setState(() {
+      _ratio = ratio;
+    });
   }
 
   void _setRatio(VideoAR ratio) {
-    setState(() { _ratio = ratio; });
+    setState(() {
+      _ratio = ratio;
+    });
     String prefKey = PrefKeys.ratio(widget.channel.id);
     PrefHelper.saveString(prefKey, _ratio);
   }
@@ -254,22 +254,30 @@ class _HLSPlayerState extends State<HLSPlayer> {
   void _togglePlay() {
     if (_controller != null) {
       if (_controller.value.isPlaying) {
-        setState(() { _controller.pause(); });
+        setState(() {
+          _controller.pause();
+        });
       } else {
-        setState(() { _controller.play(); });
+        setState(() {
+          _controller.play();
+        });
       }
     }
   }
 
   void _showControls() {
     _controlsTimer?.cancel();
-    setState(() { _controlsVisible = true; });
+    setState(() {
+      _controlsVisible = true;
+    });
     _controlsTimer = Timer(widget.controlsTimeout, _hideControls);
   }
 
   void _hideControls() {
     _controlsTimer?.cancel();
-    setState(() { _controlsVisible = false; });
+    setState(() {
+      _controlsVisible = false;
+    });
   }
 
   void _togglePipControls() {
@@ -313,11 +321,11 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   void _detectAction(Offset delta) {
-    if(_panAction == null) {
-      if(delta.dx.abs() > delta.dy.abs()) {
+    if (_panAction == null) {
+      if (delta.dx.abs() > delta.dy.abs()) {
         _panAction = SwipeAction.channel;
       } else {
-        if(_panStartPoint.dx > MediaQuery.of(context).size.width / 2) {
+        if (_panStartPoint.dx > MediaQuery.of(context).size.width / 2) {
           _panAction = SwipeAction.brightness;
         } else {
           _panAction = SwipeAction.volume;
@@ -342,7 +350,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
       double volume = _volume - delta / swipeFactor;
       volume = volume.clamp(0.0, 1.0);
       _controller.setVolume(volume);
-      if(widget.onVolumeChange != null) widget.onVolumeChange(volume);
+      if (widget.onVolumeChange != null) widget.onVolumeChange(volume);
       setState(() {
         _volume = volume;
       });
@@ -350,7 +358,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   void _swipeChannel(double move) {
-    if(move > 0) {
+    if (move > 0) {
       widget.toPrevChannel();
     } else {
       widget.toNextChannel();
@@ -396,27 +404,35 @@ class _HLSPlayerState extends State<HLSPlayer> {
   bool get _settingsVisible {
     return _brightnessVisible || _volumeVisible;
   }
-  
+
   void _showBrightness() {
     _brightnessTimer?.cancel();
-    setState(() { _brightnessVisible = true; });
+    setState(() {
+      _brightnessVisible = true;
+    });
     _brightnessTimer = Timer(widget.settingsTimeout, _hideBrightness);
   }
 
   void _showVolume() {
     _volumeTimer?.cancel();
-    setState(() { _volumeVisible = true; });
+    setState(() {
+      _volumeVisible = true;
+    });
     _volumeTimer = Timer(widget.settingsTimeout, _hideVolume);
   }
 
   void _hideBrightness() {
     _brightnessTimer?.cancel();
-    setState(() { _brightnessVisible = false; });
+    setState(() {
+      _brightnessVisible = false;
+    });
   }
 
   void _hideVolume() {
     _volumeTimer?.cancel();
-    setState(() { _volumeVisible = false; });
+    setState(() {
+      _volumeVisible = false;
+    });
   }
 
   Widget _backdrop({Widget child}) {
@@ -461,23 +477,25 @@ class _HLSPlayerState extends State<HLSPlayer> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: _fullscreen ? [
-        Text(
-          widget.channel.title,
-          style: AppFonts.screenTitle,
-          maxLines: 1,
-        ),
-        FutureBuilder<Program>(
-          future: widget.channel.currentProgram,
-          builder: (BuildContext context, snapshot) {
-            return Text(
-              snapshot.hasData ? snapshot.data.title : '',
-              style: AppFonts.fullscreenProgram,
-              maxLines: 1,
-            );
-          },
-        ),
-      ] : [],
+      children: _fullscreen
+          ? [
+              Text(
+                widget.channel.title,
+                style: AppFonts.screenTitle,
+                maxLines: 1,
+              ),
+              FutureBuilder<Program>(
+                future: widget.channel.currentProgram,
+                builder: (BuildContext context, snapshot) {
+                  return Text(
+                    snapshot.hasData ? snapshot.data.title : '',
+                    style: AppFonts.fullscreenProgram,
+                    maxLines: 1,
+                  );
+                },
+              ),
+            ]
+          : [],
     );
   }
 
@@ -498,25 +516,22 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Widget get _liveButton {
     return GestureDetector(
       onTap: _goLive,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(1),
-            child: Circle.dot(
-              radius: 4,
-              color: AppColors.red,
-            ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Padding(
+          padding: EdgeInsets.all(1),
+          child: Circle.dot(
+            radius: 4,
+            color: AppColors.red,
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(5, 2, 0, 2),
-            child: Text(
-              'LIVE',
-              style: AppFonts.playerLive,
-            ),
-          )
-        ]
-      ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(5, 2, 0, 2),
+          child: Text(
+            'LIVE',
+            style: AppFonts.playerLive,
+          ),
+        )
+      ]),
     );
   }
 
@@ -525,7 +540,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
       ignoring: !_controlsVisible,
       child: _animation(
         visible: _controlsVisible,
-        child: Padding (
+        child: Padding(
           padding: _fullscreen
               ? EdgeInsets.symmetric(vertical: 10, horizontal: 16)
               : EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -560,15 +575,17 @@ class _HLSPlayerState extends State<HLSPlayer> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 32),
-                      child: _controller == null ? SizedBox(
-                        width: 48,
-                      ) : AppIconButton(
-                        icon: _controller.value.isPlaying
-                            ? AppIcons.pause
-                            : AppIcons.play,
-                        iconSize: 48,
-                        onPressed: _togglePlay,
-                      ),
+                      child: _controller == null
+                          ? SizedBox(
+                              width: 48,
+                            )
+                          : AppIconButton(
+                              icon: _controller.value.isPlaying
+                                  ? AppIcons.pause
+                                  : AppIcons.play,
+                              iconSize: 48,
+                              onPressed: _togglePlay,
+                            ),
                     ),
                     AppIconButton(
                       icon: AppIcons.next,
@@ -582,17 +599,18 @@ class _HLSPlayerState extends State<HLSPlayer> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   Expanded(
-                    child: _controller == null ? Container() : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _liveButton,
-                        Padding(
-                          padding: EdgeInsets.only(top: 5),
-                          child: _scrollBar,
-                        ),
-                      ]
-                    ),
+                    child: _controller == null
+                        ? Container()
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                                _liveButton,
+                                Padding(
+                                  padding: EdgeInsets.only(top: 5),
+                                  child: _scrollBar,
+                                ),
+                              ]),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 24),
@@ -622,30 +640,37 @@ class _HLSPlayerState extends State<HLSPlayer> {
         children: [
           Padding(
             padding: EdgeInsets.only(bottom: 5),
-            child: Icon(icon, color: AppColors.iconColor, size: 24,),
+            child: Icon(
+              icon,
+              color: AppColors.iconColor,
+              size: 24,
+            ),
           ),
-          Text(value, style: AppFonts.midText,),
+          Text(
+            value,
+            style: AppFonts.midText,
+          ),
         ],
       ),
     );
   }
 
   IconData get _volumeIcon {
-    if(_volume == null || _volume == 0) return Icons.volume_mute;
-    if(_volume > 0.5) return Icons.volume_up;
+    if (_volume == null || _volume == 0) return Icons.volume_mute;
+    if (_volume > 0.5) return Icons.volume_up;
     return Icons.volume_down;
   }
 
   IconData get _brightnessIcon {
-    if(_brightness == null || _brightness == 0) return Icons.brightness_low;
-    if(_brightness > 0.5) return Icons.brightness_high;
+    if (_brightness == null || _brightness == 0) return Icons.brightness_low;
+    if (_brightness > 0.5) return Icons.brightness_high;
     return Icons.brightness_medium;
   }
 
   Widget get _settingControls {
     return IgnorePointer(
       ignoring: !_settingsVisible,
-      child: Row (
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
@@ -686,11 +711,13 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   Widget get _loaderBlock {
     return Center(
-      child: widget.channel?.locked == true ? _lock : SizedBox(
-        width: 36,
-        height: 36,
-        child: RotationLoader(),
-      ),
+      child: widget.channel?.locked == true
+          ? _lock
+          : SizedBox(
+              width: 36,
+              height: 36,
+              child: RotationLoader(),
+            ),
     );
   }
 
@@ -702,9 +729,8 @@ class _HLSPlayerState extends State<HLSPlayer> {
           Center(
             child: AspectRatio(
               aspectRatio: _ratio.value,
-              child: _controller == null
-                  ? _loaderBlock
-                  : VideoPlayer(_controller),
+              child:
+                  _controller == null ? _loaderBlock : VideoPlayer(_controller),
             ),
           ),
           _controls,
@@ -720,9 +746,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
         color: AppColors.black,
         child: Stack(
           children: [
-            _controller == null 
-                ? _loaderBlock
-                : VideoPlayer(_controller),
+            _controller == null ? _loaderBlock : VideoPlayer(_controller),
             _controls,
           ],
         ),
@@ -739,12 +763,14 @@ class _HLSPlayerState extends State<HLSPlayer> {
           child: IgnorePointer(
             ignoring: !_controlsVisible,
             child: Center(
-              child: _controller == null ? null : AppIconButton(
-                icon: _controller.value.isPlaying
-                    ? AppIcons.pause
-                    : AppIcons.play,
-                onPressed: _togglePlay,
-              ),
+              child: _controller == null
+                  ? null
+                  : AppIconButton(
+                      icon: _controller.value.isPlaying
+                          ? AppIcons.pause
+                          : AppIcons.play,
+                      onPressed: _togglePlay,
+                    ),
             ),
           ),
         ),
@@ -758,12 +784,12 @@ class _HLSPlayerState extends State<HLSPlayer> {
       child: Material(
         color: AppColors.black,
         child: Stack(
-          children: _controller == null ? [
-            _loaderBlock
-          ] : [
-            VideoPlayer(_controller),
-            _pipControls,
-          ],
+          children: _controller == null
+              ? [_loaderBlock]
+              : [
+                  VideoPlayer(_controller),
+                  _pipControls,
+                ],
         ),
       ),
     );
@@ -772,6 +798,6 @@ class _HLSPlayerState extends State<HLSPlayer> {
   @override
   Widget build(BuildContext context) {
     if (widget.pipMode) return _pipModePlayer;
-    return  _fullscreen ? _fullscreenPlayer : _adaptivePlayer;
+    return _fullscreen ? _fullscreenPlayer : _adaptivePlayer;
   }
 }
