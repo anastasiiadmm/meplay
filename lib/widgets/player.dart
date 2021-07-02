@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:screen/screen.dart';
 import 'package:flutter_video_cast/flutter_video_cast.dart';
@@ -182,36 +183,44 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   Future<void> _loadChannel() async {
-    _cache = HLSVideoCache(
-      widget.channel.url,
-      maxInitialLoad: widget.bufferSize.value ~/ M3UChunk.intDefaultDuration,
-    );
-    await _cache.load();
-    if(!mounted) _cache.clear();
-    else {
-      VideoPlayerController controller = VideoPlayerController.cache(_cache);
+    VideoPlayerController controller;
+
+    if(Platform.isIOS) {
+      controller = VideoPlayerController.network(widget.channel.url);
       await controller.initialize();
       if(!mounted) {
-        controller.dispose();
+        await controller.dispose();
+        return;
+      }
+    } else {
+      _cache = HLSVideoCache(
+        widget.channel.url,
+        maxInitialLoad: widget.bufferSize.value ~/ M3UChunk.intDefaultDuration,
+      );
+      await _cache.load();
+      controller = VideoPlayerController.cache(_cache);
+      await controller.initialize();
+      if(!mounted) {
+        await controller.dispose();
         _cache.clear();
-      } else {
-        setState(() {
-          _controller = controller;
-        });
-        if(widget.initialVolume == null) {
-          setState(() {
-            _volume = _controller.value.volume;
-          });
-        } else {
-          setState(() {
-            _volume = widget.initialVolume;
-          });
-          controller.setVolume(widget.initialVolume);
-        }
-        controller.play();
-        _goLive();
+        return;
       }
     }
+
+    double volume;
+    if(widget.initialVolume == null) {
+      volume = _controller.value.volume;
+    } else {
+      volume = widget.initialVolume;
+      controller.setVolume(widget.initialVolume);
+    }
+
+    setState(() {
+      _controller = controller;
+      _volume = volume;
+    });
+    controller.play();
+    _goLive();
   }
   
   Future<void> _loadRatio() async {
