@@ -28,6 +28,10 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
+  pod 'YandexMobileMetrica', '3.17.0'
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Messaging'
+
   use_frameworks!
   use_modular_headers!
 
@@ -39,7 +43,3 @@ post_install do |installer|
     flutter_additional_ios_build_settings(target)
   end
 end
-
-pod 'YandexMobileMetrica', '3.17.0'
-pod 'Firebase/Analytics'
-pod 'Firebase/Messaging'

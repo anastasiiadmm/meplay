@@ -3,7 +3,7 @@ import Flutter
 import GoogleCast
 //import YandexMobileMetrica
 //import FBSDKCoreKit
-import Firebase
+// import Firebase
 
 
 let YMApiKey = ""
@@ -14,8 +14,6 @@ let YMApiKey = ""
   // flutter_video_cast
   let kReceiverAppID = kGCKDefaultMediaReceiverApplicationID
   let kDebugLoggingEnabled = true
-
-  var window: UIWindow?
 
   override func application(
     _ application: UIApplication,
@@ -51,7 +49,7 @@ let YMApiKey = ""
 //    )
 
     // Firebase
-    FirebaseApp.configure()
+    // FirebaseApp.configure()
 
     // iOS default
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
