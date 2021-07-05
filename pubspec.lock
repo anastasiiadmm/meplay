@@ -631,9 +631,11 @@ packages:
   video_player:
     dependency: "direct main"
     description:
-      name: video_player
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "packages/video_player/video_player"
+      ref: "v1.0.1+fix_1"
+      resolved-ref: "01b024eb1ded4cce3fac43aae7863d2708fca1c4"
+      url: "https://github.com/someq/plugins.git"
+    source: git
     version: "1.0.1"
   video_player_platform_interface:
     dependency: transitive

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:video_player/hls_video_cache_interface.dart';
 
 
 class M3UHeaders {
@@ -275,7 +276,7 @@ class M3UChunk {
 
 /// Caches HLS Video stream including both playlist and files.
 
-class HLSVideoCache {
+class HLSVideoCache implements HLSVideoCacheInterface {
   final M3UPlaylist _playlist;
   Timer _playlistCheckTimer;
   bool _disposed = false;

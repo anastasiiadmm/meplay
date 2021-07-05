@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:screen/screen.dart';
 import 'package:flutter_video_cast/flutter_video_cast.dart';
-import '../video_player_fork/video_player.dart';
+import 'package:video_player/video_player.dart';
 import '../utils/hls_video_cache.dart';
 import '../utils/pref_helper.dart';
 import '../utils/settings.dart';
