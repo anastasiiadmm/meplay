@@ -30,6 +30,7 @@ class ChannelTile extends StatelessWidget {
     return Text(
       showNumber ? channel.title : channel.name,
       style: AppFonts.itemTitle,
+      maxLines: 1,
     );
   }
 

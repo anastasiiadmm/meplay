@@ -30,6 +30,7 @@ class FavoritesTile extends StatelessWidget {
     return Text(
       channel.name,
       style: AppFonts.itemTitle,
+      maxLines: 1,
     );
   }
 
