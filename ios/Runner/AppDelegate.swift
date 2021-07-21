@@ -28,6 +28,10 @@ let YMApiKey = ""
 //        self.window!.makeKeyAndVisible()
 //    }
 
+    if #available(iOS 10.0, *) {
+      UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
+    }
+
     // flutter default
     GeneratedPluginRegistrant.register(with: self)
     

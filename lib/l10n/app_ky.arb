@@ -87,5 +87,6 @@
   "defaultModalTitle": "Подтвердите действие",
   "defaultModalError": "Не удалось выполнить действие.",
   "tryLater": "Попробуйте позже.",
-  "packetChannelsEmpty": "Список каналов недоступен"
+  "packetChannelsEmpty": "Список каналов недоступен",
+  "watch": "Смотреть"
 }

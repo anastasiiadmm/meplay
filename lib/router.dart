@@ -86,3 +86,41 @@ Route<dynamic> router(RouteSettings settings) {
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>(
   debugLabel: 'App Nav Key',
 );
+
+
+class AppNavigatorObserver extends NavigatorObserver {
+  static AppNavigatorObserver _instance;
+
+  AppNavigatorObserver._();
+
+  static AppNavigatorObserver get instance {
+    if(_instance == null) _instance = AppNavigatorObserver._();
+    return _instance;
+  }
+
+  Route<dynamic> _currentRoute;
+
+  Route<dynamic> get currentRoute => _currentRoute;
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    _currentRoute = route;
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    _currentRoute = previousRoute;
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
+    _currentRoute = previousRoute;
+  }
+
+  @override
+  void didReplace({ Route<dynamic> newRoute, Route<dynamic> oldRoute }) {
+    if(oldRoute == _currentRoute) {
+      _currentRoute = newRoute;
+    }
+  }
+}

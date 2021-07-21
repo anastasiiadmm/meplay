@@ -1,11 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart';
 
 import 'tz_helper.dart';
 import 'deeplink_helper.dart';
+
+import '../router.dart';
+import '../widgets/modals.dart';
+import '../utils/settings.dart';
 
 
 class LocalNotificationHelper {
@@ -107,6 +113,22 @@ class LocalNotificationHelper {
       String body, String payload) async {
     print("\nRECEIVE LOCAL iOS\n$id\n$title\n$body\n$payload\n");
 
+    BuildContext context = AppNavigatorObserver.instance.navigator?.context;
+    if(context == null) return;
+
+    AppLocalizations l = locale(context);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmDialog(
+          title: title,
+          text: body,
+          ok: l.watch,
+          cancel: l.close,
+          action: () => _onOpen(payload),
+        );
+      },
+    );
   }
 
   Future<void> _onOpen(String payload) async {

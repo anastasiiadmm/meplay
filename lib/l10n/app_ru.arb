@@ -168,5 +168,7 @@
   "tryLater": "Попробуйте позже.",
   "@tryLater": {},
   "packetChannelsEmpty": "Список каналов недоступен",
-  "@packetChannelsEmpty": {}
+  "@packetChannelsEmpty": {},
+  "watch": "Смотреть",
+  "@watch": {}
 }
