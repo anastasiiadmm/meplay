@@ -1,12 +1,11 @@
 import UIKit
 import Flutter
 import GoogleCast
-//import YandexMobileMetrica
-//import FBSDKCoreKit
+// import YandexMobileMetrica
 // import Firebase
 
 
-let YMApiKey = ""
+// let YMApiKey = ""
 
 
 @UIApplicationMain
@@ -19,22 +18,13 @@ let YMApiKey = ""
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    // FaceBook SDK?
-//    if #available(iOS 13.0, *) { } else {
-//        self.window = UIWindow(frame: UIScreen.main.bounds)
-//        let mainViewController = UIViewController()
-//        let mainNavigationController = UINavigationController(rootViewController: mainViewController)
-//        self.window!.rootViewController = mainNavigationController
-//        self.window!.makeKeyAndVisible()
-//    }
+    // flutter default
+    GeneratedPluginRegistrant.register(with: self)
 
     if #available(iOS 10.0, *) {
       UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
     }
 
-    // flutter default
-    GeneratedPluginRegistrant.register(with: self)
-    
     // flutter_video_cast
     let criteria = GCKDiscoveryCriteria(applicationID: kReceiverAppID)
     let options = GCKCastOptions(discoveryCriteria: criteria)
@@ -43,14 +33,8 @@ let YMApiKey = ""
     GCKLogger.sharedInstance().delegate = self
 
     // Yandex Metrica
-//    let configuration = YMMYandexMetricaConfiguration.init(apiKey: YMApiKey)
-//    YMMYandexMetrica.activate(with: configuration!)
-
-    // FaceBook SDK
-//    ApplicationDelegate.shared.application(
-//        application,
-//        didFinishLaunchingWithOptions: launchOptions
-//    )
+    // let configuration = YMMYandexMetricaConfiguration.init(apiKey: YMApiKey)
+    // YMMYandexMetrica.activate(with: configuration!)
 
     // Firebase
     // FirebaseApp.configure()
@@ -58,20 +42,4 @@ let YMApiKey = ""
     // iOS default
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-
-//  override func application(
-//      _ app: UIApplication,
-//      open url: URL,
-//      options: [UIApplication.OpenURLOptionsKey : Any] = [:]
-//  ) -> Bool {
-//    // FaceBook SDK
-//    ApplicationDelegate.shared.application(
-//      app,
-//      open: url,
-//      sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
-//      annotation: options[UIApplication.OpenURLOptionsKey.annotation]
-//    )
-//
-//    return true
-//  }
 }
