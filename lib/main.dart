@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'utils/settings.dart';
 
+import 'router.dart';
+import 'utils/settings.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MePlay());
 }
 
-
 class MePlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Defaults
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown
-    ]);
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     // Should be:
     // SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(statusBarColor: AppColors.transparent));
@@ -30,21 +27,25 @@ class MePlay extends StatelessWidget {
     SystemChrome.setEnabledSystemUIOverlays([]);
     // and no SystemOverlayStyle, as it's ignored by hidden overlays.
 
-    return MaterialApp(
-      title: 'MePlay',
-      theme: ThemeData(fontFamily: 'Lato'),
-      routes: routes,
-      initialRoute: Routes.home,
-      onGenerateRoute: router,
-      navigatorKey: navigatorKey,
-
-      locale: AppLocale.defaultChoice.value,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      navigatorObservers: [
-        AppNavigatorObserver.instance,
-      ],
-      debugShowCheckedModeBanner: false,
+    return Shortcuts(
+      shortcuts: <LogicalKeySet, Intent>{
+        LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent(),
+      },
+      child: MaterialApp(
+        title: 'MePlay',
+        theme: ThemeData(fontFamily: 'Lato'),
+        routes: routes,
+        initialRoute: Routes.home,
+        onGenerateRoute: router,
+        navigatorKey: navigatorKey,
+        locale: AppLocale.defaultChoice.value,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorObservers: [
+          AppNavigatorObserver.instance,
+        ],
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }
