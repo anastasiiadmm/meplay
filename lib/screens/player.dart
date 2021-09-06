@@ -1,22 +1,24 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/services.dart';
+
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:screen/screen.dart';
 import 'package:wakelock/wakelock.dart';
-import 'package:device_info/device_info.dart';
+
+import '../models.dart';
 import '../router.dart';
+import '../theme.dart';
+import '../utils/local_notification_helper.dart';
+import '../utils/orientation_helper.dart';
+import '../utils/pref_helper.dart';
+import '../utils/settings.dart';
 import '../widgets/app_toolbar.dart';
-import '../widgets/player.dart';
-import '../widgets/program_list.dart';
 import '../widgets/bottom_navbar.dart';
 import '../widgets/modals.dart';
-import '../models.dart';
-import '../theme.dart';
-import '../utils/orientation_helper.dart';
-import '../utils/local_notification_helper.dart';
-import '../utils/settings.dart';
-import '../utils/pref_helper.dart';
+import '../widgets/player.dart';
+import '../widgets/program_list.dart';
 
 class PlayerScreen extends StatefulWidget {
   final int channelId;
@@ -45,7 +47,7 @@ class _PlayerScreenState extends State<PlayerScreen>
   bool _favorite = false;
   double _volume;
   VideoBufferSize _bufferSize;
-  static const platform = const MethodChannel('PIP_CHANNEL');
+  static const platform = const MethodChannel('MP_CHANNEL');
 
   @override
   void initState() {

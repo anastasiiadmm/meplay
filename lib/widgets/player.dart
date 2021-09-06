@@ -1,19 +1,22 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:screen/screen.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_video_cast/flutter_video_cast.dart';
+import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
+
+import '../models.dart';
+import '../theme.dart';
 import '../utils/hls_video_cache.dart';
+import '../utils/orientation_helper.dart';
 import '../utils/pref_helper.dart';
 import '../utils/settings.dart';
-import '../utils/orientation_helper.dart';
-import 'rotation_loader.dart';
 import 'app_icon_button.dart';
 import 'circle.dart';
 import 'modals.dart';
-import '../models.dart';
-import '../theme.dart';
+import 'rotation_loader.dart';
 
 class VideoAR {
   final String name;
@@ -120,6 +123,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Timer _brightnessTimer;
   Timer _volumeTimer;
   ChromeCastController _castController;
+  static const platform = const MethodChannel('MP_CHANNEL');
 
   @override
   void initState() {
@@ -500,15 +504,24 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   Widget get _chromeCastButton {
-    return ChromeCastButton(
-      size: 24,
-      color: AppColors.iconColor,
-      onButtonCreated: (controller) {
-        setState(() => _castController = controller);
-        _castController?.addSessionListener();
-      },
-      onSessionStarted: () {
-        _castController?.loadMedia(widget.channel.url);
+    return FutureBuilder<bool>(
+      future: platform.invokeMethod<bool>('isTv'),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && !snapshot.data) {
+          return ChromeCastButton(
+            size: 24,
+            color: AppColors.iconColor,
+            onButtonCreated: (controller) {
+              setState(() => _castController = controller);
+              _castController?.addSessionListener();
+            },
+            onSessionStarted: () {
+              _castController?.loadMedia(widget.channel.url);
+            },
+          );
+        } else {
+          return Container();
+        }
       },
     );
   }
