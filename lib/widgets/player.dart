@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_video_cast/flutter_video_cast.dart';
 import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
 
+import '../channel.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../utils/hls_video_cache.dart';
@@ -123,7 +123,6 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Timer _brightnessTimer;
   Timer _volumeTimer;
   ChromeCastController _castController;
-  static const platform = const MethodChannel('MP_CHANNEL');
 
   @override
   void initState() {
@@ -505,7 +504,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
 
   Widget get _chromeCastButton {
     return FutureBuilder<bool>(
-      future: platform.invokeMethod<bool>('isTv'),
+      future: isTv(),
       builder: (context, snapshot) {
         if (snapshot.hasData && !snapshot.data) {
           return ChromeCastButton(

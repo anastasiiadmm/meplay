@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:screen/screen.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../channel.dart';
 import '../models.dart';
 import '../router.dart';
 import '../theme.dart';
@@ -47,7 +48,6 @@ class _PlayerScreenState extends State<PlayerScreen>
   bool _favorite = false;
   double _volume;
   VideoBufferSize _bufferSize;
-  static const platform = const MethodChannel('MP_CHANNEL');
 
   @override
   void initState() {
@@ -184,13 +184,13 @@ class _PlayerScreenState extends State<PlayerScreen>
 
   void _enablePip() {
     if (_channel?.locked == false && !Platform.isIOS) {
-      platform.invokeMethod('enablePip');
+      enablePip();
     }
   }
 
   void _disablePip() {
     if (!Platform.isIOS) {
-      platform.invokeMethod('disablePip');
+      disablePip();
     }
   }
 
