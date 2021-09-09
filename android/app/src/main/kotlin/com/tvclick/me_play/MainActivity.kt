@@ -21,6 +21,7 @@ class MainActivity: FlutterFragmentActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        checkTv()
         initChromecast()
         initChannel(flutterEngine)
     }
@@ -37,13 +38,16 @@ class MainActivity: FlutterFragmentActivity() {
         pipAllowed = false
     }
 
-    private fun initChromecast() {
+    private fun checkTv() {
         val uiModeManager = getSystemService(UI_MODE_SERVICE) as UiModeManager
         if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
-            Log.d("TVCheck", "Running on a TV Device")
             isTv = true
-        } else {
-            Log.d("TVCheck", "Running on a non-TV Device")
+            Log.d("TVCheck", "Running on TV")
+        }
+    }
+
+    private fun initChromecast() {
+        if (!isTv) {
             CastContext.getSharedInstance(applicationContext)
         }
     }
@@ -77,7 +81,8 @@ class MainActivity: FlutterFragmentActivity() {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if(pipAllowed && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if(pipAllowed && !isTv &&
+                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             val pipParamsBuilder = PictureInPictureParams.Builder()
             pipParamsBuilder.setAspectRatio(Rational(pipWidth, pipHeight))
             enterPictureInPictureMode(pipParamsBuilder.build())
