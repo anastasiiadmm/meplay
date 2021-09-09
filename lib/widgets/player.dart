@@ -183,7 +183,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   Future<void> _loadChannel() async {
     VideoPlayerController controller;
     // https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/MediaPlaybackGuide/Contents/Resources/en.lproj/HTTPLiveStreaming/HTTPLiveStreaming.html
-    if (Platform.isIOS) {
+    if (Platform.isIOS || await isTv()) {
       print(widget.channel.url);
       controller = VideoPlayerController.network(widget.channel.url);
       await controller.initialize();
