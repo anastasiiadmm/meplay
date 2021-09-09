@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../models.dart';
 import '../theme.dart';
 import 'channel_logo.dart';
-
 
 class ChannelTile extends StatelessWidget {
   final Channel channel;
@@ -14,7 +14,7 @@ class ChannelTile extends StatelessWidget {
     @required this.channel,
     this.onTap,
     this.showNumber: true,
-  }): super(key: key);
+  }) : super(key: key);
 
   Widget get _logo {
     return Padding(
@@ -59,7 +59,7 @@ class ChannelTile extends StatelessWidget {
           width: double.infinity,
           child: ColoredBox(color: AppColors.decorativeGray),
         );
-        if(snapshot.hasData) {
+        if (snapshot.hasData) {
           Program program = snapshot.data;
           int length = program.end.difference(program.start).inMilliseconds;
           int left = program.end.difference(DateTime.now()).inMilliseconds;
@@ -107,10 +107,12 @@ class ChannelTile extends StatelessWidget {
     );
   }
 
+  void emptyCallback() {}
+
   Widget _wrapTap(Widget content) {
-    if(onTap == null) return content;
-    return GestureDetector(
-      onTap: onTap,
+    // if(onTap == null) return content;
+    return InkWell(
+      onTap: onTap == null ? emptyCallback : onTap,
       child: content,
     );
   }
@@ -133,6 +135,6 @@ class ChannelTile extends StatelessWidget {
           ),
         ),
       ),
-    ) ;
+    );
   }
 }
