@@ -57,7 +57,7 @@ class _IntroScreenState extends State<IntroScreen> {
         radius: 4,
       );
     } else {
-      dot = GestureDetector(
+      dot = InkWell(
         onTap: () => _switchTo(id),
         child: Circle.dot(
           color: AppColors.decorativeGray,
@@ -86,7 +86,7 @@ class _IntroScreenState extends State<IntroScreen> {
   }
 
   Widget _page({String title, String text, String asset}) {
-    return GestureDetector(
+    return InkWell(
       onTap: _next,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16,),
@@ -146,7 +146,7 @@ class _IntroScreenState extends State<IntroScreen> {
   }
 
   Widget get _skipButton {
-    return GestureDetector(
+    return InkWell(
       onTap: _skip,
       child: Text(
         locale(context).introSkip,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../models.dart';
 import '../theme.dart';
-
 
 class RadioTile extends StatelessWidget {
   final Channel channel;
@@ -11,7 +11,7 @@ class RadioTile extends StatelessWidget {
     Key key,
     @required this.channel,
     this.onTap,
-  }): super(key: key);
+  }) : super(key: key);
 
   Widget get _title {
     return Text(
@@ -58,8 +58,8 @@ class RadioTile extends StatelessWidget {
   }
 
   Widget _wrapTap(Widget content) {
-    if(onTap == null) return content;
-    return GestureDetector(
+    if (onTap == null) return content;
+    return InkWell(
       onTap: onTap,
       child: content,
     );
@@ -75,6 +75,6 @@ class RadioTile extends StatelessWidget {
           child: _content,
         ),
       ),
-    ) ;
+    );
   }
 }

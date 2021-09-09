@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme.dart';
 
+import '../theme.dart';
 
 class TabSwitch extends StatefulWidget {
   static const int left = 0;
@@ -19,7 +19,7 @@ class TabSwitch extends StatefulWidget {
     this.leftLabel,
     this.rightLabel,
     this.initialActive: left,
-  }): super(key: key);
+  }) : super(key: key);
 
   @override
   _TabSwitchState createState() => _TabSwitchState();
@@ -30,7 +30,7 @@ class _TabSwitchState extends State<TabSwitch> {
   PageController _controller;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _active = widget.initialActive;
     _controller = PageController();
@@ -48,35 +48,37 @@ class _TabSwitchState extends State<TabSwitch> {
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
-    setState(() { _active = id; });
+    setState(() {
+      _active = id;
+    });
   }
 
   Widget _switchItem(String text, int id) {
-    return GestureDetector(
+    return InkWell(
       onTap: () => _switchTo(id),
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: id == TabSwitch.left ? BorderRadius.only(
-            topLeft: Radius.circular(4),
-            bottomLeft: Radius.circular(4),
-          ) : BorderRadius.only(
-            topRight: Radius.circular(4),
-            bottomRight: Radius.circular(4),
+          decoration: BoxDecoration(
+            borderRadius: id == TabSwitch.left
+                ? BorderRadius.only(
+                    topLeft: Radius.circular(4),
+                    bottomLeft: Radius.circular(4),
+                  )
+                : BorderRadius.only(
+                    topRight: Radius.circular(4),
+                    bottomRight: Radius.circular(4),
+                  ),
+            color: _active == id ? AppColors.text : AppColors.item,
           ),
-          color: _active == id ? AppColors.text : AppColors.item,
-        ),
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(5, 4, 5, 6),
-          child: Text(
-            text ?? '',
-            style: _active == id
-                ? AppFonts.tabSwitchActive
-                : AppFonts.tabSwitch,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-          ),
-        )
-      ),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(5, 4, 5, 6),
+            child: Text(
+              text ?? '',
+              style:
+                  _active == id ? AppFonts.tabSwitchActive : AppFonts.tabSwitch,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+            ),
+          )),
     );
   }
 
@@ -109,7 +111,9 @@ class _TabSwitchState extends State<TabSwitch> {
   }
 
   void _pageChanged(int id) {
-    setState(() { _active = id; });
+    setState(() {
+      _active = id;
+    });
   }
 
   Widget get _tabs {

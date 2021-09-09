@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import '../utils/settings.dart';
+import 'package:flutter/material.dart';
+
 import '../models.dart';
 import '../theme.dart';
+import '../utils/settings.dart';
 import 'circle.dart';
-
 
 class PacketCarousel extends StatefulWidget {
   final List<Packet> packets;
@@ -17,23 +17,22 @@ class PacketCarousel extends StatefulWidget {
   static const double topShadowPadding = 20;
   static const double bottomShadowPadding = 20;
   static const double dotsHeight = 28;
-  static const totalHeight = bannerHeight + topShadowPadding
-      + bottomShadowPadding + dotsHeight;
+  static const totalHeight =
+      bannerHeight + topShadowPadding + bottomShadowPadding + dotsHeight;
 
-  PacketCarousel({
-    Key key,
-    @required this.packets,
-    this.connect,
-    this.disconnect,
-    this.activeId: 0,
-    this.onChange
-  }): assert(packets.length > 0),
+  PacketCarousel(
+      {Key key,
+      @required this.packets,
+      this.connect,
+      this.disconnect,
+      this.activeId: 0,
+      this.onChange})
+      : assert(packets.length > 0),
         super(key: key);
 
   @override
   _PacketCarouselState createState() => _PacketCarouselState();
 }
-
 
 class _PacketCarouselState extends State<PacketCarousel> {
   int _activeId;
@@ -50,8 +49,10 @@ class _PacketCarouselState extends State<PacketCarousel> {
   }
 
   void _pageChanged(int id, CarouselPageChangedReason reason) {
-    if(widget.onChange != null) widget.onChange(id); 
-    setState(() { _activeId = id; });
+    if (widget.onChange != null) widget.onChange(id);
+    setState(() {
+      _activeId = id;
+    });
   }
 
   Widget _dot(id) {
@@ -62,7 +63,7 @@ class _PacketCarouselState extends State<PacketCarousel> {
         radius: 4,
       );
     } else {
-      dot = GestureDetector(
+      dot = InkWell(
         onTap: () => _switchTo(id),
         child: Circle.dot(
           color: AppColors.decorativeGray,
@@ -81,7 +82,7 @@ class _PacketCarouselState extends State<PacketCarousel> {
 
   Widget get _dots {
     List<Widget> items = [];
-    for(int id = 0; id < widget.packets.length; id++) {
+    for (int id = 0; id < widget.packets.length; id++) {
       items.add(_dot(id));
     }
     return Row(
@@ -96,8 +97,8 @@ class _PacketCarouselState extends State<PacketCarousel> {
     Packet packet = widget.packets[id];
     AppLocalizations l = locale(context);
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, PacketCarousel.topShadowPadding,
-        16, PacketCarousel.bottomShadowPadding + PacketCarousel.dotsHeight),
+      padding: EdgeInsets.fromLTRB(16, PacketCarousel.topShadowPadding, 16,
+          PacketCarousel.bottomShadowPadding + PacketCarousel.dotsHeight),
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -141,11 +142,10 @@ class _PacketCarouselState extends State<PacketCarousel> {
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
-                        color: packet.isActive
-                            ? AppColors.red
-                            : AppColors.green,
+                        color:
+                            packet.isActive ? AppColors.red : AppColors.green,
                       ),
-                      child: GestureDetector(
+                      child: InkWell(
                         onTap: packet.isActive
                             ? () => widget.disconnect(packet)
                             : () => widget.connect(packet),
@@ -162,16 +162,17 @@ class _PacketCarouselState extends State<PacketCarousel> {
                 ],
               ),
             ),
-            if(packet.isActive) Positioned(
-              top: 12,
-              right: 12,
-              child: Circle(
-                radius: 20,
-                padding: EdgeInsets.all(8),
-                child: AppIcons.check,
-                color: AppColors.white,
+            if (packet.isActive)
+              Positioned(
+                top: 12,
+                right: 12,
+                child: Circle(
+                  radius: 20,
+                  padding: EdgeInsets.all(8),
+                  child: AppIcons.check,
+                  color: AppColors.white,
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -180,7 +181,7 @@ class _PacketCarouselState extends State<PacketCarousel> {
 
   Widget get _packetCarousel {
     List<Widget> items = [];
-    for(int id = 0; id < widget.packets.length; id++) {
+    for (int id = 0; id < widget.packets.length; id++) {
       items.add(_packet(id));
     }
     return CarouselSlider(

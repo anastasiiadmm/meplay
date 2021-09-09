@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../models.dart';
 import '../theme.dart';
-
 
 class NewsTile extends StatelessWidget {
   final News newsItem;
@@ -11,15 +11,13 @@ class NewsTile extends StatelessWidget {
     Key key,
     @required this.newsItem,
     this.onTap,
-  }): super(key: key);
+  }) : super(key: key);
 
   Widget get _title {
     return Text(
       '${newsItem.title} ${newsItem.text}',
       maxLines: 2,
-      style: newsItem.isRead
-          ? AppFonts.textPrimaryMute
-          : AppFonts.textPrimary,
+      style: newsItem.isRead ? AppFonts.textPrimaryMute : AppFonts.textPrimary,
     );
   }
 
@@ -31,21 +29,20 @@ class NewsTile extends StatelessWidget {
         ),
       ),
       child: SizedBox(
-        height: 61,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: EdgeInsets.only(bottom: 12, right: 16),
-            child: _title,
-          ),
-        )
-      ),
+          height: 61,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 12, right: 16),
+              child: _title,
+            ),
+          )),
     );
   }
 
   Widget _wrapTap(Widget content) {
-    if(onTap == null) return content;
-    return GestureDetector(
+    if (onTap == null) return content;
+    return InkWell(
       onTap: onTap,
       child: content,
     );
@@ -61,6 +58,6 @@ class NewsTile extends StatelessWidget {
           child: _content,
         ),
       ),
-    ) ;
+    );
   }
 }

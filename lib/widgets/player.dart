@@ -526,7 +526,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   Widget get _liveButton {
-    return GestureDetector(
+    return InkWell(
       onTap: _goLive,
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Padding(
@@ -767,7 +767,7 @@ class _HLSPlayerState extends State<HLSPlayer> {
   }
 
   Widget get _pipControls {
-    return GestureDetector(
+    return InkWell(
       onTap: _togglePipControls,
       child: _animation(
         visible: _controlsVisible,

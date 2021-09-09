@@ -1,10 +1,11 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
+
 import '../models.dart';
 import '../theme.dart';
 import 'circle.dart';
-
 
 class BannerCarousel extends StatefulWidget {
   final List<AppBanner> banners;
@@ -14,20 +15,19 @@ class BannerCarousel extends StatefulWidget {
   static const double topShadowPadding = 20;
   static const double bottomShadowPadding = 20;
   static const double dotsHeight = 28;
-  static const totalHeight = bannerHeight + topShadowPadding
-      + bottomShadowPadding + dotsHeight;
+  static const totalHeight =
+      bannerHeight + topShadowPadding + bottomShadowPadding + dotsHeight;
 
   BannerCarousel({
     Key key,
     @required this.banners,
     this.onTap,
-  }): assert(banners.length > 0),
+  })  : assert(banners.length > 0),
         super(key: key);
 
   @override
   _BannerCarouselState createState() => _BannerCarouselState();
 }
-
 
 class _BannerCarouselState extends State<BannerCarousel> {
   int _activeId = 0;
@@ -51,7 +51,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
         radius: 4,
       );
     } else {
-      dot = GestureDetector(
+      dot = InkWell(
         onTap: () => _switchTo(id),
         child: Circle.dot(
           color: AppColors.decorativeGray,
@@ -70,7 +70,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
 
   Widget get _dots {
     List<Widget> items = [];
-    for(int id = 0; id < widget.banners.length; id++) {
+    for (int id = 0; id < widget.banners.length; id++) {
       items.add(_dot(id));
     }
     return Row(
@@ -96,8 +96,12 @@ class _BannerCarouselState extends State<BannerCarousel> {
       );
     }
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, BannerCarousel.topShadowPadding,
-        16, BannerCarousel.bottomShadowPadding + BannerCarousel.dotsHeight,),
+      padding: EdgeInsets.fromLTRB(
+        16,
+        BannerCarousel.topShadowPadding,
+        16,
+        BannerCarousel.bottomShadowPadding + BannerCarousel.dotsHeight,
+      ),
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
@@ -119,7 +123,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
 
   Widget get _bannerCarousel {
     List<Widget> items = [];
-    for(int id = 0; id < widget.banners.length; id++) {
+    for (int id = 0; id < widget.banners.length; id++) {
       items.add(_banner(id));
     }
     return CarouselSlider(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../models.dart';
 import 'channel_logo.dart';
-
 
 class ChannelCarousel extends StatelessWidget {
   final List<Channel> channels;
@@ -9,7 +9,7 @@ class ChannelCarousel extends StatelessWidget {
   ChannelCarousel({
     Key key,
     @required this.channels,
-  }): super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class ChannelCarousel extends StatelessWidget {
             padding: id == 0
                 ? EdgeInsets.symmetric(horizontal: 16)
                 : EdgeInsets.only(right: 16),
-            child: GestureDetector(
+            child: InkWell(
               onTap: () => channel.open(context),
               child: ChannelLogo(
                 channel: channel,

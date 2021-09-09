@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:me_play/theme.dart';
-import '../models.dart';
 
+import '../models.dart';
 
 class CategoryCarousel extends StatelessWidget {
   final List<Genre> categories;
@@ -14,8 +14,8 @@ class CategoryCarousel extends StatelessWidget {
     this.onItemTap,
     this.activeId: 0,
   }) : super(
-    key: key,
-  );
+          key: key,
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +30,11 @@ class CategoryCarousel extends StatelessWidget {
             padding: id == 0
                 ? EdgeInsets.only(right: 12, left: 16)
                 : id == categories.length - 1
-                ? EdgeInsets.only(right: 16)
-                : EdgeInsets.only(right: 12),
-            child: GestureDetector(
+                    ? EdgeInsets.only(right: 16)
+                    : EdgeInsets.only(right: 12),
+            child: InkWell(
               onTap: () {
-                if(onItemTap != null) onItemTap(genre);
+                if (onItemTap != null) onItemTap(genre);
               },
               child: DecoratedBox(
                 decoration: BoxDecoration(

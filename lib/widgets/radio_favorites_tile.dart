@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../models.dart';
 import '../theme.dart';
-
 
 class RadioFavoritesTile extends StatelessWidget {
   final Channel channel;
@@ -13,7 +13,7 @@ class RadioFavoritesTile extends StatelessWidget {
     @required this.channel,
     this.onTap,
     this.onDelete,
-  }): super(key: key);
+  }) : super(key: key);
 
   Widget get _title {
     return Text(
@@ -69,8 +69,8 @@ class RadioFavoritesTile extends StatelessWidget {
   }
 
   Widget _wrapTap(Widget content) {
-    if(onTap == null) return content;
-    return GestureDetector(
+    if (onTap == null) return content;
+    return InkWell(
       onTap: onTap,
       child: content,
     );

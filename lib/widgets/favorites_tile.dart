@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../models.dart';
 import '../theme.dart';
 import 'channel_logo.dart';
-
 
 class FavoritesTile extends StatelessWidget {
   final Channel channel;
@@ -14,7 +14,7 @@ class FavoritesTile extends StatelessWidget {
     @required this.channel,
     this.onTap,
     this.onDelete,
-  }): super(key: key);
+  }) : super(key: key);
 
   Widget get _logo {
     return Padding(
@@ -84,8 +84,8 @@ class FavoritesTile extends StatelessWidget {
   }
 
   Widget _wrapTap(Widget content) {
-    if(onTap == null) return content;
-    return GestureDetector(
+    if (onTap == null) return content;
+    return InkWell(
       onTap: onTap,
       child: content,
     );
@@ -118,6 +118,6 @@ class FavoritesTile extends StatelessWidget {
           ),
         ],
       ),
-    ) ;
+    );
   }
 }

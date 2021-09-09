@@ -1,10 +1,11 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import '../models.dart';
 import '../theme.dart';
 import 'channel_logo.dart';
-
 
 class NotificationTile extends StatelessWidget {
   final PendingNotificationRequest notification;
@@ -17,7 +18,7 @@ class NotificationTile extends StatelessWidget {
     @required this.notification,
     this.onTap,
     this.onDelete,
-  }): this._data = jsonDecode(notification.payload),
+  })  : this._data = jsonDecode(notification.payload),
         super(key: key);
 
   Future<Channel> get _channel {
@@ -26,23 +27,22 @@ class NotificationTile extends StatelessWidget {
 
   Widget get _logo {
     return Padding(
-      padding: EdgeInsets.only(right: 16),
-      child: FutureBuilder<Channel>(
-        future: _channel,
-        builder: (BuildContext context, snapshot) {
-          if(snapshot.hasData) {
-            return ChannelLogo(
-              size: LogoSize.small,
-              channel: snapshot.data,
-            );
-          } else {
-            return SizedBox(
-              width: LogoSize.small.size,
-            );
-          }
-        },
-      )
-    );
+        padding: EdgeInsets.only(right: 16),
+        child: FutureBuilder<Channel>(
+          future: _channel,
+          builder: (BuildContext context, snapshot) {
+            if (snapshot.hasData) {
+              return ChannelLogo(
+                size: LogoSize.small,
+                channel: snapshot.data,
+              );
+            } else {
+              return SizedBox(
+                width: LogoSize.small.size,
+              );
+            }
+          },
+        ));
   }
 
   Widget get _time {
@@ -110,8 +110,8 @@ class NotificationTile extends StatelessWidget {
   }
 
   Widget _wrapTap(Widget content) {
-    if(onTap == null) return content;
-    return GestureDetector(
+    if (onTap == null) return content;
+    return InkWell(
       onTap: onTap,
       child: content,
     );
@@ -144,6 +144,6 @@ class NotificationTile extends StatelessWidget {
           ),
         ],
       ),
-    ) ;
+    );
   }
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../utils/settings.dart';
-import '../utils/orientation_helper.dart';
+
 import '../theme.dart';
-import 'rotation_loader.dart';
+import '../utils/orientation_helper.dart';
+import '../utils/settings.dart';
 import 'app_icon_button.dart';
 import 'circle.dart';
-
+import 'rotation_loader.dart';
 
 class ConfirmDialog extends StatefulWidget {
   final String title;
@@ -32,7 +32,7 @@ class ConfirmDialog extends StatefulWidget {
     this.close,
     @required this.action,
     this.autoPop: true,
-  }): super(key: key);
+  }) : super(key: key);
 
   @override
   _ConfirmDialogState createState() => _ConfirmDialogState();
@@ -50,33 +50,35 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
   }
 
   Widget get _title => Text(
-    widget.title ?? locale(context).defaultModalTitle,
-    style: AppFonts.modalTitle,
-    textAlign: TextAlign.center,
-  );
+        widget.title ?? locale(context).defaultModalTitle,
+        style: AppFonts.modalTitle,
+        textAlign: TextAlign.center,
+      );
 
   Widget get _text => Text(
-    widget.text ?? '',
-    style: AppFonts.modalText,
-    textAlign: TextAlign.center,
-  );
+        widget.text ?? '',
+        style: AppFonts.modalText,
+        textAlign: TextAlign.center,
+      );
 
   Widget get _loader => Padding(
-    padding: EdgeInsets.zero,
-    child:  Padding(
-      padding: EdgeInsets.only(top: 20),
-      child: RotationLoader(),
-    ),
-  );
+        padding: EdgeInsets.zero,
+        child: Padding(
+          padding: EdgeInsets.only(top: 20),
+          child: RotationLoader(),
+        ),
+      );
 
   Widget get _error => Text(
-    widget.error ?? locale(context).defaultModalError,
-    style: AppFonts.modalText,
-    textAlign: TextAlign.center,
-  );
+        widget.error ?? locale(context).defaultModalError,
+        style: AppFonts.modalText,
+        textAlign: TextAlign.center,
+      );
 
   Future<void> _action() async {
-    setState(() { _loading = true; });
+    setState(() {
+      _loading = true;
+    });
     bool result;
     try {
       result = await widget.action();
@@ -84,9 +86,9 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
       print(e);
       result = false;
     }
-    if(mounted) {
-      if(result) {
-        if(widget.autoPop) _close();
+    if (mounted) {
+      if (result) {
+        if (widget.autoPop) _close();
       } else {
         setState(() {
           _loading = false;
@@ -100,78 +102,86 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
     Navigator.of(context).pop();
   }
 
-  Widget _modalButton(String text, {
+  Widget _modalButton(
+    String text, {
     void Function() action,
     Color color: AppColors.blockBg,
     TextStyle textStyle: AppFonts.modalButtonPrimary,
-  }) => Ink(
-    color: color,
-    height: 44,
-    child: InkWell(
-      onTap: _loading ? null : action,
-      child: Padding(
-        padding: EdgeInsets.only(top: 9),
-        child: Text(
-          text,
-          style: textStyle,
-          textAlign: TextAlign.center,
-        ),
-      ),
-    ),
-  );
-
-  Widget get _closeButton => _modalButton(
-    widget.close ?? locale(context).close,
-    action: _close,
-  );
-
-  Widget get _okButton => _modalButton(
-    widget.ok ?? locale(context).yes,
-    action: _loading ? null : _action,
-    color: AppColors.purple,
-  );
-
-  Widget get _cancelButton => _modalButton(
-    widget.cancel ?? locale(context).no,
-    action: _loading ? null : _close,
-    textStyle: AppFonts.modalButtonSecondary,
-  );
-
-  Widget get _content => Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Padding(
-        padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-        child: _title,
-      ),
-      Padding(
-        padding: EdgeInsets.fromLTRB(16, 4, 16, 24),
-        child: _loading ? _loader : _failed ? _error : _text,
-      ),
-      DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: AppColors.modalBorder),
+  }) =>
+      Ink(
+        color: color,
+        height: 44,
+        child: InkWell(
+          onTap: _loading ? null : action,
+          child: Padding(
+            padding: EdgeInsets.only(top: 9),
+            child: Text(
+              text,
+              style: textStyle,
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
-        child: Row(
-          children: _failed ? [
-            Expanded(child: _closeButton),
-          ] : [
-            Expanded(child: _cancelButton),
-            SizedBox(
-              width: 1,
-              height: 44,
-              child: ColoredBox(
-                color: AppColors.modalBorder,
+      );
+
+  Widget get _closeButton => _modalButton(
+        widget.close ?? locale(context).close,
+        action: _close,
+      );
+
+  Widget get _okButton => _modalButton(
+        widget.ok ?? locale(context).yes,
+        action: _loading ? null : _action,
+        color: AppColors.purple,
+      );
+
+  Widget get _cancelButton => _modalButton(
+        widget.cancel ?? locale(context).no,
+        action: _loading ? null : _close,
+        textStyle: AppFonts.modalButtonSecondary,
+      );
+
+  Widget get _content => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: _title,
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(16, 4, 16, 24),
+            child: _loading
+                ? _loader
+                : _failed
+                    ? _error
+                    : _text,
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(color: AppColors.modalBorder),
               ),
             ),
-            Expanded(child: _okButton),
-          ],
-        ),
-      ),
-    ],
-  );
+            child: Row(
+              children: _failed
+                  ? [
+                      Expanded(child: _closeButton),
+                    ]
+                  : [
+                      Expanded(child: _cancelButton),
+                      SizedBox(
+                        width: 1,
+                        height: 44,
+                        child: ColoredBox(
+                          color: AppColors.modalBorder,
+                        ),
+                      ),
+                      Expanded(child: _okButton),
+                    ],
+            ),
+          ),
+        ],
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +195,6 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
     );
   }
 }
-
 
 class SelectorModal<T> extends StatelessWidget {
   final String title;
@@ -201,7 +210,7 @@ class SelectorModal<T> extends StatelessWidget {
     @required this.itemTitle,
     this.selected,
     this.onSelect,
-  }): super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -235,41 +244,43 @@ class SelectorModal<T> extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 3),
-                    child:SingleChildScrollView(
+                    child: SingleChildScrollView(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: choices.map<Widget>((item) => GestureDetector(
-                          onTap: () {
-                            onSelect(item);
-                            Navigator.of(context).pop();
-                          },
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: AppColors.decorativeGray,
-                                ),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 7,
-                                horizontal: 20,
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      itemTitle(item),
-                                      style: AppFonts.textSecondary,
+                        children: choices
+                            .map<Widget>((item) => InkWell(
+                                  onTap: () {
+                                    onSelect(item);
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: AppColors.decorativeGray,
+                                        ),
+                                      ),
                                     ),
+                                    child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 7,
+                                          horizontal: 20,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                itemTitle(item),
+                                                style: AppFonts.textSecondary,
+                                              ),
+                                            ),
+                                            if (item == selected)
+                                              AppIcons.check,
+                                          ],
+                                        )),
                                   ),
-                                  if(item == selected) AppIcons.check,
-                                ],
-                              )
-                            ),
-                          ),
-                        )).toList(),
+                                ))
+                            .toList(),
                       ),
                     ),
                   ),
