@@ -69,8 +69,10 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
     launch('https://megacom.kg');
   }
 
-  void _restoreSystemOverlays() {
-    Timer(Duration(milliseconds: 1001), SystemChrome.restoreSystemUIOverlays);
+  Future<void> _restoreSystemOverlays() async {
+    if (!await isTv()) {
+      Timer(Duration(milliseconds: 1001), SystemChrome.restoreSystemUIOverlays);
+    }
   }
 
   void _continue() {
@@ -287,12 +289,14 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
             filled: true,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                  color: _error == null ? AppColors.item : AppColors.red),
+                color: _error == null ? AppColors.item : AppColors.red,
+              ),
               borderRadius: BorderRadius.circular(10),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                  color: _error == null ? AppColors.itemFocus : AppColors.red),
+                color: _error == null ? AppColors.itemFocus : AppColors.red,
+              ),
               borderRadius: BorderRadius.circular(10),
             ),
           ),

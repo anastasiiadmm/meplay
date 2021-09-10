@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../channel.dart';
 import '../theme.dart';
+import '../utils/settings.dart';
 import 'app_icon_button.dart';
 import 'app_toolbar.dart';
-import '../utils/settings.dart';
-
 
 // TODO: add bottom line on design
 
@@ -20,7 +21,7 @@ class AppSearchBar extends StatefulWidget implements PreferredSizeWidget {
     this.title,
     this.onSearchSubmit,
     this.actions,
-  }): super(key: key);
+  }) : super(key: key);
 
   @override
   _AppSearchBarState createState() => _AppSearchBarState();
@@ -45,16 +46,22 @@ class _AppSearchBarState extends State<AppSearchBar> {
     super.dispose();
   }
 
-  void _restoreSystemOverlays() {
-    Timer(Duration(milliseconds: 1001), SystemChrome.restoreSystemUIOverlays);
+  Future<void> _restoreSystemOverlays() async {
+    if (!await isTv()) {
+      Timer(Duration(milliseconds: 1001), SystemChrome.restoreSystemUIOverlays);
+    }
   }
 
   void _openSearch() {
-    setState(() { _search = true; });
+    setState(() {
+      _search = true;
+    });
   }
 
   void _hideSearch() {
-    setState(() { _search = false; });
+    setState(() {
+      _search = false;
+    });
   }
 
   void _clearSearch() {
@@ -64,8 +71,10 @@ class _AppSearchBarState extends State<AppSearchBar> {
   }
 
   void _toggleSearch() {
-    if(_search) _hideSearch();
-    else _openSearch();
+    if (_search)
+      _hideSearch();
+    else
+      _openSearch();
   }
 
   void _back() {
@@ -88,7 +97,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
         children: [
           Focus(
             onFocusChange: (hasFocus) {
-              if(hasFocus) _restoreSystemOverlays();
+              if (hasFocus) _restoreSystemOverlays();
             },
             child: TextFormField(
               keyboardType: TextInputType.text,
@@ -149,35 +158,37 @@ class _AppSearchBarState extends State<AppSearchBar> {
         padding: EdgeInsets.all(5),
       ),
     ];
-    if(widget.actions != null) actions.addAll(widget.actions);
+    if (widget.actions != null) actions.addAll(widget.actions);
     return actions;
   }
 
   @override
   Widget build(BuildContext context) {
-    return _search ? WillPopScope(
-      onWillPop: _willPop,
-      child: AppBar(
-        backgroundColor: AppColors.item,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        leadingWidth: 50,
-        toolbarHeight: widget.preferredSize.height,
-        leading: AppIconButton(
-          onPressed: _back,
-          icon: AppIcons.arrowLeft,
-          padding: EdgeInsets.all(8),
-        ),
-        title: Padding(
-          child: _input,
-          padding: EdgeInsets.only(right: 15),
-        ),
-        titleSpacing: 0,
-        actions: [Container()],
-      ),
-    ) : AppToolBar(
-      title: widget.title,
-      actions: _actions,
-    );
+    return _search
+        ? WillPopScope(
+            onWillPop: _willPop,
+            child: AppBar(
+              backgroundColor: AppColors.item,
+              elevation: 0,
+              automaticallyImplyLeading: false,
+              leadingWidth: 50,
+              toolbarHeight: widget.preferredSize.height,
+              leading: AppIconButton(
+                onPressed: _back,
+                icon: AppIcons.arrowLeft,
+                padding: EdgeInsets.all(8),
+              ),
+              title: Padding(
+                child: _input,
+                padding: EdgeInsets.only(right: 15),
+              ),
+              titleSpacing: 0,
+              actions: [Container()],
+            ),
+          )
+        : AppToolBar(
+            title: widget.title,
+            actions: _actions,
+          );
   }
 }
