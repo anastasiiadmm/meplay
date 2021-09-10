@@ -48,11 +48,11 @@ class _PlayerScreenState extends State<PlayerScreen>
   bool _favorite = false;
   double _volume;
   VideoBufferSize _bufferSize;
+  bool _isTv;
 
   @override
   void initState() {
     super.initState();
-    OrientationHelper.allowAll();
     Wakelock.enable();
     _initAsync();
     WidgetsBinding.instance.addObserver(this);
@@ -60,6 +60,8 @@ class _PlayerScreenState extends State<PlayerScreen>
 
   Future<void> _initAsync() async {
     print(widget.channelId);
+    _isTv = await isTv();
+    if (!_isTv) OrientationHelper.allowAll();
     await Future.wait([
       _initBrightness(),
       _initPlatformState(),
@@ -172,7 +174,7 @@ class _PlayerScreenState extends State<PlayerScreen>
     Wakelock.disable();
     _restoreBrightness();
     _disablePip();
-    OrientationHelper.forcePortrait();
+    if (!_isTv) OrientationHelper.forcePortrait();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
