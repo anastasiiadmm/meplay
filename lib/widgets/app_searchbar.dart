@@ -109,7 +109,15 @@ class _AppSearchBarState extends State<AppSearchBar> {
                 isDense: true,
                 filled: true,
                 border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide(
+                    color: AppColors.blockBg,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: AppColors.itemFocus,
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
