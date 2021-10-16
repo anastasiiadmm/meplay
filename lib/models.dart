@@ -89,7 +89,7 @@ class Channel {
     _popular.value = ids.map((id) {
       return channels.firstWhere((channel) {
         return channel.id == id;
-      });
+      }, orElse: () => null);
     }).toList();
   }
 
