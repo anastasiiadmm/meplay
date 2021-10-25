@@ -69,7 +69,7 @@ class Channel {
           item = (item as Map<String, dynamic>);
           return (item['type'] == 'tv' ? tv : radio).firstWhere((channel) {
             return channel.id == item['id'];
-          });
+          }, orElse: () => null);
         }).toList();
       },
       defaultValue: <Channel>[],
@@ -370,7 +370,8 @@ class Channel {
   }
 
   Genre get category {
-    return Genre.genres.firstWhere((genre) => genreId == genre.id);
+    return Genre.genres.firstWhere((genre) => genreId == genre.id,
+        orElse: () => null);
   }
 
   String get radioName {
