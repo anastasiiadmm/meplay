@@ -47,14 +47,14 @@ class _BannerCarouselState extends State<BannerCarousel> {
     Widget dot;
     if (id == _activeId) {
       dot = Circle.dot(
-        color: AppColors.purple,
+        color: AppColors.decorativeGray,
         radius: 4,
       );
     } else {
       dot = InkWell(
         onTap: () => _switchTo(id),
         child: Circle.dot(
-          color: AppColors.decorativeGray,
+          color: AppColors.grayDisabled,
           radius: 4,
         ),
       );

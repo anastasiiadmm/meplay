@@ -58,7 +58,7 @@ class SettingsTile extends StatelessWidget {
               ),
               if(active) Padding(
                 padding: EdgeInsets.only(left: 10),
-                child: AppIcons.check,
+                child: AppIcons.check_null,
               ),
             ],
           ),

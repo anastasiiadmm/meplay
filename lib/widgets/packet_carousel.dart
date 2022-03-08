@@ -169,7 +169,7 @@ class _PacketCarouselState extends State<PacketCarousel> {
                 child: Circle(
                   radius: 20,
                   padding: EdgeInsets.all(8),
-                  child: AppIcons.check,
+                  child: AppIcons.check_null,
                   color: AppColors.white,
                 ),
               ),

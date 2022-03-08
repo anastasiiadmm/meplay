@@ -153,7 +153,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBg,
+      backgroundColor: AppColors.whiteBg,
       appBar: _appBar,
       body: _body,
       bottomNavigationBar: _bottomNavBar,

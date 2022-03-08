@@ -67,7 +67,7 @@ class _TabSwitchState extends State<TabSwitch> {
                     topRight: Radius.circular(4),
                     bottomRight: Radius.circular(4),
                   ),
-            color: _active == id ? AppColors.text : AppColors.item,
+            color: _active == id ? AppColors.item : AppColors.text,
           ),
           child: Padding(
             padding: EdgeInsets.fromLTRB(5, 4, 5, 6),

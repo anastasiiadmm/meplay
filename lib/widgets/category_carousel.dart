@@ -39,8 +39,8 @@ class CategoryCarousel extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: genre.id == activeId
-                      ? AppColors.purple
-                      : AppColors.decorativeGray,
+                      ? AppColors.decorativeGray
+                      : AppColors.textPrimaryMute,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: SizedBox(

@@ -114,7 +114,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBg,
+      backgroundColor: AppColors.whiteBg,
       extendBody: true,
       appBar: _appBar,
       body: _body,

@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _splashAnimationDone = false;
   bool _isSplashShowing = true;  // if splash animates from hidden to visible or back
   DeeplinkHelper _deeplinkHelper;
-  bool _showBanner = false;  // while banner is not real - hide it.
+  bool _showBanner = true;  // while banner is not real - hide it.
   bool _firstLaunch = false;
 
   void initState() {
@@ -62,12 +62,14 @@ class _HomeScreenState extends State<HomeScreen> {
     _doneLoading();
   }
 
+  final GlobalKey<ScaffoldState> _scaffoldDrawerKey = GlobalKey<ScaffoldState>();
+
   List<AppBanner> _banners;
   Future<List<AppBanner>> _loadBanners() async {
     // stub
     if(_banners == null) _banners = await Future<List<AppBanner>>.delayed(
       Duration(seconds: 2),
-      () => [
+          () => [
         AppBanner(targetUrl: Routes.tv),
         AppBanner(targetUrl: Routes.login),
         AppBanner(targetUrl: Routes.radio),
@@ -134,59 +136,72 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _openDrawer() {
+    _scaffoldDrawerKey.currentState.openDrawer();
+  }
+
   Widget get _mainButtonBlock {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: EdgeInsets.only(bottom: 1),
+          padding: EdgeInsets.only(right: 15, bottom: 10, left: 15),
           child: IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 1),
+                  child: Container(
+                    padding: EdgeInsets.only(right: 5),
                     child: LargeImageButton(
-                      image: AppImages.tv,
+                      image: AppImages.tv_null,
                       text: locale(context).homeTv,
                       onTap: _watchTV,
                     ),
                   ),
                 ),
                 Expanded(
-                  child: LargeImageButton(
-                    image: AppImages.radio,
-                    text: locale(context).homeRadio,
-                    onTap: _listenRadio,
-                  ),
+                  child: Container(
+                    padding: EdgeInsets.only(left: 5),
+                    child: LargeImageButton(
+                      image: AppImages.radio_null,
+                      text: locale(context).homeRadio,
+                      onTap: _listenRadio,
+                    ),
+                  )
                 ),
               ],
             ),
           ),
         ),
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(right: 1),
-                  child: LargeImageButton(
-                    image: AppImages.favorites,
-                    text: locale(context).homeFavorites,
-                    onTap: _openFavorites,
+        Padding(
+          padding: EdgeInsets.only(right: 15, bottom: 10, left: 15),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(right: 5),
+                    child: LargeImageButton(
+                      image: AppImages.favorite_null,
+                      text: locale(context).homeFavorites,
+                      onTap: _openFavorites,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: LargeImageButton(
-                  image: AppImages.account,
-                  text: locale(context).homeProfile,
-                  onTap: _openProfile,
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(left: 5),
+                    child: LargeImageButton(
+                      image: AppImages.account_null,
+                      text: locale(context).homeProfile,
+                      onTap: _openProfile,
+                    ),
+                  )
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -218,13 +233,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget get _recentBlock {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             locale(context).homeRecent,
-            style: AppFonts.blockTitle,
+            style: AppFonts.blockTitles,
           ),
         ),
         Padding(
@@ -249,13 +264,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget get _popularBlock {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             locale(context).homePopular,
-            style: AppFonts.blockTitle,
+            style: AppFonts.blockTitles,
           ),
         ),
         Padding(
@@ -280,29 +295,29 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget get _body {
     return SingleChildScrollView(
       child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            child: _mainButtonBlock,
-          ),
-          // баннер имеет 20px паддинг вокруг себя для показа тени
-          // поэтому здесь вокруг баннера нет паддинга,
-          // но его нужно учитывать при подсчёте паддинга
-          // в соседних блоках.
-          if(_showBanner) _bannerBlock,
-          Padding(
-            padding: _showBanner
-                ? EdgeInsets.symmetric(vertical: 10)
-                : EdgeInsets.fromLTRB(0, 20, 0, 10),
-            child: _recentBlock,
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 12),
-            child: _popularBlock,
-          ),
-        ]
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if(_showBanner) _bannerBlock,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: _mainButtonBlock,
+            ),
+            // баннер имеет 20px паддинг вокруг себя для показа тени
+            // поэтому здесь вокруг баннера нет паддинга,
+            // но его нужно учитывать при подсчёте паддинга
+            // в соседних блоках.
+            Padding(
+              padding: _showBanner
+                  ? EdgeInsets.symmetric(vertical: 10)
+                  : EdgeInsets.fromLTRB(0, 20, 0, 10),
+              child: _recentBlock,
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 20, 0, 12),
+              child: _popularBlock,
+            ),
+          ]
       ),
     );
   }
@@ -316,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
       width: 48,
       height: 48,
       child: Material(
-        color: AppColors.iconBg,
+        color: AppColors.whiteBg,
         type: MaterialType.circle,
         clipBehavior: Clip.hardEdge,
         child: InkWell(
@@ -329,7 +344,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Stack(
                   children: [
                     Center(
-                      child: AppIcons.bell,
+                      child: AppIcons.notifications_bell,
                     ),
                     if(newsCount > 0) Positioned(
                       top: 8,
@@ -337,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          color: AppColors.purple,
+                          color: AppColors.white,
                         ),
                         child: SizedBox(
                           width: 16,
@@ -364,17 +379,53 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget get _appBar {
     return PreferredSize(
-      preferredSize: Size(double.infinity, 68),
+      preferredSize: Size(double.infinity, 55),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(10, 10, 15, 10),
+        padding: EdgeInsets.fromLTRB(0, 10, 20, 5,),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AppImages.logoTop,
+            // AppImages.logoMainTop,
             _notificationsBtn,
           ],
         ),
       ),
+    );
+  }
+
+  Widget get _drawer {
+    return Drawer(
+      child: ColoredBox(
+        color: AppColors.lightBg,
+        child: SingleChildScrollView (
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget get _appBarMain {
+    return AppBar(
+      backgroundColor: AppColors.lightBg,
+      leading: IconButton(
+        onPressed: _openDrawer,
+        icon: AppIcons.burger_menu,
+      ),
+      actions: [
+        Padding(
+            padding: EdgeInsets.fromLTRB(0, 10, 85, 10,),
+            // child: AppImages.logoMainTop
+        ),
+        Padding(
+            padding: EdgeInsets.fromLTRB(0, 10, 25, 10,),
+            child: _notificationsBtn
+        )
+      ],
     );
   }
 
@@ -385,8 +436,10 @@ class _HomeScreenState extends State<HomeScreen> {
       onHide: _splashHide,
       isVisible: _isSplashShowing,
     ) : Scaffold(
-      backgroundColor: AppColors.darkBg,
-      appBar: _appBar,
+      key: _scaffoldDrawerKey,
+      backgroundColor: AppColors.lightBg,
+      drawer: _drawer,
+      appBar: _appBarMain,
       body: _body,
       bottomNavigationBar: null,
     );

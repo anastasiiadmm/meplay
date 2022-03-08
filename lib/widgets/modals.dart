@@ -275,7 +275,7 @@ class SelectorModal<T> extends StatelessWidget {
                                               ),
                                             ),
                                             if (item == selected)
-                                              AppIcons.check,
+                                              AppIcons.check_null,
                                           ],
                                         )),
                                   ),

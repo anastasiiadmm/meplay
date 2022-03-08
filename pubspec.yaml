@@ -69,6 +69,12 @@ dev_dependencies:
   test: ^1.15.7
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: "^0.8.1"
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/tv_logo_null.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

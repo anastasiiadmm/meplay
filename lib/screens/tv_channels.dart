@@ -181,7 +181,7 @@ class _TVChannelsScreenState extends State<TVChannelsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: AppColors.darkBg,
+      backgroundColor: AppColors.whiteBg,
       extendBody: true,
       appBar: _appBar,
       body: _body,

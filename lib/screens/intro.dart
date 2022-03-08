@@ -53,14 +53,14 @@ class _IntroScreenState extends State<IntroScreen> {
     Widget dot;
     if (id == _activeId) {
       dot = Circle.dot(
-        color: AppColors.purple,
+        color: AppColors.decorativeGray,
         radius: 4,
       );
     } else {
       dot = InkWell(
         onTap: () => _switchTo(id),
         child: Circle.dot(
-          color: AppColors.decorativeGray,
+          color: AppColors.grayDisabled,
           radius: 4,
         ),
       );
@@ -129,12 +129,12 @@ class _IntroScreenState extends State<IntroScreen> {
         _page(
           title: l.introTvTitle,
           text: l.introTvText,
-          asset: 'assets/images/intro_1.png',
+          asset: 'assets/images/intro_null_1.png',
         ),
         _page(
           title: l.introRemindTitle,
           text: l.introRemindText,
-          asset: 'assets/images/intro_2.png',
+          asset: 'assets/images/intro_null_2.png',
         ),
       ],
       options: CarouselOptions(
@@ -159,7 +159,7 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.darkBg,
+      color: AppColors.whiteBg,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: Platform.isIOS ? 20 : 50),
         child: Column(

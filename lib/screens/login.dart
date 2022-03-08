@@ -226,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
       automaticallyImplyLeading: false,
       leading: IconButton(
         onPressed: _back,
-        icon: AppIcons.chevronLeft,
+        icon: AppIcons.chevron_left_null,
       ),
     );
   }
@@ -242,7 +242,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
   Widget get _lock {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 54),
-      child: AppImages.lock,
+      child: AppImages.lock_null,
     );
   }
 
@@ -281,7 +281,8 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
           ],
           cursorColor: AppColors.itemFocus,
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+            prefixIcon: Icon(Icons.phone, color: AppColors.white,),
+            contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
             hintText:
                 _waitingForSms ? LoginScreen.smsHint : LoginScreen.loginHint,
             hintStyle: AppFonts.inputPlaceholder,
@@ -323,8 +324,8 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
         width: double.infinity,
         child: FlatButton(
           onPressed: _allowContinue ? _continue : null,
-          color: AppColors.purple,
-          disabledColor: AppColors.purpleDisabled,
+          color: AppColors.item,
+          disabledColor: AppColors.grayDisabled,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
             side: BorderSide.none,
@@ -418,7 +419,7 @@ class _LoginScreenState extends State<LoginScreen> with CodeAutoFill {
     return WillPopScope(
       onWillPop: _willPop,
       child: Scaffold(
-        backgroundColor: AppColors.darkBg,
+        backgroundColor: AppColors.whiteBg,
         resizeToAvoidBottomInset: false,
         appBar: _appBar,
         extendBodyBehindAppBar: true,

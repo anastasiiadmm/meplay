@@ -6,11 +6,14 @@ class AppColors {
   // Will replace AppColors once all re-design is done.
   // these colors are present in the color map.
   static const purple = Color.fromRGBO(127, 88, 236, 1);
+  static const whiteBg = Color.fromRGBO(255, 255, 255, 1.0);
   static const purpleActive = Color.fromRGBO(104, 62, 222, 1);
   static const purpleDisabled = Color.fromRGBO(98, 70, 174, 1);
+  static const grayDisabled = Color.fromRGBO(202, 201, 206, 1.0);
   static const purpleShadow = Color.fromRGBO(117, 82, 217, 1);
   static const green = Color.fromRGBO(43, 204, 119, 1);
   static const darkBg = Color.fromRGBO(29, 28, 31, 1);
+  static const lightBg = Color.fromRGBO(255, 255, 255, 1.0);
   static const blockBg = Color.fromRGBO(45, 43, 49, 1);
   static const item = Color.fromRGBO(73, 70, 82, 1);
   static const red = Color.fromRGBO(252, 92, 101, 1);
@@ -25,7 +28,7 @@ class AppColors {
   static const purpleInputBg = Color.fromRGBO(52, 31, 109, 1);
   static const lightPurpleShadow = Color.fromRGBO(127, 88, 236, 1);
   static const decorativeGray = Color.fromRGBO(60, 58, 67, 1);
-  static const navBg = Color.fromRGBO(60, 58, 67, 0.72);
+  static const navBg = Color.fromRGBO(60, 58, 67, 0.8);
   static const overlay = Color.fromRGBO(0, 0, 0, 0.7);
   static const appbarBorder = Color.fromRGBO(255, 255, 255, 0.2);
   static const iconBg = Color.fromRGBO(255, 255, 255, 1);  // white
@@ -133,6 +136,9 @@ class AppFonts {
   static const blockTitle = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w800, fontSize: 18,
     height: 24/18, color: AppColors.textPrimary,);
+  static const blockTitles = TextStyle(fontFamily: 'Lato',
+    fontWeight: FontWeight.w800, fontSize: 18,
+    height: 24/18, color: AppColors.decorativeGray,);
   static const itemTitle = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w500, fontSize: 18,
     height: 24/18, color: AppColors.textPrimary,);
@@ -182,16 +188,16 @@ class AppFonts {
   // other texts
   static const tabSwitch = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w400, fontSize: 13,
-    height: 18/13, color: AppColors.textPrimaryMute,);
+    height: 18/13, color: AppColors.black,);
   static const tabSwitchActive = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w700, fontSize: 13,
-    height: 18/13, color: AppColors.purple,);
+    height: 18/13, color: AppColors.white,);
   static const tabbar = TextStyle(fontFamily: 'Lato',
     fontWeight: FontWeight.w500, fontSize: 11,
     height: 13/11, color: AppColors.textSecondary,);
   static const link = TextStyle(fontFamily: 'Lato',
     fontSize: 18, fontWeight: FontWeight.w400,
-    height: 24/18, color: AppColors.purple,);
+    height: 24/18, color: AppColors.black,);
   static const notificationCount = TextStyle(fontFamily: 'Lato',
     fontSize: 10, fontWeight: FontWeight.w700,
     height: 12/10, color: AppColors.textPrimary,);
@@ -216,10 +222,13 @@ class AppFonts {
 
 class AppIcons {
   static final arrowLeft = SvgPicture.asset('assets/icons/arrow_left.svg', width: 28, height: 28,);
+  static final burger_menu = SvgPicture.asset('assets/icons/burger_menu.svg', width: 28, height: 28,);
+  static final notifications_bell = SvgPicture.asset('assets/icons/notifications_bell.svg', width: 28, height: 28,);
   static final bell = SvgPicture.asset('assets/icons/bell.svg', width: 28, height: 28,);
   static final burger = SvgPicture.asset('assets/icons/burger.svg', width: 28, height: 28,);
-  static final check = SvgPicture.asset('assets/icons/check.svg', width: 24, height: 24,);
+  static final check_null = SvgPicture.asset('assets/icons/check_null.svg', width: 24, height: 24,);
   static final chevronLeft = SvgPicture.asset('assets/icons/chevron_left.svg', width: 28, height: 28,);
+  static final chevron_left_null = SvgPicture.asset('assets/icons/chevron_left_null.svg', width: 28, height: 28,);
   static final chromecast = SvgPicture.asset('assets/icons/chromecast.svg', width: 24, height: 24,);
   static final clear = SvgPicture.asset('assets/icons/clear.svg', width: 16, height: 16,);
   static final clearBig = SvgPicture.asset('assets/icons/clear_big.svg', width: 24, height: 24,);
@@ -228,10 +237,10 @@ class AppIcons {
   static final cogSmall = SvgPicture.asset('assets/icons/cog_small.svg', width: 24, height: 24,);
   static final delete = SvgPicture.asset('assets/icons/delete.svg', width: 24, height: 24,);
   static final fullScreen = SvgPicture.asset('assets/icons/full_screen.svg', width: 24, height: 24,);
-  static final heart = SvgPicture.asset('assets/icons/heart.svg', width: 28, height: 28,);
-  static final heartActive = SvgPicture.asset('assets/icons/heart_active.svg', width: 28, height: 28,);
-  static final home = SvgPicture.asset('assets/icons/home.svg', width: 28, height: 28,);
-  static final homeActive = SvgPicture.asset('assets/icons/home_active.svg', width: 28, height: 28,);
+  static final favorite_null = SvgPicture.asset('assets/icons/favorite_null.svg', width: 28, height: 28,);
+  static final favorite_active_null = SvgPicture.asset('assets/icons/favorite_active_null.svg', width: 28, height: 28,);
+  static final home_null = SvgPicture.asset('assets/icons/home_null.svg', width: 28, height: 28,);
+  static final home_active_null = SvgPicture.asset('assets/icons/home_active_null.svg', width: 28, height: 28,);
   static final loader = SvgPicture.asset('assets/icons/loader.svg', width: 28, height: 28,);
   static final lock = SvgPicture.asset('assets/icons/lock.svg', width: 20, height: 20,);
   static final lockBig = SvgPicture.asset('assets/icons/lock_big.svg', width: 48, height: 48,);
@@ -244,23 +253,23 @@ class AppIcons {
   static final smallScreen = SvgPicture.asset('assets/icons/small_screen.svg', width: 24, height: 24,);
   static final star = SvgPicture.asset('assets/icons/star.svg', width: 28, height: 28,);
   static final starActive = SvgPicture.asset('assets/icons/star_active.svg', width: 28, height: 28,);
-  static final user = SvgPicture.asset('assets/icons/user.svg', width: 28, height: 28,);
-  static final userActive = SvgPicture.asset('assets/icons/user_active.svg', width: 28, height: 28,);
+  static final user_null = SvgPicture.asset('assets/icons/user_null.svg', width: 28, height: 28,);
+  static final user_active_null = SvgPicture.asset('assets/icons/user_active_null.svg', width: 28, height: 28,);
   static final more = SvgPicture.asset('assets/icons/more.svg', width: 20, height: 20,);
   static final logoPlaceholder = SvgPicture.asset('assets/icons/logo_placeholder.svg', width: 106, height: 122,);
 }
 
 
 class AppImages {
-  static final logo = Image.asset('assets/images/logo.png', width: 246, height: 267, filterQuality: FilterQuality.high,);
-  static final logoTop = Image.asset('assets/images/logo_top.png', width: 146, height: 48, filterQuality: FilterQuality.high,);
-  static final account = Image.asset('assets/images/account.png', width: 56, height: 56, filterQuality: FilterQuality.high,);
-  static final tv = Image.asset('assets/images/tv.png', width: 56, height: 56, filterQuality: FilterQuality.high,);
-  static final radio = Image.asset('assets/images/radio.png', width: 56, height: 56, filterQuality: FilterQuality.high,);
-  static final favorites = Image.asset('assets/images/favorites.png', width: 56, height: 56, filterQuality: FilterQuality.high,);
-  static final largeTv = Image.asset('assets/images/largeTv.png', width: 110, height: 110, filterQuality: FilterQuality.high,);
-  static final largeBell = Image.asset('assets/images/largeBell.png', width: 110, height: 110, filterQuality: FilterQuality.high,);
-  static final lock = Image.asset('assets/images/lock.png', width: 140, height: 148, filterQuality: FilterQuality.high,);
+  // static final logo = Image.asset('assets/images/logo.png', width: 246, height: 267, filterQuality: FilterQuality.high,);
+  // static final logoTop = Image.asset('assets/images/logo_top.png', width: 146, height: 48, filterQuality: FilterQuality.high,);
+  static final account_null = Image.asset('assets/images/account_null.png', width: 56, height: 56, filterQuality: FilterQuality.high,);
+  static final tv_null = Image.asset('assets/images/tv_null.png', width: 56, height: 56, filterQuality: FilterQuality.high,);
+  static final radio_null = Image.asset('assets/images/radio_null.png', width: 56, height: 56, filterQuality: FilterQuality.high,);
+  static final favorite_null = Image.asset('assets/images/favorite_null.png', width: 56, height: 56, filterQuality: FilterQuality.high,);
+  // static final largeTv = Image.asset('assets/images/largeTv.png', width: 110, height: 110, filterQuality: FilterQuality.high,);
+  // static final largeBell = Image.asset('assets/images/largeBell.png', width: 110, height: 110, filterQuality: FilterQuality.high,);
+  static final lock_null = Image.asset('assets/images/lock_null.png', width: 140, height: 148, filterQuality: FilterQuality.high,);
 
   // used for testing and when banner image is not available
   static final bannerStub = Image.asset('assets/images/banner_stub.png', width: 343, height: 180, filterQuality: FilterQuality.high);

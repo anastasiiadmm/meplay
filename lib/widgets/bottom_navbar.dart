@@ -44,20 +44,20 @@ class BottomNavBar extends StatelessWidget {
       unselectedItemColor: AppColors.textSecondary,
       items: [
         BottomNavigationBarItem(
-          icon: AppIcons.home,
+          icon: AppIcons.home_null,
           activeIcon: NavItems.hasIndex(showIndex)
-              ? AppIcons.homeActive
-              : AppIcons.home,
+              ? AppIcons.home_active_null
+              : AppIcons.home_null,
           label: locale(context).tabbarMain,
         ),
         BottomNavigationBarItem(
-          icon: AppIcons.heart,
-          activeIcon: AppIcons.heartActive,
+          icon: AppIcons.favorite_null,
+          activeIcon: AppIcons.favorite_active_null,
           label: locale(context).tabbarFavorites,
         ),
         BottomNavigationBarItem(
-          icon: AppIcons.user,
-          activeIcon: AppIcons.userActive,
+          icon: AppIcons.user_null,
+          activeIcon: AppIcons.user_active_null,
           label: locale(context).tabbarProfile,
         ),
       ],

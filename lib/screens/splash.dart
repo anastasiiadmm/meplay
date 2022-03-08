@@ -61,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     _toggle();
     return Material (
-      color: AppColors.darkBg,
+      color: AppColors.whiteBg,
       child: Padding(
         // по дизайну отступ сверху 150, но тогда картинка
         // на реальном телефоне оказывается почти в центре.
@@ -71,13 +71,13 @@ class _SplashScreenState extends State<SplashScreen> {
           duration: _animationDuration,
           curve: Curves.linear,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              AppImages.logo,
+              // AppImages.logo,
               Text(
                 locale(context).splashText,
                 textAlign: TextAlign.center,
-                style: AppFonts.textPrimary,
+                style: AppFonts.textSecondaryMute,
               ),
             ],
           ),

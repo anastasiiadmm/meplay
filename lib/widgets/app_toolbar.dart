@@ -27,7 +27,7 @@ class AppToolBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       toolbarHeight: preferredSize.height,
       backgroundColor: AppColors.item,
-      elevation: 0,
+      elevation: 3,
       automaticallyImplyLeading: false,
       leadingWidth: 50,
       leading: AppIconButton(
